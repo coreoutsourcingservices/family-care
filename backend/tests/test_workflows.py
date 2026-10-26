@@ -1,0 +1,318 @@
+from datetime import timedelta
+from unittest.mock import patch
+import pytest
+import jwt
+from sqlalchemy import select, update
+from core.database import db
+from core.models import User, OTPChallenge, EmailNotification, UserSession, now
+from core.security import decode_token
+from services.otp import otp_code
+from conftest import create_account
+
+PASSWORD = 'Password8!'
+
+
+def registration(role='patients', email='user@example.com'):
+    data = dict(full_name='Example User', email=email, mobile_number='+919876543210',
+                password=PASSWORD, confirm_password=PASSWORD)
+    if role == 'doctors':
+        data.update(qualification='MBBS', medical_registration_number='TEST-123', registering_council='Test Council')
+    return data
+
+
+def code(app, response):
+    with app.app_context():
+        claims = decode_token(response.json['challenge_token'], 'challenge')
+        return otp_code(claims['cid'])
+
+
+def verify(app, client, response, role='patients', login=False, headers=None):
+    return client.post(f'/api/v1/{role}/'+('verify-login-otp' if login else 'verify-email'),
+                       json={'challenge_token': response.json['challenge_token'], 'otp': code(app, response)}, headers=headers or {})
+
+
+def bearer(response):
+    return {'Authorization': 'Bearer '+response.json['access_token']}
+
+
+def super_login(app, client):
+    create_account(app)
+    return client.post('/api/v1/superadmin/login', json={'username': 'superadmin', 'password': PASSWORD})
+
+
+def test_health_docs_and_validation(client):
+    assert client.get('/health').status_code == 200
+    spec = client.get('/api/openapi.json').json
+    assert len(spec['paths']) >= 40
+    assert client.get('/api/docs').status_code == 200
+    result = client.post('/api/v1/patients/register', json={'password': 'secret'})
+    assert result.status_code == 422
+    assert b'secret' not in result.data
+
+
+def test_patient_signup_jwt_profile_and_login_otp(app, client):
+    registered = client.post('/api/v1/patients/register', json=registration())
+    assert registered.status_code == 202 and 'access_token' not in registered.json
+    session = verify(app, client, registered)
+    assert session.status_code == 200
+    assert session.json['user']['public_id'].startswith('C')
+    me = client.get('/api/v1/patients/me', headers=bearer(session))
+    assert me.status_code == 200 and me.json['user']['email_verified']
+    assert 'password_hash' not in str(me.json)
+    step = client.post('/api/v1/patients/login', json={'email': 'user@example.com', 'password': PASSWORD})
+    assert step.status_code == 202 and 'access_token' not in step.json
+    assert verify(app, client, step, login=True).status_code == 200
+
+
+def test_admin_full_approval_and_otp_login(app, client):
+    super_session = super_login(app, client)
+    registered = client.post('/api/v1/admin/register', json=registration('admin', 'admin@example.com'))
+    assert registered.json['public_id'].startswith('A')
+    assert verify(app, client, registered, 'admin').status_code == 202
+    credentials = {'email': 'admin@example.com', 'password': PASSWORD}
+    assert client.post('/api/v1/admin/login', json=credentials).status_code == 403
+    pending = client.get('/api/v1/superadmin/admin-requests', headers=bearer(super_session))
+    assert pending.json['total'] == 1
+    target = registered.json['public_id']
+    assert client.post(f'/api/v1/superadmin/admins/{target}/approve', headers=bearer(super_session)).status_code == 200
+    step = client.post('/api/v1/admin/login', json=credentials)
+    session = verify(app, client, step, 'admin', login=True)
+    assert session.status_code == 200
+    assert client.get('/api/v1/admin/dashboard', headers=bearer(session)).status_code == 200
+    assert client.get('/api/v1/superadmin/dashboard', headers=bearer(session)).status_code == 403
+    assert client.post(f'/api/v1/superadmin/admins/{target}/approve', headers=bearer(super_session)).status_code == 409
+
+
+def test_doctor_review_and_approval_email_queue(app, client):
+    create_account(app, 'ADMIN', 'admin@example.com')
+    login = client.post('/api/v1/admin/login', json={'email': 'admin@example.com', 'password': PASSWORD})
+    admin = verify(app, client, login, 'admin', login=True)
+    registered = client.post('/api/v1/doctors/register', json=registration('doctors', 'doctor@example.com'))
+    verify(app, client, registered, 'doctors')
+    credentials = {'email': 'doctor@example.com', 'password': PASSWORD}
+    assert client.post('/api/v1/doctors/login', json=credentials).status_code == 403
+    target = registered.json['public_id']
+    assert client.post(f'/api/v1/admin/doctors/{target}/approve', headers=bearer(admin)).status_code == 200
+    session = client.post('/api/v1/doctors/login', json=credentials)
+    assert session.status_code == 200
+    assert client.get('/api/v1/doctors/me', headers=bearer(session)).json['user']['doctor']['verification_status'] == 'APPROVED'
+    with app.app_context():
+        assert db().scalar(select(EmailNotification).where(EmailNotification.template == 'doctor_approved'))
+
+
+def test_rejection_and_doctor_resubmission(app, client):
+    create_account(app, 'ADMIN', 'admin@example.com')
+    step = client.post('/api/v1/admin/login', json={'email': 'admin@example.com', 'password': PASSWORD})
+    admin = verify(app, client, step, 'admin', login=True)
+    registered = client.post('/api/v1/doctors/register', json=registration('doctors', 'doctor@example.com'))
+    verify(app, client, registered, 'doctors')
+    target = registered.json['public_id']
+    assert client.post(f'/api/v1/admin/doctors/{target}/reject', json={'reason': 'Need valid certificate'}, headers=bearer(admin)).status_code == 200
+    result = client.post('/api/v1/doctors/approval-status', json={'email': 'doctor@example.com', 'password': PASSWORD})
+    assert result.json['rejection_reason'] == 'Need valid certificate'
+    data = {'email': 'doctor@example.com', 'password': PASSWORD, 'qualification': 'MBBS',
+            'medical_registration_number': 'NEW-123', 'registering_council': 'Test Council'}
+    assert client.post('/api/v1/doctors/resubmit', json=data).status_code == 202
+
+
+def test_otp_attempt_limit_no_plaintext_storage(app, client):
+    registered = client.post('/api/v1/patients/register', json=registration())
+    correct = code(app, registered)
+    wrong = '000000' if correct != '000000' else '111111'
+    for _ in range(5):
+        assert client.post('/api/v1/patients/verify-email', json={'challenge_token': registered.json['challenge_token'], 'otp': wrong}).status_code == 400
+    assert verify(app, client, registered).status_code == 400
+    with app.app_context():
+        item = db().scalar(select(OTPChallenge))
+        assert item.attempts == 5 and correct not in item.code_hash
+        assert correct not in db().scalar(select(EmailNotification)).context_json
+
+
+def test_otp_expiry_resend_and_replay(app, client):
+    registered = client.post('/api/v1/patients/register', json=registration())
+    data = {'challenge_token': registered.json['challenge_token']}
+    assert client.post('/api/v1/patients/resend-otp', json=data).status_code == 429
+    with app.app_context():
+        item = db().scalar(select(OTPChallenge))
+        item.created_at = now() - timedelta(seconds=61)
+        item.expires_at = now() - timedelta(seconds=1)
+        db().commit()
+    assert verify(app, client, registered).status_code == 400
+    resent = client.post('/api/v1/patients/resend-otp', json=data)
+    assert resent.status_code == 200
+    assert verify(app, client, registered).status_code == 400
+    assert verify(app, client, resent).status_code == 200
+    assert verify(app, client, resent).status_code == 400
+
+
+def test_challenge_not_access_token_and_cross_role(app, client):
+    registered = client.post('/api/v1/patients/register', json=registration())
+    assert client.get('/api/v1/patients/me', headers={'Authorization': 'Bearer '+registered.json['challenge_token']}).status_code == 401
+    assert verify(app, client, registered, 'admin').status_code == 401
+
+
+def test_refresh_rotation_reuse_revokes_access(app, client):
+    session = super_login(app, client)
+    old = session.json['refresh_token']
+    rotated = client.post('/api/v1/auth/refresh', json={'refresh_token': old})
+    assert rotated.status_code == 200 and rotated.json['refresh_token'] != old
+    assert client.post('/api/v1/auth/refresh', json={'refresh_token': old}).status_code == 401
+    assert client.get('/api/v1/superadmin/me', headers=bearer(rotated)).status_code == 401
+
+
+def test_logout_revokes_access(app, client):
+    session = super_login(app, client)
+    assert client.post('/api/v1/auth/logout', headers=bearer(session)).status_code == 200
+    assert client.get('/api/v1/superadmin/me', headers=bearer(session)).status_code == 401
+
+
+def test_suspension_revokes_admin_session(app, client):
+    super_session = super_login(app, client)
+    create_account(app, 'ADMIN', 'admin@example.com')
+    step = client.post('/api/v1/admin/login', json={'email': 'admin@example.com', 'password': PASSWORD})
+    admin = verify(app, client, step, 'admin', login=True)
+    target = admin.json['user']['public_id']
+    assert client.post(f'/api/v1/superadmin/admins/{target}/suspend', headers=bearer(super_session)).status_code == 200
+    assert client.get('/api/v1/admin/me', headers=bearer(admin)).status_code in (401,403)
+    assert client.post(f'/api/v1/superadmin/admins/{target}/reactivate', headers=bearer(super_session)).status_code == 200
+    assert client.get('/api/v1/admin/me', headers=bearer(admin)).status_code == 401
+
+
+def test_initial_superadmin_password_rotation_and_seed_idempotency(app, client):
+    from scripts.seed_superadmin import seed
+    with app.app_context():
+        account, created = seed('superadmin', 'super@example.com', 'superadmin@2026')
+        assert created
+        original = account.password_hash
+        assert not seed('superadmin', 'super@example.com', 'OtherPassword8!')[1]
+        assert account.password_hash == original
+    step = client.post('/api/v1/superadmin/login', json={'username': 'superadmin', 'password': 'superadmin@2026'})
+    assert step.status_code == 202 and 'access_token' not in step.json
+    changed = client.post('/api/v1/auth/initial-password', json={'challenge_token': step.json['challenge_token'],
+             'current_password': 'superadmin@2026', 'new_password': 'NewPassword8!', 'confirm_password': 'NewPassword8!'})
+    assert changed.status_code == 200
+    assert client.get('/api/v1/superadmin/me', headers=bearer(changed)).status_code == 200
+    assert client.post('/api/v1/superadmin/login', json={'username': 'superadmin', 'password': 'superadmin@2026'}).status_code == 401
+
+
+def test_password_reset_revokes_sessions(app, client):
+    session = super_login(app, client)
+    email = session.json['user']['email']
+    step = client.post('/api/v1/auth/forgot-password', json={'email': email})
+    reset = client.post('/api/v1/auth/reset-password', json={'challenge_token': step.json['challenge_token'],
+             'otp': code(app, step), 'new_password': 'NewPassword8!', 'confirm_password': 'NewPassword8!'})
+    assert reset.status_code == 200
+    assert client.get('/api/v1/superadmin/me', headers=bearer(session)).status_code == 401
+
+
+def test_unknown_reset_same_shape(client):
+    response = client.post('/api/v1/auth/forgot-password', json={'email': 'absent@example.com'})
+    assert response.status_code == 202 and 'challenge_token' in response.json
+
+
+def test_cookie_transport_csrf_and_no_json_token_leak(app, client):
+    create_account(app)
+    credentials = {'username': 'superadmin', 'password': PASSWORD}
+    assert client.post('/api/v1/superadmin/login', json=credentials, headers={'X-Auth-Transport': 'cookie'}).status_code == 403
+    headers = {'X-Auth-Transport': 'cookie', 'X-Requested-With': 'FamilyCare', 'Origin': 'http://localhost:3000'}
+    session = client.post('/api/v1/superadmin/login', json=credentials, headers=headers)
+    assert session.status_code == 200 and 'access_token' not in session.json and 'refresh_token' not in session.json
+    assert client.get('/api/v1/superadmin/me').status_code == 200
+    assert client.post('/api/v1/auth/refresh', headers=headers).status_code == 403
+    headers['X-CSRF-Token'] = session.json['csrf_token']
+    refreshed = client.post('/api/v1/auth/refresh', headers=headers)
+    assert refreshed.status_code == 200
+    headers['X-CSRF-Token'] = refreshed.json['csrf_token']
+    assert client.post('/api/v1/auth/logout', headers=headers).status_code == 200
+
+
+def test_password_policy_and_forbidden_fields(client):
+    data = registration()
+    data['password'] = data['confirm_password'] = '12345678'
+    assert client.post('/api/v1/patients/register', json=data).status_code == 202
+    data['role'] = 'SUPERADMIN'
+    assert client.post('/api/v1/patients/register', json=data).status_code == 422
+    data.pop('role'); data['password'] = data['confirm_password'] = '1234567'
+    assert client.post('/api/v1/patients/register', json=data).status_code == 422
+
+
+def test_invalid_expired_jwt_and_sql_injection(app, client):
+    session = super_login(app, client)
+    token = session.json['access_token']
+    with app.app_context():
+        claims = decode_token(token, 'access'); claims['exp'] = now() - timedelta(seconds=10)
+        expired = jwt.encode(claims, app.config['JWT_SECRET_KEY'], algorithm='HS256')
+    for value in ('bad.token.value', expired):
+        assert client.get('/api/v1/superadmin/me', headers={'Authorization': 'Bearer '+value}).status_code == 401
+    assert client.post('/api/v1/superadmin/login', json={'username': "' OR 1=1 --", 'password': PASSWORD}).status_code == 401
+
+
+def test_mail_worker_sends_and_is_not_repeated(app, client):
+    from services.email import process_one
+    client.post('/api/v1/patients/register', json=registration())
+    with app.app_context(), patch('services.email.send_mail') as sender:
+        assert process_one()
+        assert sender.call_count == 1
+        assert not process_one()
+
+
+def test_mail_worker_retries(app, client):
+    from services.email import process_one
+    client.post('/api/v1/patients/register', json=registration())
+    with app.app_context(), patch('services.email.send_mail', side_effect=OSError):
+        assert process_one()
+        item = db().scalar(select(EmailNotification))
+        assert item.attempts == 1 and item.status == 'PENDING' and item.available_at > now()
+
+
+def test_doctor_required_registration_and_duplicate_constraints(app, client):
+    data = registration('doctors', 'doctor1@example.com')
+    bad = dict(data); bad['medical_registration_number'] = '!invalid'
+    assert client.post('/api/v1/doctors/register', json=bad).status_code == 422
+    assert client.post('/api/v1/doctors/register', json=data).status_code == 202
+    data['email'] = 'doctor2@example.com'
+    assert client.post('/api/v1/doctors/register', json=data).status_code == 409
+
+
+def test_change_password_and_session_revocation(app, client):
+    session = super_login(app, client)
+    sessions = client.get('/api/v1/auth/sessions', headers=bearer(session))
+    assert len(sessions.json['items']) == 1
+    changed = client.post('/api/v1/auth/change-password', headers=bearer(session), json={
+        'current_password': PASSWORD, 'new_password': 'ChangedPassword8!', 'confirm_password': 'ChangedPassword8!'})
+    assert changed.status_code == 200
+    assert client.get('/api/v1/superadmin/me', headers=bearer(session)).status_code == 401
+
+
+def test_wrong_jwt_issuer_audience_and_type(app, client):
+    session = super_login(app, client)
+    with app.app_context():
+        claims = decode_token(session.json['access_token'], 'access')
+    for field, value in [('aud', 'other-client'), ('iss', 'supabase'), ('type', 'challenge')]:
+        modified = dict(claims); modified[field] = value
+        token = jwt.encode(modified, app.config['JWT_SECRET_KEY'], algorithm='HS256')
+        assert client.get('/api/v1/superadmin/me', headers={'Authorization': 'Bearer '+token}).status_code == 401
+
+
+def test_otp_restart_after_attempt_exhaustion(app, client):
+    registered = client.post('/api/v1/patients/register', json=registration())
+    with app.app_context():
+        item = db().scalar(select(OTPChallenge))
+        item.consumed_at = now()
+        item.created_at = now() - timedelta(seconds=61)
+        db().commit()
+    restarted = client.post('/api/v1/auth/request-email-verification', json={'email': 'user@example.com', 'password': PASSWORD})
+    assert restarted.status_code == 202
+    assert verify(app, client, restarted).status_code == 200
+
+
+def test_rate_limit_returns_json_429(app):
+    from app import create_app
+    limited = create_app(dict(TESTING=True, DATABASE_URL='', JWT_SECRET_KEY='x'*48,
+                              OTP_HMAC_SECRET='y'*48, RATELIMIT_STORAGE_URI='memory://',
+                              RATELIMIT_ENABLED=True, APP_ENV='development'))
+    local = limited.test_client()
+    for _ in range(10):
+        assert local.post('/api/v1/superadmin/login', json={'username': 'rate-test', 'password': PASSWORD}).status_code == 503
+    result = local.post('/api/v1/superadmin/login', json={'username': 'rate-test', 'password': PASSWORD})
+    assert result.status_code == 429 and 'error' in result.json

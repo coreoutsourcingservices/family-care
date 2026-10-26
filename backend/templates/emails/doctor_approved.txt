@@ -1,0 +1,4 @@
+Hello {{ full_name }},
+
+Your doctor registration has been approved.
+You can now log in.

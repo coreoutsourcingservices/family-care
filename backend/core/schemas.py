@@ -1,0 +1,120 @@
+from typing import Annotated, Literal
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
+from flask import request
+from core.errors import APIError
+
+Password = Annotated[str, Field(min_length=8, max_length=128)]
+
+
+class Schema(BaseModel):
+    model_config = ConfigDict(extra='forbid', str_strip_whitespace=False)
+
+
+class Registration(Schema):
+    full_name: str = Field(min_length=1, max_length=120)
+    email: EmailStr
+    mobile_number: str = Field(pattern=r'^\+?[1-9][0-9]{7,14}$')
+    password: Password
+    confirm_password: Password
+
+    @field_validator('full_name')
+    @classmethod
+    def name(cls, value):
+        if not value.strip():
+            raise ValueError('Name required')
+        return value.strip()
+
+    @field_validator('email')
+    @classmethod
+    def normalize_email(cls, value):
+        return str(value).lower()
+
+    @model_validator(mode='after')
+    def matches(self):
+        if self.password != self.confirm_password:
+            raise ValueError('Passwords do not match')
+        return self
+
+
+class DoctorRegistration(Registration):
+    qualification: str = Field(min_length=2, max_length=200)
+    medical_registration_number: str = Field(pattern=r'^[A-Za-z0-9][A-Za-z0-9/ ._-]{1,99}$')
+    registering_council: str = Field(min_length=2, max_length=200)
+    specialization: str | None = Field(default=None, max_length=200)
+    nmr_id: str | None = Field(default=None, min_length=1, max_length=100)
+
+    @field_validator('qualification', 'registering_council', 'medical_registration_number')
+    @classmethod
+    def nonempty(cls, value):
+        if len(value.strip()) < 2:
+            raise ValueError('Registration details required')
+        return value.strip().upper()
+
+
+class Login(Schema):
+    email: EmailStr
+    password: str = Field(min_length=1, max_length=128)
+
+
+class SuperLogin(Schema):
+    username: str = Field(min_length=1, max_length=80)
+    password: str = Field(min_length=1, max_length=128)
+
+
+class VerifyOTP(Schema):
+    challenge_token: str = Field(min_length=1, max_length=4096)
+    otp: str = Field(pattern=r'^\d{6}$')
+
+
+class Challenge(Schema):
+    challenge_token: str = Field(min_length=1, max_length=4096)
+
+
+class ForgotPassword(Schema):
+    email: EmailStr
+
+
+class ResetPassword(VerifyOTP):
+    new_password: Password
+    confirm_password: Password
+
+    @model_validator(mode='after')
+    def matches(self):
+        if self.new_password != self.confirm_password:
+            raise ValueError('Passwords do not match')
+        return self
+
+
+class ChangePassword(Schema):
+    current_password: str = Field(min_length=1, max_length=128)
+    new_password: Password
+    confirm_password: Password
+
+    @model_validator(mode='after')
+    def matches(self):
+        if self.new_password != self.confirm_password:
+            raise ValueError('Passwords do not match')
+        return self
+
+
+class InitialPassword(ChangePassword):
+    challenge_token: str = Field(min_length=1, max_length=4096)
+
+
+class Rejection(Schema):
+    reason: str = Field(min_length=1, max_length=500)
+
+
+class Resubmission(Schema):
+    email: EmailStr
+    password: str = Field(min_length=1, max_length=128)
+    qualification: str = Field(min_length=2, max_length=200)
+    medical_registration_number: str = Field(pattern=r'^[A-Za-z0-9][A-Za-z0-9/ ._-]{1,99}$')
+    registering_council: str = Field(min_length=2, max_length=200)
+
+
+def parse(schema):
+    data = request.get_json()
+    if not isinstance(data, dict):
+        raise APIError(400, 'invalid_json', 'JSON object required')
+    return schema.model_validate(data)

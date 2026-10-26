@@ -1,68 +1,87 @@
-from flask import g, jsonify
-from common.http import body
-from common.security import protected
-from auth import model
+from flask import request, g, jsonify
+from sqlalchemy import select
+from core.database import db
+from core.models import UserSession, now
+from core.schemas import parse, ForgotPassword, ResetPassword, ChangePassword, InitialPassword
+from core.security import transport
+from core.http import locked_current_user
+from core.errors import APIError
+from services import authentication, sessions
+from services.repository import audit, revoke_sessions
+from services import otp
+from core.schemas import Login, Challenge
 
 
-def session_payload(result):
-    """Expose the Supabase session consistently without minting a second JWT."""
-    session = result.get('session') or result
-    return {key: session.get(key) for key in (
-        'access_token', 'refresh_token', 'token_type', 'expires_in', 'expires_at')}
+def request_verification():
+    return authentication.request_verification(parse(Login))
 
 
-def signup(role_override=None):
-    data = body()
-    if data is None:
-        return jsonify(error='JSON object required'), 400
-    email, password = data.get('email'), data.get('password')
-    name, role = data.get('full_name'), role_override or data.get('role', 'patient')
-    if role_override and data.get('role', role_override) != role_override:
-        return jsonify(error='Role does not match signup endpoint'), 400
-    if role not in ('patient', 'doctor'):
-        return jsonify(error='Public signup allows patient or doctor only'), 400
-    if (not isinstance(email, str) or '@' not in email or len(email) > 254
-            or not isinstance(password, str) or not 12 <= len(password) <= 128
-            or not isinstance(name, str) or not 1 <= len(name.strip()) <= 120):
-        return jsonify(error='Valid email, full_name and password (12–128 characters) required'), 400
-    result = model.call('POST', '/auth/v1/signup', json={
-        'email': email.strip(), 'password': password,
-        'data': {'full_name': name.strip(), 'role': role}})
-    tokens = session_payload(result)
-    user = result.get('user') or (result.get('session') or {}).get('user') or {}
-    user_id = user.get('id') or result.get('id')
-    if tokens['access_token']:
-        return jsonify(message='Signup successful.', user_id=user_id, user=user,
-                       requires_email_confirmation=False, **tokens), 201
-    return jsonify(message='Signup submitted. Confirm your email, then sign in to receive tokens.',
-                   user_id=user_id, requires_email_confirmation=True, **tokens), 202
+def resend_otp():
+    return jsonify(otp.resend(parse(Challenge).challenge_token, None))
 
-def signin(expected_role=None):
-    data = body()
-    if data is None or not isinstance(data.get('email'), str) or not isinstance(data.get('password'), str):
-        return jsonify(error='Email and password required'), 400
-    result = model.call('POST', '/auth/v1/token?grant_type=password', json={
-        'email': data['email'].strip(), 'password': data['password']})
-    if expected_role:
-        profile = model.profile(result['user']['id'], result['access_token'])
-        if not profile or profile['role'] != expected_role:
-            return jsonify(error='Account role does not match this signin endpoint'), 403
-    return jsonify({**result, **session_payload(result)})
 
 def refresh():
-    data = body()
-    if data is None or not isinstance(data.get('refresh_token'), str) or not data['refresh_token']:
-        return jsonify(error='refresh_token required'), 400
-    result = model.call('POST', '/auth/v1/token?grant_type=refresh_token',
-                        json={'refresh_token': data['refresh_token']})
-    return jsonify({**result, **session_payload(result)})
+    cookie_mode = transport() == 'cookie'
+    if cookie_mode:
+        raw = request.cookies.get('fc_refresh')
+    else:
+        data = request.get_json()
+        if not isinstance(data, dict) or set(data) != {'refresh_token'}:
+            raise APIError(400, 'invalid_json', 'Only refresh_token is required')
+        raw = data.get('refresh_token')
+    return sessions.refresh_session(raw, cookie_mode)
 
-@protected()
-def signout():
-    model.call('POST', '/auth/v1/logout', g.token)
-    return jsonify(message='Signed out. Discard stored tokens.')
 
-@protected()
-def me():
-    return jsonify(email=g.user['email'], **g.profile)
+def logout():
+    g.auth_session.revoked_at = now()
+    audit('logout', g.user.id, g.user.id)
+    db().commit()
+    return sessions.clear_cookies(jsonify(message='Logged out'))
 
+
+def logout_all():
+    locked_current_user()
+    revoke_sessions(g.user.id)
+    audit('logout_all', g.user.id, g.user.id)
+    db().commit()
+    return sessions.clear_cookies(jsonify(message='All sessions revoked'))
+
+
+def forgot_password():
+    return authentication.forgot_password(parse(ForgotPassword).email)
+
+
+def reset_password():
+    return authentication.reset_password(parse(ResetPassword))
+
+
+def change_password():
+    result = authentication.change_password(locked_current_user(), parse(ChangePassword))
+    return sessions.clear_cookies(result)
+
+
+def initial_password():
+    return authentication.initial_password(parse(InitialPassword))
+
+
+def list_sessions():
+    rows = db().scalars(select(UserSession).where(UserSession.user_id == g.user.id,
+              UserSession.revoked_at.is_(None), UserSession.expires_at > now()).order_by(UserSession.created_at.desc()).limit(100)).all()
+    return jsonify(items=[{'id': r.id, 'created_at': r.created_at.isoformat()+'Z',
+                           'expires_at': r.expires_at.isoformat()+'Z', 'current': r.id == g.auth_session.id} for r in rows])
+
+
+def revoke_session(session_id):
+    import uuid
+    try:
+        uuid.UUID(session_id)
+    except ValueError:
+        raise APIError(404, 'not_found', 'Session not found') from None
+    locked_current_user()
+    session = db().scalar(select(UserSession).where(UserSession.id == session_id).with_for_update())
+    if not session or session.user_id != g.user.id:
+        raise APIError(404, 'not_found', 'Session not found')
+    session.revoked_at = now()
+    audit('session_revoked', g.user.id, g.user.id)
+    db().commit()
+    return jsonify(message='Session revoked')

@@ -1,23 +1,56 @@
-from flask import g, jsonify, request
-from auth import controller as auth_controller
-from common.security import protected
-from admin import model
+from flask import jsonify, g, request
+from core.schemas import parse
+from core.http import profile, pagination
+from admin import service, schema
 
 
-def signin():
-    return auth_controller.signin(expected_role=model.ROLE)
+def login():
+    return service.login(parse(schema.Credentials))
 
 
-@protected(model.ROLE)
 def me():
-    return jsonify(email=g.user['email'], **model.current_profile(g.user['id'], g.token))
+    return profile()
 
 
-@protected('admin', 'super_admin')
+def register():
+    return service.register(parse(schema.Register))
+
+
+def verify_email():
+    return service.verify_email(parse(schema.VerifyOTP))
+
+
+def resend_otp():
+    return jsonify(service.resend(parse(schema.Challenge).challenge_token))
+
+
+def verify_login_otp():
+    return service.verify_login(parse(schema.VerifyOTP))
+
+
+def dashboard():
+    return service.approvals.dashboard()
+
+
+def requests_pending():
+    return service.approvals.listing('DOCTOR', *pagination(), pending=True)
+
+
 def users():
-    try:
-        offset = max(0, int(request.args.get('offset', 0)))
-    except ValueError:
-        return jsonify(error='offset must be an integer'), 400
-    return jsonify(model.list_users(g.token, offset))
+    return service.approvals.listing('DOCTOR', *pagination(), status=request.args.get('status'))
 
+
+def approve(user_id):
+    return service.approvals.review(g.user, user_id, 'DOCTOR', True)
+
+
+def reject(user_id):
+    return service.approvals.review(g.user, user_id, 'DOCTOR', False, parse(schema.Rejection).reason)
+
+
+def suspend(user_id):
+    return service.approvals.account_status(g.user, user_id, 'DOCTOR', False)
+
+
+def reactivate(user_id):
+    return service.approvals.account_status(g.user, user_id, 'DOCTOR', True)

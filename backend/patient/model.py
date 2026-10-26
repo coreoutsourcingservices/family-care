@@ -1,7 +1,3 @@
-from auth.model import profile
+from core.models import PatientProfile as Model, User
 
-ROLE = 'patient'
-
-
-def current_profile(user_id, token):
-    return profile(user_id, token)
+ROLE = 'PATIENT'

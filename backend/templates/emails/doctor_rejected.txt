@@ -1,0 +1,4 @@
+Hello {{ full_name }},
+
+Your doctor registration has been rejected.
+Reason: {{ reason }}

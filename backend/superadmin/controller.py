@@ -1,24 +1,52 @@
-from common.http import body
-from flask import g, jsonify
-from auth import controller as auth_controller
-from common.security import protected
-from superadmin import model
+from flask import jsonify, g, request
+from core.schemas import parse
+from core.http import profile, pagination
+from superadmin import service, schema
 
 
-def signin():
-    return auth_controller.signin(expected_role=model.ROLE)
+def login():
+    return service.login(parse(schema.Credentials))
 
 
-@protected(model.ROLE)
 def me():
-    return jsonify(email=g.user['email'], **model.current_profile(g.user['id'], g.token))
+    return profile()
 
 
-@protected('super_admin')
-def change_role(user_id):
-    data = body()
-    if data is None or data.get('role') not in ('patient', 'doctor', 'admin', 'super_admin'):
-        return jsonify(error='Valid role required'), 400
-    model.set_role(g.token, user_id, data['role'])
-    return jsonify(message='Role updated')
+def dashboard():
+    return service.approvals.dashboard()
 
+
+def requests_pending():
+    return service.approvals.listing('ADMIN', *pagination(), pending=True)
+
+
+def users():
+    return service.approvals.listing('ADMIN', *pagination(), status=request.args.get('status'))
+
+
+def approve(user_id):
+    return service.approvals.review(g.user, user_id, 'ADMIN', True)
+
+
+def reject(user_id):
+    return service.approvals.review(g.user, user_id, 'ADMIN', False, parse(schema.Rejection).reason)
+
+
+def suspend(user_id):
+    return service.approvals.account_status(g.user, user_id, 'ADMIN', False)
+
+
+def reactivate(user_id):
+    return service.approvals.account_status(g.user, user_id, 'ADMIN', True)
+
+
+def doctors():
+    return service.approvals.listing('DOCTOR', *pagination())
+
+
+def patients():
+    return service.approvals.listing('PATIENT', *pagination())
+
+
+def audit_logs():
+    return service.approvals.audit_logs(*pagination())

@@ -1,158 +1,99 @@
-# Family Care Flask backend
+# Family Care backend API
 
-Python virtual environment, Flask API and hosted Supabase Auth/Postgres. No Docker.
+Flask modular backend for doctor, patient/customer, admin and superadmin identity.
+Supabase is hosted PostgreSQL; Flask owns password hashing, email OTP, approval and JWT.
+No Docker and no frontend/UI.
 
-## Folder structure
-
-```text
-backend/
-  app.py                 # Flask factory and blueprint registration
-  server.py              # Waitress server entry
-  doctor/
-    model.py             # Doctor profile data access
-    controller.py        # Doctor signup, signin and profile
-    routes.py            # /api/doctor routes
-  patient/
-    model.py
-    controller.py
-    routes.py
-  admin/
-    model.py             # User listing data access
-    controller.py        # Admin signin, profile and user listing
-    routes.py
-  superadmin/
-    model.py             # Role-management database calls
-    controller.py        # Super admin signin, profile and role management
-    routes.py
-  auth/                  # Shared authentication model/controller/routes
-  common/                # Supabase HTTP client, auth middleware, errors
-  supabase/schema.sql
-  tests/
-  venv/                  # Local environment, excluded from Git
-```
-
-Each role is a Python package with an `__init__.py`. Models handle Supabase data access,
-controllers handle requests and validation, and routes register Flask blueprints.
-Shared authentication avoids duplicating password/session handling in each role.
-
-| Module | Endpoints |
-| --- | --- |
-| Doctor | `POST /api/doctor/signup`, `POST /api/doctor/signin`, `GET /api/doctor/me` |
-| Patient | `POST /api/patient/signup`, `POST /api/patient/signin`, `GET /api/patient/me` |
-| Admin | `POST /api/admin/signin`, `GET /api/admin/me`, `GET /api/admin/users` |
-| Super admin | `POST /api/superadmin/signin`, `GET /api/superadmin/me`, `PATCH /api/superadmin/users/<user UUID>/role` |
-
-Doctor/patient signup endpoints choose the role automatically; a conflicting role is
-rejected. Role-specific signin verifies the stored database role before returning tokens.
-Admin/super admin have no public signup. Existing `/api/auth/*` endpoints and the
-original `/api/admin/users/<user UUID>/role` URL continue to work.
-
-## Windows PowerShell
+## Start (Windows)
 
 ```powershell
 cd "D:\my data\core outsourcing services pvt\familycare\backend"
-py -m venv venv
-.\venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-Copy-Item .env.example .env
+.\venv\Scripts\python.exe -m pip install -r requirements.lock.txt
+.\venv\Scripts\python.exe scripts/configure_local.py
 ```
 
-If activation is blocked, use `venv\Scripts\python.exe` directly; activation is optional.
-Edit `.env` with your Supabase project URL and publishable/anon key. Do not commit `.env`.
-No service role key is needed. The virtual environment is local and excluded from Git.
-
-## Supabase setup (online)
-
-1. Create/select your hosted Supabase project.
-2. Run `supabase/schema.sql` once in its SQL Editor, before registering users.
-3. Enable email/password authentication. To receive JWT tokens immediately on signup,
-   turn **Confirm email OFF** in Supabase's email authentication settings. This means
-   email ownership is not verified before login. If you keep confirmation ON, signup
-   returns HTTP 202 with null tokens; confirm the email then sign in to receive tokens.
-   Configure your Site URL for your frontend.
-4. Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` in `.env`.
-5. Register your own account, confirm its email, then run the following in SQL Editor,
-   replacing the email. This bootstraps the first super admin:
-
-```sql
-update public.profiles
-set role = 'super_admin'
-where id = (select id from auth.users where email = 'your-email@example.com');
-```
-
-The app cannot create or configure your hosted project without its connection details.
-Passwords are managed by Supabase Auth. Profiles and roles are stored in Postgres.
-Doctor signup creates an account; it does not verify medical qualifications.
-
-## Run
+Fill `DATABASE_URL`, migration connection and SMTP settings privately in ignored `.env`.
+Then follow `docs/SUPABASE_SETUP.md` to install `supabase/0001_identity.sql` or migrations.
+The old Supabase Auth `public.profiles` database is preserved, but is not used by v1.
 
 ```powershell
-.\venv\Scripts\python.exe -m flask --app app run --host 127.0.0.1 --port 5000
+.\venv\Scripts\python.exe -m alembic upgrade head
+.\venv\Scripts\python.exe -m scripts.seed_superadmin
+.\venv\Scripts\python.exe server.py
 ```
 
-Health: `http://127.0.0.1:5000/health`
-
-For serving without the Flask development server (Windows supported):
+Run the email worker in a second terminal:
 
 ```powershell
-.\venv\Scripts\waitress-serve.exe --host=127.0.0.1 --port=5000 app:app
+.\venv\Scripts\python.exe -m scripts.mail_worker
 ```
 
-Or run the separate server entry with `.\venv\Scripts\python.exe server.py`.
+Base URL: http://127.0.0.1:5001
 
-For public deployment, put HTTPS in front of the server and use a same-origin frontend
-or an explicit CORS allowlist. Configure Supabase Auth rate limits/SMTP for production.
-No frontend UI is included in this backend setup.
+- GET `/health`: server liveness (no DB required).
+- GET `/api/v1/health/ready`: real database/schema readiness (503 if not configured).
+- GET `/api/docs`: JSON API index; no UI.
+- GET `/api/openapi.json`: OpenAPI 3.1 contract.
+- All role routes use `/api/v1/superadmin`, `/api/v1/admin`, `/api/v1/doctors`, `/api/v1/patients`.
+- Complete API list/examples: `docs/API_DOCUMENTATION.md`.
+- Postman import: `docs/postman_collection.json`.
 
-## API
+IDs: A000001 / D000001 / C000001 from PostgreSQL sequences; UUID relationship keys.
+Passwords: 8-128 characters, Argon2id hashes. Development superadmin: username superadmin,
+password superadmin@2026 when supplied to bootstrap; first login requires password change.
+Production refuses the default bootstrap password. No public superadmin registration.
 
-Signup with a Supabase session returns HTTP 201 and `access_token` (Supabase-signed JWT),
-`refresh_token`, `token_type`, `expires_in`, `expires_at`, `user_id`, `user`, and
-`requires_email_confirmation: false`. Signin and refresh return the same token fields
-with HTTP 200. Tokens are passed through from Supabase, so protected routes and database
-RLS accept the same JWT. The refresh token is an opaque session credential, not a JWT.
-Without a signup session, HTTP 202 contains `requires_email_confirmation: true` and
-null token fields. The backend does not bypass Supabase email confirmation.
+Patient signup JWT is issued only after email OTP verification. Admin/doctor require review.
+Admin/patient login requires password and email OTP; approved doctor uses email/password.
+Access JWT is 15 minutes; rotating/revocable refresh session defaults to 7 days.
 
-Send JSON with `Content-Type: application/json`. Protected requests require
-`Authorization: Bearer <access_token>`. Never log or put tokens in URLs.
+## Structure
 
-| Method | Path | Access / body |
-| --- | --- | --- |
-| POST | `/api/auth/signup` | `email`, `password` (12–128 chars), `full_name`, `role`: `patient` or `doctor` |
-| POST | `/api/auth/signin` | `email`, `password`; shared by all four roles |
-| POST | `/api/auth/refresh` | `refresh_token` |
-| POST | `/api/auth/signout` | Signed-in user; client must discard tokens |
-| GET | `/api/auth/me` | Signed-in user; authoritative role from database |
-| GET | `/api/admin/users?offset=0` | Admin or super admin; 100 users per page |
-| PATCH | `/api/admin/users/<user UUID>/role` | Super admin only; body `{"role":"admin"}` |
-
-Public signup cannot grant admin/super admin. A super admin can promote an existing
-registered user through the role endpoint. Admins can list profiles but cannot change roles.
-The last super admin cannot be demoted through the API. Direct database owners retain control.
-Supabase signout revokes refresh tokens; an issued access token can remain valid until expiry.
-
-PowerShell signup example:
-
-```powershell
-$body = @{email='doctor@example.com'; password='Choose-A-Unique-Password-123!'; full_name='Dr Example'; role='doctor'} | ConvertTo-Json
-Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5000/api/auth/signup -ContentType application/json -Body $body
-```
-
-For a patient, use `role='patient'`. After confirming email:
-
-```powershell
-$login = @{email='doctor@example.com'; password='Choose-A-Unique-Password-123!'} | ConvertTo-Json
-$session = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:5000/api/auth/signin -ContentType application/json -Body $login
-$headers = @{Authorization="Bearer $($session.access_token)"}
-Invoke-RestMethod -Uri http://127.0.0.1:5000/api/auth/me -Headers $headers
+```text
+backend/
+  app.py                 # Factory, extensions, error handlers
+  server.py              # Windows Waitress entry (5001)
+  wsgi.py                # Linux Gunicorn entry
+  core/                  # Config, database, shared models/security/schema/OpenAPI
+  doctor/                # model/controller/routes/service/repository/schema
+  patient/               # Same boundaries
+  admin/                 # Same boundaries
+  superadmin/            # Same boundaries
+  auth/                  # Shared auth endpoints
+  services/              # OTP/session/approval/outbox workflows
+  templates/emails/      # Text email templates, no website UI
+  migrations/            # Alembic revision (executes canonical SQL)
+  supabase/0001_identity.sql
+  scripts/               # Configuration, seeding, SMTP worker, docs export
+  docs/                  # Setup, API, schema, auth, deployment, tests
+  examples/              # Flutter/JavaScript API clients only
+  tests/                 # Workflows, security, PostgreSQL concurrency, load script
+  venv/                  # Local ignored Python environment
 ```
 
 ## Tests
 
 ```powershell
-.\venv\Scripts\python.exe -m unittest discover -s tests -v
+.\venv\Scripts\python.exe -m pytest -q
 ```
 
-Tests mock Supabase HTTP responses. Real signup/email delivery, SQL policies and hosted
-database connectivity require your configured project and must also be verified there.
+Without TEST_DATABASE_URL, workflow tests use isolated SQLite and PostgreSQL tests skip.
+SQLite is never accepted for running the real app. To verify real PostgreSQL locking,
+provide a dedicated loopback test database whose name ends in `_test`:
+
+```powershell
+$env:TEST_DATABASE_URL='postgresql+psycopg://TEST_USER:ENCODED_PASSWORD@127.0.0.1:55439/familycare_test?sslmode=require'
+.\venv\Scripts\python.exe -m pytest -q
+```
+
+Tests recreate the `familycare` schema in that isolated database. Do not use real data.
+They never select the production DATABASE_URL automatically. Email sends are mocked.
+
+Regenerate API docs after route changes:
+
+```powershell
+.\venv\Scripts\python.exe -m scripts.export_api_docs
+```
+
+See `docs/DEPLOYMENT.md` for Windows/Linux deployment and performance validation.
+100 concurrent clients / 200 RPS is a target, not a measured capacity claim.

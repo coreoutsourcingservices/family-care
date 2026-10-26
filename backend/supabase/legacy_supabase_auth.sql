@@ -1,4 +1,5 @@
--- Run once in your Supabase SQL Editor before registering users.
+-- LEGACY Supabase Auth schema: preserved for reference; NOT the new Flask authentication schema.
+-- Use 0001_identity.sql for the versioned Flask-owned identity backend.
 create table public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   full_name text not null default '',

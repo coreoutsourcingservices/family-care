@@ -1,0 +1,4 @@
+Hello {{ full_name }},
+
+Your admin registration has been rejected.
+Reason: {{ reason }}

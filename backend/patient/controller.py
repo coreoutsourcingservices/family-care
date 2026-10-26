@@ -1,17 +1,28 @@
-from flask import g, jsonify
-from auth import controller as auth_controller
-from common.security import protected
-from patient import model
+from flask import jsonify, g, request
+from core.schemas import parse
+from core.http import profile, pagination
+from patient import service, schema
 
 
-def signin():
-    return auth_controller.signin(expected_role=model.ROLE)
+def login():
+    return service.login(parse(schema.Credentials))
 
 
-@protected(model.ROLE)
 def me():
-    return jsonify(email=g.user['email'], **model.current_profile(g.user['id'], g.token))
+    return profile()
 
 
-def signup():
-    return auth_controller.signup(role_override=model.ROLE)
+def register():
+    return service.register(parse(schema.Register))
+
+
+def verify_email():
+    return service.verify_email(parse(schema.VerifyOTP))
+
+
+def resend_otp():
+    return jsonify(service.resend(parse(schema.Challenge).challenge_token))
+
+
+def verify_login_otp():
+    return service.verify_login(parse(schema.VerifyOTP))
