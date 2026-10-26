@@ -65,8 +65,11 @@ No service role key is needed. The virtual environment is local and excluded fro
 
 1. Create/select your hosted Supabase project.
 2. Run `supabase/schema.sql` once in its SQL Editor, before registering users.
-3. Enable email/password authentication and email confirmation. Configure your Site URL
-   for your frontend. Use a confirmed account when testing signin.
+3. Enable email/password authentication. To receive JWT tokens immediately on signup,
+   turn **Confirm email OFF** in Supabase's email authentication settings. This means
+   email ownership is not verified before login. If you keep confirmation ON, signup
+   returns HTTP 202 with null tokens; confirm the email then sign in to receive tokens.
+   Configure your Site URL for your frontend.
 4. Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` in `.env`.
 5. Register your own account, confirm its email, then run the following in SQL Editor,
    replacing the email. This bootstraps the first super admin:
@@ -102,6 +105,14 @@ or an explicit CORS allowlist. Configure Supabase Auth rate limits/SMTP for prod
 No frontend UI is included in this backend setup.
 
 ## API
+
+Signup with a Supabase session returns HTTP 201 and `access_token` (Supabase-signed JWT),
+`refresh_token`, `token_type`, `expires_in`, `expires_at`, `user_id`, `user`, and
+`requires_email_confirmation: false`. Signin and refresh return the same token fields
+with HTTP 200. Tokens are passed through from Supabase, so protected routes and database
+RLS accept the same JWT. The refresh token is an opaque session credential, not a JWT.
+Without a signup session, HTTP 202 contains `requires_email_confirmation: true` and
+null token fields. The backend does not bypass Supabase email confirmation.
 
 Send JSON with `Content-Type: application/json`. Protected requests require
 `Authorization: Bearer <access_token>`. Never log or put tokens in URLs.

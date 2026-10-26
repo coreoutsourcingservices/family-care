@@ -83,6 +83,32 @@ class AuthTests(unittest.TestCase):
         self.assertEqual(self.client.post('/api/auth/signup', json=[]).status_code, 400)
 
     @patch('common.supabase.requests.request')
+    def test_signup_returns_supabase_jwt_for_shared_and_role_routes(self, http):
+        session = {'access_token': 'supabase.jwt.signature', 'refresh_token': 'refresh',
+                   'token_type': 'bearer', 'expires_in': 3600, 'expires_at': 123456,
+                   'user': {'id': 'u'}}
+        for endpoint in ('/api/auth/signup', '/api/doctor/signup', '/api/patient/signup'):
+            for result in (session, {'user': {'id': 'u'}, 'session': session}):
+                http.return_value = self.response(result)
+                response = self.client.post(endpoint, json={
+                    'email': 'a@example.com', 'password': 'long-password-123', 'full_name': 'Example'})
+                self.assertEqual(response.status_code, 201)
+                for field in ('access_token', 'refresh_token', 'token_type', 'expires_in', 'expires_at'):
+                    self.assertEqual(response.json[field], session[field])
+                self.assertFalse(response.json['requires_email_confirmation'])
+                self.assertEqual(response.json['user_id'], 'u')
+
+    @patch('common.supabase.requests.request')
+    def test_unconfirmed_signup_does_not_issue_tokens(self, http):
+        http.return_value = self.response({'id': 'u'})
+        response = self.client.post('/api/doctor/signup', json={
+            'email': 'a@example.com', 'password': 'long-password-123', 'full_name': 'Example'})
+        self.assertEqual(response.status_code, 202)
+        self.assertTrue(response.json['requires_email_confirmation'])
+        self.assertIsNone(response.json['access_token'])
+        self.assertIsNone(response.json['refresh_token'])
+
+    @patch('common.supabase.requests.request')
     def test_role_signup_routes_and_role_override(self, http):
         http.return_value = self.response({'id': 'u'})
         for role in ('doctor', 'patient'):

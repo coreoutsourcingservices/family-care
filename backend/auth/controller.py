@@ -3,6 +3,14 @@ from common.http import body
 from common.security import protected
 from auth import model
 
+
+def session_payload(result):
+    """Expose the Supabase session consistently without minting a second JWT."""
+    session = result.get('session') or result
+    return {key: session.get(key) for key in (
+        'access_token', 'refresh_token', 'token_type', 'expires_in', 'expires_at')}
+
+
 def signup(role_override=None):
     data = body()
     if data is None:
@@ -20,8 +28,14 @@ def signup(role_override=None):
     result = model.call('POST', '/auth/v1/signup', json={
         'email': email.strip(), 'password': password,
         'data': {'full_name': name.strip(), 'role': role}})
-    return jsonify(message='Signup submitted. Check your email to confirm your account.',
-                   user_id=result.get('id') or result.get('user', {}).get('id')), 202
+    tokens = session_payload(result)
+    user = result.get('user') or (result.get('session') or {}).get('user') or {}
+    user_id = user.get('id') or result.get('id')
+    if tokens['access_token']:
+        return jsonify(message='Signup successful.', user_id=user_id, user=user,
+                       requires_email_confirmation=False, **tokens), 201
+    return jsonify(message='Signup submitted. Confirm your email, then sign in to receive tokens.',
+                   user_id=user_id, requires_email_confirmation=True, **tokens), 202
 
 def signin(expected_role=None):
     data = body()
@@ -33,14 +47,15 @@ def signin(expected_role=None):
         profile = model.profile(result['user']['id'], result['access_token'])
         if not profile or profile['role'] != expected_role:
             return jsonify(error='Account role does not match this signin endpoint'), 403
-    return jsonify(result)
+    return jsonify({**result, **session_payload(result)})
 
 def refresh():
     data = body()
     if data is None or not isinstance(data.get('refresh_token'), str) or not data['refresh_token']:
         return jsonify(error='refresh_token required'), 400
-    return jsonify(model.call('POST', '/auth/v1/token?grant_type=refresh_token',
-                            json={'refresh_token': data['refresh_token']}))
+    result = model.call('POST', '/auth/v1/token?grant_type=refresh_token',
+                        json={'refresh_token': data['refresh_token']})
+    return jsonify({**result, **session_payload(result)})
 
 @protected()
 def signout():
