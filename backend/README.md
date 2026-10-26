@@ -2,6 +2,51 @@
 
 Python virtual environment, Flask API and hosted Supabase Auth/Postgres. No Docker.
 
+## Folder structure
+
+```text
+backend/
+  app.py                 # Flask factory and blueprint registration
+  server.py              # Waitress server entry
+  doctor/
+    model.py             # Doctor profile data access
+    controller.py        # Doctor signup, signin and profile
+    routes.py            # /api/doctor routes
+  patient/
+    model.py
+    controller.py
+    routes.py
+  admin/
+    model.py             # User listing data access
+    controller.py        # Admin signin, profile and user listing
+    routes.py
+  superadmin/
+    model.py             # Role-management database calls
+    controller.py        # Super admin signin, profile and role management
+    routes.py
+  auth/                  # Shared authentication model/controller/routes
+  common/                # Supabase HTTP client, auth middleware, errors
+  supabase/schema.sql
+  tests/
+  venv/                  # Local environment, excluded from Git
+```
+
+Each role is a Python package with an `__init__.py`. Models handle Supabase data access,
+controllers handle requests and validation, and routes register Flask blueprints.
+Shared authentication avoids duplicating password/session handling in each role.
+
+| Module | Endpoints |
+| --- | --- |
+| Doctor | `POST /api/doctor/signup`, `POST /api/doctor/signin`, `GET /api/doctor/me` |
+| Patient | `POST /api/patient/signup`, `POST /api/patient/signin`, `GET /api/patient/me` |
+| Admin | `POST /api/admin/signin`, `GET /api/admin/me`, `GET /api/admin/users` |
+| Super admin | `POST /api/superadmin/signin`, `GET /api/superadmin/me`, `PATCH /api/superadmin/users/<user UUID>/role` |
+
+Doctor/patient signup endpoints choose the role automatically; a conflicting role is
+rejected. Role-specific signin verifies the stored database role before returning tokens.
+Admin/super admin have no public signup. Existing `/api/auth/*` endpoints and the
+original `/api/admin/users/<user UUID>/role` URL continue to work.
+
 ## Windows PowerShell
 
 ```powershell
@@ -49,6 +94,8 @@ For serving without the Flask development server (Windows supported):
 ```powershell
 .\venv\Scripts\waitress-serve.exe --host=127.0.0.1 --port=5000 app:app
 ```
+
+Or run the separate server entry with `.\venv\Scripts\python.exe server.py`.
 
 For public deployment, put HTTPS in front of the server and use a same-origin frontend
 or an explicit CORS allowlist. Configure Supabase Auth rate limits/SMTP for production.
