@@ -36,6 +36,7 @@ def test_app():
 
 @pytest.fixture
 def app(test_app):
+    test_app.extensions['pending_signups'].items.clear()
     engine = test_app.extensions['database_engine']
     with engine.begin() as connection:
         if engine.dialect.name == 'postgresql':
@@ -65,3 +66,10 @@ def create_account(app, role='SUPERADMIN', email=None, change=False):
         db().add(account)
         db().commit()
     return account_id
+
+
+@pytest.fixture(autouse=True)
+def mock_signup_mail():
+    from unittest.mock import patch
+    with patch('services.signup.send_mail') as sender:
+        yield sender

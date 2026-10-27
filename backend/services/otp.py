@@ -79,6 +79,10 @@ def consume(challenge, code):
 
 
 def resend(token, role):
+    claims = decode_token(token, 'challenge')
+    if claims.get('pending_signup'):
+        from services.signup import resend_pending
+        return resend_pending(claims, role)
     user, challenge = resolve(token, role=role)
     if challenge.purpose not in ('verify_email', 'login', 'reset_password'):
         raise APIError(400, 'invalid_purpose', 'This challenge cannot be resent')

@@ -33,8 +33,9 @@ def success_examples(path):
     if path.endswith('/health/ready'):
         return {200: {'status': 'ready', 'database': 'postgresql'}}
     if path.endswith('/register'):
-        return {202: dict(CHALLENGE, public_id='D000001' if '/doctors/' in path else 'A000001' if '/admin/' in path else 'C000001',
-                          user_id='<UUID>', approval_status='PENDING_EMAIL_VERIFICATION')}
+        return {202: dict(CHALLENGE, public_id=None, user_id=None, email_status='sent',
+                          approval_status='PENDING_EMAIL_VERIFICATION',
+                          message='OTP sent to your email. Verify OTP to complete registration.')}
     if path.endswith('/verify-email'):
         return {200: SESSION} if '/patients/' in path else {202: {'message': 'Email verified. Waiting for approval.',
                         'user': {'approval_status': 'PENDING_APPROVAL'}}}

@@ -67,13 +67,14 @@ def test_patient_signup_jwt_profile_and_login_otp(app, client):
 def test_admin_full_approval_and_otp_login(app, client):
     super_session = super_login(app, client)
     registered = client.post('/api/v1/admin/register', json=registration('admin', 'admin@example.com'))
-    assert registered.json['public_id'].startswith('A')
-    assert verify(app, client, registered, 'admin').status_code == 202
+    verified = verify(app, client, registered, 'admin')
+    assert verified.status_code == 202
+    assert verified.json['user']['public_id'].startswith('A')
     credentials = {'email': 'admin@example.com', 'password': PASSWORD}
     assert client.post('/api/v1/admin/login', json=credentials).status_code == 403
     pending = client.get('/api/v1/superadmin/admin-requests', headers=bearer(super_session))
     assert pending.json['total'] == 1
-    target = registered.json['public_id']
+    target = verified.json['user']['public_id']
     assert client.post(f'/api/v1/superadmin/admins/{target}/approve', headers=bearer(super_session)).status_code == 200
     step = client.post('/api/v1/admin/login', json=credentials)
     session = verify(app, client, step, 'admin', login=True)
@@ -88,10 +89,10 @@ def test_doctor_review_and_approval_email_queue(app, client):
     login = client.post('/api/v1/admin/login', json={'email': 'admin@example.com', 'password': PASSWORD})
     admin = verify(app, client, login, 'admin', login=True)
     registered = client.post('/api/v1/doctors/register', json=registration('doctors', 'doctor@example.com'))
-    verify(app, client, registered, 'doctors')
+    verified = verify(app, client, registered, 'doctors')
     credentials = {'email': 'doctor@example.com', 'password': PASSWORD}
     assert client.post('/api/v1/doctors/login', json=credentials).status_code == 403
-    target = registered.json['public_id']
+    target = verified.json['user']['public_id']
     assert client.post(f'/api/v1/admin/doctors/{target}/approve', headers=bearer(admin)).status_code == 200
     session = client.post('/api/v1/doctors/login', json=credentials)
     assert session.status_code == 200
@@ -105,8 +106,8 @@ def test_rejection_and_doctor_resubmission(app, client):
     step = client.post('/api/v1/admin/login', json={'email': 'admin@example.com', 'password': PASSWORD})
     admin = verify(app, client, step, 'admin', login=True)
     registered = client.post('/api/v1/doctors/register', json=registration('doctors', 'doctor@example.com'))
-    verify(app, client, registered, 'doctors')
-    target = registered.json['public_id']
+    verified = verify(app, client, registered, 'doctors')
+    target = verified.json['user']['public_id']
     assert client.post(f'/api/v1/admin/doctors/{target}/reject', json={'reason': 'Need valid certificate'}, headers=bearer(admin)).status_code == 200
     result = client.post('/api/v1/doctors/approval-status', json={'email': 'doctor@example.com', 'password': PASSWORD})
     assert result.json['rejection_reason'] == 'Need valid certificate'
@@ -123,9 +124,11 @@ def test_otp_attempt_limit_no_plaintext_storage(app, client):
         assert client.post('/api/v1/patients/verify-email', json={'challenge_token': registered.json['challenge_token'], 'otp': wrong}).status_code == 400
     assert verify(app, client, registered).status_code == 400
     with app.app_context():
-        item = db().scalar(select(OTPChallenge))
-        assert item.attempts == 5 and correct not in item.code_hash
-        assert correct not in db().scalar(select(EmailNotification)).context_json
+        item = app.extensions['pending_signups'].all()[0]
+        assert item['attempts'] == 5 and correct not in item['code_hash']
+        assert db().scalar(select(User)) is None
+        assert db().scalar(select(OTPChallenge)) is None
+        assert db().scalar(select(EmailNotification)) is None
 
 
 def test_otp_expiry_resend_and_replay(app, client):
@@ -133,10 +136,10 @@ def test_otp_expiry_resend_and_replay(app, client):
     data = {'challenge_token': registered.json['challenge_token']}
     assert client.post('/api/v1/patients/resend-otp', json=data).status_code == 429
     with app.app_context():
-        item = db().scalar(select(OTPChallenge))
-        item.created_at = now() - timedelta(seconds=61)
-        item.expires_at = now() - timedelta(seconds=1)
-        db().commit()
+        import time
+        item = app.extensions['pending_signups'].all()[0]
+        item['sent_at'] = time.time() - 61
+        item['expires_at'] = time.time() - 1
     assert verify(app, client, registered).status_code == 400
     resent = client.post('/api/v1/patients/resend-otp', json=data)
     assert resent.status_code == 200
@@ -249,7 +252,9 @@ def test_invalid_expired_jwt_and_sql_injection(app, client):
 
 def test_mail_worker_sends_and_is_not_repeated(app, client):
     from services.email import process_one
-    client.post('/api/v1/patients/register', json=registration())
+    registered = client.post('/api/v1/patients/register', json=registration())
+    verify(app, client, registered)
+    client.post('/api/v1/patients/login', json={'email': 'user@example.com', 'password': PASSWORD})
     with app.app_context(), patch('services.email.send_mail') as sender:
         assert process_one()
         assert sender.call_count == 1
@@ -258,7 +263,9 @@ def test_mail_worker_sends_and_is_not_repeated(app, client):
 
 def test_mail_worker_retries(app, client):
     from services.email import process_one
-    client.post('/api/v1/patients/register', json=registration())
+    registered = client.post('/api/v1/patients/register', json=registration())
+    verify(app, client, registered)
+    client.post('/api/v1/patients/login', json={'email': 'user@example.com', 'password': PASSWORD})
     with app.app_context(), patch('services.email.send_mail', side_effect=OSError):
         assert process_one()
         item = db().scalar(select(EmailNotification))
@@ -269,7 +276,9 @@ def test_doctor_required_registration_and_duplicate_constraints(app, client):
     data = registration('doctors', 'doctor1@example.com')
     bad = dict(data); bad['medical_registration_number'] = '!invalid'
     assert client.post('/api/v1/doctors/register', json=bad).status_code == 422
-    assert client.post('/api/v1/doctors/register', json=data).status_code == 202
+    registered = client.post('/api/v1/doctors/register', json=data)
+    assert registered.status_code == 202
+    assert verify(app, client, registered, 'doctors').status_code == 202
     data['email'] = 'doctor2@example.com'
     assert client.post('/api/v1/doctors/register', json=data).status_code == 409
 
@@ -297,10 +306,10 @@ def test_wrong_jwt_issuer_audience_and_type(app, client):
 def test_otp_restart_after_attempt_exhaustion(app, client):
     registered = client.post('/api/v1/patients/register', json=registration())
     with app.app_context():
-        item = db().scalar(select(OTPChallenge))
-        item.consumed_at = now()
-        item.created_at = now() - timedelta(seconds=61)
-        db().commit()
+        import time
+        item = app.extensions['pending_signups'].all()[0]
+        item['attempts'] = 5
+        item['sent_at'] = time.time() - 61
     restarted = client.post('/api/v1/auth/request-email-verification', json={'email': 'user@example.com', 'password': PASSWORD})
     assert restarted.status_code == 202
     assert verify(app, client, restarted).status_code == 200
@@ -316,3 +325,80 @@ def test_rate_limit_returns_json_429(app):
         assert local.post('/api/v1/superadmin/login', json={'username': 'rate-test', 'password': PASSWORD}).status_code == 503
     result = local.post('/api/v1/superadmin/login', json={'username': 'rate-test', 'password': PASSWORD})
     assert result.status_code == 429 and 'error' in result.json
+
+
+@pytest.mark.parametrize('role', ['patients', 'admin', 'doctors'])
+def test_signup_writes_nothing_until_verified(app, client, role, mock_signup_mail):
+    registered = client.post(f'/api/v1/{role}/register', json=registration(role))
+    assert registered.status_code == 202
+    assert registered.json['email_status'] == 'sent'
+    assert registered.json['user_id'] is None
+    assert mock_signup_mail.call_count == 1
+    with app.app_context():
+        from core.database import Base
+        from sqlalchemy import func
+        for table in Base.metadata.sorted_tables:
+            assert db().scalar(select(func.count()).select_from(table)) == 0
+    verified = verify(app, client, registered, role)
+    assert verified.status_code == (200 if role == 'patients' else 202)
+    with app.app_context():
+        assert db().scalar(select(User)).email_verified
+    assert verify(app, client, registered, role).status_code == 400
+
+
+def test_signup_smtp_failure_has_no_database_records(app, client, mock_signup_mail):
+    mock_signup_mail.side_effect = OSError('delivery failed')
+    registered = client.post('/api/v1/patients/register', json=registration())
+    assert registered.status_code == 503
+    assert registered.json['error']['code'] == 'email_delivery_failed'
+    assert 'challenge_token' not in registered.json
+    with app.app_context():
+        assert not app.extensions['pending_signups'].all()
+        assert db().scalar(select(User)) is None
+
+
+def test_failed_resend_preserves_previous_otp(app, client, mock_signup_mail):
+    import time
+    registered = client.post('/api/v1/patients/register', json=registration())
+    with app.app_context():
+        app.extensions['pending_signups'].all()[0]['sent_at'] = time.time() - 61
+    mock_signup_mail.side_effect = OSError('SMTP unavailable')
+    resent = client.post('/api/v1/patients/resend-otp', json={
+        'challenge_token': registered.json['challenge_token']})
+    assert resent.status_code == 503
+    assert verify(app, client, registered).status_code == 200
+
+
+def test_pending_cache_expiry_requires_new_registration(app, client):
+    import time
+    registered = client.post('/api/v1/patients/register', json=registration())
+    with app.app_context():
+        app.extensions['pending_signups'].all()[0]['retain_until'] = time.time() - 1
+    assert verify(app, client, registered).status_code == 400
+    assert client.post('/api/v1/patients/register', json=registration()).status_code == 202
+
+
+def test_concurrent_pending_verification_creates_one_user(app, client):
+    from concurrent.futures import ThreadPoolExecutor
+    registered = client.post('/api/v1/patients/register', json=registration())
+    body = {'challenge_token': registered.json['challenge_token'], 'otp': code(app, registered)}
+    def attempt(_):
+        with app.test_client() as local:
+            return local.post('/api/v1/patients/verify-email', json=body).status_code
+    with ThreadPoolExecutor(max_workers=4) as workers:
+        statuses = list(workers.map(attempt, range(4)))
+    assert sorted(statuses) == [200, 400, 400, 400]
+    with app.app_context():
+        assert len(db().scalars(select(User)).all()) == 1
+
+
+def test_doctor_credentials_checked_again_at_verification(app, client):
+    data = registration('doctors', 'first@example.com')
+    first = client.post('/api/v1/doctors/register', json=data)
+    data['email'] = 'second@example.com'
+    second = client.post('/api/v1/doctors/register', json=data)
+    assert second.status_code == 202
+    assert verify(app, client, first, 'doctors').status_code == 202
+    assert verify(app, client, second, 'doctors').status_code == 409
+    with app.app_context():
+        assert len(db().scalars(select(User)).all()) == 1

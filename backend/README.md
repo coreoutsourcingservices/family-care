@@ -97,3 +97,24 @@ Regenerate API docs after route changes:
 
 See `docs/DEPLOYMENT.md` for Windows/Linux deployment and performance validation.
 100 concurrent clients / 200 RPS is a target, not a measured capacity claim.
+
+## Signup OTP persistence and delivery
+
+The register/verify-email/resend-otp URLs and request JSON remain the same.
+Register writes no records to PostgreSQL. Validated details and an Argon2 password
+hash are held in a temporary cache (10 minutes); OTP validity is 5 minutes, with
+5 attempts and a 60-second resend cooldown. No plaintext password or OTP is cached.
+Register sends OTP through SMTP before returning `email_status: "sent"` (SMTP acceptance,
+not inbox confirmation). SMTP failures return HTTP 503 `email_delivery_failed`.
+`public_id` and `user_id` are null until OTP verification creates the user/profile
+and, for doctors/admins, an approval request in one database transaction.
+
+Local development uses a bounded in-memory cache; restarting the API discards pending
+signups, so register again. Production/multiple API processes must use the same Redis
+`RATELIMIT_STORAGE_URI`; the pending cache uses Redis TTL and a distributed lock.
+Existing accounts and old unverified records are preserved. Pending doctor credentials
+are not reserved; database uniqueness is checked again when verification creates the account.
+
+SMTP port 465 requires `SMTP_SSL=true` and `SMTP_STARTTLS=false`. Port 587 normally
+uses `SMTP_SSL=false` and `SMTP_STARTTLS=true`. Login/reset/approval email still needs
+`python -m scripts.mail_worker`. Signup email does not require the worker.

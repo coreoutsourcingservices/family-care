@@ -2297,10 +2297,11 @@
                   "challenge_token": "<limited-purpose JWT>",
                   "expires_in": 300,
                   "resend_after": 60,
-                  "email_status": "queued",
-                  "public_id": "D000001",
-                  "user_id": "<UUID>",
-                  "approval_status": "PENDING_EMAIL_VERIFICATION"
+                  "email_status": "sent",
+                  "public_id": null,
+                  "user_id": null,
+                  "approval_status": "PENDING_EMAIL_VERIFICATION",
+                  "message": "OTP sent to your email. Verify OTP to complete registration."
                 }
               }
             }
@@ -3517,10 +3518,11 @@
                   "challenge_token": "<limited-purpose JWT>",
                   "expires_in": 300,
                   "resend_after": 60,
-                  "email_status": "queued",
-                  "public_id": "C000001",
-                  "user_id": "<UUID>",
-                  "approval_status": "PENDING_EMAIL_VERIFICATION"
+                  "email_status": "sent",
+                  "public_id": null,
+                  "user_id": null,
+                  "approval_status": "PENDING_EMAIL_VERIFICATION",
+                  "message": "OTP sent to your email. Verify OTP to complete registration."
                 }
               }
             }
@@ -4566,10 +4568,11 @@
                   "challenge_token": "<limited-purpose JWT>",
                   "expires_in": 300,
                   "resend_after": 60,
-                  "email_status": "queued",
-                  "public_id": "A000001",
-                  "user_id": "<UUID>",
-                  "approval_status": "PENDING_EMAIL_VERIFICATION"
+                  "email_status": "sent",
+                  "public_id": null,
+                  "user_id": null,
+                  "approval_status": "PENDING_EMAIL_VERIFICATION",
+                  "message": "OTP sent to your email. Verify OTP to complete registration."
                 }
               }
             }

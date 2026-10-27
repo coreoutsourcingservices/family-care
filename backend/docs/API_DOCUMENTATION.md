@@ -16,7 +16,10 @@ Passwords: 8–128 characters; `confirm_password` must match. Roles/public IDs/s
 All dates are stored as UTC. Public IDs or UUIDs may be used for `{user_id}`.
 List routes support `page=1&per_page=25` (maximum 100); user lists accept `status` approval filter.
 
-Signup returns a limited challenge, never a full session. Email verification is required.
+Signup sends email OTP synchronously and stores temporary details in a TTL cache, not PostgreSQL.
+No user/profile/OTP/audit/outbox rows are inserted until signup OTP verification succeeds.
+Register returns null public_id/user_id; IDs are assigned only after verification.
+SMTP acceptance returns email_status sent; delivery failure returns 503 email_delivery_failed.
 Patient verification issues a JWT session; admin/doctor verification queues approval.
 Admin and patient login: password → OTP → session. Doctor login: password → session after approval.
 Superadmin first login: password → initial-password challenge → password rotation → session.
@@ -24,7 +27,8 @@ Superadmin first login: password → initial-password challenge → password rot
 OTP: 6 digits, 5 minutes, 60-second resend cooldown, 5 attempts, one-time use.
 After a consumed/exhausted signup challenge, restart with `/auth/request-email-verification`.
 Forgot password is generic for unknown accounts. Registration conflicts can reveal existing accounts.
-Mail status `queued` is not a delivery confirmation. Start the separate SMTP worker.
+Signup mail is sent directly; sent means SMTP accepted it, not a guarantee of inbox placement.
+Login/reset/approval mail still uses the outbox and requires the separate SMTP worker.
 
 Access JWT default: 15 minutes. Refresh session: 7 days with rotation and replay revocation.
 Logout, suspension and password change revoke sessions; reactivation does not restore old sessions.
@@ -1765,10 +1769,11 @@ HTTP 202: Success
   "challenge_token": "<limited-purpose JWT>",
   "expires_in": 300,
   "resend_after": 60,
-  "email_status": "queued",
-  "public_id": "D000001",
-  "user_id": "<UUID>",
-  "approval_status": "PENDING_EMAIL_VERIFICATION"
+  "email_status": "sent",
+  "public_id": null,
+  "user_id": null,
+  "approval_status": "PENDING_EMAIL_VERIFICATION",
+  "message": "OTP sent to your email. Verify OTP to complete registration."
 }
 ```
 
@@ -2684,10 +2689,11 @@ HTTP 202: Success
   "challenge_token": "<limited-purpose JWT>",
   "expires_in": 300,
   "resend_after": 60,
-  "email_status": "queued",
-  "public_id": "C000001",
-  "user_id": "<UUID>",
-  "approval_status": "PENDING_EMAIL_VERIFICATION"
+  "email_status": "sent",
+  "public_id": null,
+  "user_id": null,
+  "approval_status": "PENDING_EMAIL_VERIFICATION",
+  "message": "OTP sent to your email. Verify OTP to complete registration."
 }
 ```
 
@@ -3475,10 +3481,11 @@ HTTP 202: Success
   "challenge_token": "<limited-purpose JWT>",
   "expires_in": 300,
   "resend_after": 60,
-  "email_status": "queued",
-  "public_id": "A000001",
-  "user_id": "<UUID>",
-  "approval_status": "PENDING_EMAIL_VERIFICATION"
+  "email_status": "sent",
+  "public_id": null,
+  "user_id": null,
+  "approval_status": "PENDING_EMAIL_VERIFICATION",
+  "message": "OTP sent to your email. Verify OTP to complete registration."
 }
 ```
 

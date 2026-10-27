@@ -12,6 +12,8 @@ def create_app(overrides=None):
     app = Flask(__name__)
     app.config.update(settings(overrides))
     register_errors(app)
+    from services.signup import PendingStore
+    app.extensions['pending_signups'] = PendingStore(app.config['RATELIMIT_STORAGE_URI'])
     init_database(app)
     limiter.init_app(app)
     CORS(app, resources={r'/api/*': {'origins': app.config['CORS_ORIGINS']}},

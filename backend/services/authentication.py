@@ -12,33 +12,42 @@ from services.sessions import issue_session
 
 
 def register(data, role):
-    if find_user(str(data.email)):
+    from services.signup import register_pending
+    return register_pending(data, role)
+
+
+def create_verified_user(values, role):
+    if find_user(values['email']):
         raise APIError(409, 'account_exists', 'Account already exists; use login or reset password')
-    user = User(id=uid(), public_id=None, full_name=data.full_name, email=str(data.email).lower(),
-                phone_number=data.mobile_number, password_hash=password_hasher.hash(data.password), role=role)
+    user = User(id=uid(), public_id=None, full_name=values['full_name'], email=values['email'],
+                phone_number=values['mobile_number'], password_hash=values['password_hash'], role=role,
+                email_verified=True,
+                approval_status='APPROVED' if role == 'PATIENT' else 'PENDING_APPROVAL')
     if db().bind.dialect.name == 'sqlite':
-        # Only a test adapter; real public IDs always come from the PostgreSQL trigger.
-        counter = db().info.setdefault('test_ids', {})
-        counter[role] = counter.get(role, 0) + 1
         user.public_id = {'ADMIN': 'A', 'DOCTOR': 'D', 'PATIENT': 'C'}[role] + secrets.token_hex(6)
     db().add(user)
     db().flush()
     db().refresh(user)
     if role == 'DOCTOR':
-        db().add(DoctorProfile(user_id=user.id, qualification=data.qualification,
-                              specialization=data.specialization, medical_registration_number=data.medical_registration_number,
-                              registering_council=data.registering_council, nmr_id=data.nmr_id))
+        fields = ('qualification', 'specialization', 'medical_registration_number', 'registering_council', 'nmr_id')
+        db().add(DoctorProfile(user_id=user.id, **{k: values.get(k) for k in fields}))
     else:
         db().add((AdminProfile if role == 'ADMIN' else PatientProfile)(user_id=user.id))
-    # Newly inserted user row is owned by this transaction; issue() is serialized.
-    challenge = otp.issue(user, 'verify_email')
     audit('registered', user.id, user.id)
+    audit('email_verified', user.id, user.id)
+    if role == 'PATIENT':
+        return issue_session(user)
+    db().add(ApprovalRequest(applicant_id=user.id, applicant_role=role))
+    audit('approval_requested', user.id, user.id)
     db().commit()
-    return jsonify(public_id=user.public_id, user_id=user.id, approval_status=user.approval_status,
-                   message='Verify email OTP before continuing', **challenge), 202
+    return jsonify(user=serialize_user(user), message='Email verified. Waiting for approval.'), 202
 
 
 def request_verification(data):
+    from services.signup import restart_pending
+    pending = restart_pending(data)
+    if pending is not None:
+        return pending
     user = find_user(str(data.email), lock=True)
     if not verify_password(user.password_hash if user else None, data.password):
         raise APIError(401, 'invalid_credentials', 'Invalid credentials')
@@ -50,6 +59,10 @@ def request_verification(data):
 
 
 def verify_email(data, role):
+    from services.signup import verify_pending
+    claims = otp.decode_token(data.challenge_token, 'challenge')
+    if claims.get('pending_signup'):
+        return verify_pending(data, role, claims)
     user, challenge = otp.resolve(data.challenge_token, 'verify_email', role)
     otp.consume(challenge, data.otp)
     if user.email_verified:
