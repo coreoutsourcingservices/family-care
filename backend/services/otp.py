@@ -29,6 +29,8 @@ def code_hash(challenge_id, value):
 
 
 def issue(user, purpose):
+    if purpose == 'login':
+        raise APIError(410, 'login_otp_disabled', 'Sign in with email and password')
     # Caller locks User first; all OTP creation for an account is serialized.
     latest = db().scalar(select(OTPChallenge).where(OTPChallenge.user_id == user.id,
                         OTPChallenge.purpose == purpose).order_by(OTPChallenge.created_at.desc()).limit(1))
@@ -84,7 +86,7 @@ def resend(token, role):
         from services.signup import resend_pending
         return resend_pending(claims, role)
     user, challenge = resolve(token, role=role)
-    if challenge.purpose not in ('verify_email', 'login', 'reset_password'):
+    if challenge.purpose not in ('verify_email', 'reset_password'):
         raise APIError(400, 'invalid_purpose', 'This challenge cannot be resent')
     if challenge.consumed_at:
         raise APIError(400, 'otp_unavailable', 'Challenge already used; start a new flow')

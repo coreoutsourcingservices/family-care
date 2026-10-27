@@ -19,6 +19,14 @@
     {
       "key": "session_id",
       "value": ""
+    },
+    {
+      "key": "profile_id",
+      "value": ""
+    },
+    {
+      "key": "report_id",
+      "value": ""
     }
   ],
   "item": [
@@ -398,6 +406,108 @@
       }
     },
     {
+      "name": "doctor referral",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/doctors/referral"
+      }
+    },
+    {
+      "name": "doctor patients",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/doctors/patients"
+      }
+    },
+    {
+      "name": "doctor profiles",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/doctors/care-profiles"
+      }
+    },
+    {
+      "name": "doctor profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}"
+      }
+    },
+    {
+      "name": "doctor reports",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/reports"
+      }
+    },
+    {
+      "name": "doctor download report",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/reports/{{report_id}}/download"
+      }
+    },
+    {
       "name": "patient login",
       "request": {
         "method": "POST",
@@ -449,7 +559,7 @@
         "url": "{{base_url}}/api/v1/patients/register",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"full_name\": \"Example User\",\n  \"email\": \"user@example.com\",\n  \"mobile_number\": \"+919876543210\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+          "raw": "{\n  \"full_name\": \"Example User\",\n  \"email\": \"user@example.com\",\n  \"mobile_number\": \"+919876543210\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\",\n  \"referral_id\": \"rahulkumarD000001\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -522,6 +632,192 @@
             }
           }
         }
+      }
+    },
+    {
+      "name": "patient connect doctor",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/connect-doctor",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"referral_id\": \"rahulkumarD000001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "patient connected doctor",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/doctor"
+      }
+    },
+    {
+      "name": "patient create profile",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/profiles",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"profile_type\": \"member\",\n  \"module\": \"child\",\n  \"full_name\": \"Aarav Kumar\",\n  \"date_of_birth\": \"2018-05-14\",\n  \"guardian_contact\": \"+919876543210\",\n  \"emergency_contacts\": [],\n  \"referral_id\": \"rahulkumarD000001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "patient profiles",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/profiles"
+      }
+    },
+    {
+      "name": "patient profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/profiles/{{profile_id}}"
+      }
+    },
+    {
+      "name": "patient connect profile doctor",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/profiles/{{profile_id}}/connect-doctor",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"referral_id\": \"rahulkumarD000001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "patient upload report",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/profiles/{{profile_id}}/reports",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "patient reports",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/profiles/{{profile_id}}/reports"
+      }
+    },
+    {
+      "name": "patient download report",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/profiles/{{profile_id}}/reports/{{report_id}}/download"
       }
     },
     {
@@ -780,6 +1076,23 @@
       }
     },
     {
+      "name": "admin patients",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/patients"
+      }
+    },
+    {
       "name": "superadmin login",
       "request": {
         "method": "POST",
@@ -792,7 +1105,7 @@
         "url": "{{base_url}}/api/v1/superadmin/login",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"username\": \"superadmin\",\n  \"password\": \"superadmin@2026\"\n}",
+          "raw": "{\n  \"email\": \"superadmin@example.com\",\n  \"password\": \"superadmin@2026\"\n}",
           "options": {
             "raw": {
               "language": "json"

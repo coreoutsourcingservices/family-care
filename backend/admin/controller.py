@@ -54,3 +54,7 @@ def suspend(user_id):
 
 def reactivate(user_id):
     return service.approvals.account_status(g.user, user_id, 'DOCTOR', True)
+
+
+def patients():
+    return service.approvals.listing('PATIENT', *pagination(), status=request.args.get('status'))

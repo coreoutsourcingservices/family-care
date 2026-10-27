@@ -30,3 +30,13 @@ def approval_status():
 
 def resubmit():
     return service.approvals.resubmit_doctor(parse(schema.Resubmission))
+
+
+def referral():
+    from services.referrals import own_referral
+    return own_referral(g.user)
+
+
+def patients():
+    from services.referrals import doctor_patients
+    return doctor_patients(g.user, *pagination())

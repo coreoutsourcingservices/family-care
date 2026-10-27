@@ -36,6 +36,14 @@ class Registration(Schema):
         return self
 
 
+class PatientRegistration(Registration):
+    referral_id: str | None = Field(default=None, min_length=1, max_length=160, pattern=r'^[A-Za-z0-9]+$')
+
+
+class ConnectDoctor(Schema):
+    referral_id: str = Field(min_length=1, max_length=160, pattern=r'^[A-Za-z0-9]+$')
+
+
 class DoctorRegistration(Registration):
     qualification: str = Field(min_length=2, max_length=200)
     medical_registration_number: str = Field(pattern=r'^[A-Za-z0-9][A-Za-z0-9/ ._-]{1,99}$')
@@ -57,8 +65,15 @@ class Login(Schema):
 
 
 class SuperLogin(Schema):
-    username: str = Field(min_length=1, max_length=80)
+    email: EmailStr | None = None
+    username: str | None = Field(default=None, min_length=1, max_length=80)
     password: str = Field(min_length=1, max_length=128)
+
+    @model_validator(mode='after')
+    def identifier(self):
+        if bool(self.email) == bool(self.username):
+            raise ValueError('Provide email, or legacy username, but not both')
+        return self
 
 
 class VerifyOTP(Schema):

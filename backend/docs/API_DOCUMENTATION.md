@@ -2,7 +2,7 @@
 
 Base URL: `http://127.0.0.1:5001` (local only).
 
-API only: no website, dashboard UI or mobile UI is included.
+Backend API reference. Next.js admin/superadmin UI is in admin/ on port 3005; patient/doctor UI is not included.
 
 OpenAPI: `GET /api/openapi.json`. JSON API index: `GET /api/docs`.
 
@@ -12,7 +12,7 @@ Browser: `X-Auth-Transport: cookie`, credentials enabled, `X-Requested-With: Fam
 also send the returned `csrf_token` as `X-CSRF-Token` on authenticated mutations and refresh.
 Cookie sessions return no access/refresh tokens in JSON. Refresh rotates the CSRF token too.
 
-Passwords: 8–128 characters; `confirm_password` must match. Roles/public IDs/status are server owned.
+Passwords: 8-128 characters; `confirm_password` must match. Roles/public IDs/status are server owned.
 All dates are stored as UTC. Public IDs or UUIDs may be used for `{user_id}`.
 List routes support `page=1&per_page=25` (maximum 100); user lists accept `status` approval filter.
 
@@ -21,14 +21,13 @@ No user/profile/OTP/audit/outbox rows are inserted until signup OTP verification
 Register returns null public_id/user_id; IDs are assigned only after verification.
 SMTP acceptance returns email_status sent; delivery failure returns 503 email_delivery_failed.
 Patient verification issues a JWT session; admin/doctor verification queues approval.
-Admin and patient login: password → OTP → session. Doctor login: password → session after approval.
-Superadmin first login: password → initial-password challenge → password rotation → session.
-
+All roles sign in with email + password; no login OTP. Approval/verification requirements still apply.
+Superadmin supports email login (legacy username remains accepted); first login requires password rotation.
 OTP: 6 digits, 5 minutes, 60-second resend cooldown, 5 attempts, one-time use.
 After a consumed/exhausted signup challenge, restart with `/auth/request-email-verification`.
 Forgot password is generic for unknown accounts. Registration conflicts can reveal existing accounts.
 Signup mail is sent directly; sent means SMTP accepted it, not a guarantee of inbox placement.
-Login/reset/approval mail still uses the outbox and requires the separate SMTP worker.
+Reset/approval mail still uses the outbox and requires the separate SMTP worker.
 
 Access JWT default: 15 minutes. Refresh session: 7 days with rotation and replay revocation.
 Logout, suspension and password change revoke sessions; reactivation does not restore old sessions.
@@ -56,12 +55,27 @@ On concurrent refresh, only one succeeds; reuse revokes that session. Clients mu
 | POST | `http://127.0.0.1:5001/api/v1/doctors/resend-otp` | Required roles: public / limited challenge |
 | POST | `http://127.0.0.1:5001/api/v1/doctors/approval-status` | Required roles: public / limited challenge |
 | POST | `http://127.0.0.1:5001/api/v1/doctors/resubmit` | Required roles: public / limited challenge |
+| GET | `http://127.0.0.1:5001/api/v1/doctors/referral` | Required roles: DOCTOR |
+| GET | `http://127.0.0.1:5001/api/v1/doctors/patients` | Required roles: DOCTOR |
+| GET | `http://127.0.0.1:5001/api/v1/doctors/care-profiles` | Required roles: DOCTOR |
+| GET | `http://127.0.0.1:5001/api/v1/doctors/care-profiles/{profile_id}` | Required roles: DOCTOR |
+| GET | `http://127.0.0.1:5001/api/v1/doctors/care-profiles/{profile_id}/reports` | Required roles: DOCTOR |
+| GET | `http://127.0.0.1:5001/api/v1/doctors/care-profiles/{profile_id}/reports/{report_id}/download` | Required roles: DOCTOR |
 | POST | `http://127.0.0.1:5001/api/v1/patients/login` | Required roles: public / limited challenge |
 | GET | `http://127.0.0.1:5001/api/v1/patients/me` | Required roles: PATIENT |
 | POST | `http://127.0.0.1:5001/api/v1/patients/register` | Required roles: public / limited challenge |
 | POST | `http://127.0.0.1:5001/api/v1/patients/verify-email` | Required roles: public / limited challenge |
 | POST | `http://127.0.0.1:5001/api/v1/patients/resend-otp` | Required roles: public / limited challenge |
 | POST | `http://127.0.0.1:5001/api/v1/patients/verify-login-otp` | Required roles: public / limited challenge |
+| POST | `http://127.0.0.1:5001/api/v1/patients/connect-doctor` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/patients/doctor` | Required roles: PATIENT |
+| POST | `http://127.0.0.1:5001/api/v1/patients/profiles` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/patients/profiles` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}` | Required roles: PATIENT |
+| POST | `http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}/connect-doctor` | Required roles: PATIENT |
+| POST | `http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}/reports` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}/reports` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}/reports/{report_id}/download` | Required roles: PATIENT |
 | POST | `http://127.0.0.1:5001/api/v1/admin/login` | Required roles: public / limited challenge |
 | GET | `http://127.0.0.1:5001/api/v1/admin/me` | Required roles: ADMIN |
 | POST | `http://127.0.0.1:5001/api/v1/admin/register` | Required roles: public / limited challenge |
@@ -75,6 +89,7 @@ On concurrent refresh, only one succeeds; reuse revokes that session. Clients mu
 | POST | `http://127.0.0.1:5001/api/v1/admin/doctors/{user_id}/reject` | Required roles: ADMIN |
 | POST | `http://127.0.0.1:5001/api/v1/admin/doctors/{user_id}/suspend` | Required roles: ADMIN |
 | POST | `http://127.0.0.1:5001/api/v1/admin/doctors/{user_id}/reactivate` | Required roles: ADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/admin/patients` | Required roles: ADMIN |
 | POST | `http://127.0.0.1:5001/api/v1/superadmin/login` | Required roles: public / limited challenge |
 | GET | `http://127.0.0.1:5001/api/v1/superadmin/me` | Required roles: SUPERADMIN |
 | GET | `http://127.0.0.1:5001/api/v1/superadmin/dashboard` | Required roles: SUPERADMIN |
@@ -201,13 +216,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -234,7 +282,7 @@ HTTP 200: Success
 
 ```json
 {
-  "message": "Operation completed"
+  "message": "Logged out"
 }
 ```
 
@@ -315,13 +363,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -348,7 +429,7 @@ HTTP 200: Success
 
 ```json
 {
-  "message": "Operation completed"
+  "message": "All sessions revoked"
 }
 ```
 
@@ -429,13 +510,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -559,13 +673,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -610,7 +757,7 @@ HTTP 200: Success
 
 ```json
 {
-  "message": "Operation completed"
+  "message": "Password reset. Sign in again."
 }
 ```
 
@@ -691,13 +838,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -740,7 +920,7 @@ HTTP 200: Success
 
 ```json
 {
-  "message": "Operation completed"
+  "message": "Password changed. All sessions revoked; sign in again."
 }
 ```
 
@@ -821,13 +1001,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -961,13 +1174,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -1076,13 +1322,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -1190,13 +1469,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -1240,7 +1552,7 @@ HTTP 202: Success
   "challenge_token": "<limited-purpose JWT>",
   "expires_in": 300,
   "resend_after": 60,
-  "email_status": "queued"
+  "email_status": "sent"
 }
 ```
 
@@ -1321,13 +1633,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -1369,7 +1714,7 @@ HTTP 200: Success
   "challenge_token": "<limited-purpose JWT>",
   "expires_in": 300,
   "resend_after": 60,
-  "email_status": "queued"
+  "email_status": "sent"
 }
 ```
 
@@ -1450,13 +1795,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -1503,8 +1881,16 @@ HTTP 200: Success
   "token_type": "Bearer",
   "user": {
     "id": "<UUID>",
-    "public_id": "C000001",
-    "role": "PATIENT"
+    "public_id": "D000001",
+    "role": "DOCTOR",
+    "full_name": "Example User",
+    "email": "user@example.com",
+    "phone_number": "+919876543210",
+    "email_verified": true,
+    "approval_status": "APPROVED",
+    "account_status": "ACTIVE",
+    "must_change_password": false,
+    "referral_id": "rahulkumarD000001"
   }
 }
 ```
@@ -1586,13 +1972,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -1621,8 +2040,16 @@ HTTP 200: Success
 {
   "user": {
     "id": "<UUID>",
-    "public_id": "C000001",
-    "role": "PATIENT"
+    "public_id": "D000001",
+    "role": "DOCTOR",
+    "full_name": "Example User",
+    "email": "user@example.com",
+    "phone_number": "+919876543210",
+    "email_verified": true,
+    "approval_status": "APPROVED",
+    "account_status": "ACTIVE",
+    "must_change_password": false,
+    "referral_id": "rahulkumarD000001"
   }
 }
 ```
@@ -1704,13 +2131,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -1854,13 +2314,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -1985,13 +2478,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -2033,7 +2559,7 @@ HTTP 200: Success
   "challenge_token": "<limited-purpose JWT>",
   "expires_in": 300,
   "resend_after": 60,
-  "email_status": "queued"
+  "email_status": "sent"
 }
 ```
 
@@ -2114,13 +2640,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -2246,13 +2805,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -2383,13 +2975,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -2406,35 +3031,25 @@ Web (use the cookie/CSRF client in `examples/web_api.js`):
 await api('/api/v1/doctors/resubmit', 'POST', {"email": "user@example.com", "password": "Choose-Your-Password8!", "qualification": "MBBS", "medical_registration_number": "EXAMPLE-12345", "registering_council": "Example Medical Council"});
 ```
 
-## POST /api/v1/patients/login
+## GET /api/v1/doctors/referral
 
-Required roles: public / limited challenge
+Required roles: DOCTOR
 
-Request fields:
+No JSON body required.
 
-| Field | Required | Validation |
-|---|---|---|
-| `email` | yes | `{"format": "email", "type": "string"}` |
-| `password` | yes | `{"maxLength": 128, "minLength": 1, "type": "string"}` |
-
-Request JSON:
+HTTP 200: Success
 
 ```json
 {
-  "email": "user@example.com",
-  "password": "Choose-Your-Password8!"
-}
-```
-
-HTTP 202: Success
-
-```json
-{
-  "challenge_token": "<limited-purpose JWT>",
-  "expires_in": 300,
-  "resend_after": 60,
-  "email_status": "queued",
-  "requires_otp": true
+  "doctor": {
+    "referral_id": "rahulkumarD000001",
+    "public_id": "D000001",
+    "full_name": "Dr Rahul Kumar",
+    "email": "rahul@example.com",
+    "mobile_number": "+919876543211",
+    "account_status": "ACTIVE",
+    "approval_status": "APPROVED"
+  }
 }
 ```
 
@@ -2515,13 +3130,1007 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/doctors/referral', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/doctors/referral', 'GET', undefined);
+```
+
+## GET /api/v1/doctors/patients
+
+Required roles: DOCTOR
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "items": [],
+  "total": 0
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/doctors/patients', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/doctors/patients', 'GET', undefined);
+```
+
+## GET /api/v1/doctors/care-profiles
+
+Required roles: DOCTOR
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "items": [
+    {
+      "id": "<profile UUID>",
+      "profile_type": "member",
+      "module": "child",
+      "full_name": "Aarav Kumar",
+      "date_of_birth": "2018-05-14",
+      "parent_profile_id": "<parent profile UUID>",
+      "doctor": null
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "per_page": 25
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/doctors/care-profiles', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/doctors/care-profiles', 'GET', undefined);
+```
+
+## GET /api/v1/doctors/care-profiles/{profile_id}
+
+Required roles: DOCTOR
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/doctors/care-profiles/{profile_id}', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/doctors/care-profiles/{profile_id}', 'GET', undefined);
+```
+
+## GET /api/v1/doctors/care-profiles/{profile_id}/reports
+
+Required roles: DOCTOR
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "items": [
+    {
+      "id": "<report UUID>",
+      "profile_id": "<profile UUID>",
+      "name": "blood-test.pdf",
+      "storage_provider": "cloudinary",
+      "url": "<short-lived signed Cloudinary URL>",
+      "public_id": "familycare/C000001/profiles/<profile UUID>/child/reports/<report UUID>_blood-test.pdf",
+      "folder": "familycare/C000001/profiles/<profile UUID>/child/reports",
+      "resource_type": "raw",
+      "delivery_type": "authenticated",
+      "url_expires_in": 300
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "per_page": 25
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/doctors/care-profiles/{profile_id}/reports', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/doctors/care-profiles/{profile_id}/reports', 'GET', undefined);
+```
+
+## GET /api/v1/doctors/care-profiles/{profile_id}/reports/{report_id}/download
+
+Required roles: DOCTOR
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "report": {
+    "id": "<report UUID>",
+    "profile_id": "<profile UUID>",
+    "name": "blood-test.pdf",
+    "storage_provider": "cloudinary",
+    "url": "<short-lived signed Cloudinary URL>",
+    "public_id": "familycare/C000001/profiles/<profile UUID>/child/reports/<report UUID>_blood-test.pdf",
+    "folder": "familycare/C000001/profiles/<profile UUID>/child/reports",
+    "resource_type": "raw",
+    "delivery_type": "authenticated",
+    "url_expires_in": 300
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/doctors/care-profiles/{profile_id}/reports/{report_id}/download', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/doctors/care-profiles/{profile_id}/reports/{report_id}/download', 'GET', undefined);
+```
+
+## POST /api/v1/patients/login
+
+Required roles: public / limited challenge
+
+Request fields:
+
+| Field | Required | Validation |
+|---|---|---|
+| `email` | yes | `{"format": "email", "type": "string"}` |
+| `password` | yes | `{"maxLength": 128, "minLength": 1, "type": "string"}` |
+
+Request JSON:
+
+```json
+{
+  "email": "user@example.com",
+  "password": "Choose-Your-Password8!"
+}
+```
+
+HTTP 200: Success
+
+```json
+{
+  "access_token": "<signed JWT>",
+  "refresh_token": "<opaque refresh token>",
+  "expires_in": 900,
+  "token_type": "Bearer",
+  "user": {
+    "id": "<UUID>",
+    "public_id": "C000001",
+    "role": "PATIENT",
+    "full_name": "Example User",
+    "email": "user@example.com",
+    "phone_number": "+919876543210",
+    "email_verified": true,
+    "approval_status": "APPROVED",
+    "account_status": "ACTIVE",
+    "must_change_password": false,
+    "referred_doctor": null
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -2551,7 +4160,15 @@ HTTP 200: Success
   "user": {
     "id": "<UUID>",
     "public_id": "C000001",
-    "role": "PATIENT"
+    "role": "PATIENT",
+    "full_name": "Example User",
+    "email": "user@example.com",
+    "phone_number": "+919876543210",
+    "email_verified": true,
+    "approval_status": "APPROVED",
+    "account_status": "ACTIVE",
+    "must_change_password": false,
+    "referred_doctor": null
   }
 }
 ```
@@ -2633,13 +4250,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -2669,6 +4319,7 @@ Request fields:
 | `mobile_number` | yes | `{"pattern": "^\\+?[1-9][0-9]{7,14}$", "type": "string"}` |
 | `password` | yes | `{"maxLength": 128, "minLength": 8, "type": "string"}` |
 | `confirm_password` | yes | `{"maxLength": 128, "minLength": 8, "type": "string"}` |
+| `referral_id` | no | `{"anyOf": [{"maxLength": 160, "minLength": 1, "pattern": "^[A-Za-z0-9]+$", "type": "string"}, {"type": "null"}], "default": null}` |
 
 Request JSON:
 
@@ -2678,7 +4329,8 @@ Request JSON:
   "email": "user@example.com",
   "mobile_number": "+919876543210",
   "password": "Choose-Your-Password8!",
-  "confirm_password": "Choose-Your-Password8!"
+  "confirm_password": "Choose-Your-Password8!",
+  "referral_id": "rahulkumarD000001"
 }
 ```
 
@@ -2774,13 +4426,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -2788,13 +4473,13 @@ HTTP 503: Database unavailable/not configured
 Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
 
 ```dart
-await dio.request('/api/v1/patients/register', data: {"full_name": "Example User", "email": "user@example.com", "mobile_number": "+919876543210", "password": "Choose-Your-Password8!", "confirm_password": "Choose-Your-Password8!"}, options: Options(method: 'POST'));
+await dio.request('/api/v1/patients/register', data: {"full_name": "Example User", "email": "user@example.com", "mobile_number": "+919876543210", "password": "Choose-Your-Password8!", "confirm_password": "Choose-Your-Password8!", "referral_id": "rahulkumarD000001"}, options: Options(method: 'POST'));
 ```
 
 Web (use the cookie/CSRF client in `examples/web_api.js`):
 
 ```javascript
-await api('/api/v1/patients/register', 'POST', {"full_name": "Example User", "email": "user@example.com", "mobile_number": "+919876543210", "password": "Choose-Your-Password8!", "confirm_password": "Choose-Your-Password8!"});
+await api('/api/v1/patients/register', 'POST', {"full_name": "Example User", "email": "user@example.com", "mobile_number": "+919876543210", "password": "Choose-Your-Password8!", "confirm_password": "Choose-Your-Password8!", "referral_id": "rahulkumarD000001"});
 ```
 
 ## POST /api/v1/patients/verify-email
@@ -2828,7 +4513,15 @@ HTTP 200: Success
   "user": {
     "id": "<UUID>",
     "public_id": "C000001",
-    "role": "PATIENT"
+    "role": "PATIENT",
+    "full_name": "Example User",
+    "email": "user@example.com",
+    "phone_number": "+919876543210",
+    "email_verified": true,
+    "approval_status": "APPROVED",
+    "account_status": "ACTIVE",
+    "must_change_password": false,
+    "referred_doctor": null
   }
 }
 ```
@@ -2910,13 +4603,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -2958,7 +4684,7 @@ HTTP 200: Success
   "challenge_token": "<limited-purpose JWT>",
   "expires_in": 300,
   "resend_after": 60,
-  "email_status": "queued"
+  "email_status": "sent"
 }
 ```
 
@@ -3039,13 +4765,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -3082,18 +4841,13 @@ Request JSON:
 }
 ```
 
-HTTP 200: Success
+HTTP 410: Success
 
 ```json
 {
-  "access_token": "<signed JWT>",
-  "refresh_token": "<opaque refresh token>",
-  "expires_in": 900,
-  "token_type": "Bearer",
-  "user": {
-    "id": "<UUID>",
-    "public_id": "C000001",
-    "role": "PATIENT"
+  "error": {
+    "code": "login_otp_disabled",
+    "message": "Sign in with email and password; login OTP is no longer required"
   }
 }
 ```
@@ -3175,13 +4929,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -3196,6 +4983,1463 @@ Web (use the cookie/CSRF client in `examples/web_api.js`):
 
 ```javascript
 await api('/api/v1/patients/verify-login-otp', 'POST', {"challenge_token": "<challenge_token>", "otp": "123456"});
+```
+
+## POST /api/v1/patients/connect-doctor
+
+Required roles: PATIENT
+
+Request fields:
+
+| Field | Required | Validation |
+|---|---|---|
+| `referral_id` | yes | `{"maxLength": 160, "minLength": 1, "pattern": "^[A-Za-z0-9]+$", "type": "string"}` |
+
+Request JSON:
+
+```json
+{
+  "referral_id": "rahulkumarD000001"
+}
+```
+
+HTTP 200: Success
+
+```json
+{
+  "doctor": {
+    "referral_id": "rahulkumarD000001",
+    "public_id": "D000001",
+    "full_name": "Dr Rahul Kumar",
+    "email": "rahul@example.com",
+    "mobile_number": "+919876543211",
+    "account_status": "ACTIVE",
+    "approval_status": "APPROVED"
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/connect-doctor', data: {"referral_id": "rahulkumarD000001"}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/connect-doctor', 'POST', {"referral_id": "rahulkumarD000001"});
+```
+
+## GET /api/v1/patients/doctor
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "doctor": {
+    "referral_id": "rahulkumarD000001",
+    "public_id": "D000001",
+    "full_name": "Dr Rahul Kumar",
+    "email": "rahul@example.com",
+    "mobile_number": "+919876543211",
+    "account_status": "ACTIVE",
+    "approval_status": "APPROVED"
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/doctor', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/doctor', 'GET', undefined);
+```
+
+## POST /api/v1/patients/profiles
+
+Required roles: PATIENT
+
+Request fields:
+
+| Field | Required | Validation |
+|---|---|---|
+| `profile_type` | yes | `{"enum": ["self", "member"], "type": "string"}` |
+| `module` | yes | `{"enum": ["child", "adult", "women"], "type": "string"}` |
+| `full_name` | yes | `{"maxLength": 120, "minLength": 1, "type": "string"}` |
+| `date_of_birth` | yes | `{"format": "date", "type": "string"}` |
+| `parent_profile_id` | no | `{"anyOf": [{"format": "uuid", "type": "string"}, {"type": "null"}], "default": null}` |
+| `guardian_contact` | no | `{"default": "", "maxLength": 20, "pattern": "^(?:\\+?[1-9][0-9]{7,14})?$", "type": "string"}` |
+| `emergency_contacts` | no | `{"items": {"$ref": "#/components/schemas/EmergencyContact"}, "maxItems": 5, "type": "array"}` |
+| `referral_id` | no | `{"anyOf": [{"maxLength": 160, "minLength": 1, "pattern": "^[A-Za-z0-9]+$", "type": "string"}, {"type": "null"}], "default": null}` |
+
+Request JSON:
+
+```json
+{
+  "profile_type": "member",
+  "module": "child",
+  "full_name": "Aarav Kumar",
+  "date_of_birth": "2018-05-14",
+  "guardian_contact": "+919876543210",
+  "emergency_contacts": [],
+  "referral_id": "rahulkumarD000001"
+}
+```
+
+HTTP 201: Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/profiles', data: {"profile_type": "member", "module": "child", "full_name": "Aarav Kumar", "date_of_birth": "2018-05-14", "guardian_contact": "+919876543210", "emergency_contacts": [], "referral_id": "rahulkumarD000001"}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/profiles', 'POST', {"profile_type": "member", "module": "child", "full_name": "Aarav Kumar", "date_of_birth": "2018-05-14", "guardian_contact": "+919876543210", "emergency_contacts": [], "referral_id": "rahulkumarD000001"});
+```
+
+## GET /api/v1/patients/profiles
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "items": [
+    {
+      "id": "<profile UUID>",
+      "profile_type": "member",
+      "module": "child",
+      "full_name": "Aarav Kumar",
+      "date_of_birth": "2018-05-14",
+      "parent_profile_id": "<parent profile UUID>",
+      "doctor": null
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "per_page": 25
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/profiles', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/profiles', 'GET', undefined);
+```
+
+## GET /api/v1/patients/profiles/{profile_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/profiles/{profile_id}', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/profiles/{profile_id}', 'GET', undefined);
+```
+
+## POST /api/v1/patients/profiles/{profile_id}/connect-doctor
+
+Required roles: PATIENT
+
+Request fields:
+
+| Field | Required | Validation |
+|---|---|---|
+| `referral_id` | yes | `{"maxLength": 160, "minLength": 1, "pattern": "^[A-Za-z0-9]+$", "type": "string"}` |
+
+Request JSON:
+
+```json
+{
+  "referral_id": "rahulkumarD000001"
+}
+```
+
+HTTP 200: Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/profiles/{profile_id}/connect-doctor', data: {"referral_id": "rahulkumarD000001"}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/profiles/{profile_id}/connect-doctor', 'POST', {"referral_id": "rahulkumarD000001"});
+```
+
+## POST /api/v1/patients/profiles/{profile_id}/reports
+
+Required roles: PATIENT
+
+Request: multipart/form-data. Field `file`: one PDF/JPEG/PNG/WebP, max 10 MB. Do not manually set the multipart Content-Type boundary.
+
+HTTP 201: Success
+
+```json
+{
+  "report": {
+    "id": "<report UUID>",
+    "profile_id": "<profile UUID>",
+    "name": "blood-test.pdf",
+    "storage_provider": "cloudinary",
+    "url": "<short-lived signed Cloudinary URL>",
+    "public_id": "familycare/C000001/profiles/<profile UUID>/child/reports/<report UUID>_blood-test.pdf",
+    "folder": "familycare/C000001/profiles/<profile UUID>/child/reports",
+    "resource_type": "raw",
+    "delivery_type": "authenticated",
+    "url_expires_in": 300
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Use Postman/Insomnia multipart file input, or curl:
+
+```bash
+curl -X POST http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}/reports -H "Authorization: Bearer ACCESS_TOKEN" -F "file=@blood-test.pdf"
+```
+
+## GET /api/v1/patients/profiles/{profile_id}/reports
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "items": [
+    {
+      "id": "<report UUID>",
+      "profile_id": "<profile UUID>",
+      "name": "blood-test.pdf",
+      "storage_provider": "cloudinary",
+      "url": "<short-lived signed Cloudinary URL>",
+      "public_id": "familycare/C000001/profiles/<profile UUID>/child/reports/<report UUID>_blood-test.pdf",
+      "folder": "familycare/C000001/profiles/<profile UUID>/child/reports",
+      "resource_type": "raw",
+      "delivery_type": "authenticated",
+      "url_expires_in": 300
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "per_page": 25
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/profiles/{profile_id}/reports', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/profiles/{profile_id}/reports', 'GET', undefined);
+```
+
+## GET /api/v1/patients/profiles/{profile_id}/reports/{report_id}/download
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "report": {
+    "id": "<report UUID>",
+    "profile_id": "<profile UUID>",
+    "name": "blood-test.pdf",
+    "storage_provider": "cloudinary",
+    "url": "<short-lived signed Cloudinary URL>",
+    "public_id": "familycare/C000001/profiles/<profile UUID>/child/reports/<report UUID>_blood-test.pdf",
+    "folder": "familycare/C000001/profiles/<profile UUID>/child/reports",
+    "resource_type": "raw",
+    "delivery_type": "authenticated",
+    "url_expires_in": 300
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/profiles/{profile_id}/reports/{report_id}/download', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/profiles/{profile_id}/reports/{report_id}/download', 'GET', undefined);
 ```
 
 ## POST /api/v1/admin/login
@@ -3218,15 +6462,26 @@ Request JSON:
 }
 ```
 
-HTTP 202: Success
+HTTP 200: Success
 
 ```json
 {
-  "challenge_token": "<limited-purpose JWT>",
-  "expires_in": 300,
-  "resend_after": 60,
-  "email_status": "queued",
-  "requires_otp": true
+  "access_token": "<signed JWT>",
+  "refresh_token": "<opaque refresh token>",
+  "expires_in": 900,
+  "token_type": "Bearer",
+  "user": {
+    "id": "<UUID>",
+    "public_id": "A000001",
+    "role": "ADMIN",
+    "full_name": "Example User",
+    "email": "user@example.com",
+    "phone_number": "+919876543210",
+    "email_verified": true,
+    "approval_status": "APPROVED",
+    "account_status": "ACTIVE",
+    "must_change_password": false
+  }
 }
 ```
 
@@ -3307,13 +6562,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -3342,8 +6630,15 @@ HTTP 200: Success
 {
   "user": {
     "id": "<UUID>",
-    "public_id": "C000001",
-    "role": "PATIENT"
+    "public_id": "A000001",
+    "role": "ADMIN",
+    "full_name": "Example User",
+    "email": "user@example.com",
+    "phone_number": "+919876543210",
+    "email_verified": true,
+    "approval_status": "APPROVED",
+    "account_status": "ACTIVE",
+    "must_change_password": false
   }
 }
 ```
@@ -3425,13 +6720,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -3566,13 +6894,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -3697,13 +7058,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -3745,7 +7139,7 @@ HTTP 200: Success
   "challenge_token": "<limited-purpose JWT>",
   "expires_in": 300,
   "resend_after": 60,
-  "email_status": "queued"
+  "email_status": "sent"
 }
 ```
 
@@ -3826,13 +7220,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -3869,18 +7296,13 @@ Request JSON:
 }
 ```
 
-HTTP 200: Success
+HTTP 410: Success
 
 ```json
 {
-  "access_token": "<signed JWT>",
-  "refresh_token": "<opaque refresh token>",
-  "expires_in": 900,
-  "token_type": "Bearer",
-  "user": {
-    "id": "<UUID>",
-    "public_id": "C000001",
-    "role": "PATIENT"
+  "error": {
+    "code": "login_otp_disabled",
+    "message": "Sign in with email and password; login OTP is no longer required"
   }
 }
 ```
@@ -3962,13 +7384,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -4082,13 +7537,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -4197,13 +7685,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -4312,13 +7833,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -4429,13 +7983,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -4558,13 +8145,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -4674,13 +8294,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -4790,13 +8443,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -4813,6 +8499,154 @@ Web (use the cookie/CSRF client in `examples/web_api.js`):
 await api('/api/v1/admin/doctors/{user_id}/reactivate', 'POST', undefined);
 ```
 
+## GET /api/v1/admin/patients
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "items": [],
+  "total": 0
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/patients', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/patients', 'GET', undefined);
+```
+
 ## POST /api/v1/superadmin/login
 
 Required roles: public / limited challenge
@@ -4821,14 +8655,15 @@ Request fields:
 
 | Field | Required | Validation |
 |---|---|---|
-| `username` | yes | `{"maxLength": 80, "minLength": 1, "type": "string"}` |
+| `email` | no | `{"anyOf": [{"format": "email", "type": "string"}, {"type": "null"}], "default": null}` |
+| `username` | no | `{"anyOf": [{"maxLength": 80, "minLength": 1, "type": "string"}, {"type": "null"}], "default": null}` |
 | `password` | yes | `{"maxLength": 128, "minLength": 1, "type": "string"}` |
 
 Request JSON:
 
 ```json
 {
-  "username": "superadmin",
+  "email": "superadmin@example.com",
   "password": "superadmin@2026"
 }
 ```
@@ -4843,8 +8678,15 @@ HTTP 200: Success
   "token_type": "Bearer",
   "user": {
     "id": "<UUID>",
-    "public_id": "C000001",
-    "role": "PATIENT"
+    "public_id": "superadmin",
+    "role": "SUPERADMIN",
+    "full_name": "Example User",
+    "email": "user@example.com",
+    "phone_number": "+919876543210",
+    "email_verified": true,
+    "approval_status": "APPROVED",
+    "account_status": "ACTIVE",
+    "must_change_password": false
   }
 }
 ```
@@ -4936,13 +8778,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -4950,13 +8825,13 @@ HTTP 503: Database unavailable/not configured
 Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
 
 ```dart
-await dio.request('/api/v1/superadmin/login', data: {"username": "superadmin", "password": "superadmin@2026"}, options: Options(method: 'POST'));
+await dio.request('/api/v1/superadmin/login', data: {"email": "superadmin@example.com", "password": "superadmin@2026"}, options: Options(method: 'POST'));
 ```
 
 Web (use the cookie/CSRF client in `examples/web_api.js`):
 
 ```javascript
-await api('/api/v1/superadmin/login', 'POST', {"username": "superadmin", "password": "superadmin@2026"});
+await api('/api/v1/superadmin/login', 'POST', {"email": "superadmin@example.com", "password": "superadmin@2026"});
 ```
 
 ## GET /api/v1/superadmin/me
@@ -4971,8 +8846,15 @@ HTTP 200: Success
 {
   "user": {
     "id": "<UUID>",
-    "public_id": "C000001",
-    "role": "PATIENT"
+    "public_id": "superadmin",
+    "role": "SUPERADMIN",
+    "full_name": "Example User",
+    "email": "user@example.com",
+    "phone_number": "+919876543210",
+    "email_verified": true,
+    "approval_status": "APPROVED",
+    "account_status": "ACTIVE",
+    "must_change_password": false
   }
 }
 ```
@@ -5054,13 +8936,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -5174,13 +9089,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -5289,13 +9237,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -5404,13 +9385,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -5521,13 +9535,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -5650,13 +9697,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -5766,13 +9846,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -5882,13 +9995,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -5997,13 +10143,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -6112,13 +10291,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -6227,13 +10439,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -6343,13 +10588,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```
@@ -6458,13 +10736,46 @@ HTTP 429: Rate limit or OTP cooldown
 }
 ```
 
-HTTP 503: Database unavailable/not configured
+HTTP 413: Report exceeds size limit
 
 ```json
 {
   "error": {
     "code": "error_code",
-    "message": "Database unavailable/not configured"
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
   }
 }
 ```

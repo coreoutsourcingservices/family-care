@@ -16,3 +16,5 @@ route(bp, '/doctors/<user_id>/approve', c.approve, 'POST', roles=('ADMIN',))
 route(bp, '/doctors/<user_id>/reject', c.reject, 'POST', roles=('ADMIN',), schema='Rejection')
 route(bp, '/doctors/<user_id>/suspend', c.suspend, 'POST', roles=('ADMIN',))
 route(bp, '/doctors/<user_id>/reactivate', c.reactivate, 'POST', roles=('ADMIN',))
+
+route(bp, '/patients', c.patients, roles=('ADMIN',))

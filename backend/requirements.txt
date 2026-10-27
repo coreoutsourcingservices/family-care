@@ -10,4 +10,5 @@ pydantic[email]>=2.11,<3
 Flask-Limiter[redis]>=3.12,<5
 Flask-Cors>=6,<7
 pytest>=8,<10
+cloudinary>=1.44,<2
 gunicorn>=23,<24; sys_platform != 'win32'

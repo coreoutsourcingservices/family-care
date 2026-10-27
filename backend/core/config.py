@@ -20,7 +20,11 @@ def settings(overrides=None):
                   RATELIMIT_STORAGE_URI=os.getenv('RATELIMIT_STORAGE_URI', 'memory://'),
                   COOKIE_SECURE=os.getenv('COOKIE_SECURE', 'false').lower() == 'true',
                   CORS_ORIGINS=[v.strip() for v in os.getenv('CORS_ORIGINS', '').split(',') if v.strip()],
-                  MAX_CONTENT_LENGTH=16384, TESTING=False)
+                  MAX_CONTENT_LENGTH=16384, TESTING=False,
+                  CLOUDINARY_CLOUD_NAME=os.getenv('CLOUDINARY_CLOUD_NAME', ''),
+                  CLOUDINARY_API_KEY=os.getenv('CLOUDINARY_API_KEY', ''),
+                  CLOUDINARY_API_SECRET=os.getenv('CLOUDINARY_API_SECRET', ''),
+                  MAX_REPORT_BYTES=10 * 1024 * 1024)
     config.update(overrides or {})
     for key in ('JWT_SECRET_KEY', 'OTP_HMAC_SECRET'):
         if len(config[key]) < 32:

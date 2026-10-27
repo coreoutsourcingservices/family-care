@@ -19,6 +19,10 @@ def register(data, role):
 def create_verified_user(values, role):
     if find_user(values['email']):
         raise APIError(409, 'account_exists', 'Account already exists; use login or reset password')
+    referred_doctor = None
+    if role == 'PATIENT' and values.get('referral_id'):
+        from services.referrals import resolve_referral
+        referred_doctor, _ = resolve_referral(values['referral_id'], lock=True)
     user = User(id=uid(), public_id=None, full_name=values['full_name'], email=values['email'],
                 phone_number=values['mobile_number'], password_hash=values['password_hash'], role=role,
                 email_verified=True,
@@ -31,8 +35,13 @@ def create_verified_user(values, role):
     if role == 'DOCTOR':
         fields = ('qualification', 'specialization', 'medical_registration_number', 'registering_council', 'nmr_id')
         db().add(DoctorProfile(user_id=user.id, **{k: values.get(k) for k in fields}))
+    elif role == 'PATIENT':
+        db().add(PatientProfile(user_id=user.id, referred_by_doctor_id=referred_doctor.id if referred_doctor else None,
+                                referred_at=now() if referred_doctor else None))
+        if referred_doctor:
+            audit('doctor_referral_connected', referred_doctor.id, user.id)
     else:
-        db().add((AdminProfile if role == 'ADMIN' else PatientProfile)(user_id=user.id))
+        db().add(AdminProfile(user_id=user.id))
     audit('registered', user.id, user.id)
     audit('email_verified', user.id, user.id)
     if role == 'PATIENT':
@@ -80,8 +89,9 @@ def verify_email(data, role):
 
 
 def login(data, role):
-    identifier = data.username if role == 'SUPERADMIN' else str(data.email)
-    user = find_user(identifier, role, username=role == 'SUPERADMIN', lock=True)
+    legacy_username = role == 'SUPERADMIN' and not data.email
+    identifier = data.username if legacy_username else str(data.email)
+    user = find_user(identifier, role, username=legacy_username, lock=True)
     if not verify_password(user.password_hash if user else None, data.password):
         audit('login_failed', user.id if user else None)
         db().commit()
@@ -100,18 +110,11 @@ def login(data, role):
     eligible(user)
     if password_hasher.check_needs_rehash(user.password_hash):
         user.password_hash = password_hasher.hash(data.password)
-    if role in ('ADMIN', 'PATIENT'):
-        result = otp.issue(user, 'login')
-        db().commit()
-        return jsonify(requires_otp=True, **result), 202
     return issue_session(user)
 
 
 def verify_login(data, role):
-    user, challenge = otp.resolve(data.challenge_token, 'login', role)
-    eligible(user)
-    otp.consume(challenge, data.otp)
-    return issue_session(user)
+    raise APIError(410, 'login_otp_disabled', 'Sign in with email and password; login OTP is no longer required')
 
 
 def forgot_password(email):

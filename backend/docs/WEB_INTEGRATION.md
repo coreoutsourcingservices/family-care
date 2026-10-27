@@ -10,10 +10,7 @@ restoreCsrf();
 const step = await api('/api/v1/admin/login', 'POST', {
   email: 'admin@example.com', password: enteredPassword,
 });
-// For an approved admin: prompt in your own frontend for the email OTP.
-await api('/api/v1/admin/verify-login-otp', 'POST', {
-  challenge_token: step.challenge_token, otp: enteredCode,
-});
+// Approved accounts receive their session directly; no login OTP.
 const profile = await api('/api/v1/admin/me');
 await api('/api/v1/auth/logout', 'POST');
 ```
@@ -24,4 +21,8 @@ auth cookies are HttpOnly. Refresh rotates CSRF; the example replaces it and ret
 failed protected request. Handle failed refresh by showing your own login flow.
 Do not auto-refresh or auto-retry login/OTP business errors in application code.
 Registration and approval states are backend decisions; clients display HTTP 202 status.
-No HTML login/signup/dashboard UI is built by this project.
+The Next.js admin/superadmin UI is in ../admin on port 3005.
+
+Current login flow: all roles use email + password without login OTP. Signup email OTP,
+password-reset OTP, account approval and first-login password change are preserved.
+Legacy superadmin username login remains compatible. Legacy verify-login-otp routes return HTTP 410.

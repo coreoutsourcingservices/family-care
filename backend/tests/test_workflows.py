@@ -27,6 +27,9 @@ def code(app, response):
 
 
 def verify(app, client, response, role='patients', login=False, headers=None):
+    if login:
+        assert response.status_code == 200 and 'challenge_token' not in response.json
+        return response
     return client.post(f'/api/v1/{role}/'+('verify-login-otp' if login else 'verify-email'),
                        json={'challenge_token': response.json['challenge_token'], 'otp': code(app, response)}, headers=headers or {})
 
@@ -50,7 +53,7 @@ def test_health_docs_and_validation(client):
     assert b'secret' not in result.data
 
 
-def test_patient_signup_jwt_profile_and_login_otp(app, client):
+def test_patient_signup_jwt_profile_and_password_login(app, client):
     registered = client.post('/api/v1/patients/register', json=registration())
     assert registered.status_code == 202 and 'access_token' not in registered.json
     session = verify(app, client, registered)
@@ -60,11 +63,11 @@ def test_patient_signup_jwt_profile_and_login_otp(app, client):
     assert me.status_code == 200 and me.json['user']['email_verified']
     assert 'password_hash' not in str(me.json)
     step = client.post('/api/v1/patients/login', json={'email': 'user@example.com', 'password': PASSWORD})
-    assert step.status_code == 202 and 'access_token' not in step.json
+    assert step.status_code == 200 and 'access_token' in step.json
     assert verify(app, client, step, login=True).status_code == 200
 
 
-def test_admin_full_approval_and_otp_login(app, client):
+def test_admin_full_approval_and_password_login(app, client):
     super_session = super_login(app, client)
     registered = client.post('/api/v1/admin/register', json=registration('admin', 'admin@example.com'))
     verified = verify(app, client, registered, 'admin')
@@ -254,7 +257,7 @@ def test_mail_worker_sends_and_is_not_repeated(app, client):
     from services.email import process_one
     registered = client.post('/api/v1/patients/register', json=registration())
     verify(app, client, registered)
-    client.post('/api/v1/patients/login', json={'email': 'user@example.com', 'password': PASSWORD})
+    client.post('/api/v1/auth/forgot-password', json={'email': 'user@example.com'})
     with app.app_context(), patch('services.email.send_mail') as sender:
         assert process_one()
         assert sender.call_count == 1
@@ -265,7 +268,7 @@ def test_mail_worker_retries(app, client):
     from services.email import process_one
     registered = client.post('/api/v1/patients/register', json=registration())
     verify(app, client, registered)
-    client.post('/api/v1/patients/login', json={'email': 'user@example.com', 'password': PASSWORD})
+    client.post('/api/v1/auth/forgot-password', json={'email': 'user@example.com'})
     with app.app_context(), patch('services.email.send_mail', side_effect=OSError):
         assert process_one()
         item = db().scalar(select(EmailNotification))
@@ -402,3 +405,35 @@ def test_doctor_credentials_checked_again_at_verification(app, client):
     assert verify(app, client, second, 'doctors').status_code == 409
     with app.app_context():
         assert len(db().scalars(select(User)).all()) == 1
+
+
+def test_admin_patient_directory_is_role_protected(app, client):
+    create_account(app, 'ADMIN', 'admin-directory@example.com')
+    create_account(app, 'PATIENT', 'patient-directory@example.com')
+    assert client.get('/api/v1/admin/patients').status_code == 401
+    step = client.post('/api/v1/admin/login', json={'email':'admin-directory@example.com','password':PASSWORD})
+    session = verify(app, client, step, 'admin', login=True)
+    result = client.get('/api/v1/admin/patients?status=APPROVED&per_page=1', headers=bearer(session))
+    assert result.status_code == 200 and result.json['total'] == 1
+    assert result.json['items'][0]['email'] == 'patient-directory@example.com'
+    patient_step = client.post('/api/v1/patients/login',json={'email':'patient-directory@example.com','password':PASSWORD})
+    patient_session = verify(app,client,patient_step,login=True)
+    assert client.get('/api/v1/admin/patients',headers=bearer(patient_session)).status_code == 403
+
+
+@pytest.mark.parametrize('role,path', [('ADMIN','admin'),('PATIENT','patients'),('DOCTOR','doctors'),('SUPERADMIN','superadmin')])
+def test_all_roles_email_password_login_without_otp(app,client,role,path):
+    email = path+'-login@example.com'
+    create_account(app,role,email)
+    response=client.post('/api/v1/'+path+'/login',json={'email':email,'password':PASSWORD})
+    assert response.status_code == 200 and response.json['user']['role'] == role
+    assert 'challenge_token' not in response.json and 'requires_otp' not in response.json
+    with app.app_context():
+        assert db().scalar(select(OTPChallenge)) is None
+        assert db().scalar(select(EmailNotification)) is None
+    assert client.post('/api/v1/'+path+'/login',json={'email':email,'password':'WrongPassword8!'}).status_code == 401
+
+
+def test_retired_login_otp_endpoint(client):
+    response=client.post('/api/v1/admin/verify-login-otp',json={'challenge_token':'old','otp':'123456'})
+    assert response.status_code == 410

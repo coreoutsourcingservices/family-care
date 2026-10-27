@@ -32,5 +32,5 @@ export async function api(path, method = 'GET', body, retry = true) {
 }
 
 export function restoreCsrf() { csrfToken = sessionStorage.getItem('familycare_csrf'); }
-// Example flow: register -> verify-email -> login -> verify-login-otp.
+// Example flow: register -> verify-email -> approval (if needed) -> email/password login.
 // Admin/doctor register verification returns pending approval, with no session.

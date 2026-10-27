@@ -1,5 +1,11 @@
 # Family Care backend API
 
+Doctor referral IDs and patient connection APIs: [referral guide](docs/REFERRALS.md).
+
+Patient self/member profiles, parent links and Cloudinary report uploads:
+[patient care API guide with JSON and multipart examples](docs/PATIENT_CARE_API.md).
+Cloudinary credentials must stay in local `.env`; restart after changing them. Live cloud upload has not been verified.
+
 Flask modular backend for doctor, patient/customer, admin and superadmin identity.
 Supabase is hosted PostgreSQL; Flask owns password hashing, email OTP, approval and JWT.
 No Docker and no frontend/UI.
@@ -44,7 +50,7 @@ password superadmin@2026 when supplied to bootstrap; first login requires passwo
 Production refuses the default bootstrap password. No public superadmin registration.
 
 Patient signup JWT is issued only after email OTP verification. Admin/doctor require review.
-Admin/patient login requires password and email OTP; approved doctor uses email/password.
+All roles log in with email/password without login OTP. Approved and verified accounts are required.
 Access JWT is 15 minutes; rotating/revocable refresh session defaults to 7 days.
 
 ## Structure
@@ -116,5 +122,9 @@ Existing accounts and old unverified records are preserved. Pending doctor crede
 are not reserved; database uniqueness is checked again when verification creates the account.
 
 SMTP port 465 requires `SMTP_SSL=true` and `SMTP_STARTTLS=false`. Port 587 normally
-uses `SMTP_SSL=false` and `SMTP_STARTTLS=true`. Login/reset/approval email still needs
+uses `SMTP_SSL=false` and `SMTP_STARTTLS=true`. Reset/approval email still needs
 `python -m scripts.mail_worker`. Signup email does not require the worker.
+
+Current login flow: all roles use email + password without login OTP. Signup email OTP,
+password-reset OTP, account approval and first-login password change are preserved.
+Legacy superadmin username login remains compatible. Legacy verify-login-otp routes return HTTP 410.

@@ -28,6 +28,12 @@ def test_app():
             cursor = connection.connection.driver_connection.cursor()
             cursor.execute(Path('supabase/0001_identity.sql').read_text(), prepare=False)
             cursor.close()
+            from alembic.migration import MigrationContext
+            from alembic.operations import Operations
+            import importlib
+            with Operations.context(MigrationContext.configure(connection)):
+                importlib.import_module('migrations.versions.0003_doctor_referrals').upgrade()
+                importlib.import_module('migrations.versions.0004_members_and_cloudinary').upgrade()
     else:
         Base.metadata.create_all(engine)
     yield app

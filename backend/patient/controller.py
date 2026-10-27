@@ -26,3 +26,14 @@ def resend_otp():
 
 def verify_login_otp():
     return service.verify_login(parse(schema.VerifyOTP))
+
+
+def connect_doctor():
+    from core.schemas import ConnectDoctor
+    from services.referrals import connect_patient
+    return connect_patient(g.user, parse(ConnectDoctor).referral_id)
+
+
+def connected_doctor():
+    from services.referrals import connected_doctor as connected
+    return connected(g.user)

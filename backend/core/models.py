@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime, timezone
-from sqlalchemy import Uuid
+from sqlalchemy import Uuid, Date, JSON, LargeBinary, Index, text
 from sqlalchemy import Column as C, String as S, Text, Boolean as B, Integer as I, DateTime as DT
 from sqlalchemy import ForeignKey as FK, CheckConstraint as CK, UniqueConstraint as UQ
 from core.database import Base
@@ -54,12 +54,15 @@ class AdminProfile(Base):
 class PatientProfile(Base):
     __tablename__ = 'patient_profiles'
     user_id = user_fk(primary_key=True)
+    referred_by_doctor_id = C(Uuid(as_uuid=False), FK('familycare.doctor_profiles.user_id', ondelete='SET NULL'), index=True)
+    referred_at = C(DT)
 
 
 class DoctorProfile(Base):
     __tablename__ = 'doctor_profiles'
     __table_args__ = (UQ('registering_council', 'medical_registration_number'),)
     user_id = user_fk(primary_key=True)
+    referral_id = C(S(160), unique=True, nullable=False)
     qualification = C(S(200), nullable=False)
     specialization = C(S(200))
     medical_registration_number = C(S(100), nullable=False)
@@ -68,6 +71,18 @@ class DoctorProfile(Base):
     verification_status = C(S(32), default='PENDING', nullable=False)
     approved_by = C(Uuid(as_uuid=False), FK('familycare.users.id'))
     approved_at = C(DT)
+
+
+# Covers ORM callers such as bootstrap/import tools as well as normal registration.
+from sqlalchemy import event, select
+
+
+@event.listens_for(DoctorProfile, 'before_insert')
+def assign_doctor_referral(mapper, connection, profile):
+    if not profile.referral_id:
+        from core.referrals import make_referral_id
+        user = connection.execute(select(User.full_name, User.public_id).where(User.id == profile.user_id)).one()
+        profile.referral_id = make_referral_id(user.full_name, user.public_id)
 
 
 class OTPChallenge(Base):
@@ -146,3 +161,44 @@ class AuditLog(Base):
     target_id = C(Uuid(as_uuid=False), FK('familycare.users.id'))
     action = C(S(80), nullable=False, index=True)
     created_at = C(DT, default=now, nullable=False, index=True)
+
+
+class CareProfile(Base):
+    __tablename__ = 'care_profiles'
+    __table_args__ = (
+        CK("module IN ('child','women','adult')", name='module'),
+        CK("profile_type IN ('self','member')", name='profile_type'),
+        Index('uq_care_profiles_self_owner', 'owner_id', unique=True,
+              postgresql_where=text("profile_type = 'self'"), sqlite_where=text("profile_type = 'self'"))
+    )
+    id = primary_id()
+    owner_id = user_fk(nullable=False, index=True)
+    module = C(S(10), nullable=False)
+    name = C(S(120), nullable=False)
+    dob = C(Date, nullable=False)
+    guardian_contact = C(S(20), nullable=False, default='')
+    emergency_contacts = C(JSON, nullable=False, default=list)
+    referred_doctor_id = C(Uuid(as_uuid=False), FK('familycare.users.id'), index=True)
+    profile_type = C(S(10), nullable=False, default='member', server_default='member')
+    parent_profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='SET NULL'))
+    created_at = C(DT, default=now, nullable=False)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+
+class CareReport(Base):
+    __tablename__ = 'care_reports'
+    id = primary_id()
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), nullable=False, index=True)
+    name = C(S(255), nullable=False)
+    content_type = C(S(80), nullable=False)
+    content = C(LargeBinary)
+    storage_provider = C(S(16), nullable=False, default='database', server_default='database')
+    cloudinary_public_id = C(S(512), unique=True)
+    cloudinary_asset_id = C(S(100))
+    secure_url = C(Text)
+    folder = C(S(512))
+    resource_type = C(S(16))
+    delivery_type = C(S(20))
+    file_format = C(S(20))
+    size_bytes = C(I)
+    created_at = C(DT, default=now, nullable=False)

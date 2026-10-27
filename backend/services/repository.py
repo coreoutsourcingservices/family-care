@@ -26,8 +26,19 @@ def user_by_id(identifier, lock=False):
 
 
 def serialize_user(user):
-    return {key: getattr(user, key) for key in ('id', 'public_id', 'full_name', 'email',
+    result = {key: getattr(user, key) for key in ('id', 'public_id', 'full_name', 'email',
             'phone_number', 'role', 'email_verified', 'approval_status', 'account_status', 'must_change_password')}
+    if user.role == 'DOCTOR':
+        from core.models import DoctorProfile
+        profile = db().get(DoctorProfile, user.id)
+        result['referral_id'] = profile.referral_id if profile else None
+    elif user.role == 'PATIENT':
+        from core.models import PatientProfile
+        from services.referrals import doctor_details
+        profile = db().get(PatientProfile, user.id)
+        doctor = db().get(User, profile.referred_by_doctor_id) if profile and profile.referred_by_doctor_id else None
+        result['referred_doctor'] = doctor_details(doctor) if doctor else None
+    return result
 
 
 def audit(action, target_id=None, actor_id=None):

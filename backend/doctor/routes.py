@@ -10,3 +10,12 @@ route(bp, '/verify-email', c.verify_email, 'POST', schema='VerifyOTP', limited=T
 route(bp, '/resend-otp', c.resend_otp, 'POST', schema='Challenge', limited=True)
 route(bp, '/approval-status', c.approval_status, 'POST', schema='Login', limited=True)
 route(bp, '/resubmit', c.resubmit, 'POST', schema='Resubmission', limited=True)
+
+route(bp, '/referral', c.referral, roles=('DOCTOR',))
+route(bp, '/patients', c.patients, roles=('DOCTOR',))
+
+from patient import care_controller as care
+route(bp, '/care-profiles', care.profiles, roles=('DOCTOR',))
+route(bp, '/care-profiles/<uuid:profile_id>', care.profile, roles=('DOCTOR',))
+route(bp, '/care-profiles/<uuid:profile_id>/reports', care.reports, roles=('DOCTOR',))
+route(bp, '/care-profiles/<uuid:profile_id>/reports/<uuid:report_id>/download', care.download_report, roles=('DOCTOR',))

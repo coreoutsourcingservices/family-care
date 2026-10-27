@@ -50,3 +50,11 @@ Indexes cover unique IDs/emails, roles/approval status, sessions, challenge user
 pending mail status/scheduling and audit time/action. Profiles and results are paginated.
 
 No appointments, clinical notes, prescriptions or billing tables are included.
+# Doctor referral extension
+
+Migration `0003_doctor_referrals` adds a unique, non-null `doctor_profiles.referral_id`
+generated from the normalized doctor name and existing public ID. It backfills existing
+doctors. `patient_profiles.referred_by_doctor_id` is an optional indexed foreign key to
+`doctor_profiles.user_id`, with `ON DELETE SET NULL`; `referred_at` records the connection
+time. The patient has at most one referring doctor. Registration links are inserted only
+after email OTP verification, in the same transaction as the patient account.

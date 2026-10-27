@@ -92,6 +92,9 @@ def register_pending(data, role):
     values['email'] = str(data.email).lower()
     if find_user(values['email']):
         raise APIError(409, 'account_exists', 'Account already exists; use login or reset password')
+    if role == 'PATIENT' and values.get('referral_id'):
+        from services.referrals import resolve_referral
+        resolve_referral(values['referral_id'])
     if role == 'DOCTOR':
         duplicate = db().scalar(select(DoctorProfile).where(or_(
             (DoctorProfile.registering_council == data.registering_council) &

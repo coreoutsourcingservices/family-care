@@ -8,10 +8,9 @@ Only then are access/refresh credentials issued. Subsequent login issues a sessi
 Production must use a unique bootstrap password and rejects the development default.
 
 ## Admin
-Register -> queued email OTP -> verify-email -> pending superadmin approval.
+Register -> email OTP sent -> verify-email -> pending superadmin approval.
 Superadmin lists admin-requests and approves/rejects by UUID or public ID.
-Approval queues email. Login -> email/password -> queued login OTP -> verify-login-otp
--> session. Pending/rejected/suspended accounts never get dashboard credentials.
+Approval queues email. Login -> email/password -> session. Pending/rejected/suspended accounts never get dashboard credentials.
 
 ## Doctor
 Register with professional registration details -> email OTP -> pending admin approval.
@@ -20,8 +19,8 @@ allows email/password login. Rejected doctors can check status with credentials 
 resubmit corrected details through the limited resubmission API.
 
 ## Patient/customer
-Register -> queued email OTP -> verify-email -> activated account and JWT session.
-Subsequent login -> password check -> login OTP -> verify-login-otp -> session.
+Register -> email OTP sent -> verify-email -> activated account and JWT session.
+Subsequent login -> email/password check -> session.
 No full session is issued on the initial unverified registration response.
 
 ## Shared
@@ -38,3 +37,7 @@ HttpOnly cookies. Browser mutations require trusted Origin (when present), custo
 X-Requested-With and, for authenticated requests, X-CSRF-Token bound to the session.
 Cookies and Bearer sessions cannot be interchanged. Flutter stores credentials in
 platform secure storage. See code-only examples and complete API reference.
+
+Current login flow: all roles use email + password without login OTP. Signup email OTP,
+password-reset OTP, account approval and first-login password change are preserved.
+Legacy superadmin username login remains compatible. Legacy verify-login-otp routes return HTTP 410.
