@@ -34,6 +34,7 @@ def test_app():
             with Operations.context(MigrationContext.configure(connection)):
                 importlib.import_module('migrations.versions.0003_doctor_referrals').upgrade()
                 importlib.import_module('migrations.versions.0004_members_and_cloudinary').upgrade()
+                importlib.import_module('migrations.versions.0005_care_profile_public_ids').upgrade()
     else:
         Base.metadata.create_all(engine)
     yield app

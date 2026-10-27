@@ -474,6 +474,10 @@ backend base URL ke relative hain. Normal GET routes ko request JSON nahi chahiy
 | GET | `/api/v1/superadmin/doctors` | SUPERADMIN | `None` |
 | GET | `/api/v1/superadmin/patients` | SUPERADMIN | `None` |
 | GET | `/api/v1/superadmin/audit-logs` | SUPERADMIN | `None` |
+| GET | `/api/v1/localization` | public / limited challenge | `None` |
+| GET | `/api/v1/localization/states` | public / limited challenge | `None` |
+| GET | `/api/v1/localization/languages` | public / limited challenge | `None` |
+| GET | `/api/v1/localization/messages/{language}` | public / limited challenge | `None` |
 | GET | `/api/v1/health` | public / limited challenge | `None` |
 | GET | `/api/v1/health/ready` | public / limited challenge | `None` |
 

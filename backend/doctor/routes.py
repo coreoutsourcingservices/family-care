@@ -16,6 +16,6 @@ route(bp, '/patients', c.patients, roles=('DOCTOR',))
 
 from patient import care_controller as care
 route(bp, '/care-profiles', care.profiles, roles=('DOCTOR',))
-route(bp, '/care-profiles/<uuid:profile_id>', care.profile, roles=('DOCTOR',))
-route(bp, '/care-profiles/<uuid:profile_id>/reports', care.reports, roles=('DOCTOR',))
-route(bp, '/care-profiles/<uuid:profile_id>/reports/<uuid:report_id>/download', care.download_report, roles=('DOCTOR',))
+route(bp, '/care-profiles/<profile_id>', care.profile, roles=('DOCTOR',))
+route(bp, '/care-profiles/<profile_id>/reports', care.reports, roles=('DOCTOR',))
+route(bp, '/care-profiles/<profile_id>/reports/<uuid:report_id>/download', care.download_report, roles=('DOCTOR',))
