@@ -1,0 +1,1851 @@
+{
+  "info": {
+    "name": "FamilyCare Doctor APIs and Referral",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Synthetic examples captured from isolated SQLite. Credentials, tokens, IDs and links are examples, not live patient data. Scenarios have separate preconditions; do not run this file as one linear workflow."
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:5001/api/v1"
+    },
+    {
+      "key": "doctor_access_token",
+      "value": ""
+    },
+    {
+      "key": "patient_access_token",
+      "value": ""
+    },
+    {
+      "key": "refresh_token",
+      "value": ""
+    },
+    {
+      "key": "challenge_token",
+      "value": ""
+    },
+    {
+      "key": "profile_id",
+      "value": ""
+    },
+    {
+      "key": "report_id",
+      "value": ""
+    },
+    {
+      "key": "schedule_id",
+      "value": ""
+    },
+    {
+      "key": "session_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Doctor registration",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/doctors/register",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"full_name\": \"Dr New Example\",\n  \"email\": \"new-doctor@example.com\",\n  \"mobile_number\": \"+919876543219\",\n  \"password\": \"ExamplePass8!\",\n  \"confirm_password\": \"ExamplePass8!\",\n  \"qualification\": \"MBBS\",\n  \"medical_registration_number\": \"DEMO-12345\",\n  \"registering_council\": \"Example Council\",\n  \"specialization\": \"Pediatrics\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Doctor registration",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/doctors/register",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Dr New Example\",\n  \"email\": \"new-doctor@example.com\",\n  \"mobile_number\": \"+919876543219\",\n  \"password\": \"ExamplePass8!\",\n  \"confirm_password\": \"ExamplePass8!\",\n  \"qualification\": \"MBBS\",\n  \"medical_registration_number\": \"DEMO-12345\",\n  \"registering_council\": \"Example Council\",\n  \"specialization\": \"Pediatrics\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 202,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"approval_status\": \"PENDING_EMAIL_VERIFICATION\",\n  \"challenge_token\": \"{{challenge_token}}\",\n  \"email_status\": \"sent\",\n  \"expires_in\": 300,\n  \"message\": \"OTP sent to your email. Verify OTP to complete registration.\",\n  \"public_id\": null,\n  \"resend_after\": 60,\n  \"user_id\": null\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor resend email OTP",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/doctors/resend-otp",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challenge_token\": \"{{challenge_token}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Doctor resend email OTP",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/doctors/resend-otp",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"challenge_token\": \"{{challenge_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"challenge_token\": \"{{challenge_token}}\",\n  \"email_status\": \"sent\",\n  \"expires_in\": 300,\n  \"message\": \"OTP sent to your email. Verify OTP to complete registration.\",\n  \"resend_after\": 60\n}"
+        }
+      ]
+    },
+    {
+      "name": "Restart pending email verification",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/request-email-verification",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"new-doctor@example.com\",\n  \"password\": \"ExamplePass8!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Restart pending email verification",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/request-email-verification",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"new-doctor@example.com\",\n  \"password\": \"ExamplePass8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 202,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"challenge_token\": \"{{challenge_token}}\",\n  \"email_status\": \"sent\",\n  \"expires_in\": 300,\n  \"message\": \"OTP sent to your email. Verify OTP to complete registration.\",\n  \"resend_after\": 60\n}"
+        }
+      ]
+    },
+    {
+      "name": "Verify doctor email",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/doctors/verify-email",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challenge_token\": \"{{challenge_token}}\",\n  \"otp\": \"123456\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Verify doctor email",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/doctors/verify-email",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"challenge_token\": \"{{challenge_token}}\",\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 202,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Email verified. Waiting for approval.\",\n  \"user\": {\n    \"account_status\": \"ACTIVE\",\n    \"approval_status\": \"PENDING_APPROVAL\",\n    \"email\": \"new-doctor@example.com\",\n    \"email_verified\": true,\n    \"full_name\": \"Dr New Example\",\n    \"id\": \"cf5c4ef0-50b2-454b-823f-e42dab16c2c5\",\n    \"must_change_password\": false,\n    \"phone_number\": \"+919876543219\",\n    \"public_id\": \"D6b75fdcd6046\",\n    \"referral_id\": \"newexampleD6b75fdcd6046\",\n    \"role\": \"DOCTOR\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor approval status",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/doctors/approval-status",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"new-doctor@example.com\",\n  \"password\": \"ExamplePass8!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Doctor approval status",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/doctors/approval-status",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"new-doctor@example.com\",\n  \"password\": \"ExamplePass8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"account_status\": \"ACTIVE\",\n  \"approval_status\": \"PENDING_APPROVAL\",\n  \"email_verified\": true,\n  \"public_id\": \"D6b75fdcd6046\",\n  \"rejection_reason\": null\n}"
+        }
+      ]
+    },
+    {
+      "name": "Resubmit rejected doctor application",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/doctors/resubmit",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"new-doctor@example.com\",\n  \"password\": \"ExamplePass8!\",\n  \"qualification\": \"MBBS\",\n  \"medical_registration_number\": \"DEMO-12345-CORRECTED\",\n  \"registering_council\": \"Example Council\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Resubmit rejected doctor application",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/doctors/resubmit",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"new-doctor@example.com\",\n  \"password\": \"ExamplePass8!\",\n  \"qualification\": \"MBBS\",\n  \"medical_registration_number\": \"DEMO-12345-CORRECTED\",\n  \"registering_council\": \"Example Council\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 202,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Resubmitted for review\",\n  \"user\": {\n    \"account_status\": \"ACTIVE\",\n    \"approval_status\": \"PENDING_APPROVAL\",\n    \"email\": \"new-doctor@example.com\",\n    \"email_verified\": true,\n    \"full_name\": \"Dr New Example\",\n    \"id\": \"cf5c4ef0-50b2-454b-823f-e42dab16c2c5\",\n    \"must_change_password\": false,\n    \"phone_number\": \"+919876543219\",\n    \"public_id\": \"D6b75fdcd6046\",\n    \"referral_id\": \"newexampleD6b75fdcd6046\",\n    \"role\": \"DOCTOR\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor login - Bearer response",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/doctors/login",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"doctor@example.com\",\n  \"password\": \"SmokePassword8!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Doctor login - Bearer response",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/doctors/login",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"doctor@example.com\",\n  \"password\": \"SmokePassword8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"access_token\": \"{{access_token}}\",\n  \"expires_in\": 86400,\n  \"refresh_token\": \"{{refresh_token}}\",\n  \"token_type\": \"Bearer\",\n  \"user\": {\n    \"account_status\": \"ACTIVE\",\n    \"approval_status\": \"APPROVED\",\n    \"email\": \"doctor@example.com\",\n    \"email_verified\": true,\n    \"full_name\": \"Dr Example Kumar\",\n    \"id\": \"11111111-1111-4111-8111-111111111111\",\n    \"must_change_password\": false,\n    \"phone_number\": null,\n    \"public_id\": \"D000001\",\n    \"referral_id\": \"examplekumarD000001\",\n    \"role\": \"DOCTOR\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor profile",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/doctors/me",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Doctor profile",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/doctors/me",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ]
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"user\": {\n    \"account_status\": \"ACTIVE\",\n    \"approval_status\": \"APPROVED\",\n    \"doctor\": {\n      \"medical_registration_number\": \"TEST-1\",\n      \"nmr_id\": null,\n      \"qualification\": \"MBBS\",\n      \"registering_council\": \"Test Council\",\n      \"specialization\": null,\n      \"verification_status\": \"APPROVED\"\n    },\n    \"email\": \"doctor@example.com\",\n    \"email_verified\": true,\n    \"full_name\": \"Dr Example Kumar\",\n    \"id\": \"11111111-1111-4111-8111-111111111111\",\n    \"must_change_password\": false,\n    \"phone_number\": null,\n    \"public_id\": \"D000001\",\n    \"referral_id\": \"examplekumarD000001\",\n    \"role\": \"DOCTOR\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Own doctor referral ID",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/doctors/referral",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Own doctor referral ID",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/doctors/referral",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ]
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"doctor\": {\n    \"account_status\": \"ACTIVE\",\n    \"approval_status\": \"APPROVED\",\n    \"email\": \"doctor@example.com\",\n    \"full_name\": \"Dr Example Kumar\",\n    \"mobile_number\": null,\n    \"public_id\": \"D000001\",\n    \"referral_id\": \"examplekumarD000001\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "New patient signup with doctor referral",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/patients/register",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"full_name\": \"New Example Parent\",\n  \"email\": \"new-parent@example.com\",\n  \"mobile_number\": \"+919876543218\",\n  \"password\": \"ExampleParent8!\",\n  \"confirm_password\": \"ExampleParent8!\",\n  \"referral_id\": \"examplekumarD000001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "New patient signup with doctor referral",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/patients/register",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"New Example Parent\",\n  \"email\": \"new-parent@example.com\",\n  \"mobile_number\": \"+919876543218\",\n  \"password\": \"ExampleParent8!\",\n  \"confirm_password\": \"ExampleParent8!\",\n  \"referral_id\": \"examplekumarD000001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 202,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"approval_status\": \"PENDING_EMAIL_VERIFICATION\",\n  \"challenge_token\": \"{{challenge_token}}\",\n  \"email_status\": \"sent\",\n  \"expires_in\": 300,\n  \"message\": \"OTP sent to your email. Verify OTP to complete registration.\",\n  \"public_id\": null,\n  \"resend_after\": 60,\n  \"user_id\": null\n}"
+        }
+      ]
+    },
+    {
+      "name": "Verify referred patient signup",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/patients/verify-email",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challenge_token\": \"{{challenge_token}}\",\n  \"otp\": \"123456\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Verify referred patient signup",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/patients/verify-email",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"challenge_token\": \"{{challenge_token}}\",\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"access_token\": \"{{access_token}}\",\n  \"expires_in\": 86400,\n  \"refresh_token\": \"{{refresh_token}}\",\n  \"token_type\": \"Bearer\",\n  \"user\": {\n    \"account_status\": \"ACTIVE\",\n    \"approval_status\": \"APPROVED\",\n    \"email\": \"new-parent@example.com\",\n    \"email_verified\": true,\n    \"full_name\": \"New Example Parent\",\n    \"id\": \"4c712819-4d84-4133-a2b9-a6fbae14a20f\",\n    \"must_change_password\": false,\n    \"phone_number\": \"+919876543218\",\n    \"public_id\": \"Ce1417d884420\",\n    \"referred_doctor\": {\n      \"account_status\": \"ACTIVE\",\n      \"approval_status\": \"APPROVED\",\n      \"email\": \"doctor@example.com\",\n      \"full_name\": \"Dr Example Kumar\",\n      \"mobile_number\": null,\n      \"public_id\": \"D000001\",\n      \"referral_id\": \"examplekumarD000001\"\n    },\n    \"role\": \"PATIENT\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Connect parent account using referral",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/patients/connect-doctor",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{patient_access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"referral_id\": \"examplekumarD000001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Connect parent account using referral",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/patients/connect-doctor",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patient_access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"referral_id\": \"examplekumarD000001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"doctor\": {\n    \"account_status\": \"ACTIVE\",\n    \"approval_status\": \"APPROVED\",\n    \"email\": \"doctor@example.com\",\n    \"full_name\": \"Dr Example Kumar\",\n    \"mobile_number\": null,\n    \"public_id\": \"D000001\",\n    \"referral_id\": \"examplekumarD000001\"\n  },\n  \"message\": \"Patient connected to doctor\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Parent connected doctor",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/patients/doctor",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{patient_access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Parent connected doctor",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/patients/doctor",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patient_access_token}}"
+              }
+            ]
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"doctor\": {\n    \"account_status\": \"ACTIVE\",\n    \"approval_status\": \"APPROVED\",\n    \"email\": \"doctor@example.com\",\n    \"full_name\": \"Dr Example Kumar\",\n    \"mobile_number\": null,\n    \"public_id\": \"D000001\",\n    \"referral_id\": \"examplekumarD000001\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Create child profile with referral",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/patients/profiles",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{patient_access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"profile_type\": \"member\",\n  \"module\": \"child\",\n  \"full_name\": \"Example Child\",\n  \"date_of_birth\": \"2020-03-01\",\n  \"guardian_contact\": \"+919876543210\",\n  \"emergency_contacts\": [],\n  \"referral_id\": \"examplekumarD000001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Create child profile with referral",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/patients/profiles",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patient_access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profile_type\": \"member\",\n  \"module\": \"child\",\n  \"full_name\": \"Example Child\",\n  \"date_of_birth\": \"2020-03-01\",\n  \"guardian_contact\": \"+919876543210\",\n  \"emergency_contacts\": [],\n  \"referral_id\": \"examplekumarD000001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"profile\": {\n    \"created_at\": \"2026-10-28T10:48:32.500474Z\",\n    \"date_of_birth\": \"2020-03-01\",\n    \"doctor\": {\n      \"account_status\": \"ACTIVE\",\n      \"approval_status\": \"APPROVED\",\n      \"email\": \"doctor@example.com\",\n      \"full_name\": \"Dr Example Kumar\",\n      \"mobile_number\": null,\n      \"public_id\": \"D000001\",\n      \"referral_id\": \"examplekumarD000001\"\n    },\n    \"emergency_contacts\": [],\n    \"full_name\": \"Example Child\",\n    \"guardian_contact\": \"+919876543210\",\n    \"id\": \"33333333-3333-4333-8333-333333333333\",\n    \"module\": \"child\",\n    \"parent_profile_id\": null,\n    \"profile_type\": \"member\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Connect existing family profile using referral",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/patients/profiles/{{profile_id}}/connect-doctor",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{patient_access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"referral_id\": \"examplekumarD000001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Connect existing family profile using referral",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/patients/profiles/{{profile_id}}/connect-doctor",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patient_access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"referral_id\": \"examplekumarD000001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"profile\": {\n    \"created_at\": \"2026-10-28T10:48:32.500474Z\",\n    \"date_of_birth\": \"2020-03-01\",\n    \"doctor\": {\n      \"account_status\": \"ACTIVE\",\n      \"approval_status\": \"APPROVED\",\n      \"email\": \"doctor@example.com\",\n      \"full_name\": \"Dr Example Kumar\",\n      \"mobile_number\": null,\n      \"public_id\": \"D000001\",\n      \"referral_id\": \"examplekumarD000001\"\n    },\n    \"emergency_contacts\": [],\n    \"full_name\": \"Example Child\",\n    \"guardian_contact\": \"+919876543210\",\n    \"id\": \"33333333-3333-4333-8333-333333333333\",\n    \"module\": \"child\",\n    \"parent_profile_id\": null,\n    \"profile_type\": \"member\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor connected patient accounts",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/doctors/patients?page=1&per_page=25",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Doctor connected patient accounts",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/doctors/patients?page=1&per_page=25",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ]
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"items\": [\n    {\n      \"account_status\": \"ACTIVE\",\n      \"approval_status\": \"APPROVED\",\n      \"email\": \"patient@example.com\",\n      \"email_verified\": true,\n      \"full_name\": \"Example Parent\",\n      \"id\": \"22222222-2222-4222-8222-222222222222\",\n      \"must_change_password\": false,\n      \"phone_number\": null,\n      \"public_id\": \"C000001\",\n      \"referred_doctor\": {\n        \"account_status\": \"ACTIVE\",\n        \"approval_status\": \"APPROVED\",\n        \"email\": \"doctor@example.com\",\n        \"full_name\": \"Dr Example Kumar\",\n        \"mobile_number\": null,\n        \"public_id\": \"D000001\",\n        \"referral_id\": \"examplekumarD000001\"\n      },\n      \"role\": \"PATIENT\"\n    },\n    {\n      \"account_status\": \"ACTIVE\",\n      \"approval_status\": \"APPROVED\",\n      \"email\": \"new-parent@example.com\",\n      \"email_verified\": true,\n      \"full_name\": \"New Example Parent\",\n      \"id\": \"4c712819-4d84-4133-a2b9-a6fbae14a20f\",\n      \"must_change_password\": false,\n      \"phone_number\": \"+919876543218\",\n      \"public_id\": \"Ce1417d884420\",\n      \"referred_doctor\": {\n        \"account_status\": \"ACTIVE\",\n        \"approval_status\": \"APPROVED\",\n        \"email\": \"doctor@example.com\",\n        \"full_name\": \"Dr Example Kumar\",\n        \"mobile_number\": null,\n        \"public_id\": \"D000001\",\n        \"referral_id\": \"examplekumarD000001\"\n      },\n      \"role\": \"PATIENT\"\n    }\n  ],\n  \"page\": 1,\n  \"per_page\": 25,\n  \"total\": 2\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor connected child care profiles",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/doctors/care-profiles?module=child&page=1&per_page=25",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Doctor connected child care profiles",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/doctors/care-profiles?module=child&page=1&per_page=25",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ]
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"items\": [\n    {\n      \"created_at\": \"2026-10-28T10:48:32.500474Z\",\n      \"date_of_birth\": \"2020-03-01\",\n      \"doctor\": {\n        \"account_status\": \"ACTIVE\",\n        \"approval_status\": \"APPROVED\",\n        \"email\": \"doctor@example.com\",\n        \"full_name\": \"Dr Example Kumar\",\n        \"mobile_number\": null,\n        \"public_id\": \"D000001\",\n        \"referral_id\": \"examplekumarD000001\"\n      },\n      \"emergency_contacts\": [],\n      \"full_name\": \"Example Child\",\n      \"guardian_contact\": \"+919876543210\",\n      \"id\": \"33333333-3333-4333-8333-333333333333\",\n      \"module\": \"child\",\n      \"parent_profile_id\": null,\n      \"profile_type\": \"member\"\n    }\n  ],\n  \"page\": 1,\n  \"per_page\": 25,\n  \"total\": 1\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor care profile detail",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/doctors/care-profiles/{{profile_id}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Doctor care profile detail",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/doctors/care-profiles/{{profile_id}}",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ]
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"profile\": {\n    \"created_at\": \"2026-10-28T10:48:32.500474Z\",\n    \"date_of_birth\": \"2020-03-01\",\n    \"doctor\": {\n      \"account_status\": \"ACTIVE\",\n      \"approval_status\": \"APPROVED\",\n      \"email\": \"doctor@example.com\",\n      \"full_name\": \"Dr Example Kumar\",\n      \"mobile_number\": null,\n      \"public_id\": \"D000001\",\n      \"referral_id\": \"examplekumarD000001\"\n    },\n    \"emergency_contacts\": [],\n    \"full_name\": \"Example Child\",\n    \"guardian_contact\": \"+919876543210\",\n    \"id\": \"33333333-3333-4333-8333-333333333333\",\n    \"module\": \"child\",\n    \"parent_profile_id\": null,\n    \"profile_type\": \"member\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor reports list",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/doctors/care-profiles/{{profile_id}}/reports?page=1&per_page=25",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Doctor reports list",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/doctors/care-profiles/{{profile_id}}/reports?page=1&per_page=25",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ]
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"items\": [\n    {\n      \"asset_id\": null,\n      \"content_type\": \"application/pdf\",\n      \"created_at\": \"2026-10-28T10:48:32.581971Z\",\n      \"delivery_type\": \"authenticated\",\n      \"folder\": null,\n      \"id\": \"44444444-4444-4444-8444-444444444444\",\n      \"name\": \"Example report.pdf\",\n      \"profile_id\": \"33333333-3333-4333-8333-333333333333\",\n      \"public_id\": \"synthetic/example.pdf\",\n      \"resource_type\": \"raw\",\n      \"secure_url\": \"https://res.cloudinary.com/example-cloud/raw/authenticated/synthetic/example.pdf\",\n      \"size_bytes\": 1024,\n      \"storage_provider\": \"cloudinary\",\n      \"url\": \"https://api.cloudinary.com/v1_1/example-cloud/raw/download?SIGNED_PARAMETERS\",\n      \"url_expires_in\": 300\n    }\n  ],\n  \"page\": 1,\n  \"per_page\": 25,\n  \"total\": 1\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor report download JSON",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/doctors/care-profiles/{{profile_id}}/reports/{{report_id}}/download",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Doctor report download JSON",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/doctors/care-profiles/{{profile_id}}/reports/{{report_id}}/download",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ]
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"report\": {\n    \"asset_id\": null,\n    \"content_type\": \"application/pdf\",\n    \"created_at\": \"2026-10-28T10:48:32.581971Z\",\n    \"delivery_type\": \"authenticated\",\n    \"folder\": null,\n    \"id\": \"44444444-4444-4444-8444-444444444444\",\n    \"name\": \"Example report.pdf\",\n    \"profile_id\": \"33333333-3333-4333-8333-333333333333\",\n    \"public_id\": \"synthetic/example.pdf\",\n    \"resource_type\": \"raw\",\n    \"secure_url\": \"https://res.cloudinary.com/example-cloud/raw/authenticated/synthetic/example.pdf\",\n    \"size_bytes\": 1024,\n    \"storage_provider\": \"cloudinary\",\n    \"url\": \"https://api.cloudinary.com/v1_1/example-cloud/raw/download?SIGNED_PARAMETERS\",\n    \"url_expires_in\": 300\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Parent sends consultation request",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/children/{{profile_id}}/consultation-requests",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{patient_access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Routine review request\",\n  \"date\": \"2026-10-28\",\n  \"notes\": \"Synthetic request only\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Parent sends consultation request",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/children/{{profile_id}}/consultation-requests",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patient_access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Routine review request\",\n  \"date\": \"2026-10-28\",\n  \"notes\": \"Synthetic request only\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"record\": {\n    \"batch_number\": \"\",\n    \"category\": \"\",\n    \"certificate_id\": null,\n    \"date\": \"2026-10-28\",\n    \"doctor_id\": \"11111111-1111-4111-8111-111111111111\",\n    \"dose_code\": \"\",\n    \"height\": \"\",\n    \"id\": \"7f7afb1b-dfd3-47a6-9aed-0a484142fec2\",\n    \"kind\": \"consultation_request\",\n    \"meal\": \"\",\n    \"nextDate\": \"\",\n    \"notes\": \"Synthetic request only\",\n    \"provider\": \"\",\n    \"schedule_id\": null,\n    \"schedule_type\": \"\",\n    \"source_id\": null,\n    \"status\": \"REQUESTED\",\n    \"title\": \"Routine review request\",\n    \"vaccinator\": \"\",\n    \"vaccine_id\": null,\n    \"verification_status\": \"PARENT_REPORTED\",\n    \"weight\": \"\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor consultation requests",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/doctors/consultation-requests?page=1&per_page=25",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Doctor consultation requests",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/doctors/consultation-requests?page=1&per_page=25",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ]
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"items\": [\n    {\n      \"batch_number\": \"\",\n      \"category\": \"\",\n      \"certificate_id\": null,\n      \"child_id\": \"33333333-3333-4333-8333-333333333333\",\n      \"date\": \"2026-10-28\",\n      \"doctor_id\": \"11111111-1111-4111-8111-111111111111\",\n      \"dose_code\": \"\",\n      \"height\": \"\",\n      \"id\": \"7f7afb1b-dfd3-47a6-9aed-0a484142fec2\",\n      \"kind\": \"consultation_request\",\n      \"meal\": \"\",\n      \"nextDate\": \"\",\n      \"notes\": \"Synthetic request only\",\n      \"provider\": \"\",\n      \"schedule_id\": null,\n      \"schedule_type\": \"\",\n      \"source_id\": null,\n      \"status\": \"REQUESTED\",\n      \"title\": \"Routine review request\",\n      \"vaccinator\": \"\",\n      \"vaccine_id\": null,\n      \"verification_status\": \"PARENT_REPORTED\",\n      \"weight\": \"\"\n    }\n  ],\n  \"page\": 1,\n  \"per_page\": 25,\n  \"total\": 1\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor requests for connected child",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/children/{{profile_id}}/consultation-requests?page=1&per_page=25",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Doctor requests for connected child",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/children/{{profile_id}}/consultation-requests?page=1&per_page=25",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ]
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"items\": [\n    {\n      \"batch_number\": \"\",\n      \"category\": \"\",\n      \"certificate_id\": null,\n      \"date\": \"2026-10-28\",\n      \"doctor_id\": \"11111111-1111-4111-8111-111111111111\",\n      \"dose_code\": \"\",\n      \"height\": \"\",\n      \"id\": \"7f7afb1b-dfd3-47a6-9aed-0a484142fec2\",\n      \"kind\": \"consultation_request\",\n      \"meal\": \"\",\n      \"nextDate\": \"\",\n      \"notes\": \"Synthetic request only\",\n      \"provider\": \"\",\n      \"schedule_id\": null,\n      \"schedule_type\": \"\",\n      \"source_id\": null,\n      \"status\": \"REQUESTED\",\n      \"title\": \"Routine review request\",\n      \"vaccinator\": \"\",\n      \"vaccine_id\": null,\n      \"verification_status\": \"PARENT_REPORTED\",\n      \"weight\": \"\"\n    }\n  ],\n  \"page\": 1,\n  \"per_page\": 25,\n  \"total\": 1\n}"
+        }
+      ]
+    },
+    {
+      "name": "Assigned doctor vaccination reviews",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/doctors/vaccination-reviews?page=1&per_page=25",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Assigned doctor vaccination reviews",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/doctors/vaccination-reviews?page=1&per_page=25",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ]
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"items\": [\n    {\n      \"age_end\": 7,\n      \"age_label\": \"Synthetic example only\",\n      \"age_start\": 6,\n      \"age_unit\": \"years\",\n      \"dose_code\": \"D1\",\n      \"dose_name\": \"Synthetic dose\",\n      \"effective_from\": \"2026-01-01\",\n      \"effective_to\": null,\n      \"eligibility\": {\n        \"active\": true,\n        \"country\": \"IN\",\n        \"districts\": [],\n        \"gender\": \"All\",\n        \"programme\": \"\",\n        \"requires_clinical_review\": true,\n        \"states\": []\n      },\n      \"id\": \"55555555-5555-4555-8555-555555555555\",\n      \"injection_site\": \"\",\n      \"instructions\": \"\",\n      \"maximum_age\": null,\n      \"minimum_age\": null,\n      \"minimum_interval_days\": null,\n      \"previous_dose_code\": \"\",\n      \"published_at\": null,\n      \"reminders\": {\n        \"before_days\": [\n          7\n        ],\n        \"email\": false,\n        \"enabled\": true,\n        \"in_app\": true,\n        \"language\": \"en\",\n        \"on_due\": true,\n        \"overdue_days\": [\n          7\n        ]\n      },\n      \"route\": \"Other\",\n      \"schedule_type\": \"UIP\",\n      \"source_reference\": \"Synthetic fixture, not a clinical guideline\",\n      \"source_url\": \"https://example.org/synthetic-guideline\",\n      \"status\": \"IN_REVIEW\",\n      \"vaccine\": {\n        \"active\": true,\n        \"category\": \"Government\",\n        \"code\": \"EXAMPLE\",\n        \"description_en\": \"\",\n        \"description_hi\": \"\",\n        \"id\": \"b103a2b7-4c93-4275-8e05-1d9384a1bc37\",\n        \"name_en\": \"Synthetic vaccine\",\n        \"name_hi\": \"\",\n        \"protects_against\": \"Synthetic example only\"\n      },\n      \"vaccine_id\": \"b103a2b7-4c93-4275-8e05-1d9384a1bc37\",\n      \"version\": \"demo-v1\"\n    }\n  ],\n  \"page\": 1,\n  \"per_page\": 25,\n  \"total\": 1\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor approves assigned review",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/doctors/vaccination-reviews/{{schedule_id}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"decision\": \"APPROVE\",\n  \"notes\": \"Synthetic fixture review, not a clinical approval of real patient care.\",\n  \"attestation\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Doctor approves assigned review",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/doctors/vaccination-reviews/{{schedule_id}}",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"APPROVE\",\n  \"notes\": \"Synthetic fixture review, not a clinical approval of real patient care.\",\n  \"attestation\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"schedule\": {\n    \"age_end\": 7,\n    \"age_label\": \"Synthetic example only\",\n    \"age_start\": 6,\n    \"age_unit\": \"years\",\n    \"dose_code\": \"D1\",\n    \"dose_name\": \"Synthetic dose\",\n    \"effective_from\": \"2026-01-01\",\n    \"effective_to\": null,\n    \"eligibility\": {\n      \"active\": true,\n      \"country\": \"IN\",\n      \"districts\": [],\n      \"gender\": \"All\",\n      \"programme\": \"\",\n      \"requires_clinical_review\": true,\n      \"states\": []\n    },\n    \"id\": \"55555555-5555-4555-8555-555555555555\",\n    \"injection_site\": \"\",\n    \"instructions\": \"\",\n    \"maximum_age\": null,\n    \"medical_review\": {\n      \"council\": \"Test Council\",\n      \"name\": \"Dr Example Kumar\",\n      \"notes\": \"Synthetic fixture review, not a clinical approval of real patient care.\",\n      \"qualification\": \"MBBS\",\n      \"registration\": \"TEST-1\",\n      \"reviewed_at\": \"2026-10-28T10:48:33.150282Z\"\n    },\n    \"minimum_age\": null,\n    \"minimum_interval_days\": null,\n    \"previous_dose_code\": \"\",\n    \"published_at\": null,\n    \"reminders\": {\n      \"before_days\": [\n        7\n      ],\n      \"email\": false,\n      \"enabled\": true,\n      \"in_app\": true,\n      \"language\": \"en\",\n      \"on_due\": true,\n      \"overdue_days\": [\n        7\n      ]\n    },\n    \"route\": \"Other\",\n    \"schedule_type\": \"UIP\",\n    \"source_reference\": \"Synthetic fixture, not a clinical guideline\",\n    \"source_url\": \"https://example.org/synthetic-guideline\",\n    \"status\": \"APPROVED\",\n    \"vaccine\": {\n      \"active\": true,\n      \"category\": \"Government\",\n      \"code\": \"EXAMPLE\",\n      \"description_en\": \"\",\n      \"description_hi\": \"\",\n      \"id\": \"b103a2b7-4c93-4275-8e05-1d9384a1bc37\",\n      \"name_en\": \"Synthetic vaccine\",\n      \"name_hi\": \"\",\n      \"protects_against\": \"Synthetic example only\"\n    },\n    \"vaccine_id\": \"b103a2b7-4c93-4275-8e05-1d9384a1bc37\",\n    \"version\": \"demo-v1\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Refresh doctor Bearer session",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/refresh",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Refresh doctor Bearer session",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/refresh",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"access_token\": \"{{access_token}}\",\n  \"expires_in\": 86400,\n  \"refresh_token\": \"{{refresh_token}}\",\n  \"token_type\": \"Bearer\",\n  \"user\": {\n    \"account_status\": \"ACTIVE\",\n    \"approval_status\": \"APPROVED\",\n    \"email\": \"doctor@example.com\",\n    \"email_verified\": true,\n    \"full_name\": \"Dr Example Kumar\",\n    \"id\": \"11111111-1111-4111-8111-111111111111\",\n    \"must_change_password\": false,\n    \"phone_number\": null,\n    \"public_id\": \"D000001\",\n    \"referral_id\": \"examplekumarD000001\",\n    \"role\": \"DOCTOR\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor active sessions",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/auth/sessions",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Doctor active sessions",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/auth/sessions",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ]
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"items\": [\n    {\n      \"created_at\": \"2026-10-28T10:48:31.663144Z\",\n      \"current\": true,\n      \"expires_at\": \"2026-11-27T10:48:31.660233Z\",\n      \"id\": \"e4f25ce8-b1c6-4512-81fd-dee2fadfba5a\"\n    }\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "Revoke another doctor session",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/auth/sessions/{{session_id}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "Revoke another doctor session",
+          "originalRequest": {
+            "method": "DELETE",
+            "url": "{{base_url}}/auth/sessions/{{session_id}}",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ]
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Session revoked\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor password change",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/change-password",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"current_password\": \"SmokePassword8!\",\n  \"new_password\": \"ChangedExample8!\",\n  \"confirm_password\": \"ChangedExample8!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Doctor password change",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/change-password",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"SmokePassword8!\",\n  \"new_password\": \"ChangedExample8!\",\n  \"confirm_password\": \"ChangedExample8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Password changed. All sessions revoked; sign in again.\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor forgot password",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/forgot-password",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"doctor@example.com\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Doctor forgot password",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/forgot-password",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"doctor@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 202,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"challenge_token\": \"{{challenge_token}}\",\n  \"email_status\": \"queued\",\n  \"expires_in\": 300,\n  \"message\": \"If an eligible account exists, reset instructions are queued.\",\n  \"resend_after\": 60\n}"
+        }
+      ]
+    },
+    {
+      "name": "Resend password reset OTP",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/resend-otp",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challenge_token\": \"{{challenge_token}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Resend password reset OTP",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/resend-otp",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"challenge_token\": \"{{challenge_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"challenge_token\": \"{{challenge_token}}\",\n  \"email_status\": \"queued\",\n  \"expires_in\": 300,\n  \"resend_after\": 60\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor reset password",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/reset-password",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challenge_token\": \"{{challenge_token}}\",\n  \"otp\": \"123456\",\n  \"new_password\": \"ResetExample8!\",\n  \"confirm_password\": \"ResetExample8!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Doctor reset password",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/reset-password",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"challenge_token\": \"{{challenge_token}}\",\n  \"otp\": \"123456\",\n  \"new_password\": \"ResetExample8!\",\n  \"confirm_password\": \"ResetExample8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Password reset. Sign in again.\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor logout",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/logout",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Doctor logout",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/logout",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Logged out\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Doctor logout all devices",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/auth/logout-all",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{doctor_access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Doctor logout all devices",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/logout-all",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctor_access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Example",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"All sessions revoked\"\n}"
+        }
+      ]
+    }
+  ]
+}

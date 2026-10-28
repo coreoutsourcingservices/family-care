@@ -21,3 +21,8 @@ route(bp, '/profiles/<uuid:profile_id>/connect-doctor', care.connect_profile_doc
 route(bp, '/profiles/<uuid:profile_id>/reports', care.upload_report, 'POST', roles=('PATIENT',), schema='ReportUpload', limited=True)
 route(bp, '/profiles/<uuid:profile_id>/reports', care.reports, roles=('PATIENT',))
 route(bp, '/profiles/<uuid:profile_id>/reports/<uuid:report_id>/download', care.download_report, roles=('PATIENT',))
+
+from services import report_text
+route(bp, '/report-text/options', report_text.options_endpoint, roles=('PATIENT',))
+route(bp, '/profiles/<uuid:profile_id>/reports/<uuid:report_id>/text', report_text.get_text, roles=('PATIENT',))
+route(bp, '/profiles/<uuid:profile_id>/reports/<uuid:report_id>/text', report_text.request_text, 'POST', roles=('PATIENT',), limited=True)

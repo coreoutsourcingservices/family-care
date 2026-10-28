@@ -24,4 +24,9 @@ artifacts/
 # Local browser verification artifacts
 test-results/
 
+# Isolated local OCR runtime and model cache
+.ocr-venv/
+.python-runtimes/
+.uv-cache/
+.ocr-models/
 .vite/

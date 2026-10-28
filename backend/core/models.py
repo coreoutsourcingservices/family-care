@@ -290,3 +290,17 @@ class CareReport(Base):
     file_format = C(S(20))
     size_bytes = C(I)
     created_at = C(DT, default=now, nullable=False)
+
+
+class ReportText(Base):
+    __tablename__ = 'report_texts'
+    report_id = C(Uuid(as_uuid=False), FK('familycare.care_reports.id', ondelete='CASCADE'), primary_key=True)
+    requested_by = user_fk(nullable=False)
+    status = C(S(16), nullable=False, default='QUEUED')
+    options = C(JSON, nullable=False)
+    result = C(JSON, nullable=False, default=dict)
+    error_code = C(S(60))
+    lease_id = C(S(36))
+    started_at = C(DT)
+    created_at = C(DT, default=now, nullable=False)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)

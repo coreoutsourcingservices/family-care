@@ -21,3 +21,5 @@ for endpoints, schema migration and isolated tests.
 See [Vaccination management](../backend/docs/VACCINATION_MANAGEMENT.md) for catalog, medical review, certificates and reminders.
 
 Child vaccination list integration: [Frontend API contract](../backend/docs/CHILD_VACCINATION_FRONTEND_API.md). Uses server-calculated age views and published dose references.
+
+Saved reports now offer local OCR and explicit opt-in English translation. See [report OCR API](../backend/docs/REPORT_OCR_API.md).
