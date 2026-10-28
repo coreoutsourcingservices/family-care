@@ -37,4 +37,6 @@ with app.app_context():
 
 if __name__ == '__main__':
     from waitress import serve
-    serve(app, host='127.0.0.1', port=5501, threads=4)
+    # In-memory SQLite uses a single connection; serialize fixture requests.
+    # Production PostgreSQL continues to use its normal concurrent connection pool.
+    serve(app, host='127.0.0.1', port=5501, threads=1)

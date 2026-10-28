@@ -21,6 +21,7 @@ def settings(overrides=None):
                   COOKIE_SECURE=os.getenv('COOKIE_SECURE', 'false').lower() == 'true',
                   CORS_ORIGINS=[v.strip() for v in os.getenv('CORS_ORIGINS', '').split(',') if v.strip()],
                   MAX_CONTENT_LENGTH=16384, TESTING=False,
+                  GEO_TRUSTED_PROXIES=os.getenv('GEO_TRUSTED_PROXIES', ''),
                   CLOUDINARY_CLOUD_NAME=os.getenv('CLOUDINARY_CLOUD_NAME', ''),
                   CLOUDINARY_API_KEY=os.getenv('CLOUDINARY_API_KEY', ''),
                   CLOUDINARY_API_SECRET=os.getenv('CLOUDINARY_API_SECRET', ''),

@@ -1,0 +1,7 @@
+import { Download, Settings } from 'lucide-react';
+import type { HealthProfile } from '../../../../app/src/lib/healthProfiles';
+import type { ChildEntry } from './childRecords';
+export default function ChildSettings({profile,entries}:{profile:HealthProfile;entries:ChildEntry[]}){
+ function exportDiary(){const blob=new Blob([JSON.stringify({profile_id:profile.id,child_name:profile.name,entries},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='child-care-diary.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+ return <><div className="ch-page-heading"><div><span className="ch-eyebrow">YOUR CHILD'S CARE SPACE</span><h1>Settings</h1><p>Profile information and a copy of your device's care diary.</p></div><span className="ch-heading-icon"><Settings/></span></div><section className="ch-panel"><h2>Profile details</h2><dl className="ch-settings-details"><div><dt>Name</dt><dd>{profile.name}</dd></div><div><dt>Date of birth</dt><dd>{profile.dob}</dd></div><div><dt>Guardian contact</dt><dd>{profile.guardianContact||'Not entered'}</dd></div></dl></section><section className="ch-panel"><h2>Your care diary</h2><p className="ch-muted">Diary entries are saved on this device. Download a copy for your own records; uploaded medical reports are managed separately.</p><button className="ch-button" onClick={exportDiary}><Download size={16}/>Download diary ({entries.length} records)</button></section></>;
+}

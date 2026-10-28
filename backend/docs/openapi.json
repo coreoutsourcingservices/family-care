@@ -4359,6 +4359,7 @@
                   "items": [
                     {
                       "id": "<profile UUID>",
+                      "public_id": "CH000001",
                       "profile_type": "member",
                       "module": "child",
                       "full_name": "Aarav Kumar",
@@ -4543,7 +4544,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Resource UUID"
+            "description": "Care-profile UUID or public ID, e.g. CH000001, AD000001, WO000001"
           },
           {
             "name": "X-Auth-Transport",
@@ -4583,6 +4584,7 @@
                 "example": {
                   "profile": {
                     "id": "<profile UUID>",
+                    "public_id": "CH000001",
                     "profile_type": "member",
                     "module": "child",
                     "full_name": "Aarav Kumar",
@@ -4763,7 +4765,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Resource UUID"
+            "description": "Care-profile UUID or public ID, e.g. CH000001, AD000001, WO000001"
           },
           {
             "name": "page",
@@ -5004,16 +5006,16 @@
         "summary": "doctor download report",
         "parameters": [
           {
-            "name": "report_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string"
             },
-            "description": "Resource UUID"
+            "description": "Care-profile UUID or public ID, e.g. CH000001, AD000001, WO000001"
           },
           {
-            "name": "profile_id",
+            "name": "report_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -7016,6 +7018,7 @@
                 "example": {
                   "profile": {
                     "id": "<profile UUID>",
+                    "public_id": "CH000001",
                     "profile_type": "member",
                     "module": "child",
                     "full_name": "Aarav Kumar",
@@ -7276,6 +7279,7 @@
                   "items": [
                     {
                       "id": "<profile UUID>",
+                      "public_id": "CH000001",
                       "profile_type": "member",
                       "module": "child",
                       "full_name": "Aarav Kumar",
@@ -7460,7 +7464,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Resource UUID"
+            "description": "Care-profile UUID or public ID, e.g. CH000001, AD000001, WO000001"
           },
           {
             "name": "X-Auth-Transport",
@@ -7500,6 +7504,7 @@
                 "example": {
                   "profile": {
                     "id": "<profile UUID>",
+                    "public_id": "CH000001",
                     "profile_type": "member",
                     "module": "child",
                     "full_name": "Aarav Kumar",
@@ -7680,7 +7685,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Resource UUID"
+            "description": "Care-profile UUID or public ID, e.g. CH000001, AD000001, WO000001"
           },
           {
             "name": "X-Auth-Transport",
@@ -7720,6 +7725,7 @@
                 "example": {
                   "profile": {
                     "id": "<profile UUID>",
+                    "public_id": "CH000001",
                     "profile_type": "member",
                     "module": "child",
                     "full_name": "Aarav Kumar",
@@ -7913,7 +7919,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Resource UUID"
+            "description": "Care-profile UUID or public ID, e.g. CH000001, AD000001, WO000001"
           },
           {
             "name": "X-Auth-Transport",
@@ -8154,7 +8160,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Resource UUID"
+            "description": "Care-profile UUID or public ID, e.g. CH000001, AD000001, WO000001"
           },
           {
             "name": "page",
@@ -8395,16 +8401,16 @@
         "summary": "patient download report",
         "parameters": [
           {
-            "name": "report_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string"
             },
-            "description": "Resource UUID"
+            "description": "Care-profile UUID or public ID, e.g. CH000001, AD000001, WO000001"
           },
           {
-            "name": "profile_id",
+            "name": "report_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -14302,6 +14308,1407 @@
             "cookieAuth": []
           }
         ]
+      }
+    },
+    "/api/v1/localization": {
+      "get": {
+        "operationId": "localization_recommendations",
+        "tags": [
+          "localization"
+        ],
+        "summary": "localization recommendations",
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional manual state preview; omit for caller IP detection",
+            "example": "Maharashtra"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: public / limited challenge",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "location": {
+                    "country_code": "IN",
+                    "state": "Maharashtra",
+                    "status": "detected",
+                    "approximate": true
+                  },
+                  "languages": [
+                    {
+                      "code": "mr",
+                      "name": "Marathi",
+                      "native_name": "\u092e\u0930\u093e\u0920\u0940",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "hi",
+                      "name": "Hindi",
+                      "native_name": "\u0939\u093f\u0928\u094d\u0926\u0940",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "en",
+                      "name": "English",
+                      "native_name": "English",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    }
+                  ],
+                  "recommended_language": "mr",
+                  "fallback_language": "en",
+                  "manual_state_selection": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/localization/states": {
+      "get": {
+        "operationId": "localization_states",
+        "tags": [
+          "localization"
+        ],
+        "summary": "localization states",
+        "parameters": [
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: public / limited challenge",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "items": [
+                    {
+                      "name": "Maharashtra",
+                      "type": "state",
+                      "languages": [
+                        {
+                          "code": "mr",
+                          "name": "Marathi",
+                          "native_name": "\u092e\u0930\u093e\u0920\u0940",
+                          "translation_status": "available",
+                          "fallback_language": "en",
+                          "direction": "ltr"
+                        },
+                        {
+                          "code": "hi",
+                          "name": "Hindi",
+                          "native_name": "\u0939\u093f\u0928\u094d\u0926\u0940",
+                          "translation_status": "available",
+                          "fallback_language": "en",
+                          "direction": "ltr"
+                        },
+                        {
+                          "code": "en",
+                          "name": "English",
+                          "native_name": "English",
+                          "translation_status": "available",
+                          "fallback_language": "en",
+                          "direction": "ltr"
+                        }
+                      ],
+                      "regional_languages": [
+                        "Marathi"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/localization/languages": {
+      "get": {
+        "operationId": "localization_all_languages",
+        "tags": [
+          "localization"
+        ],
+        "summary": "localization all languages",
+        "parameters": [
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: public / limited challenge",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "items": [
+                    {
+                      "code": "adi",
+                      "name": "Adi",
+                      "native_name": "Adi",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "angami",
+                      "name": "Angami",
+                      "native_name": "Angami",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "ao",
+                      "name": "Ao",
+                      "native_name": "Ao",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "apatani",
+                      "name": "Apatani",
+                      "native_name": "Apatani",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "as",
+                      "name": "Assamese",
+                      "native_name": "\u0985\u09b8\u09ae\u09c0\u09af\u09bc\u09be",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "awadhi",
+                      "name": "Awadhi",
+                      "native_name": "\u0905\u0935\u0927\u0940",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "bagheli",
+                      "name": "Bagheli",
+                      "native_name": "Bagheli",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "balti",
+                      "name": "Balti",
+                      "native_name": "Balti",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "bn",
+                      "name": "Bengali",
+                      "native_name": "\u09ac\u09be\u0982\u09b2\u09be",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "bhojpuri",
+                      "name": "Bhojpuri",
+                      "native_name": "\u092d\u094b\u091c\u092a\u0941\u0930\u0940",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "bhutia",
+                      "name": "Bhutia",
+                      "native_name": "Bhutia",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "bodo",
+                      "name": "Bodo",
+                      "native_name": "Bodo",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "braj",
+                      "name": "Braj",
+                      "native_name": "Braj",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "bundeli",
+                      "name": "Bundeli",
+                      "native_name": "Bundeli",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "chhattisgarhi",
+                      "name": "Chhattisgarhi",
+                      "native_name": "Chhattisgarhi",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "dhundhari",
+                      "name": "Dhundhari",
+                      "native_name": "Dhundhari",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "dogri",
+                      "name": "Dogri",
+                      "native_name": "\u0921\u094b\u0917\u0930\u0940",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "en",
+                      "name": "English",
+                      "native_name": "English",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "fr",
+                      "name": "French",
+                      "native_name": "Fran\u00e7ais",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "garhwali",
+                      "name": "Garhwali",
+                      "native_name": "Garhwali",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "garo",
+                      "name": "Garo",
+                      "native_name": "Garo",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "gondi",
+                      "name": "Gondi",
+                      "native_name": "Gondi",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "gu",
+                      "name": "Gujarati",
+                      "native_name": "\u0a97\u0ac1\u0a9c\u0ab0\u0abe\u0aa4\u0ac0",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "haryanvi",
+                      "name": "Haryanvi",
+                      "native_name": "Haryanvi",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "hi",
+                      "name": "Hindi",
+                      "native_name": "\u0939\u093f\u0928\u094d\u0926\u0940",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "jeseri",
+                      "name": "Jeseri",
+                      "native_name": "Jeseri",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "kangri",
+                      "name": "Kangri",
+                      "native_name": "Kangri",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "kn",
+                      "name": "Kannada",
+                      "native_name": "\u0c95\u0ca8\u0ccd\u0ca8\u0ca1",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "kashmiri",
+                      "name": "Kashmiri",
+                      "native_name": "Kashmiri",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "khasi",
+                      "name": "Khasi",
+                      "native_name": "Khasi",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "kokborok",
+                      "name": "Kokborok",
+                      "native_name": "Kokborok",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "konkani",
+                      "name": "Konkani",
+                      "native_name": "\u0915\u094b\u0902\u0915\u0923\u0940",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "kumaoni",
+                      "name": "Kumaoni",
+                      "native_name": "Kumaoni",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "kutchi",
+                      "name": "Kutchi",
+                      "native_name": "Kutchi",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "ladakhi",
+                      "name": "Ladakhi",
+                      "native_name": "Ladakhi",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "lepcha",
+                      "name": "Lepcha",
+                      "native_name": "Lepcha",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "magahi",
+                      "name": "Magahi",
+                      "native_name": "Magahi",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "mahl",
+                      "name": "Mahl",
+                      "native_name": "Mahl",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "maithili",
+                      "name": "Maithili",
+                      "native_name": "\u092e\u0948\u0925\u093f\u0932\u0940",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "ml",
+                      "name": "Malayalam",
+                      "native_name": "\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "malvi",
+                      "name": "Malvi",
+                      "native_name": "Malvi",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "mandeali",
+                      "name": "Mandeali",
+                      "native_name": "Mandeali",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "manipuri",
+                      "name": "Manipuri",
+                      "native_name": "\uabc3\uabe4\uabc7\uabe9\uabc2\uabe3\uabdf",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "mr",
+                      "name": "Marathi",
+                      "native_name": "\u092e\u0930\u093e\u0920\u0940",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "marwari",
+                      "name": "Marwari",
+                      "native_name": "\u092e\u093e\u0930\u0935\u093e\u0921\u093c\u0940",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "mewari",
+                      "name": "Mewari",
+                      "native_name": "Mewari",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "mizo",
+                      "name": "Mizo",
+                      "native_name": "Mizo",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "monpa",
+                      "name": "Monpa",
+                      "native_name": "Monpa",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "mundari",
+                      "name": "Mundari",
+                      "native_name": "Mundari",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "nagamese",
+                      "name": "Nagamese",
+                      "native_name": "Nagamese",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "nagpuri",
+                      "name": "Nagpuri",
+                      "native_name": "Nagpuri",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "ne",
+                      "name": "Nepali",
+                      "native_name": "\u0928\u0947\u092a\u093e\u0932\u0940",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "nicobarese",
+                      "name": "Nicobarese",
+                      "native_name": "Nicobarese",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "nyishi",
+                      "name": "Nyishi",
+                      "native_name": "Nyishi",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "or",
+                      "name": "Odia",
+                      "native_name": "\u0b13\u0b21\u0b3c\u0b3f\u0b06",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "pahari",
+                      "name": "Pahari",
+                      "native_name": "Pahari",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "pa",
+                      "name": "Punjabi",
+                      "native_name": "\u0a2a\u0a70\u0a1c\u0a3e\u0a2c\u0a40",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "purgi",
+                      "name": "Purgi",
+                      "native_name": "Purgi",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "santali",
+                      "name": "Santali",
+                      "native_name": "\u1c65\u1c5f\u1c71\u1c5b\u1c5f\u1c72\u1c64",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "sumi",
+                      "name": "Sumi",
+                      "native_name": "Sumi",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "ta",
+                      "name": "Tamil",
+                      "native_name": "\u0ba4\u0bae\u0bbf\u0bb4\u0bcd",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "tangkhul",
+                      "name": "Tangkhul",
+                      "native_name": "Tangkhul",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "te",
+                      "name": "Telugu",
+                      "native_name": "\u0c24\u0c46\u0c32\u0c41\u0c17\u0c41",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "tulu",
+                      "name": "Tulu",
+                      "native_name": "\u0ca4\u0cc1\u0cb3\u0cc1",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    },
+                    {
+                      "code": "ur",
+                      "name": "Urdu",
+                      "native_name": "\u0627\u0631\u062f\u0648",
+                      "translation_status": "available",
+                      "fallback_language": "en",
+                      "direction": "rtl"
+                    },
+                    {
+                      "code": "warli",
+                      "name": "Warli",
+                      "native_name": "Warli",
+                      "translation_status": "english_fallback",
+                      "fallback_language": "en",
+                      "direction": "ltr"
+                    }
+                  ],
+                  "total": 66
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/localization/messages/{language}": {
+      "get": {
+        "operationId": "localization_messages",
+        "tags": [
+          "localization"
+        ],
+        "summary": "localization messages",
+        "parameters": [
+          {
+            "name": "language",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Application language code, e.g. hi, mr, ta"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: public / limited challenge",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "language": "hi",
+                  "fallback_language": "en",
+                  "translation_status": "available",
+                  "messages": {
+                    "Sign in": "\u0932\u0949\u0917\u093f\u0928 \u0915\u0930\u0947\u0902"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/health": {

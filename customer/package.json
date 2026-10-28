@@ -1,0 +1,29 @@
+{
+  "name": "@family-care/customer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5174 --strictPort",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "locales:compile": "node scripts/compile-locales.mjs",
+    "prebuild": "npm run locales:compile"
+  },
+  "dependencies": {
+    "chart.js": "^4.6.1",
+    "gsap": "^3.15.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "i18n": "^0.15.4",
+    "typescript": "^7.0.2",
+    "vite": "^6.0.0"
+  }
+}

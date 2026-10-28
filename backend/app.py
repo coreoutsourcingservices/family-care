@@ -24,7 +24,8 @@ def create_app(overrides=None):
     from patient.routes import bp as patient
     from admin.routes import bp as admin
     from superadmin.routes import bp as superadmin
-    for blueprint in (auth, doctor, patient, admin, superadmin):
+    from services.localization import bp as localization
+    for blueprint in (auth, doctor, patient, admin, superadmin, localization):
         app.register_blueprint(blueprint)
 
     @app.before_request
