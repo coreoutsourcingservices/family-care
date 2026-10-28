@@ -65,3 +65,10 @@ Legacy superadmin username login remains compatible. Legacy verify-login-otp rou
 
 Admin signup: `/register` ? email OTP ? pending superadmin approval. The admin login
 page links to registration and does not display a superadmin sign-in link.
+
+
+### Language regression test
+
+After `npm run build`, run `npm run test:localization` with Playwright Chromium installed (`npx playwright install chromium`). To use installed Google Chrome in PowerShell, set `$env:PLAYWRIGHT_CHANNEL="chrome"` first. The test starts isolated SQLite Flask/Next fixtures on ports 5501/3006, checks all 27 login languages for both roles, switches already-visible session notices, and visits authenticated panel routes. It never uses Supabase or sends email.
+
+Catalogs and translation availability: [Localization API](../backend/LOCALIZATION_API.md). New regional catalogs are machine-generated and need native-speaker review.

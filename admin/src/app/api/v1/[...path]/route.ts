@@ -2,11 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 async function proxy(request: NextRequest, context: {params: Promise<{path:string[]}>}) {
   const {path} = await context.params;
-  if (!path.length || path.some(p => !/^[a-zA-Z0-9_-]+$/.test(p)) || !['admin','superadmin','auth','health'].includes(path[0])) return NextResponse.json({error:{message:'Route not found'}},{status:404});
+  if (!path.length || path.some(p => !/^[a-zA-Z0-9_-]+$/.test(p)) || !['admin','superadmin','auth','health','localization'].includes(path[0])) return NextResponse.json({error:{message:'Route not found'}},{status:404});
   const mutating = !['GET','HEAD'].includes(request.method);
   // Never inject CSRF credentials for a cross-origin request.
   if (mutating && (request.headers.get('origin') !== request.nextUrl.origin || request.headers.get('x-requested-with') !== 'FamilyCare')) return NextResponse.json({error:{message:'Request origin rejected'}},{status:403});
   const headers = new Headers({'Content-Type':'application/json', 'X-Auth-Transport':'cookie', 'X-Requested-With':'FamilyCare'});
+  // Enable only behind a reverse proxy that overwrites this header.
+  if (path[0] === 'localization' && process.env.GEO_FORWARD_CLIENT_IP === 'true') {
+    const forwarded = request.headers.get('x-forwarded-for');
+    if (forwarded) headers.set('X-Forwarded-For', forwarded);
+  }
   headers.set('Cookie', request.headers.get('cookie') || '');
   if (mutating) headers.set('Origin', request.nextUrl.origin);
   const csrf = request.cookies.get('fc_csrf')?.value;

@@ -1,2 +1,3 @@
 'use client';
-export default function ErrorPage({reset}:{reset:()=>void}) {return <main className="standalone"><div className="empty-card"><h1>We couldn’t load this page</h1><p>The service may be temporarily unavailable. Please try again.</p><button className="primary" onClick={reset}>Try again</button></div></main>;}
+import {useUiTranslation as useTranslation} from '@/lib/i18n';
+export default function ErrorPage({reset}:{reset:()=>void}) {const {t}=useTranslation();return <main className="standalone"><div className="empty-card"><h1>{t('We could not load this page')}</h1><p>{t('The service may be temporarily unavailable. Please try again.')}</p><button className="primary" onClick={reset}>{t('Try again')}</button></div></main>;}
