@@ -185,6 +185,94 @@ class CareProfile(Base):
     updated_at = C(DT, default=now, onupdate=now, nullable=False)
 
 
+class ChildRecord(Base):
+    __tablename__ = 'child_records'
+    __table_args__ = (CK("kind IN ('vaccination','history','growth','nutrition','consultation','consultation_request','care')", name='kind'),)
+    id = primary_id()
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), nullable=False, index=True)
+    kind = C(S(32), nullable=False)
+    data = C(JSON, nullable=False)
+    created_at = C(DT, default=now, nullable=False)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)
+    deleted_at = C(DT)
+
+
+class ChildRecordRevision(Base):
+    __tablename__ = 'child_record_revisions'
+    id = primary_id()
+    record_id = C(Uuid(as_uuid=False), FK('familycare.child_records.id', ondelete='CASCADE'), nullable=False, index=True)
+    actor_id = user_fk(nullable=False)
+    action = C(S(12), nullable=False)
+    data = C(JSON, nullable=False)
+    created_at = C(DT, default=now, nullable=False)
+
+
+class ChildPreferences(Base):
+    __tablename__ = 'child_preferences'
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), primary_key=True)
+    in_app = C(B, nullable=False, default=True)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+
+class Vaccine(Base):
+    __tablename__ = 'vaccines'
+    id = primary_id()
+    code = C(S(40), unique=True, nullable=False)
+    data = C(JSON, nullable=False)
+    active = C(B, nullable=False, default=True)
+    created_at = C(DT, default=now, nullable=False)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+
+class VaccineSchedule(Base):
+    __tablename__ = 'vaccine_schedules'
+    __table_args__ = (UQ('vaccine_id','schedule_type','dose_code','version'),
+                      CK("status IN ('DRAFT','IN_REVIEW','APPROVED','PUBLISHED','RETIRED')", name='status'))
+    id = primary_id()
+    vaccine_id = C(Uuid(as_uuid=False), FK('familycare.vaccines.id'), nullable=False, index=True)
+    schedule_type = C(S(8), nullable=False)
+    dose_code = C(S(40), nullable=False)
+    version = C(S(80), nullable=False)
+    status = C(S(16), nullable=False, default='DRAFT', index=True)
+    data = C(JSON, nullable=False)
+    created_by = user_fk(nullable=False)
+    reviewer_id = user_fk()
+    reviewed_hash = C(S(64))
+    reviewed_at = C(DT)
+    published_at = C(DT)
+    created_at = C(DT, default=now, nullable=False)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+
+class VaccineAudit(Base):
+    __tablename__ = 'vaccine_audit'
+    id = primary_id()
+    vaccine_id = C(Uuid(as_uuid=False), FK('familycare.vaccines.id'), index=True)
+    schedule_id = C(Uuid(as_uuid=False), FK('familycare.vaccine_schedules.id'), index=True)
+    actor_id = user_fk(nullable=False)
+    action = C(S(40), nullable=False)
+    data = C(JSON, nullable=False)
+    created_at = C(DT, default=now, nullable=False)
+
+
+class ChildVaccinationContext(Base):
+    __tablename__ = 'child_vaccination_context'
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), primary_key=True)
+    data = C(JSON, nullable=False)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+
+class VaccineReminderDelivery(Base):
+    __tablename__ = 'vaccine_reminder_deliveries'
+    __table_args__ = (UQ('profile_id','schedule_id','event_date','channel'),)
+    id = primary_id()
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), nullable=False)
+    schedule_id = C(Uuid(as_uuid=False), FK('familycare.vaccine_schedules.id'), nullable=False)
+    event_date = C(Date, nullable=False)
+    channel = C(S(12), nullable=False)
+    notification_id = C(Uuid(as_uuid=False), FK('familycare.email_notifications.id'))
+
+
 class CareReport(Base):
     __tablename__ = 'care_reports'
     id = primary_id()

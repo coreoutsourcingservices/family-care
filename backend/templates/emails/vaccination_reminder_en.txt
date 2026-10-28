@@ -1,0 +1,7 @@
+Hello {{ full_name }},
+
+A reminder from a published vaccination schedule is available in your FamilyCare account.
+Sign in and open your child's Vaccination page to review the source, recorded history and routine window.
+
+If a scheduled window has passed, contact your doctor to confirm the next steps. FamilyCare does not generate a catch-up prescription.
+You can disable these emails in the child's vaccination preferences.

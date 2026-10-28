@@ -1,5 +1,10 @@
 # Familycare admin
 
+Patients now show family-member and total-profile counts. Click a patient to see
+all self/child/adult/women profiles, then click a profile for member details and its
+account owner. The same flow is available in both admin and superadmin portals.
+See [patient/member API details](../backend/docs/ADMIN_PATIENT_MEMBERS.md).
+
 Next.js App Router app containing both admin and superadmin portals. All frontend
 source lives in `familycare/admin`. Default port: **3005**.
 
@@ -36,8 +41,10 @@ Flask. HttpOnly access/refresh cookies are used; tokens are never stored in loca
 The proxy validates mutation Origin + X-Requested-With, keeps CSRF material in an
 HttpOnly cookie, and injects it only into same-origin backend requests. The access
 cookie is scoped to `/` so server-rendered protected layouts can verify the session.
-The refresh cookie stays scoped to `/api/v1/auth`. Both portals share a session;
-signing in with another role replaces the previous session in this browser.
+The refresh cookie stays scoped to `/api/v1/auth`. Admin and superadmin have separate HttpOnly cookie namespaces (`fc_admin_*` and
+`fc_superadmin_*`). Patient/customer frontend cookies (`fc_access`/`fc_refresh`)
+are not forwarded or overwritten by the admin proxy. Each portal refreshes and
+logs out independently. Existing shared-cookie sessions require one fresh sign-in.
 Backend role checks remain authoritative. No public superadmin signup exists.
 
 Database totals and tables are live; empty/error/loading states do not substitute
@@ -72,3 +79,14 @@ page links to registration and does not display a superadmin sign-in link.
 After `npm run build`, run `npm run test:localization` with Playwright Chromium installed (`npx playwright install chromium`). To use installed Google Chrome in PowerShell, set `$env:PLAYWRIGHT_CHANNEL="chrome"` first. The test starts isolated SQLite Flask/Next fixtures on ports 5501/3006, checks all 27 login languages for both roles, switches already-visible session notices, and visits authenticated panel routes. It never uses Supabase or sends email.
 
 Catalogs and translation availability: [Localization API](../backend/LOCALIZATION_API.md). New regional catalogs are machine-generated and need native-speaker review.
+
+Session isolation regression: run `node tests/portal-sessions.mjs` against the isolated
+member fixture on 5501 and the built admin test server on 3006. It checks frontend
+cookie overwrites, both portals in one browser, refresh/logout isolation, stale-role
+recovery, API error states and cross-origin rejection.
+
+For authentication-only validation on backend snapshots without localization routes,
+run `node tests/smoke.mjs --auth-only`. The default smoke command retains its strict
+localization checks; `--auth-only` explicitly excludes only those assertions.
+
+Vaccination management is available at `/vaccination` and `/superadmin/vaccination`. See [workflow and API](../backend/docs/VACCINATION_MANAGEMENT.md).

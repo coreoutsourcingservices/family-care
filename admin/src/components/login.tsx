@@ -15,6 +15,7 @@ export default function Login({role,registration=false}:{role:Role;registration?
  const [challenge,setChallenge]=useState(''); const [otp,setOtp]=useState(''); const [nextPassword,setNextPassword]=useState(''); const [confirm,setConfirm]=useState('');
  const [busy,setBusy]=useState(false); const [error,setError]=useState(''); const [notice,setNotice]=useState(''); const [show,setShow]=useState(false); const [cooldown,setCooldown]=useState(0);
  useEffect(()=>{if(!cooldown)return;const id=setTimeout(()=>setCooldown(c=>c-1),1000);return()=>clearTimeout(id);},[cooldown]);
+ useEffect(()=>{if(new URLSearchParams(window.location.search).get('session')==='changed')setNotice('Your session has changed. Please sign in to this portal again.');},[]);
  useEffect(()=>{if(new URLSearchParams(window.location.search).get('session')!=='expired')return;let active=true;setBusy(true);refreshSession().then(()=>api<{user:{role:string}}>(`${apiRole(role)}/me`,{},false)).then(result=>{if(active&&result.user.role===role){router.replace(`${rolePath(role)}/dashboard`);router.refresh();}}).catch(()=>{if(active)setNotice("Your session has ended. Please sign in again.");}).finally(()=>{if(active)setBusy(false);});return()=>{active=false;};},[role,router]);
  async function submit(event:FormEvent){event.preventDefault();setBusy(true);setError('');setNotice('');try{
   let result:Result;

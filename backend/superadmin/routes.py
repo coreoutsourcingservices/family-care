@@ -14,4 +14,8 @@ route(bp, '/admins/<user_id>/suspend', c.suspend, 'POST', roles=('SUPERADMIN',))
 route(bp, '/admins/<user_id>/reactivate', c.reactivate, 'POST', roles=('SUPERADMIN',))
 route(bp, '/doctors', c.doctors, roles=('SUPERADMIN',))
 route(bp, '/patients', c.patients, roles=('SUPERADMIN',))
+from services import patient_directory
+route(bp, '/patients/<user_id>', patient_directory.account_detail, roles=('SUPERADMIN',))
+route(bp, '/patients/<user_id>/profiles', patient_directory.members, roles=('SUPERADMIN',))
+route(bp, '/patients/<user_id>/profiles/<uuid:profile_id>', patient_directory.member_detail, roles=('SUPERADMIN',))
 route(bp, '/audit-logs', c.audit_logs, roles=('SUPERADMIN',))

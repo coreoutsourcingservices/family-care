@@ -43,6 +43,12 @@ def process_one():
         db().rollback()
         return False
     user = db().get(User, item.user_id)
+    if item.template.startswith('vaccination_reminder_'):
+        from services.vaccination import reminder_still_valid
+        if not reminder_still_valid(item):
+            item.status = 'CANCELLED'
+            db().commit()
+            return True
     context = json.loads(item.context_json)
     if item.challenge_id:
         challenge = db().get(OTPChallenge, item.challenge_id)

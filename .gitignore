@@ -20,3 +20,6 @@ htmlcov/
 dist/
 artifacts/
 .preview/
+
+# Local browser verification artifacts
+test-results/

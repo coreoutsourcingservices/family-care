@@ -34,6 +34,9 @@ def test_app():
             with Operations.context(MigrationContext.configure(connection)):
                 importlib.import_module('migrations.versions.0003_doctor_referrals').upgrade()
                 importlib.import_module('migrations.versions.0004_members_and_cloudinary').upgrade()
+                importlib.import_module('migrations.versions.0005_care_profile_public_ids').upgrade()
+                importlib.import_module('migrations.versions.0006_child_records').upgrade()
+                importlib.import_module('migrations.versions.0007_vaccination_management').upgrade()
     else:
         Base.metadata.create_all(engine)
     yield app
@@ -46,7 +49,7 @@ def app(test_app):
     engine = test_app.extensions['database_engine']
     with engine.begin() as connection:
         if engine.dialect.name == 'postgresql':
-            connection.exec_driver_sql('TRUNCATE familycare.users CASCADE')
+            connection.exec_driver_sql('TRUNCATE familycare.users, familycare.vaccines CASCADE')
         else:
             for table in reversed(Base.metadata.sorted_tables):
                 connection.execute(table.delete())

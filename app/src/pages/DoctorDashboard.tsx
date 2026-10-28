@@ -37,7 +37,7 @@ export default function DoctorDashboard() {
     catch (failure) { setError(failure instanceof Error ? failure.message : 'Unable to sign out.'); }
     finally { setSigningOut(false); }
   }
-  return <div className="customer-dashboard"><header className="customer-dashboard-header"><Logo /><div className="customer-account-actions"><span>Doctor Portal</span><button type="button" disabled={signingOut} onClick={signOut}><LogOut size={16} />Sign out</button></div></header>
+  return <div className="customer-dashboard"><header className="customer-dashboard-header"><Logo /><div className="customer-account-actions"><Link to="/doctor/vaccination-reviews">Vaccination reviews</Link><span>Doctor Portal</span><button type="button" disabled={signingOut} onClick={signOut}><LogOut size={16} />Sign out</button></div></header>
     <div className="doctor-care-dashboard"><span className="member-eyebrow">YOUR REFERRED PROFILES</span><h1>Care, with permission.</h1><p className="doctor-access-note"><ShieldCheck size={17} />Only family profiles referred to you appear here. Other family members are private.</p>
       {error && <div className="customer-dashboard-error" role="alert">{error}<button type="button" className="member-secondary" onClick={() => setAttempt(value => value + 1)}>Try again</button></div>}
       {loading ? <p role="status">Loading referred profiles...</p> : !error && <>

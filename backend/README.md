@@ -1,5 +1,10 @@
 # Family Care backend API
 
+Read-only admin patient/member directory: [API and UI details](docs/ADMIN_PATIENT_MEMBERS.md).
+
+Child workspace account records, reminders, consultation requests and current
+clinical-content availability: [Child frontend integration](docs/CHILD_FRONTEND_INTEGRATION.md).
+
 Doctor referral IDs and patient connection APIs: [referral guide](docs/REFERRALS.md).
 
 Patient self/member profiles, parent links and Cloudinary report uploads:

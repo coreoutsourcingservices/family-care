@@ -20,9 +20,14 @@ def listing(role, page, per_page, status=None, pending=False):
     elif status:
         query = query.where(User.approval_status == status)
     rows, total = paginate(query.order_by(User.created_at, User.id), page, per_page)
+    if role == 'PATIENT':
+        from services.patient_directory import counts_for_users
+        profile_counts = counts_for_users([user.id for user in rows])
     items = []
     for user in rows:
         item = serialize_user(user)
+        if role == 'PATIENT':
+            item['profile_counts'] = profile_counts[user.id]
         if role == 'DOCTOR':
             profile = db().get(DoctorProfile, user.id)
             item['doctor'] = {k: getattr(profile, k) for k in ('qualification', 'specialization',

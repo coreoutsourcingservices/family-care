@@ -1,6 +1,6 @@
 import { ApiError, refreshSession } from './authApi';
 
-export async function careApi<T>(path: string, body?: FormData | Record<string, unknown>, retry = true, method?: 'GET' | 'POST' | 'PUT'): Promise<T> {
+export async function careApi<T>(path: string, body?: FormData | Record<string, unknown>, retry = true, method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'): Promise<T> {
   const headers: Record<string, string> = { 'X-Auth-Transport': 'cookie', 'X-Requested-With': 'FamilyCare' };
   const multipart = body instanceof FormData;
   if (body && !multipart) headers['Content-Type'] = 'application/json';
