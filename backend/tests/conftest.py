@@ -37,6 +37,7 @@ def test_app():
                 importlib.import_module('migrations.versions.0005_care_profile_public_ids').upgrade()
                 importlib.import_module('migrations.versions.0006_child_records').upgrade()
                 importlib.import_module('migrations.versions.0007_vaccination_management').upgrade()
+                importlib.import_module('migrations.versions.0008_report_text').upgrade()
     else:
         Base.metadata.create_all(engine)
     yield app

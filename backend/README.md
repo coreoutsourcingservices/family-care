@@ -133,3 +133,5 @@ uses `SMTP_SSL=false` and `SMTP_STARTTLS=true`. Reset/approval email still needs
 Current login flow: all roles use email + password without login OTP. Signup email OTP,
 password-reset OTP, account approval and first-login password change are preserved.
 Legacy superadmin username login remains compatible. Legacy verify-login-otp routes return HTTP 410.
+
+Medical report image/PDF extraction and optional English translation: [OCR API and runtime setup](docs/REPORT_OCR_API.md). Run the separate `python -m scripts.report_worker` alongside the API.

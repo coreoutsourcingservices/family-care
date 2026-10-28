@@ -1,0 +1,993 @@
+{
+  "base_url": "http://127.0.0.1:5001/api/v1",
+  "notice": "Synthetic examples captured from isolated SQLite. Credentials, tokens, IDs and links are examples, not live patient data. Scenarios have separate preconditions; do not run this file as one linear workflow.",
+  "examples": [
+    {
+      "name": "Doctor registration",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/register",
+      "auth": "PUBLIC",
+      "request_json": {
+        "full_name": "Dr New Example",
+        "email": "new-doctor@example.com",
+        "mobile_number": "+919876543219",
+        "password": "ExamplePass8!",
+        "confirm_password": "ExamplePass8!",
+        "qualification": "MBBS",
+        "medical_registration_number": "DEMO-12345",
+        "registering_council": "Example Council",
+        "specialization": "Pediatrics"
+      },
+      "response_status": 202,
+      "response_json": {
+        "approval_status": "PENDING_EMAIL_VERIFICATION",
+        "challenge_token": "{{challenge_token}}",
+        "email_status": "sent",
+        "expires_in": 300,
+        "message": "OTP sent to your email. Verify OTP to complete registration.",
+        "public_id": null,
+        "resend_after": 60,
+        "user_id": null
+      }
+    },
+    {
+      "name": "Doctor resend email OTP",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/resend-otp",
+      "auth": "PUBLIC",
+      "request_json": {
+        "challenge_token": "{{challenge_token}}"
+      },
+      "response_status": 200,
+      "response_json": {
+        "challenge_token": "{{challenge_token}}",
+        "email_status": "sent",
+        "expires_in": 300,
+        "message": "OTP sent to your email. Verify OTP to complete registration.",
+        "resend_after": 60
+      }
+    },
+    {
+      "name": "Restart pending email verification",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/auth/request-email-verification",
+      "auth": "PUBLIC",
+      "request_json": {
+        "email": "new-doctor@example.com",
+        "password": "ExamplePass8!"
+      },
+      "response_status": 202,
+      "response_json": {
+        "challenge_token": "{{challenge_token}}",
+        "email_status": "sent",
+        "expires_in": 300,
+        "message": "OTP sent to your email. Verify OTP to complete registration.",
+        "resend_after": 60
+      }
+    },
+    {
+      "name": "Verify doctor email",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/verify-email",
+      "auth": "PUBLIC",
+      "request_json": {
+        "challenge_token": "{{challenge_token}}",
+        "otp": "123456"
+      },
+      "response_status": 202,
+      "response_json": {
+        "message": "Email verified. Waiting for approval.",
+        "user": {
+          "account_status": "ACTIVE",
+          "approval_status": "PENDING_APPROVAL",
+          "email": "new-doctor@example.com",
+          "email_verified": true,
+          "full_name": "Dr New Example",
+          "id": "cf5c4ef0-50b2-454b-823f-e42dab16c2c5",
+          "must_change_password": false,
+          "phone_number": "+919876543219",
+          "public_id": "D6b75fdcd6046",
+          "referral_id": "newexampleD6b75fdcd6046",
+          "role": "DOCTOR"
+        }
+      }
+    },
+    {
+      "name": "Doctor approval status",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/approval-status",
+      "auth": "PUBLIC",
+      "request_json": {
+        "email": "new-doctor@example.com",
+        "password": "ExamplePass8!"
+      },
+      "response_status": 200,
+      "response_json": {
+        "account_status": "ACTIVE",
+        "approval_status": "PENDING_APPROVAL",
+        "email_verified": true,
+        "public_id": "D6b75fdcd6046",
+        "rejection_reason": null
+      }
+    },
+    {
+      "name": "Resubmit rejected doctor application",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/resubmit",
+      "auth": "PUBLIC",
+      "request_json": {
+        "email": "new-doctor@example.com",
+        "password": "ExamplePass8!",
+        "qualification": "MBBS",
+        "medical_registration_number": "DEMO-12345-CORRECTED",
+        "registering_council": "Example Council"
+      },
+      "response_status": 202,
+      "response_json": {
+        "message": "Resubmitted for review",
+        "user": {
+          "account_status": "ACTIVE",
+          "approval_status": "PENDING_APPROVAL",
+          "email": "new-doctor@example.com",
+          "email_verified": true,
+          "full_name": "Dr New Example",
+          "id": "cf5c4ef0-50b2-454b-823f-e42dab16c2c5",
+          "must_change_password": false,
+          "phone_number": "+919876543219",
+          "public_id": "D6b75fdcd6046",
+          "referral_id": "newexampleD6b75fdcd6046",
+          "role": "DOCTOR"
+        }
+      }
+    },
+    {
+      "name": "Doctor login - Bearer response",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/login",
+      "auth": "PUBLIC",
+      "request_json": {
+        "email": "doctor@example.com",
+        "password": "SmokePassword8!"
+      },
+      "response_status": 200,
+      "response_json": {
+        "access_token": "{{access_token}}",
+        "expires_in": 86400,
+        "refresh_token": "{{refresh_token}}",
+        "token_type": "Bearer",
+        "user": {
+          "account_status": "ACTIVE",
+          "approval_status": "APPROVED",
+          "email": "doctor@example.com",
+          "email_verified": true,
+          "full_name": "Dr Example Kumar",
+          "id": "11111111-1111-4111-8111-111111111111",
+          "must_change_password": false,
+          "phone_number": null,
+          "public_id": "D000001",
+          "referral_id": "examplekumarD000001",
+          "role": "DOCTOR"
+        }
+      }
+    },
+    {
+      "name": "Doctor profile",
+      "method": "GET",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/me",
+      "auth": "DOCTOR",
+      "request_json": null,
+      "response_status": 200,
+      "response_json": {
+        "user": {
+          "account_status": "ACTIVE",
+          "approval_status": "APPROVED",
+          "doctor": {
+            "medical_registration_number": "TEST-1",
+            "nmr_id": null,
+            "qualification": "MBBS",
+            "registering_council": "Test Council",
+            "specialization": null,
+            "verification_status": "APPROVED"
+          },
+          "email": "doctor@example.com",
+          "email_verified": true,
+          "full_name": "Dr Example Kumar",
+          "id": "11111111-1111-4111-8111-111111111111",
+          "must_change_password": false,
+          "phone_number": null,
+          "public_id": "D000001",
+          "referral_id": "examplekumarD000001",
+          "role": "DOCTOR"
+        }
+      }
+    },
+    {
+      "name": "Own doctor referral ID",
+      "method": "GET",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/referral",
+      "auth": "DOCTOR",
+      "request_json": null,
+      "response_status": 200,
+      "response_json": {
+        "doctor": {
+          "account_status": "ACTIVE",
+          "approval_status": "APPROVED",
+          "email": "doctor@example.com",
+          "full_name": "Dr Example Kumar",
+          "mobile_number": null,
+          "public_id": "D000001",
+          "referral_id": "examplekumarD000001"
+        }
+      }
+    },
+    {
+      "name": "New patient signup with doctor referral",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/patients/register",
+      "auth": "PUBLIC",
+      "request_json": {
+        "full_name": "New Example Parent",
+        "email": "new-parent@example.com",
+        "mobile_number": "+919876543218",
+        "password": "ExampleParent8!",
+        "confirm_password": "ExampleParent8!",
+        "referral_id": "examplekumarD000001"
+      },
+      "response_status": 202,
+      "response_json": {
+        "approval_status": "PENDING_EMAIL_VERIFICATION",
+        "challenge_token": "{{challenge_token}}",
+        "email_status": "sent",
+        "expires_in": 300,
+        "message": "OTP sent to your email. Verify OTP to complete registration.",
+        "public_id": null,
+        "resend_after": 60,
+        "user_id": null
+      }
+    },
+    {
+      "name": "Verify referred patient signup",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/patients/verify-email",
+      "auth": "PUBLIC",
+      "request_json": {
+        "challenge_token": "{{challenge_token}}",
+        "otp": "123456"
+      },
+      "response_status": 200,
+      "response_json": {
+        "access_token": "{{access_token}}",
+        "expires_in": 86400,
+        "refresh_token": "{{refresh_token}}",
+        "token_type": "Bearer",
+        "user": {
+          "account_status": "ACTIVE",
+          "approval_status": "APPROVED",
+          "email": "new-parent@example.com",
+          "email_verified": true,
+          "full_name": "New Example Parent",
+          "id": "4c712819-4d84-4133-a2b9-a6fbae14a20f",
+          "must_change_password": false,
+          "phone_number": "+919876543218",
+          "public_id": "Ce1417d884420",
+          "referred_doctor": {
+            "account_status": "ACTIVE",
+            "approval_status": "APPROVED",
+            "email": "doctor@example.com",
+            "full_name": "Dr Example Kumar",
+            "mobile_number": null,
+            "public_id": "D000001",
+            "referral_id": "examplekumarD000001"
+          },
+          "role": "PATIENT"
+        }
+      }
+    },
+    {
+      "name": "Connect parent account using referral",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/patients/connect-doctor",
+      "auth": "PATIENT",
+      "request_json": {
+        "referral_id": "examplekumarD000001"
+      },
+      "response_status": 200,
+      "response_json": {
+        "doctor": {
+          "account_status": "ACTIVE",
+          "approval_status": "APPROVED",
+          "email": "doctor@example.com",
+          "full_name": "Dr Example Kumar",
+          "mobile_number": null,
+          "public_id": "D000001",
+          "referral_id": "examplekumarD000001"
+        },
+        "message": "Patient connected to doctor"
+      }
+    },
+    {
+      "name": "Parent connected doctor",
+      "method": "GET",
+      "url": "http://127.0.0.1:5001/api/v1/patients/doctor",
+      "auth": "PATIENT",
+      "request_json": null,
+      "response_status": 200,
+      "response_json": {
+        "doctor": {
+          "account_status": "ACTIVE",
+          "approval_status": "APPROVED",
+          "email": "doctor@example.com",
+          "full_name": "Dr Example Kumar",
+          "mobile_number": null,
+          "public_id": "D000001",
+          "referral_id": "examplekumarD000001"
+        }
+      }
+    },
+    {
+      "name": "Create child profile with referral",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/patients/profiles",
+      "auth": "PATIENT",
+      "request_json": {
+        "profile_type": "member",
+        "module": "child",
+        "full_name": "Example Child",
+        "date_of_birth": "2020-03-01",
+        "guardian_contact": "+919876543210",
+        "emergency_contacts": [],
+        "referral_id": "examplekumarD000001"
+      },
+      "response_status": 201,
+      "response_json": {
+        "profile": {
+          "created_at": "2026-10-28T10:48:32.500474Z",
+          "date_of_birth": "2020-03-01",
+          "doctor": {
+            "account_status": "ACTIVE",
+            "approval_status": "APPROVED",
+            "email": "doctor@example.com",
+            "full_name": "Dr Example Kumar",
+            "mobile_number": null,
+            "public_id": "D000001",
+            "referral_id": "examplekumarD000001"
+          },
+          "emergency_contacts": [],
+          "full_name": "Example Child",
+          "guardian_contact": "+919876543210",
+          "id": "33333333-3333-4333-8333-333333333333",
+          "module": "child",
+          "parent_profile_id": null,
+          "profile_type": "member"
+        }
+      }
+    },
+    {
+      "name": "Connect existing family profile using referral",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/patients/profiles/33333333-3333-4333-8333-333333333333/connect-doctor",
+      "auth": "PATIENT",
+      "request_json": {
+        "referral_id": "examplekumarD000001"
+      },
+      "response_status": 200,
+      "response_json": {
+        "profile": {
+          "created_at": "2026-10-28T10:48:32.500474Z",
+          "date_of_birth": "2020-03-01",
+          "doctor": {
+            "account_status": "ACTIVE",
+            "approval_status": "APPROVED",
+            "email": "doctor@example.com",
+            "full_name": "Dr Example Kumar",
+            "mobile_number": null,
+            "public_id": "D000001",
+            "referral_id": "examplekumarD000001"
+          },
+          "emergency_contacts": [],
+          "full_name": "Example Child",
+          "guardian_contact": "+919876543210",
+          "id": "33333333-3333-4333-8333-333333333333",
+          "module": "child",
+          "parent_profile_id": null,
+          "profile_type": "member"
+        }
+      }
+    },
+    {
+      "name": "Doctor connected patient accounts",
+      "method": "GET",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/patients?page=1&per_page=25",
+      "auth": "DOCTOR",
+      "request_json": null,
+      "response_status": 200,
+      "response_json": {
+        "items": [
+          {
+            "account_status": "ACTIVE",
+            "approval_status": "APPROVED",
+            "email": "patient@example.com",
+            "email_verified": true,
+            "full_name": "Example Parent",
+            "id": "22222222-2222-4222-8222-222222222222",
+            "must_change_password": false,
+            "phone_number": null,
+            "public_id": "C000001",
+            "referred_doctor": {
+              "account_status": "ACTIVE",
+              "approval_status": "APPROVED",
+              "email": "doctor@example.com",
+              "full_name": "Dr Example Kumar",
+              "mobile_number": null,
+              "public_id": "D000001",
+              "referral_id": "examplekumarD000001"
+            },
+            "role": "PATIENT"
+          },
+          {
+            "account_status": "ACTIVE",
+            "approval_status": "APPROVED",
+            "email": "new-parent@example.com",
+            "email_verified": true,
+            "full_name": "New Example Parent",
+            "id": "4c712819-4d84-4133-a2b9-a6fbae14a20f",
+            "must_change_password": false,
+            "phone_number": "+919876543218",
+            "public_id": "Ce1417d884420",
+            "referred_doctor": {
+              "account_status": "ACTIVE",
+              "approval_status": "APPROVED",
+              "email": "doctor@example.com",
+              "full_name": "Dr Example Kumar",
+              "mobile_number": null,
+              "public_id": "D000001",
+              "referral_id": "examplekumarD000001"
+            },
+            "role": "PATIENT"
+          }
+        ],
+        "page": 1,
+        "per_page": 25,
+        "total": 2
+      }
+    },
+    {
+      "name": "Doctor connected child care profiles",
+      "method": "GET",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/care-profiles?module=child&page=1&per_page=25",
+      "auth": "DOCTOR",
+      "request_json": null,
+      "response_status": 200,
+      "response_json": {
+        "items": [
+          {
+            "created_at": "2026-10-28T10:48:32.500474Z",
+            "date_of_birth": "2020-03-01",
+            "doctor": {
+              "account_status": "ACTIVE",
+              "approval_status": "APPROVED",
+              "email": "doctor@example.com",
+              "full_name": "Dr Example Kumar",
+              "mobile_number": null,
+              "public_id": "D000001",
+              "referral_id": "examplekumarD000001"
+            },
+            "emergency_contacts": [],
+            "full_name": "Example Child",
+            "guardian_contact": "+919876543210",
+            "id": "33333333-3333-4333-8333-333333333333",
+            "module": "child",
+            "parent_profile_id": null,
+            "profile_type": "member"
+          }
+        ],
+        "page": 1,
+        "per_page": 25,
+        "total": 1
+      }
+    },
+    {
+      "name": "Doctor care profile detail",
+      "method": "GET",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/care-profiles/33333333-3333-4333-8333-333333333333",
+      "auth": "DOCTOR",
+      "request_json": null,
+      "response_status": 200,
+      "response_json": {
+        "profile": {
+          "created_at": "2026-10-28T10:48:32.500474Z",
+          "date_of_birth": "2020-03-01",
+          "doctor": {
+            "account_status": "ACTIVE",
+            "approval_status": "APPROVED",
+            "email": "doctor@example.com",
+            "full_name": "Dr Example Kumar",
+            "mobile_number": null,
+            "public_id": "D000001",
+            "referral_id": "examplekumarD000001"
+          },
+          "emergency_contacts": [],
+          "full_name": "Example Child",
+          "guardian_contact": "+919876543210",
+          "id": "33333333-3333-4333-8333-333333333333",
+          "module": "child",
+          "parent_profile_id": null,
+          "profile_type": "member"
+        }
+      }
+    },
+    {
+      "name": "Doctor reports list",
+      "method": "GET",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/care-profiles/33333333-3333-4333-8333-333333333333/reports?page=1&per_page=25",
+      "auth": "DOCTOR",
+      "request_json": null,
+      "response_status": 200,
+      "response_json": {
+        "items": [
+          {
+            "asset_id": null,
+            "content_type": "application/pdf",
+            "created_at": "2026-10-28T10:48:32.581971Z",
+            "delivery_type": "authenticated",
+            "folder": null,
+            "id": "44444444-4444-4444-8444-444444444444",
+            "name": "Example report.pdf",
+            "profile_id": "33333333-3333-4333-8333-333333333333",
+            "public_id": "synthetic/example.pdf",
+            "resource_type": "raw",
+            "secure_url": "https://res.cloudinary.com/example-cloud/raw/authenticated/synthetic/example.pdf",
+            "size_bytes": 1024,
+            "storage_provider": "cloudinary",
+            "url": "https://api.cloudinary.com/v1_1/example-cloud/raw/download?SIGNED_PARAMETERS",
+            "url_expires_in": 300
+          }
+        ],
+        "page": 1,
+        "per_page": 25,
+        "total": 1
+      }
+    },
+    {
+      "name": "Doctor report download JSON",
+      "method": "GET",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/care-profiles/33333333-3333-4333-8333-333333333333/reports/44444444-4444-4444-8444-444444444444/download",
+      "auth": "DOCTOR",
+      "request_json": null,
+      "response_status": 200,
+      "response_json": {
+        "report": {
+          "asset_id": null,
+          "content_type": "application/pdf",
+          "created_at": "2026-10-28T10:48:32.581971Z",
+          "delivery_type": "authenticated",
+          "folder": null,
+          "id": "44444444-4444-4444-8444-444444444444",
+          "name": "Example report.pdf",
+          "profile_id": "33333333-3333-4333-8333-333333333333",
+          "public_id": "synthetic/example.pdf",
+          "resource_type": "raw",
+          "secure_url": "https://res.cloudinary.com/example-cloud/raw/authenticated/synthetic/example.pdf",
+          "size_bytes": 1024,
+          "storage_provider": "cloudinary",
+          "url": "https://api.cloudinary.com/v1_1/example-cloud/raw/download?SIGNED_PARAMETERS",
+          "url_expires_in": 300
+        }
+      }
+    },
+    {
+      "name": "Parent sends consultation request",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/children/33333333-3333-4333-8333-333333333333/consultation-requests",
+      "auth": "PATIENT",
+      "request_json": {
+        "title": "Routine review request",
+        "date": "2026-10-28",
+        "notes": "Synthetic request only"
+      },
+      "response_status": 201,
+      "response_json": {
+        "record": {
+          "batch_number": "",
+          "category": "",
+          "certificate_id": null,
+          "date": "2026-10-28",
+          "doctor_id": "11111111-1111-4111-8111-111111111111",
+          "dose_code": "",
+          "height": "",
+          "id": "7f7afb1b-dfd3-47a6-9aed-0a484142fec2",
+          "kind": "consultation_request",
+          "meal": "",
+          "nextDate": "",
+          "notes": "Synthetic request only",
+          "provider": "",
+          "schedule_id": null,
+          "schedule_type": "",
+          "source_id": null,
+          "status": "REQUESTED",
+          "title": "Routine review request",
+          "vaccinator": "",
+          "vaccine_id": null,
+          "verification_status": "PARENT_REPORTED",
+          "weight": ""
+        }
+      }
+    },
+    {
+      "name": "Doctor consultation requests",
+      "method": "GET",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/consultation-requests?page=1&per_page=25",
+      "auth": "DOCTOR",
+      "request_json": null,
+      "response_status": 200,
+      "response_json": {
+        "items": [
+          {
+            "batch_number": "",
+            "category": "",
+            "certificate_id": null,
+            "child_id": "33333333-3333-4333-8333-333333333333",
+            "date": "2026-10-28",
+            "doctor_id": "11111111-1111-4111-8111-111111111111",
+            "dose_code": "",
+            "height": "",
+            "id": "7f7afb1b-dfd3-47a6-9aed-0a484142fec2",
+            "kind": "consultation_request",
+            "meal": "",
+            "nextDate": "",
+            "notes": "Synthetic request only",
+            "provider": "",
+            "schedule_id": null,
+            "schedule_type": "",
+            "source_id": null,
+            "status": "REQUESTED",
+            "title": "Routine review request",
+            "vaccinator": "",
+            "vaccine_id": null,
+            "verification_status": "PARENT_REPORTED",
+            "weight": ""
+          }
+        ],
+        "page": 1,
+        "per_page": 25,
+        "total": 1
+      }
+    },
+    {
+      "name": "Doctor requests for connected child",
+      "method": "GET",
+      "url": "http://127.0.0.1:5001/api/v1/children/33333333-3333-4333-8333-333333333333/consultation-requests?page=1&per_page=25",
+      "auth": "DOCTOR",
+      "request_json": null,
+      "response_status": 200,
+      "response_json": {
+        "items": [
+          {
+            "batch_number": "",
+            "category": "",
+            "certificate_id": null,
+            "date": "2026-10-28",
+            "doctor_id": "11111111-1111-4111-8111-111111111111",
+            "dose_code": "",
+            "height": "",
+            "id": "7f7afb1b-dfd3-47a6-9aed-0a484142fec2",
+            "kind": "consultation_request",
+            "meal": "",
+            "nextDate": "",
+            "notes": "Synthetic request only",
+            "provider": "",
+            "schedule_id": null,
+            "schedule_type": "",
+            "source_id": null,
+            "status": "REQUESTED",
+            "title": "Routine review request",
+            "vaccinator": "",
+            "vaccine_id": null,
+            "verification_status": "PARENT_REPORTED",
+            "weight": ""
+          }
+        ],
+        "page": 1,
+        "per_page": 25,
+        "total": 1
+      }
+    },
+    {
+      "name": "Assigned doctor vaccination reviews",
+      "method": "GET",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/vaccination-reviews?page=1&per_page=25",
+      "auth": "DOCTOR",
+      "request_json": null,
+      "response_status": 200,
+      "response_json": {
+        "items": [
+          {
+            "age_end": 7,
+            "age_label": "Synthetic example only",
+            "age_start": 6,
+            "age_unit": "years",
+            "dose_code": "D1",
+            "dose_name": "Synthetic dose",
+            "effective_from": "2026-01-01",
+            "effective_to": null,
+            "eligibility": {
+              "active": true,
+              "country": "IN",
+              "districts": [],
+              "gender": "All",
+              "programme": "",
+              "requires_clinical_review": true,
+              "states": []
+            },
+            "id": "55555555-5555-4555-8555-555555555555",
+            "injection_site": "",
+            "instructions": "",
+            "maximum_age": null,
+            "minimum_age": null,
+            "minimum_interval_days": null,
+            "previous_dose_code": "",
+            "published_at": null,
+            "reminders": {
+              "before_days": [
+                7
+              ],
+              "email": false,
+              "enabled": true,
+              "in_app": true,
+              "language": "en",
+              "on_due": true,
+              "overdue_days": [
+                7
+              ]
+            },
+            "route": "Other",
+            "schedule_type": "UIP",
+            "source_reference": "Synthetic fixture, not a clinical guideline",
+            "source_url": "https://example.org/synthetic-guideline",
+            "status": "IN_REVIEW",
+            "vaccine": {
+              "active": true,
+              "category": "Government",
+              "code": "EXAMPLE",
+              "description_en": "",
+              "description_hi": "",
+              "id": "b103a2b7-4c93-4275-8e05-1d9384a1bc37",
+              "name_en": "Synthetic vaccine",
+              "name_hi": "",
+              "protects_against": "Synthetic example only"
+            },
+            "vaccine_id": "b103a2b7-4c93-4275-8e05-1d9384a1bc37",
+            "version": "demo-v1"
+          }
+        ],
+        "page": 1,
+        "per_page": 25,
+        "total": 1
+      }
+    },
+    {
+      "name": "Doctor approves assigned review",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/doctors/vaccination-reviews/55555555-5555-4555-8555-555555555555",
+      "auth": "DOCTOR",
+      "request_json": {
+        "decision": "APPROVE",
+        "notes": "Synthetic fixture review, not a clinical approval of real patient care.",
+        "attestation": true
+      },
+      "response_status": 200,
+      "response_json": {
+        "schedule": {
+          "age_end": 7,
+          "age_label": "Synthetic example only",
+          "age_start": 6,
+          "age_unit": "years",
+          "dose_code": "D1",
+          "dose_name": "Synthetic dose",
+          "effective_from": "2026-01-01",
+          "effective_to": null,
+          "eligibility": {
+            "active": true,
+            "country": "IN",
+            "districts": [],
+            "gender": "All",
+            "programme": "",
+            "requires_clinical_review": true,
+            "states": []
+          },
+          "id": "55555555-5555-4555-8555-555555555555",
+          "injection_site": "",
+          "instructions": "",
+          "maximum_age": null,
+          "medical_review": {
+            "council": "Test Council",
+            "name": "Dr Example Kumar",
+            "notes": "Synthetic fixture review, not a clinical approval of real patient care.",
+            "qualification": "MBBS",
+            "registration": "TEST-1",
+            "reviewed_at": "2026-10-28T10:48:33.150282Z"
+          },
+          "minimum_age": null,
+          "minimum_interval_days": null,
+          "previous_dose_code": "",
+          "published_at": null,
+          "reminders": {
+            "before_days": [
+              7
+            ],
+            "email": false,
+            "enabled": true,
+            "in_app": true,
+            "language": "en",
+            "on_due": true,
+            "overdue_days": [
+              7
+            ]
+          },
+          "route": "Other",
+          "schedule_type": "UIP",
+          "source_reference": "Synthetic fixture, not a clinical guideline",
+          "source_url": "https://example.org/synthetic-guideline",
+          "status": "APPROVED",
+          "vaccine": {
+            "active": true,
+            "category": "Government",
+            "code": "EXAMPLE",
+            "description_en": "",
+            "description_hi": "",
+            "id": "b103a2b7-4c93-4275-8e05-1d9384a1bc37",
+            "name_en": "Synthetic vaccine",
+            "name_hi": "",
+            "protects_against": "Synthetic example only"
+          },
+          "vaccine_id": "b103a2b7-4c93-4275-8e05-1d9384a1bc37",
+          "version": "demo-v1"
+        }
+      }
+    },
+    {
+      "name": "Refresh doctor Bearer session",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/auth/refresh",
+      "auth": "PUBLIC",
+      "request_json": {
+        "refresh_token": "{{refresh_token}}"
+      },
+      "response_status": 200,
+      "response_json": {
+        "access_token": "{{access_token}}",
+        "expires_in": 86400,
+        "refresh_token": "{{refresh_token}}",
+        "token_type": "Bearer",
+        "user": {
+          "account_status": "ACTIVE",
+          "approval_status": "APPROVED",
+          "email": "doctor@example.com",
+          "email_verified": true,
+          "full_name": "Dr Example Kumar",
+          "id": "11111111-1111-4111-8111-111111111111",
+          "must_change_password": false,
+          "phone_number": null,
+          "public_id": "D000001",
+          "referral_id": "examplekumarD000001",
+          "role": "DOCTOR"
+        }
+      }
+    },
+    {
+      "name": "Doctor active sessions",
+      "method": "GET",
+      "url": "http://127.0.0.1:5001/api/v1/auth/sessions",
+      "auth": "DOCTOR",
+      "request_json": null,
+      "response_status": 200,
+      "response_json": {
+        "items": [
+          {
+            "created_at": "2026-10-28T10:48:31.663144Z",
+            "current": true,
+            "expires_at": "2026-11-27T10:48:31.660233Z",
+            "id": "e4f25ce8-b1c6-4512-81fd-dee2fadfba5a"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Revoke another doctor session",
+      "method": "DELETE",
+      "url": "http://127.0.0.1:5001/api/v1/auth/sessions/b7ef7110-27b7-4d66-985e-9845284a76e8",
+      "auth": "DOCTOR",
+      "request_json": null,
+      "response_status": 200,
+      "response_json": {
+        "message": "Session revoked"
+      }
+    },
+    {
+      "name": "Doctor password change",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/auth/change-password",
+      "auth": "DOCTOR",
+      "request_json": {
+        "current_password": "SmokePassword8!",
+        "new_password": "ChangedExample8!",
+        "confirm_password": "ChangedExample8!"
+      },
+      "response_status": 200,
+      "response_json": {
+        "message": "Password changed. All sessions revoked; sign in again."
+      }
+    },
+    {
+      "name": "Doctor forgot password",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/auth/forgot-password",
+      "auth": "PUBLIC",
+      "request_json": {
+        "email": "doctor@example.com"
+      },
+      "response_status": 202,
+      "response_json": {
+        "challenge_token": "{{challenge_token}}",
+        "email_status": "queued",
+        "expires_in": 300,
+        "message": "If an eligible account exists, reset instructions are queued.",
+        "resend_after": 60
+      }
+    },
+    {
+      "name": "Resend password reset OTP",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/auth/resend-otp",
+      "auth": "PUBLIC",
+      "request_json": {
+        "challenge_token": "{{challenge_token}}"
+      },
+      "response_status": 200,
+      "response_json": {
+        "challenge_token": "{{challenge_token}}",
+        "email_status": "queued",
+        "expires_in": 300,
+        "resend_after": 60
+      }
+    },
+    {
+      "name": "Doctor reset password",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/auth/reset-password",
+      "auth": "PUBLIC",
+      "request_json": {
+        "challenge_token": "{{challenge_token}}",
+        "otp": "123456",
+        "new_password": "ResetExample8!",
+        "confirm_password": "ResetExample8!"
+      },
+      "response_status": 200,
+      "response_json": {
+        "message": "Password reset. Sign in again."
+      }
+    },
+    {
+      "name": "Doctor logout",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/auth/logout",
+      "auth": "DOCTOR",
+      "request_json": {},
+      "response_status": 200,
+      "response_json": {
+        "message": "Logged out"
+      }
+    },
+    {
+      "name": "Doctor logout all devices",
+      "method": "POST",
+      "url": "http://127.0.0.1:5001/api/v1/auth/logout-all",
+      "auth": "DOCTOR",
+      "request_json": {},
+      "response_status": 200,
+      "response_json": {
+        "message": "All sessions revoked"
+      }
+    }
+  ]
+}

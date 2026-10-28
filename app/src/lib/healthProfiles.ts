@@ -61,7 +61,7 @@ export async function downloadReport(report:HealthReport,retry=true):Promise<voi
   const response=await fetch(reportUrl(report),{credentials:'include',headers:{'X-Auth-Transport':'cookie','X-Requested-With':'FamilyCare'}});
   if(!response.ok){const data=await response.json();if(response.status===401&&data.error?.code==='invalid_token'&&retry){await refreshSession();return downloadReport(report,false);}throw new ApiError(data.error?.message??'Unable to download report',data.error?.code??'download_failed',response.status);}
   let url:string;let revoke=false;
-  if(response.headers.get('content-type')?.includes('application/json')){const data=await response.json();url=data.report.url;if(!url?.startsWith('https://res.cloudinary.com/'))throw Error('Report download is unavailable.');}
+  if(response.headers.get('content-type')?.includes('application/json')){const data=await response.json();url=data.report.url;const parsed=new URL(url);if(parsed.protocol!=='https:'||!['res.cloudinary.com','api.cloudinary.com'].includes(parsed.hostname))throw Error('Report download is unavailable.');}
   else{url=URL.createObjectURL(await response.blob());revoke=true;}
   const link=document.createElement('a');link.href=url;link.download=report.name;link.target='_blank';link.rel='noopener noreferrer';link.click();if(revoke)window.setTimeout(()=>URL.revokeObjectURL(url),60000);
 }
