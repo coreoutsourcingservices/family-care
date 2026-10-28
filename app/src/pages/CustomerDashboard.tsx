@@ -48,7 +48,7 @@ function DashboardContent({ module }: { module?: ModuleId }) {
   }
 
   return <div lang={language} dir={direction} className={`customer-dashboard ${module ? 'customer-form-page' : ''} ${module === 'child' ? 'customer-child-form' : ''}`}>
-    {module !== 'child' && <header className="customer-dashboard-header"><Logo tagline={t('Healthier Families. Brighter Tomorrows.')} /><nav className="customer-dashboard-nav" aria-label="Dashboard navigation"><Link to="/customer/dashboard">{t('Home')}</Link><Link to="/customer/dashboard#customer-services">{t('Services')}</Link><Link to="/customer/child">{t('My family')}</Link><Link to="/contact">{t('Support')}</Link></nav><div className="customer-account-actions">
+    {module !== 'child' && module !== 'women' && <header className="customer-dashboard-header"><Logo tagline={t('Healthier Families. Brighter Tomorrows.')} /><nav className="customer-dashboard-nav" aria-label="Dashboard navigation"><Link to="/customer/dashboard">{t('Home')}</Link><Link to="/customer/dashboard#customer-services">{t('Services')}</Link><Link to="/customer/child">{t('My family')}</Link><Link to="/contact">{t('Support')}</Link></nav><div className="customer-account-actions">
       {!module && user && <CustomerLanguageSelector/>}{user && <><span className="customer-account-name">{user.full_name}</span><button type="button" disabled={signingOut} onClick={signOut}><LogOut size={16} />{t(signingOut ? 'Signing out...' : 'Sign out')}</button></>}
     </div></header>}
     {!user ? <section className="customer-session-status" aria-live="polite">
@@ -70,6 +70,6 @@ function DashboardContent({ module }: { module?: ModuleId }) {
       </div></section>
       <section className="customer-support-banner"><span className="customer-support-icon"><Heart size={29} /></span><div><h2>{t('Here for your family.')}</h2><p>{t('A helping hand, whenever you need guidance.')}</p></div><Link to="/contact">{t('Contact support')}<ArrowRight size={16} /></Link></section></>}
     </div>}
-    {module !== 'child' && <p className="customer-dashboard-footer">{t("Your family's health, together in one place.")}</p>}
+    {module !== 'child' && module !== 'women' && <p className="customer-dashboard-footer">{t("Your family's health, together in one place.")}</p>}
   </div>;
 }

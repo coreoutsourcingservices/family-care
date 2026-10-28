@@ -3,7 +3,7 @@ import { Chart, LineController, LineElement, PointElement, LinearScale, Category
 import { ArrowUpRight, Ruler, Weight, ChartNoAxesColumnIncreasing, Sprout } from 'lucide-react';
 import { formatDate, type ChildEntry } from './childRecords';
 Chart.register(LineController,LineElement,PointElement,LinearScale,CategoryScale,Tooltip,Filler);
-const metrics=[{key:'height',label:'Height',unit:'cm',color:'#246444',icon:Ruler},{key:'weight',label:'Weight',unit:'kg',color:'#e9a05e',icon:Weight},{key:'bmi',label:'BMI',unit:'',color:'#829880',icon:ChartNoAxesColumnIncreasing}] as const;
+const metrics=[{key:'height',label:'Height',unit:'cm',color:'#1875ff',icon:Ruler},{key:'weight',label:'Weight',unit:'kg',color:'#e9a05e',icon:Weight},{key:'bmi',label:'BMI',unit:'',color:'#72a4df',icon:ChartNoAxesColumnIncreasing}] as const;
 function value(entry:ChildEntry,key:string){if(key==='bmi'){const height=Number(entry.height)/100;return height>0?Number((Number(entry.weight)/(height*height)).toFixed(1)):null;}const number=Number(entry[key]);return number>0?number:null;}
 export default function GrowthOverview({entries}:{entries:ChildEntry[]}){
  const [metric,setMetric]=useState('all'),[period,setPeriod]=useState('12');const canvas=useRef<HTMLCanvasElement>(null);

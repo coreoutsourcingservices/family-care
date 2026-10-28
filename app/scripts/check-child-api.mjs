@@ -26,13 +26,13 @@ try{
  await page.getByLabel('Note title').fill('Browser test milestone');
  await page.locator('.ch-entry-form input[name="date"]').fill('2026-10-20');
  await page.getByRole('button',{name:'Save to account',exact:true}).click();
- await page.getByRole('heading',{name:'Browser test milestone',exact:true}).waitFor();
+ await page.getByText('Browser test milestone',{exact:true}).waitFor();
  await page.reload();
- await page.getByRole('heading',{name:'Browser test milestone',exact:true}).waitFor();
- await page.getByRole('button',{name:'Edit record',exact:true}).click();
- await page.getByLabel('Record title').fill('Updated account note');
- await page.getByRole('button',{name:'Save to account',exact:true}).click();
- await page.getByRole('heading',{name:'Updated account note',exact:true}).waitFor();
+ await page.getByText('Browser test milestone',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'Edit Browser test milestone',exact:true}).click();
+ await page.locator('.ch-timeline-edit input[name=title]').fill('Updated account note');
+ await page.getByRole('button',{name:'Save changes',exact:true}).click();
+ await page.getByText('Updated account note',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Remove Updated account note',exact:true}).click();
  await page.getByRole('button',{name:'Remove',exact:true}).click();
  await page.getByRole('heading',{name:'A place for all the little details',exact:true}).waitFor();console.log('PASS account CRUD');
@@ -43,7 +43,7 @@ try{
  await page.getByLabel('Weight (kg)',{exact:false}).fill('21.5');
  await page.getByLabel('Height / length (cm)',{exact:false}).fill('116');
  await page.getByRole('button',{name:'Save to account',exact:true}).click();
- await page.getByRole('heading',{name:measurement,exact:true}).waitFor();
+ await page.getByText(measurement,{exact:true}).waitFor();
  await page.getByRole('link',{name:'Vaccination',exact:true}).first().click();
  await page.getByRole('heading',{name:'Vaccination plan pending',exact:true}).waitFor();
  await page.getByLabel('Vaccination schedule',{exact:true}).selectOption('IAP');
@@ -54,7 +54,7 @@ try{
  await page.getByLabel('Reason for consultation').fill('Routine review request');
  await page.locator('.ch-entry-form input[name="date"]').fill('2026-11-21');
  await page.getByRole('button',{name:'Save to account',exact:true}).click();
- await page.getByRole('heading',{name:'Routine review request',exact:true}).waitFor();
+ await page.getByText('Routine review request',{exact:true}).waitFor();
  await page.getByRole('link',{name:'Settings',exact:true}).first().click();
  await page.getByRole('button',{name:'In-app reminders: on',exact:true}).click();
  await page.getByRole('button',{name:'In-app reminders: off',exact:true}).waitFor();
