@@ -27,44 +27,6 @@ def create_profile(client, headers, **extra):
     return result.json['profile']['id']
 
 
-def test_profile_public_ids_are_separate_stable_and_resolve_reports(app,client,cloud):
-    headers=patient(app,client)
-    profiles=[]
-    for module in ['child','adult','women','child']:
-        response=client.post('/api/v1/patients/profiles',json=profile_data(module=module),headers=headers)
-        assert response.status_code==201, response.json
-        profiles.append(response.json['profile'])
-    assert [p['public_id'] for p in profiles]==['CH000001','AD000001','WO000001','CH000002']
-    child=profiles[0]
-    assert client.get('/api/v1/patients/profiles/'+child['public_id'],headers=headers).json['profile']==child
-    assert client.get('/api/v1/patients/profiles/'+child['id'],headers=headers).json['profile']==child
-    report=upload(client,headers,child['public_id'])
-    assert report.status_code==201,report.json
-    report=report.json['report']
-    assert report['profile_id']==child['id']
-    assert client.get(f'/api/v1/patients/profiles/{child["public_id"]}/reports',headers=headers).json['total']==1
-    assert client.get(f'/api/v1/patients/profiles/{child["public_id"]}/reports/{report["id"]}/download',headers=headers).status_code==200
-    other=patient(app,client,'other-public-id@example.com')
-    assert client.get('/api/v1/patients/profiles/'+child['public_id'],headers=other).status_code==404
-    assert client.get('/api/v1/patients/profiles/'+child['public_id']+'/reports',headers=other).status_code==404
-    assert client.get('/api/v1/patients/profiles/CHILD_UUID',headers=headers).status_code==404
-
-
-def test_profile_public_id_cannot_be_supplied_and_doctor_access_is_scoped(app,client,cloud):
-    _,referral=doctor(app)
-    doctor(app,'unconnected-public-id@example.com','D000002')
-    headers=patient(app,client)
-    response=client.post('/api/v1/patients/profiles',json=profile_data(public_id='CH000999'),headers=headers)
-    assert response.status_code==422
-    profile=client.post('/api/v1/patients/profiles',json=profile_data(referral_id=referral),headers=headers).json['profile']
-    first=bearer(client.post('/api/v1/doctors/login',json={'email':'rahul@example.com','password':PASSWORD}))
-    other=bearer(client.post('/api/v1/doctors/login',json={'email':'unconnected-public-id@example.com','password':PASSWORD}))
-    path='/api/v1/doctors/care-profiles/'+profile['public_id']
-    assert client.get(path,headers=first).status_code==200
-    assert client.get(path+'/reports',headers=first).status_code==200
-    assert client.get(path,headers=other).status_code==404
-
-
 @pytest.fixture
 def cloud(app, monkeypatch):
     for key, value in [('CLOUD_NAME','test-cloud'),('API_KEY','test-key'),('API_SECRET','test-secret')]:

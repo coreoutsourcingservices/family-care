@@ -31,16 +31,6 @@ CHALLENGE = {'challenge_token': '<limited-purpose JWT>', 'expires_in': 300, 'res
 
 
 def success_examples(path, method='GET'):
-    if path.startswith('/api/v1/localization'):
-        from services.localization import language_options, STATES
-        if path.endswith('/languages'):
-            from services.localization import LANGUAGES, language_option
-            return {200: {'items': [language_option(code) for code in sorted(LANGUAGES, key=lambda code: LANGUAGES[code].casefold())], 'total': len(LANGUAGES)}}
-        if path.endswith('/states'):
-            return {200: {'items': [{'name': 'Maharashtra', 'type': 'state', 'languages': language_options('Maharashtra'), 'regional_languages': ['Marathi']}]}}
-        if '/messages/' in path:
-            return {200: {'language': 'hi', 'fallback_language': 'en', 'translation_status': 'available', 'messages': {'Sign in': '\u0932\u0949\u0917\u093f\u0928 \u0915\u0930\u0947\u0902'}}}
-        return {200: {'location': {'country_code': 'IN', 'state': 'Maharashtra', 'status': 'detected', 'approximate': True}, 'languages': language_options('Maharashtra'), 'recommended_language': 'mr', 'fallback_language': 'en', 'manual_state_selection': True}}
     session = deepcopy(SESSION)
     namespace = path.split('/')[3] if len(path.split('/')) > 3 else ''
     roles = {'admin':('ADMIN','A000001'), 'superadmin':('SUPERADMIN','superadmin'), 'doctors':('DOCTOR','D000001'), 'patients':('PATIENT','C000001')}
@@ -51,7 +41,7 @@ def success_examples(path, method='GET'):
         if namespace == 'patients':
             session['user']['referred_doctor'] = None
     if '/profiles' in path or '/care-profiles' in path:
-        profile = {'id':'<profile UUID>','public_id':'CH000001','profile_type':'member','module':'child','full_name':'Aarav Kumar','date_of_birth':'2018-05-14','parent_profile_id':'<parent profile UUID>','doctor':None}
+        profile = {'id':'<profile UUID>','profile_type':'member','module':'child','full_name':'Aarav Kumar','date_of_birth':'2018-05-14','parent_profile_id':'<parent profile UUID>','doctor':None}
         report = {'id':'<report UUID>','profile_id':'<profile UUID>','name':'blood-test.pdf','storage_provider':'cloudinary','url':'<short-lived signed Cloudinary URL>','public_id':'familycare/C000001/profiles/<profile UUID>/child/reports/<report UUID>_blood-test.pdf','folder':'familycare/C000001/profiles/<profile UUID>/child/reports','resource_type':'raw','delivery_type':'authenticated','url_expires_in':300}
         if path.endswith('/reports'):
             return {201:{'report':report}} if method=='POST' else {200:{'items':[report],'total':1,'page':1,'per_page':25}}
@@ -133,9 +123,7 @@ def specification(app):
                     'example': {'error': {'code': 'error_code', 'message': label}}}}}
             for name in rule.arguments:
                 operation['parameters'].append({'name': name, 'in': 'path', 'required': True, 'schema': {'type': 'string'},
-                                               'description': 'Care-profile UUID or public ID, e.g. CH000001, AD000001, WO000001' if name == 'profile_id' else 'Application language code, e.g. hi, mr, ta' if name == 'language' else 'UUID or public ID' if name == 'user_id' else 'Resource UUID'})
-            if path == '/api/v1/localization':
-                operation['parameters'].append({'name': 'state', 'in': 'query', 'schema': {'type': 'string'}, 'description': 'Optional manual state preview; omit for caller IP detection', 'example': 'Maharashtra'})
+                                               'description': 'UUID or public ID' if name == 'user_id' else 'Resource UUID'})
             if method == 'GET' and any(path.endswith(s) for s in ('-requests', '/admins', '/doctors', '/patients', '/audit-logs', '/profiles', '/care-profiles', '/reports')):
                 operation['parameters'] += [dict(name='page', **{'in': 'query'}, schema={'type': 'integer', 'minimum': 1, 'default': 1}),
                                            dict(name='per_page', **{'in': 'query'}, schema={'type': 'integer', 'minimum': 1, 'maximum': 100, 'default': 25})]

@@ -4,7 +4,6 @@ from sqlalchemy import Uuid, Date, JSON, LargeBinary, Index, text
 from sqlalchemy import Column as C, String as S, Text, Boolean as B, Integer as I, DateTime as DT
 from sqlalchemy import ForeignKey as FK, CheckConstraint as CK, UniqueConstraint as UQ
 from core.database import Base
-from core.profile_ids import allocate_profile_public_id
 
 
 def now():
@@ -164,13 +163,6 @@ class AuditLog(Base):
     created_at = C(DT, default=now, nullable=False, index=True)
 
 
-class CareProfileIdCounter(Base):
-    __tablename__ = 'care_profile_id_counters'
-    __table_args__ = (CK('value >= 1', name='profile_counter_positive'),)
-    module = C(S(10), primary_key=True)
-    value = C(I, nullable=False)
-
-
 class CareProfile(Base):
     __tablename__ = 'care_profiles'
     __table_args__ = (
@@ -180,7 +172,6 @@ class CareProfile(Base):
               postgresql_where=text("profile_type = 'self'"), sqlite_where=text("profile_type = 'self'"))
     )
     id = primary_id()
-    public_id = C(S(32), nullable=False, unique=True, default=allocate_profile_public_id)
     owner_id = user_fk(nullable=False, index=True)
     module = C(S(10), nullable=False)
     name = C(S(120), nullable=False)

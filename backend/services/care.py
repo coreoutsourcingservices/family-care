@@ -1,5 +1,3 @@
-from uuid import UUID
-import re
 from flask import jsonify
 from sqlalchemy import select
 from core.database import db
@@ -11,14 +9,7 @@ from services.approvals import paginate
 
 
 def accessible_profile(user, profile_id, lock=False):
-    try:
-        identifier = UUID(str(profile_id))
-        query = select(CareProfile).where(CareProfile.id == str(identifier))
-    except ValueError:
-        identifier = str(profile_id).upper()
-        if not re.fullmatch(r'(CH|AD|WO)[0-9]{6,}', identifier):
-            raise APIError(404, 'profile_not_found', 'Care profile not found')
-        query = select(CareProfile).where(CareProfile.public_id == identifier)
+    query = select(CareProfile).where(CareProfile.id == profile_id)
     if user.role == 'PATIENT':
         query = query.where(CareProfile.owner_id == user.id)
     elif user.role == 'DOCTOR':
@@ -35,7 +26,7 @@ def accessible_profile(user, profile_id, lock=False):
 
 def profile_data(profile):
     doctor = db().get(User, profile.referred_doctor_id) if profile.referred_doctor_id else None
-    return dict(id=profile.id, public_id=profile.public_id, profile_type=profile.profile_type, module=profile.module,
+    return dict(id=profile.id, profile_type=profile.profile_type, module=profile.module,
                 full_name=profile.name, date_of_birth=profile.dob.isoformat(),
                 parent_profile_id=profile.parent_profile_id, guardian_contact=profile.guardian_contact,
                 emergency_contacts=profile.emergency_contacts,
@@ -86,7 +77,7 @@ def connect_profile(user, profile_id, referral_id):
 
 
 def list_reports(user, profile_id, page, per_page):
-    profile_id = accessible_profile(user, profile_id).id
+    accessible_profile(user, profile_id)
     rows, total = paginate(select(CareReport).where(CareReport.profile_id == profile_id).order_by(
         CareReport.created_at.desc(), CareReport.id), page, per_page)
     from services.care_uploads import report_data
@@ -94,7 +85,7 @@ def list_reports(user, profile_id, page, per_page):
 
 
 def accessible_report(user, profile_id, report_id):
-    profile_id = accessible_profile(user, profile_id).id
+    accessible_profile(user, profile_id)
     report = db().scalar(select(CareReport).where(CareReport.id == report_id, CareReport.profile_id == profile_id))
     if not report:
         raise APIError(404, 'report_not_found', 'Medical report not found')

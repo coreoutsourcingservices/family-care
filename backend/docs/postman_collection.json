@@ -1311,58 +1311,6 @@
       }
     },
     {
-      "name": "localization recommendations",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/v1/localization"
-      }
-    },
-    {
-      "name": "localization states",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/v1/localization/states"
-      }
-    },
-    {
-      "name": "localization all languages",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/v1/localization/languages"
-      }
-    },
-    {
-      "name": "localization messages",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "url": "{{base_url}}/api/v1/localization/messages/{{language}}"
-      }
-    },
-    {
       "name": "health",
       "request": {
         "method": "GET",
