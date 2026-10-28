@@ -18,7 +18,7 @@ export function useChildSummary(profileId:string,entries:ChildEntry[]){
 export function ChildHealthSummary({data,error,onRetry}: {data:ReturnType<typeof useChildSummary>['data'];error:string;onRetry:()=>void}){
  return <section className="ch-panel ch-connected-panel"><div className="ch-section-top"><div><span className="ch-eyebrow">YOUR ACCOUNT, CONNECTED</span><h2>Child health overview</h2></div><ShieldCheck/></div>{error?<p role="alert" className="ch-error">{error} <button className="ch-button secondary" onClick={onRetry}><RefreshCw size={15}/>Try again</button></p>:data?<>
   <div className="ch-mini-stats"><article><span>Age today<strong>{data.age.display}</strong></span></article><article><span>Recorded vaccinations<strong>{data.dashboard.counts.vaccination??0}</strong></span></article><article><span>In-app reminders<strong>{data.reminders.items.length}</strong></span></article></div>
-  <div className="ch-clinical-status"><strong>Vaccination schedule — not published</strong><p>{data.dashboard.vaccination.message}</p></div><div className="ch-clinical-status"><strong>Health guidance — not published</strong><p>{data.guide.message}</p></div>
+  <div className="ch-clinical-status"><strong>{data.dashboard.vaccination.status==='AVAILABLE'?'Published vaccination schedule':'Vaccination schedule - not published'}</strong><p>{data.dashboard.vaccination.message}</p></div><div className="ch-clinical-status"><strong>Health guidance — not published</strong><p>{data.guide.message}</p></div>
  </>:<p role="status">Loading child health overview...</p>}</section>;
 }
 export function ReminderPreferences({profileId,data,onRefresh}:{profileId:string;data:Reminders|undefined;onRefresh:()=>void}){

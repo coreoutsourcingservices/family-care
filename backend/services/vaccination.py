@@ -17,6 +17,14 @@ from core.vaccination_schemas import (VaccineInput, ScheduleInput, EligibilityIn
 from services.approvals import paginate
 
 
+def display_age_group(dob, on_date):
+    """Presentation bucket only; routine eligibility and dates remain unchanged."""
+    for lower, upper, key in ((0,1,'0-1'),(1,3,'1-3'),(3,5,'3-5'),(5,10,'5-10'),(10,13,'10-13')):
+        if age_date(dob, lower, 'years') <= on_date < age_date(dob, upper, 'years'):
+            return key
+    return 'other'
+
+
 def today():
     from patient.child_routes import today as product_date
     return product_date()
@@ -261,7 +269,7 @@ def timeline(profile,scheme='UIP',version_id=None):
         elif status=='OVERDUE':reasons.append('Routine window has passed. Confirm missed-dose planning with your doctor; dates have not been shifted.')
         items.append(dict(id=row.id,vaccine_id=row.vaccine_id,vaccine=data['vaccine'],dose_code=row.dose_code,dose_name=data['dose_name'],version=row.version,schedule_type=scheme,
             recommended_date=start.isoformat(),window_end=end.isoformat(),status=status,reasons=reasons,
-            age_label=data['age_label'],age_unit=data['age_unit'],age_start=data['age_start'],age_end=data['age_end'],
+            age_group=display_age_group(profile.dob,start),age_label=data['age_label'],age_unit=data['age_unit'],age_start=data['age_start'],age_end=data['age_end'],
             age_relation='UPCOMING' if today()<start else 'CURRENT' if today()<=end else 'PAST',
             completed_date=max((record.data['date'] for record in matching),default=None),
             route=data['route'],injection_site=data['injection_site'],instructions=data['instructions'],

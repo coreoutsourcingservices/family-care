@@ -80,7 +80,12 @@ def child(child_id, lock=False):
 
 
 def record_data(record):
-    return dict(record.data, id=record.id, kind=record.kind, verification_status='PARENT_REPORTED')
+    data = dict(record.data, id=record.id, kind=record.kind, verification_status='PARENT_REPORTED')
+    if record.kind == 'vaccination':
+        from services.vaccination import display_age_group
+        profile = db().get(CareProfile, record.profile_id)
+        data['age_group'] = display_age_group(profile.dob, date.fromisoformat(record.data['date']))
+    return data
 
 
 def child_age(profile):
