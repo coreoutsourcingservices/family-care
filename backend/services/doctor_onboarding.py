@@ -42,6 +42,7 @@ def submit_profile(data):
     for key, value in values.items():
         setattr(profile, key, value)
     profile.verification_status = 'PENDING'
+    profile.verification_check = None
     profile.approved_by = profile.approved_at = None
     application = db().scalar(select(ApprovalRequest).where(ApprovalRequest.applicant_id == user.id).with_for_update())
     if application is None:

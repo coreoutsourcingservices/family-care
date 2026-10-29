@@ -72,6 +72,7 @@ class DoctorProfile(Base):
     years_of_experience = C(I)
     nmr_id = C(S(100), unique=True)
     verification_status = C(S(32), default='PENDING', nullable=False)
+    verification_check = C(JSON)
     approved_by = C(Uuid(as_uuid=False), FK('familycare.users.id'))
     approved_at = C(DT)
 

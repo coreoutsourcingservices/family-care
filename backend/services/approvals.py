@@ -1,6 +1,6 @@
 import json
 from flask import jsonify
-from sqlalchemy import select, func
+from sqlalchemy import select, func, or_
 from core.database import db
 from core.errors import APIError
 from core.models import User, ApprovalRequest, DoctorProfile, EmailNotification, AuditLog, now
@@ -15,6 +15,9 @@ def paginate(query, page=1, per_page=25):
 
 def listing(role, page, per_page, status=None, pending=False):
     query = select(User).where(User.role == role)
+    if role == 'DOCTOR':
+        query = query.where(User.id.in_(select(ApprovalRequest.applicant_id).where(ApprovalRequest.applicant_role == 'DOCTOR')))
+        status = {'pending': 'PENDING_APPROVAL', 'verified': 'APPROVED', 'rejected': 'REJECTED'}.get(status, status)
     if pending:
         query = query.where(User.approval_status == 'PENDING_APPROVAL', User.email_verified.is_(True))
     elif status:
@@ -32,7 +35,7 @@ def listing(role, page, per_page, status=None, pending=False):
             profile = db().get(DoctorProfile, user.id)
             item['doctor'] = {k: getattr(profile, k) for k in ('qualification', 'specialization',
                               'medical_registration_number', 'registering_council', 'nmr_id', 'verification_status',
-                              'address', 'clinic_address', 'years_of_experience')}
+                              'address', 'clinic_address', 'years_of_experience', 'verification_check')}
         items.append(item)
     return jsonify(items=items, total=total, page=page, per_page=per_page)
 
@@ -80,6 +83,7 @@ def account_status(actor, identifier, role, active):
 
 def dashboard():
     counts = db().execute(select(User.role, User.approval_status, func.count())
+                           .where(or_(User.role != 'DOCTOR', User.id.in_(select(ApprovalRequest.applicant_id))))
                            .group_by(User.role, User.approval_status)).all()
     return jsonify(counts=[{'role': role, 'approval_status': status, 'count': count}
                            for role, status, count in counts])
@@ -98,6 +102,7 @@ def doctor_status(data):
         raise APIError(401, 'invalid_credentials', 'Invalid credentials')
     application = db().scalar(select(ApprovalRequest).where(ApprovalRequest.applicant_id == user.id))
     return jsonify(public_id=user.public_id, email_verified=user.email_verified,
+                   doctor_status=serialize_user(user)['doctor_status'],
                    approval_status=user.approval_status, account_status=user.account_status,
                    rejection_reason=application.rejection_reason if application else None)
 
@@ -114,6 +119,7 @@ def resubmit_doctor(data):
     profile.medical_registration_number = data.medical_registration_number.strip().upper()
     profile.registering_council = data.registering_council.strip().upper()
     profile.verification_status = 'PENDING'
+    profile.verification_check = None
     application = db().scalar(select(ApprovalRequest).where(ApprovalRequest.applicant_id == user.id).with_for_update())
     application.status, application.requested_at = 'PENDING', now()
     application.reviewed_by = application.reviewed_at = application.rejection_reason = None

@@ -44,6 +44,11 @@ def approve(user_id):
     return service.approvals.review(g.user, user_id, 'DOCTOR', True)
 
 
+def check_doctor(user_id):
+    from services.doctor_verification import check_doctor as check
+    return check(g.user, user_id)
+
+
 def reject(user_id):
     return service.approvals.review(g.user, user_id, 'DOCTOR', False, parse(schema.Rejection).reason)
 

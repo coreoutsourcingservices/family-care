@@ -32,6 +32,7 @@ def serialize_user(user):
         from core.models import DoctorProfile
         profile = db().get(DoctorProfile, user.id)
         result['referral_id'] = profile.referral_id if profile else None
+        result['doctor_status'] = {'APPROVED': 'verified', 'REJECTED': 'rejected'}.get(user.approval_status, 'pending')
     elif user.role == 'PATIENT':
         from core.models import PatientProfile
         from services.referrals import doctor_details

@@ -68,6 +68,13 @@ def success_examples(path, method='GET'):
         return {202: dict(CHALLENGE, public_id=None, user_id=None, email_status='sent',
                           approval_status='PENDING_EMAIL_VERIFICATION',
                           message='OTP sent to your email. Verify OTP to complete registration.')}
+    if path.endswith('/check') and '/admin/doctors/' in path:
+        return {200: {'doctor_status': 'pending', 'cached': False,
+                      'verification_check': {'checked_at': '<UTC timestamp>', 'requires_admin_review': True,
+                                             'auto_approved': False, 'registration': {'status': 'manual_review'},
+                                             'address': {'status': 'manual_review'},
+                                             'clinic_postal': {'status': 'manual_review'},
+                                             'clinic': {'status': 'manual_review'}}}}
     if path.endswith('/verify-email'):
         if '/doctors/' in path:
             return {202: {'requires_profile_setup': True, 'setup_token': '<limited-purpose setup_token>',

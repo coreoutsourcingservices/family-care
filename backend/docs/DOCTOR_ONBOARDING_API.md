@@ -1,5 +1,7 @@
 # Doctor Signup, Profile Setup and Admin Approval API
 
+Admin reference checks and the three doctor statuses: [Doctor Verification API](DOCTOR_VERIFICATION_API.md).
+
 Base URL: `http://127.0.0.1:5001/api/v1`
 
 Flow: Signup -> Email OTP -> Setup Profile -> Submit -> Admin review -> Approve/Reject.
