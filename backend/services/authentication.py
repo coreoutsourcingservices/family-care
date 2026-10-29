@@ -26,7 +26,7 @@ def create_verified_user(values, role):
     user = User(id=uid(), public_id=None, full_name=values['full_name'], email=values['email'],
                 phone_number=values['mobile_number'], password_hash=values['password_hash'], role=role,
                 email_verified=True,
-                approval_status='APPROVED' if role == 'PATIENT' else 'PENDING_APPROVAL')
+                approval_status='APPROVED' if role == 'PATIENT' else 'PROFILE_REQUIRED' if role == 'DOCTOR' else 'PENDING_APPROVAL')
     if db().bind.dialect.name == 'sqlite':
         user.public_id = {'ADMIN': 'A', 'DOCTOR': 'D', 'PATIENT': 'C'}[role] + secrets.token_hex(6)
     db().add(user)
@@ -46,6 +46,10 @@ def create_verified_user(values, role):
     audit('email_verified', user.id, user.id)
     if role == 'PATIENT':
         return issue_session(user)
+    if role == 'DOCTOR':
+        db().commit()
+        from services.doctor_onboarding import setup_response
+        return setup_response(user)
     db().add(ApprovalRequest(applicant_id=user.id, applicant_role=role))
     audit('approval_requested', user.id, user.id)
     db().commit()
@@ -81,6 +85,11 @@ def verify_email(data, role):
     if role == 'PATIENT':
         user.approval_status = 'APPROVED'
         return issue_session(user)
+    if role == 'DOCTOR':
+        user.approval_status = 'PROFILE_REQUIRED'
+        db().commit()
+        from services.doctor_onboarding import setup_response
+        return setup_response(user)
     user.approval_status = 'PENDING_APPROVAL'
     db().add(ApprovalRequest(applicant_id=user.id, applicant_role=role))
     audit('approval_requested', user.id, user.id)
@@ -98,6 +107,12 @@ def login(data, role):
         raise APIError(401, 'invalid_credentials', 'Invalid credentials')
     if user.account_status != 'ACTIVE':
         raise APIError(403, 'account_restricted', 'Account is suspended')
+    if role == 'DOCTOR' and user.email_verified:
+        if user.approval_status in ('PROFILE_REQUIRED', 'REJECTED'):
+            from services.doctor_onboarding import setup_response
+            return setup_response(user)
+        if user.approval_status == 'PENDING_APPROVAL':
+            return jsonify(user=serialize_user(user), message='Your profile is under review.'), 202
     if user.must_change_password:
         # Persisted single-use challenge prevents bootstrap password-change replay.
         challenge = OTPChallenge(id=uid(), user_id=user.id, purpose='change_password',

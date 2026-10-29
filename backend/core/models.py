@@ -27,7 +27,7 @@ class User(Base):
     __tablename__ = 'users'
     __table_args__ = (
         CK("role IN ('SUPERADMIN','ADMIN','DOCTOR','PATIENT')", name='role'),
-        CK("approval_status IN ('PENDING_EMAIL_VERIFICATION','PENDING_APPROVAL','APPROVED','REJECTED')", name='approval'),
+        CK("approval_status IN ('PENDING_EMAIL_VERIFICATION','PROFILE_REQUIRED','PENDING_APPROVAL','APPROVED','REJECTED')", name='approval'),
         CK("account_status IN ('ACTIVE','SUSPENDED')", name='status'))
     id = primary_id()
     public_id = C(S(40), unique=True, nullable=False)
@@ -63,10 +63,13 @@ class DoctorProfile(Base):
     __table_args__ = (UQ('registering_council', 'medical_registration_number'),)
     user_id = user_fk(primary_key=True)
     referral_id = C(S(160), unique=True, nullable=False)
-    qualification = C(S(200), nullable=False)
+    qualification = C(S(200))
     specialization = C(S(200))
-    medical_registration_number = C(S(100), nullable=False)
-    registering_council = C(S(200), nullable=False)
+    medical_registration_number = C(S(100))
+    registering_council = C(S(200))
+    address = C(S(1000))
+    clinic_address = C(S(1000))
+    years_of_experience = C(I)
     nmr_id = C(S(100), unique=True)
     verification_status = C(S(32), default='PENDING', nullable=False)
     approved_by = C(Uuid(as_uuid=False), FK('familycare.users.id'))

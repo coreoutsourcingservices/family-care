@@ -19,8 +19,11 @@ EXAMPLES['CareProfileCreate'] = {'profile_type':'member','module':'child','full_
 EXAMPLES['CareProfileReferral'] = {'referral_id':'rahulkumarD000001'}
 EXAMPLES['PatientRegistration'] = dict(EXAMPLES['Registration'], referral_id='rahulkumarD000001')
 EXAMPLES['ConnectDoctor'] = {'referral_id': 'rahulkumarD000001'}
-EXAMPLES['DoctorRegistration'] = dict(EXAMPLES['Registration'], qualification='MBBS',
-    medical_registration_number='EXAMPLE-12345', registering_council='Example Medical Council', specialization='General Medicine')
+EXAMPLES['DoctorRegistration'] = dict(EXAMPLES['Registration'])
+EXAMPLES['DoctorProfileSetup'] = dict(setup_token='<limited-purpose setup_token>', qualification='MBBS',
+    medical_registration_number='EXAMPLE-12345', registering_council='Example Medical Council',
+    specialization='General Medicine', address='Example Street, Delhi 110001',
+    clinic_address='Example Clinic, Delhi 110001', years_of_experience=5)
 EXAMPLES['ResetPassword'] = dict(EXAMPLES['VerifyOTP'], new_password='New-Password8!', confirm_password='New-Password8!')
 EXAMPLES['InitialPassword'] = dict(EXAMPLES['ChangePassword'], challenge_token='<challenge_token>')
 EXAMPLES['Resubmission'] = dict(EXAMPLES['Login'], qualification='MBBS', medical_registration_number='EXAMPLE-12345', registering_council='Example Medical Council')
@@ -66,12 +69,20 @@ def success_examples(path, method='GET'):
                           approval_status='PENDING_EMAIL_VERIFICATION',
                           message='OTP sent to your email. Verify OTP to complete registration.')}
     if path.endswith('/verify-email'):
+        if '/doctors/' in path:
+            return {202: {'requires_profile_setup': True, 'setup_token': '<limited-purpose setup_token>',
+                          'user': {'approval_status': 'PROFILE_REQUIRED'}, 'doctor': {}}}
         return {200: session} if '/patients/' in path else {202: {'message': 'Email verified. Waiting for approval.',
                         'user': {'approval_status': 'PENDING_APPROVAL'}}}
     if path.endswith('/login'):
+        if '/doctors/' in path:
+            return {200: session, 202: {'requires_profile_setup': True, 'setup_token': '<limited-purpose setup_token>',
+                                      'user': {'approval_status': 'PROFILE_REQUIRED'}}}
         if '/superadmin/' in path:
             return {200: session, 202: {'requires_password_change': True, 'challenge_token': '<challenge JWT>', 'expires_in': 600}}
         return {200: session}
+    if path.endswith('/setup-profile'):
+        return {202: {'message': 'Your profile is under review.', 'user': {'approval_status': 'PENDING_APPROVAL'}}}
     if path.endswith('/verify-login-otp'):
         return {410: {'error': {'code': 'login_otp_disabled', 'message': 'Sign in with email and password; login OTP is no longer required'}}}
     if path.endswith(('/initial-password', '/refresh')):

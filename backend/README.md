@@ -1,5 +1,7 @@
 # Family Care backend API
 
+Doctor signup → OTP → profile setup → admin approval: [Doctor onboarding](docs/DOCTOR_ONBOARDING.md).
+
 Read-only admin patient/member directory: [API and UI details](docs/ADMIN_PATIENT_MEMBERS.md).
 
 Child workspace account records, reminders, consultation requests and current
@@ -118,7 +120,10 @@ hash are held in a temporary cache (10 minutes); OTP validity is 5 minutes, with
 Register sends OTP through SMTP before returning `email_status: "sent"` (SMTP acceptance,
 not inbox confirmation). SMTP failures return HTTP 503 `email_delivery_failed`.
 `public_id` and `user_id` are null until OTP verification creates the user/profile
-and, for doctors/admins, an approval request in one database transaction.
+and, for admins, an approval request in one database transaction. Verified doctors
+receive a limited-purpose profile setup token instead. Their approval request is
+created only after the professional profile, doctor address, clinic address and
+years of experience are submitted through `/api/v1/doctors/setup-profile`.
 
 Local development uses a bounded in-memory cache; restarting the API discards pending
 signups, so register again. Production/multiple API processes must use the same Redis

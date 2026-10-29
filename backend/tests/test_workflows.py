@@ -38,6 +38,14 @@ def bearer(response):
     return {'Authorization': 'Bearer '+response.json['access_token']}
 
 
+def submit_doctor_profile(client, verified):
+    return client.post('/api/v1/doctors/setup-profile', json={
+        'setup_token': verified.json['setup_token'], 'qualification': 'MBBS',
+        'medical_registration_number': 'TEST-123', 'registering_council': 'Test Council',
+        'address': 'Doctor Street, Delhi 110001', 'clinic_address': 'Clinic Road, Delhi 110002',
+        'years_of_experience': 5})
+
+
 def super_login(app, client):
     create_account(app)
     return client.post('/api/v1/superadmin/login', json={'username': 'superadmin', 'password': PASSWORD})
@@ -94,7 +102,8 @@ def test_doctor_review_and_approval_email_queue(app, client):
     registered = client.post('/api/v1/doctors/register', json=registration('doctors', 'doctor@example.com'))
     verified = verify(app, client, registered, 'doctors')
     credentials = {'email': 'doctor@example.com', 'password': PASSWORD}
-    assert client.post('/api/v1/doctors/login', json=credentials).status_code == 403
+    assert client.post('/api/v1/doctors/login', json=credentials).json['requires_profile_setup']
+    assert submit_doctor_profile(client, verified).status_code == 202
     target = verified.json['user']['public_id']
     assert client.post(f'/api/v1/admin/doctors/{target}/approve', headers=bearer(admin)).status_code == 200
     session = client.post('/api/v1/doctors/login', json=credentials)
@@ -110,6 +119,7 @@ def test_rejection_and_doctor_resubmission(app, client):
     admin = verify(app, client, step, 'admin', login=True)
     registered = client.post('/api/v1/doctors/register', json=registration('doctors', 'doctor@example.com'))
     verified = verify(app, client, registered, 'doctors')
+    assert submit_doctor_profile(client, verified).status_code == 202
     target = verified.json['user']['public_id']
     assert client.post(f'/api/v1/admin/doctors/{target}/reject', json={'reason': 'Need valid certificate'}, headers=bearer(admin)).status_code == 200
     result = client.post('/api/v1/doctors/approval-status', json={'email': 'doctor@example.com', 'password': PASSWORD})

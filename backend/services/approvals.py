@@ -31,7 +31,8 @@ def listing(role, page, per_page, status=None, pending=False):
         if role == 'DOCTOR':
             profile = db().get(DoctorProfile, user.id)
             item['doctor'] = {k: getattr(profile, k) for k in ('qualification', 'specialization',
-                              'medical_registration_number', 'registering_council', 'nmr_id', 'verification_status')}
+                              'medical_registration_number', 'registering_council', 'nmr_id', 'verification_status',
+                              'address', 'clinic_address', 'years_of_experience')}
         items.append(item)
     return jsonify(items=items, total=total, page=page, per_page=per_page)
 

@@ -16,6 +16,12 @@ def register():
     return service.register(parse(schema.Register))
 
 
+def setup_profile():
+    from core.schemas import DoctorProfileSetup
+    from services.doctor_onboarding import submit_profile
+    return submit_profile(parse(DoctorProfileSetup))
+
+
 def verify_email():
     return service.verify_email(parse(schema.VerifyOTP))
 

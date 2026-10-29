@@ -95,7 +95,7 @@ def register_pending(data, role):
     if role == 'PATIENT' and values.get('referral_id'):
         from services.referrals import resolve_referral
         resolve_referral(values['referral_id'])
-    if role == 'DOCTOR':
+    if role == 'DOCTOR' and data.registering_council and data.medical_registration_number:
         duplicate = db().scalar(select(DoctorProfile).where(or_(
             (DoctorProfile.registering_council == data.registering_council) &
             (DoctorProfile.medical_registration_number == data.medical_registration_number),

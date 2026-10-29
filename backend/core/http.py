@@ -21,7 +21,8 @@ def profile():
     if g.user.role == 'DOCTOR':
         doctor = db().get(DoctorProfile, g.user.id)
         result['doctor'] = {key: getattr(doctor, key) for key in ('qualification', 'specialization',
-                              'medical_registration_number', 'registering_council', 'nmr_id', 'verification_status')}
+                              'medical_registration_number', 'registering_council', 'nmr_id', 'verification_status',
+                              'address', 'clinic_address', 'years_of_experience')}
     return jsonify(user=result)
 
 
