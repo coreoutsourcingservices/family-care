@@ -19,3 +19,9 @@ route(bp, '/care-profiles', care.profiles, roles=('DOCTOR',))
 route(bp, '/care-profiles/<uuid:profile_id>', care.profile, roles=('DOCTOR',))
 route(bp, '/care-profiles/<uuid:profile_id>/reports', care.reports, roles=('DOCTOR',))
 route(bp, '/care-profiles/<uuid:profile_id>/reports/<uuid:report_id>/download', care.download_report, roles=('DOCTOR',))
+
+from doctor.practice import get_practice_profile, save_practice_profile
+from services.connections import doctor_records
+route(bp, '/practice-profile', get_practice_profile, roles=('DOCTOR',))
+route(bp, '/practice-profile', save_practice_profile, 'PUT', roles=('DOCTOR',))
+route(bp, '/care-profiles/<uuid:profile_id>/records', doctor_records, roles=('DOCTOR',))

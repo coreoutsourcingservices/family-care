@@ -167,9 +167,7 @@ const response = await fetch(
 const data = await response.json();
 if (!response.ok) throw new Error(data.error?.message || 'Could not load vaccinations');
 ```
-
 For API clients using existing login-issued Bearer tokens:
-
 ```sh
 curl 'http://127.0.0.1:5001/api/v1/children/CHILD_PROFILE_UUID/vaccinations?schedule_type=UIP&view=current' \
   -H 'Authorization: Bearer PATIENT_ACCESS_TOKEN'

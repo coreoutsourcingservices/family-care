@@ -26,3 +26,11 @@ from services import report_text
 route(bp, '/report-text/options', report_text.options_endpoint, roles=('PATIENT',))
 route(bp, '/profiles/<uuid:profile_id>/reports/<uuid:report_id>/text', report_text.get_text, roles=('PATIENT',))
 route(bp, '/profiles/<uuid:profile_id>/reports/<uuid:report_id>/text', report_text.request_text, 'POST', roles=('PATIENT',), limited=True)
+
+from services.connections import disconnect_profile, disconnect_account
+route(bp, '/profiles/<uuid:profile_id>/doctor', disconnect_profile, 'DELETE', roles=('PATIENT',))
+route(bp, '/doctor', disconnect_account, 'DELETE', roles=('PATIENT',))
+
+from services.report_imports import import_report, imported_records
+route(bp, '/profiles/<uuid:profile_id>/reports/<uuid:report_id>/import', import_report, 'POST', roles=('PATIENT',))
+route(bp, '/profiles/<uuid:profile_id>/imported-records', imported_records, roles=('PATIENT',))

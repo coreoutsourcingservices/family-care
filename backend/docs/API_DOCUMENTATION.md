@@ -61,6 +61,9 @@ On concurrent refresh, only one succeeds; reuse revokes that session. Clients mu
 | GET | `http://127.0.0.1:5001/api/v1/doctors/care-profiles/{profile_id}` | Required roles: DOCTOR |
 | GET | `http://127.0.0.1:5001/api/v1/doctors/care-profiles/{profile_id}/reports` | Required roles: DOCTOR |
 | GET | `http://127.0.0.1:5001/api/v1/doctors/care-profiles/{profile_id}/reports/{report_id}/download` | Required roles: DOCTOR |
+| GET | `http://127.0.0.1:5001/api/v1/doctors/practice-profile` | Required roles: DOCTOR |
+| PUT | `http://127.0.0.1:5001/api/v1/doctors/practice-profile` | Required roles: DOCTOR |
+| GET | `http://127.0.0.1:5001/api/v1/doctors/care-profiles/{profile_id}/records` | Required roles: DOCTOR |
 | POST | `http://127.0.0.1:5001/api/v1/patients/login` | Required roles: public / limited challenge |
 | GET | `http://127.0.0.1:5001/api/v1/patients/me` | Required roles: PATIENT |
 | POST | `http://127.0.0.1:5001/api/v1/patients/register` | Required roles: public / limited challenge |
@@ -69,6 +72,7 @@ On concurrent refresh, only one succeeds; reuse revokes that session. Clients mu
 | POST | `http://127.0.0.1:5001/api/v1/patients/verify-login-otp` | Required roles: public / limited challenge |
 | POST | `http://127.0.0.1:5001/api/v1/patients/connect-doctor` | Required roles: PATIENT |
 | GET | `http://127.0.0.1:5001/api/v1/patients/doctor` | Required roles: PATIENT |
+| DELETE | `http://127.0.0.1:5001/api/v1/patients/doctor` | Required roles: PATIENT |
 | POST | `http://127.0.0.1:5001/api/v1/patients/profiles` | Required roles: PATIENT |
 | GET | `http://127.0.0.1:5001/api/v1/patients/profiles` | Required roles: PATIENT |
 | GET | `http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}` | Required roles: PATIENT |
@@ -76,6 +80,12 @@ On concurrent refresh, only one succeeds; reuse revokes that session. Clients mu
 | POST | `http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}/reports` | Required roles: PATIENT |
 | GET | `http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}/reports` | Required roles: PATIENT |
 | GET | `http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}/reports/{report_id}/download` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/patients/report-text/options` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}/reports/{report_id}/text` | Required roles: PATIENT |
+| POST | `http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}/reports/{report_id}/text` | Required roles: PATIENT |
+| DELETE | `http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}/doctor` | Required roles: PATIENT |
+| POST | `http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}/reports/{report_id}/import` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/patients/profiles/{profile_id}/imported-records` | Required roles: PATIENT |
 | POST | `http://127.0.0.1:5001/api/v1/admin/login` | Required roles: public / limited challenge |
 | GET | `http://127.0.0.1:5001/api/v1/admin/me` | Required roles: ADMIN |
 | POST | `http://127.0.0.1:5001/api/v1/admin/register` | Required roles: public / limited challenge |
@@ -90,6 +100,9 @@ On concurrent refresh, only one succeeds; reuse revokes that session. Clients mu
 | POST | `http://127.0.0.1:5001/api/v1/admin/doctors/{user_id}/suspend` | Required roles: ADMIN |
 | POST | `http://127.0.0.1:5001/api/v1/admin/doctors/{user_id}/reactivate` | Required roles: ADMIN |
 | GET | `http://127.0.0.1:5001/api/v1/admin/patients` | Required roles: ADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/admin/patients/{user_id}` | Required roles: ADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/admin/patients/{user_id}/profiles` | Required roles: ADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/admin/patients/{user_id}/profiles/{profile_id}` | Required roles: ADMIN |
 | POST | `http://127.0.0.1:5001/api/v1/superadmin/login` | Required roles: public / limited challenge |
 | GET | `http://127.0.0.1:5001/api/v1/superadmin/me` | Required roles: SUPERADMIN |
 | GET | `http://127.0.0.1:5001/api/v1/superadmin/dashboard` | Required roles: SUPERADMIN |
@@ -101,7 +114,84 @@ On concurrent refresh, only one succeeds; reuse revokes that session. Clients mu
 | POST | `http://127.0.0.1:5001/api/v1/superadmin/admins/{user_id}/reactivate` | Required roles: SUPERADMIN |
 | GET | `http://127.0.0.1:5001/api/v1/superadmin/doctors` | Required roles: SUPERADMIN |
 | GET | `http://127.0.0.1:5001/api/v1/superadmin/patients` | Required roles: SUPERADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/superadmin/patients/{user_id}` | Required roles: SUPERADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/superadmin/patients/{user_id}/profiles` | Required roles: SUPERADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/superadmin/patients/{user_id}/profiles/{profile_id}` | Required roles: SUPERADMIN |
 | GET | `http://127.0.0.1:5001/api/v1/superadmin/audit-logs` | Required roles: SUPERADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/children` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/age` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/records` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/dashboard` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/health-guide` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/vaccinations` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/vaccinations/upcoming` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/reminders` | Required roles: PATIENT |
+| PUT | `http://127.0.0.1:5001/api/v1/children/{child_id}/reminder-preferences` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/vaccines` | Required roles: public / limited challenge |
+| GET | `http://127.0.0.1:5001/api/v1/doctors/consultation-requests` | Required roles: DOCTOR |
+| GET | `http://127.0.0.1:5001/api/v1/vaccination-schedules` | Required roles: public / limited challenge |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/vaccinations/history` | Required roles: PATIENT |
+| POST | `http://127.0.0.1:5001/api/v1/children/{child_id}/vaccinations/history` | Required roles: PATIENT |
+| DELETE | `http://127.0.0.1:5001/api/v1/children/{child_id}/vaccinations/history/{record_id}` | Required roles: PATIENT |
+| PATCH | `http://127.0.0.1:5001/api/v1/children/{child_id}/vaccinations/history/{record_id}` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/medical-history` | Required roles: PATIENT |
+| POST | `http://127.0.0.1:5001/api/v1/children/{child_id}/medical-history` | Required roles: PATIENT |
+| DELETE | `http://127.0.0.1:5001/api/v1/children/{child_id}/medical-history/{record_id}` | Required roles: PATIENT |
+| PATCH | `http://127.0.0.1:5001/api/v1/children/{child_id}/medical-history/{record_id}` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/growth` | Required roles: PATIENT |
+| POST | `http://127.0.0.1:5001/api/v1/children/{child_id}/growth` | Required roles: PATIENT |
+| DELETE | `http://127.0.0.1:5001/api/v1/children/{child_id}/growth/{record_id}` | Required roles: PATIENT |
+| PATCH | `http://127.0.0.1:5001/api/v1/children/{child_id}/growth/{record_id}` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/nutrition` | Required roles: PATIENT |
+| POST | `http://127.0.0.1:5001/api/v1/children/{child_id}/nutrition` | Required roles: PATIENT |
+| DELETE | `http://127.0.0.1:5001/api/v1/children/{child_id}/nutrition/{record_id}` | Required roles: PATIENT |
+| PATCH | `http://127.0.0.1:5001/api/v1/children/{child_id}/nutrition/{record_id}` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/consultations` | Required roles: PATIENT |
+| POST | `http://127.0.0.1:5001/api/v1/children/{child_id}/consultations` | Required roles: PATIENT |
+| DELETE | `http://127.0.0.1:5001/api/v1/children/{child_id}/consultations/{record_id}` | Required roles: PATIENT |
+| PATCH | `http://127.0.0.1:5001/api/v1/children/{child_id}/consultations/{record_id}` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/care-notes` | Required roles: PATIENT |
+| POST | `http://127.0.0.1:5001/api/v1/children/{child_id}/care-notes` | Required roles: PATIENT |
+| DELETE | `http://127.0.0.1:5001/api/v1/children/{child_id}/care-notes/{record_id}` | Required roles: PATIENT |
+| PATCH | `http://127.0.0.1:5001/api/v1/children/{child_id}/care-notes/{record_id}` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/consultation-requests` | Required roles: PATIENT, DOCTOR |
+| POST | `http://127.0.0.1:5001/api/v1/children/{child_id}/consultation-requests` | Required roles: PATIENT |
+| DELETE | `http://127.0.0.1:5001/api/v1/children/{child_id}/consultation-requests/{record_id}` | Required roles: PATIENT |
+| PATCH | `http://127.0.0.1:5001/api/v1/children/{child_id}/consultation-requests/{record_id}` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/vaccination-schedules/{schedule_id}` | Required roles: public / limited challenge |
+| GET | `http://127.0.0.1:5001/api/v1/children/{child_id}/vaccination-context` | Required roles: PATIENT |
+| PUT | `http://127.0.0.1:5001/api/v1/children/{child_id}/vaccination-context` | Required roles: PATIENT |
+| GET | `http://127.0.0.1:5001/api/v1/doctors/vaccination-reviews` | Required roles: DOCTOR |
+| POST | `http://127.0.0.1:5001/api/v1/doctors/vaccination-reviews/{schedule_id}` | Required roles: DOCTOR |
+| GET | `http://127.0.0.1:5001/api/v1/admin/vaccination/vaccines` | Required roles: ADMIN |
+| POST | `http://127.0.0.1:5001/api/v1/admin/vaccination/vaccines` | Required roles: ADMIN |
+| PUT | `http://127.0.0.1:5001/api/v1/admin/vaccination/vaccines/{vaccine_id}` | Required roles: ADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/admin/vaccination/schedules` | Required roles: ADMIN |
+| POST | `http://127.0.0.1:5001/api/v1/admin/vaccination/schedules` | Required roles: ADMIN |
+| PUT | `http://127.0.0.1:5001/api/v1/admin/vaccination/schedules/{schedule_id}` | Required roles: ADMIN |
+| PUT | `http://127.0.0.1:5001/api/v1/admin/vaccination/schedules/{schedule_id}/eligibility` | Required roles: ADMIN |
+| PUT | `http://127.0.0.1:5001/api/v1/admin/vaccination/schedules/{schedule_id}/reminders` | Required roles: ADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/admin/vaccination/reviewers` | Required roles: ADMIN |
+| POST | `http://127.0.0.1:5001/api/v1/admin/vaccination/schedules/{schedule_id}/submit-review` | Required roles: ADMIN |
+| POST | `http://127.0.0.1:5001/api/v1/admin/vaccination/schedules/{schedule_id}/withdraw` | Required roles: ADMIN |
+| POST | `http://127.0.0.1:5001/api/v1/admin/vaccination/schedules/{schedule_id}/publish` | Required roles: ADMIN |
+| POST | `http://127.0.0.1:5001/api/v1/admin/vaccination/schedules/{schedule_id}/retire` | Required roles: ADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/admin/vaccination/audit` | Required roles: ADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/superadmin/vaccination/vaccines` | Required roles: SUPERADMIN |
+| POST | `http://127.0.0.1:5001/api/v1/superadmin/vaccination/vaccines` | Required roles: SUPERADMIN |
+| PUT | `http://127.0.0.1:5001/api/v1/superadmin/vaccination/vaccines/{vaccine_id}` | Required roles: SUPERADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/superadmin/vaccination/schedules` | Required roles: SUPERADMIN |
+| POST | `http://127.0.0.1:5001/api/v1/superadmin/vaccination/schedules` | Required roles: SUPERADMIN |
+| PUT | `http://127.0.0.1:5001/api/v1/superadmin/vaccination/schedules/{schedule_id}` | Required roles: SUPERADMIN |
+| PUT | `http://127.0.0.1:5001/api/v1/superadmin/vaccination/schedules/{schedule_id}/eligibility` | Required roles: SUPERADMIN |
+| PUT | `http://127.0.0.1:5001/api/v1/superadmin/vaccination/schedules/{schedule_id}/reminders` | Required roles: SUPERADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/superadmin/vaccination/reviewers` | Required roles: SUPERADMIN |
+| POST | `http://127.0.0.1:5001/api/v1/superadmin/vaccination/schedules/{schedule_id}/submit-review` | Required roles: SUPERADMIN |
+| POST | `http://127.0.0.1:5001/api/v1/superadmin/vaccination/schedules/{schedule_id}/withdraw` | Required roles: SUPERADMIN |
+| POST | `http://127.0.0.1:5001/api/v1/superadmin/vaccination/schedules/{schedule_id}/publish` | Required roles: SUPERADMIN |
+| POST | `http://127.0.0.1:5001/api/v1/superadmin/vaccination/schedules/{schedule_id}/retire` | Required roles: SUPERADMIN |
+| GET | `http://127.0.0.1:5001/api/v1/superadmin/vaccination/audit` | Required roles: SUPERADMIN |
 | GET | `http://127.0.0.1:5001/api/v1/health` | Required roles: public / limited challenge |
 | GET | `http://127.0.0.1:5001/api/v1/health/ready` | Required roles: public / limited challenge |
 
@@ -2200,7 +2290,7 @@ Request fields:
 | `mobile_number` | yes | `{"pattern": "^\\+?[1-9][0-9]{7,14}$", "type": "string"}` |
 | `password` | yes | `{"maxLength": 128, "minLength": 8, "type": "string"}` |
 | `confirm_password` | yes | `{"maxLength": 128, "minLength": 8, "type": "string"}` |
-| `qualification` | yes | `{"maxLength": 200, "minLength": 2, "type": "string"}` |
+| `qualification` | no | `{"anyOf": [{"maxLength": 200, "minLength": 2, "type": "string"}, {"type": "null"}], "default": null}` |
 | `medical_registration_number` | yes | `{"pattern": "^[A-Za-z0-9][A-Za-z0-9/ ._-]{1,99}$", "type": "string"}` |
 | `registering_council` | yes | `{"maxLength": 200, "minLength": 2, "type": "string"}` |
 | `specialization` | no | `{"anyOf": [{"maxLength": 200, "type": "string"}, {"type": "null"}], "default": null}` |
@@ -2871,7 +2961,7 @@ Request fields:
 |---|---|---|
 | `email` | yes | `{"format": "email", "type": "string"}` |
 | `password` | yes | `{"maxLength": 128, "minLength": 1, "type": "string"}` |
-| `qualification` | yes | `{"maxLength": 200, "minLength": 2, "type": "string"}` |
+| `qualification` | no | `{"anyOf": [{"maxLength": 200, "minLength": 2, "type": "string"}, {"type": "null"}], "default": null}` |
 | `medical_registration_number` | yes | `{"pattern": "^[A-Za-z0-9][A-Za-z0-9/ ._-]{1,99}$", "type": "string"}` |
 | `registering_council` | yes | `{"maxLength": 200, "minLength": 2, "type": "string"}` |
 
@@ -3968,6 +4058,455 @@ Web (use the cookie/CSRF client in `examples/web_api.js`):
 
 ```javascript
 await api('/api/v1/doctors/care-profiles/{profile_id}/reports/{report_id}/download', 'GET', undefined);
+```
+
+## GET /api/v1/doctors/practice-profile
+
+Required roles: DOCTOR
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/doctors/practice-profile', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/doctors/practice-profile', 'GET', undefined);
+```
+
+## PUT /api/v1/doctors/practice-profile
+
+Required roles: DOCTOR
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/doctors/practice-profile', data: {}, options: Options(method: 'PUT'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/doctors/practice-profile', 'PUT', undefined);
+```
+
+## GET /api/v1/doctors/care-profiles/{profile_id}/records
+
+Required roles: DOCTOR
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/doctors/care-profiles/{profile_id}/records', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/doctors/care-profiles/{profile_id}/records', 'GET', undefined);
 ```
 
 ## POST /api/v1/patients/login
@@ -5307,6 +5846,161 @@ Web (use the cookie/CSRF client in `examples/web_api.js`):
 await api('/api/v1/patients/doctor', 'GET', undefined);
 ```
 
+## DELETE /api/v1/patients/doctor
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "doctor": {
+    "referral_id": "rahulkumarD000001",
+    "public_id": "D000001",
+    "full_name": "Dr Rahul Kumar",
+    "email": "rahul@example.com",
+    "mobile_number": "+919876543211",
+    "account_status": "ACTIVE",
+    "approval_status": "APPROVED"
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/doctor', data: {}, options: Options(method: 'DELETE'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/doctor', 'DELETE', undefined);
+```
+
 ## POST /api/v1/patients/profiles
 
 Required roles: PATIENT
@@ -6440,6 +7134,928 @@ Web (use the cookie/CSRF client in `examples/web_api.js`):
 
 ```javascript
 await api('/api/v1/patients/profiles/{profile_id}/reports/{report_id}/download', 'GET', undefined);
+```
+
+## GET /api/v1/patients/report-text/options
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/report-text/options', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/report-text/options', 'GET', undefined);
+```
+
+## GET /api/v1/patients/profiles/{profile_id}/reports/{report_id}/text
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/profiles/{profile_id}/reports/{report_id}/text', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/profiles/{profile_id}/reports/{report_id}/text', 'GET', undefined);
+```
+
+## POST /api/v1/patients/profiles/{profile_id}/reports/{report_id}/text
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/profiles/{profile_id}/reports/{report_id}/text', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/profiles/{profile_id}/reports/{report_id}/text', 'POST', undefined);
+```
+
+## DELETE /api/v1/patients/profiles/{profile_id}/doctor
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/profiles/{profile_id}/doctor', data: {}, options: Options(method: 'DELETE'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/profiles/{profile_id}/doctor', 'DELETE', undefined);
+```
+
+## POST /api/v1/patients/profiles/{profile_id}/reports/{report_id}/import
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/profiles/{profile_id}/reports/{report_id}/import', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/profiles/{profile_id}/reports/{report_id}/import', 'POST', undefined);
+```
+
+## GET /api/v1/patients/profiles/{profile_id}/imported-records
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/patients/profiles/{profile_id}/imported-records', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/patients/profiles/{profile_id}/imported-records', 'GET', undefined);
 ```
 
 ## POST /api/v1/admin/login
@@ -8647,6 +10263,468 @@ Web (use the cookie/CSRF client in `examples/web_api.js`):
 await api('/api/v1/admin/patients', 'GET', undefined);
 ```
 
+## GET /api/v1/admin/patients/{user_id}
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/patients/{user_id}', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/patients/{user_id}', 'GET', undefined);
+```
+
+## GET /api/v1/admin/patients/{user_id}/profiles
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "items": [
+    {
+      "id": "<profile UUID>",
+      "profile_type": "member",
+      "module": "child",
+      "full_name": "Aarav Kumar",
+      "date_of_birth": "2018-05-14",
+      "parent_profile_id": "<parent profile UUID>",
+      "doctor": null
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "per_page": 25
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/patients/{user_id}/profiles', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/patients/{user_id}/profiles', 'GET', undefined);
+```
+
+## GET /api/v1/admin/patients/{user_id}/profiles/{profile_id}
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/patients/{user_id}/profiles/{profile_id}', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/patients/{user_id}/profiles/{profile_id}', 'GET', undefined);
+```
+
 ## POST /api/v1/superadmin/login
 
 Required roles: public / limited challenge
@@ -10347,6 +12425,468 @@ Web (use the cookie/CSRF client in `examples/web_api.js`):
 await api('/api/v1/superadmin/patients', 'GET', undefined);
 ```
 
+## GET /api/v1/superadmin/patients/{user_id}
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/patients/{user_id}', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/patients/{user_id}', 'GET', undefined);
+```
+
+## GET /api/v1/superadmin/patients/{user_id}/profiles
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "items": [
+    {
+      "id": "<profile UUID>",
+      "profile_type": "member",
+      "module": "child",
+      "full_name": "Aarav Kumar",
+      "date_of_birth": "2018-05-14",
+      "parent_profile_id": "<parent profile UUID>",
+      "doctor": null
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "per_page": 25
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/patients/{user_id}/profiles', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/patients/{user_id}/profiles', 'GET', undefined);
+```
+
+## GET /api/v1/superadmin/patients/{user_id}/profiles/{profile_id}
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/patients/{user_id}/profiles/{profile_id}', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/patients/{user_id}/profiles/{profile_id}', 'GET', undefined);
+```
+
 ## GET /api/v1/superadmin/audit-logs
 
 Required roles: SUPERADMIN
@@ -10493,6 +13033,10893 @@ Web (use the cookie/CSRF client in `examples/web_api.js`):
 
 ```javascript
 await api('/api/v1/superadmin/audit-logs', 'GET', undefined);
+```
+
+## GET /api/v1/children
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children', 'GET', undefined);
+```
+
+## GET /api/v1/children/{child_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}', 'GET', undefined);
+```
+
+## GET /api/v1/children/{child_id}/age
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/age', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/age', 'GET', undefined);
+```
+
+## GET /api/v1/children/{child_id}/records
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/records', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/records', 'GET', undefined);
+```
+
+## GET /api/v1/children/{child_id}/dashboard
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "counts": [
+    {
+      "role": "ADMIN",
+      "approval_status": "PENDING_APPROVAL",
+      "count": 1
+    }
+  ]
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/dashboard', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/dashboard', 'GET', undefined);
+```
+
+## GET /api/v1/children/{child_id}/health-guide
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/health-guide', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/health-guide', 'GET', undefined);
+```
+
+## GET /api/v1/children/{child_id}/vaccinations
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/vaccinations', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/vaccinations', 'GET', undefined);
+```
+
+## GET /api/v1/children/{child_id}/vaccinations/upcoming
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/vaccinations/upcoming', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/vaccinations/upcoming', 'GET', undefined);
+```
+
+## GET /api/v1/children/{child_id}/reminders
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/reminders', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/reminders', 'GET', undefined);
+```
+
+## PUT /api/v1/children/{child_id}/reminder-preferences
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/reminder-preferences', data: {}, options: Options(method: 'PUT'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/reminder-preferences', 'PUT', undefined);
+```
+
+## GET /api/v1/vaccines
+
+Required roles: public / limited challenge
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/vaccines', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/vaccines', 'GET', undefined);
+```
+
+## GET /api/v1/doctors/consultation-requests
+
+Required roles: DOCTOR
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "items": [],
+  "total": 0
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/doctors/consultation-requests', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/doctors/consultation-requests', 'GET', undefined);
+```
+
+## GET /api/v1/vaccination-schedules
+
+Required roles: public / limited challenge
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/vaccination-schedules', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/vaccination-schedules', 'GET', undefined);
+```
+
+## GET /api/v1/children/{child_id}/vaccinations/history
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/vaccinations/history', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/vaccinations/history', 'GET', undefined);
+```
+
+## POST /api/v1/children/{child_id}/vaccinations/history
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/vaccinations/history', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/vaccinations/history', 'POST', undefined);
+```
+
+## DELETE /api/v1/children/{child_id}/vaccinations/history/{record_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/vaccinations/history/{record_id}', data: {}, options: Options(method: 'DELETE'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/vaccinations/history/{record_id}', 'DELETE', undefined);
+```
+
+## PATCH /api/v1/children/{child_id}/vaccinations/history/{record_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/vaccinations/history/{record_id}', data: {}, options: Options(method: 'PATCH'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/vaccinations/history/{record_id}', 'PATCH', undefined);
+```
+
+## GET /api/v1/children/{child_id}/medical-history
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/medical-history', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/medical-history', 'GET', undefined);
+```
+
+## POST /api/v1/children/{child_id}/medical-history
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/medical-history', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/medical-history', 'POST', undefined);
+```
+
+## DELETE /api/v1/children/{child_id}/medical-history/{record_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/medical-history/{record_id}', data: {}, options: Options(method: 'DELETE'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/medical-history/{record_id}', 'DELETE', undefined);
+```
+
+## PATCH /api/v1/children/{child_id}/medical-history/{record_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/medical-history/{record_id}', data: {}, options: Options(method: 'PATCH'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/medical-history/{record_id}', 'PATCH', undefined);
+```
+
+## GET /api/v1/children/{child_id}/growth
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/growth', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/growth', 'GET', undefined);
+```
+
+## POST /api/v1/children/{child_id}/growth
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/growth', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/growth', 'POST', undefined);
+```
+
+## DELETE /api/v1/children/{child_id}/growth/{record_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/growth/{record_id}', data: {}, options: Options(method: 'DELETE'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/growth/{record_id}', 'DELETE', undefined);
+```
+
+## PATCH /api/v1/children/{child_id}/growth/{record_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/growth/{record_id}', data: {}, options: Options(method: 'PATCH'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/growth/{record_id}', 'PATCH', undefined);
+```
+
+## GET /api/v1/children/{child_id}/nutrition
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/nutrition', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/nutrition', 'GET', undefined);
+```
+
+## POST /api/v1/children/{child_id}/nutrition
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/nutrition', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/nutrition', 'POST', undefined);
+```
+
+## DELETE /api/v1/children/{child_id}/nutrition/{record_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/nutrition/{record_id}', data: {}, options: Options(method: 'DELETE'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/nutrition/{record_id}', 'DELETE', undefined);
+```
+
+## PATCH /api/v1/children/{child_id}/nutrition/{record_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/nutrition/{record_id}', data: {}, options: Options(method: 'PATCH'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/nutrition/{record_id}', 'PATCH', undefined);
+```
+
+## GET /api/v1/children/{child_id}/consultations
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/consultations', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/consultations', 'GET', undefined);
+```
+
+## POST /api/v1/children/{child_id}/consultations
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/consultations', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/consultations', 'POST', undefined);
+```
+
+## DELETE /api/v1/children/{child_id}/consultations/{record_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/consultations/{record_id}', data: {}, options: Options(method: 'DELETE'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/consultations/{record_id}', 'DELETE', undefined);
+```
+
+## PATCH /api/v1/children/{child_id}/consultations/{record_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/consultations/{record_id}', data: {}, options: Options(method: 'PATCH'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/consultations/{record_id}', 'PATCH', undefined);
+```
+
+## GET /api/v1/children/{child_id}/care-notes
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/care-notes', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/care-notes', 'GET', undefined);
+```
+
+## POST /api/v1/children/{child_id}/care-notes
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/care-notes', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/care-notes', 'POST', undefined);
+```
+
+## DELETE /api/v1/children/{child_id}/care-notes/{record_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/care-notes/{record_id}', data: {}, options: Options(method: 'DELETE'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/care-notes/{record_id}', 'DELETE', undefined);
+```
+
+## PATCH /api/v1/children/{child_id}/care-notes/{record_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/care-notes/{record_id}', data: {}, options: Options(method: 'PATCH'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/care-notes/{record_id}', 'PATCH', undefined);
+```
+
+## GET /api/v1/children/{child_id}/consultation-requests
+
+Required roles: PATIENT, DOCTOR
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "items": [],
+  "total": 0
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/consultation-requests', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/consultation-requests', 'GET', undefined);
+```
+
+## POST /api/v1/children/{child_id}/consultation-requests
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "items": [],
+  "total": 0
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/consultation-requests', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/consultation-requests', 'POST', undefined);
+```
+
+## DELETE /api/v1/children/{child_id}/consultation-requests/{record_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/consultation-requests/{record_id}', data: {}, options: Options(method: 'DELETE'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/consultation-requests/{record_id}', 'DELETE', undefined);
+```
+
+## PATCH /api/v1/children/{child_id}/consultation-requests/{record_id}
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/consultation-requests/{record_id}', data: {}, options: Options(method: 'PATCH'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/consultation-requests/{record_id}', 'PATCH', undefined);
+```
+
+## GET /api/v1/vaccination-schedules/{schedule_id}
+
+Required roles: public / limited challenge
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/vaccination-schedules/{schedule_id}', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/vaccination-schedules/{schedule_id}', 'GET', undefined);
+```
+
+## GET /api/v1/children/{child_id}/vaccination-context
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/vaccination-context', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/vaccination-context', 'GET', undefined);
+```
+
+## PUT /api/v1/children/{child_id}/vaccination-context
+
+Required roles: PATIENT
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/children/{child_id}/vaccination-context', data: {}, options: Options(method: 'PUT'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/children/{child_id}/vaccination-context', 'PUT', undefined);
+```
+
+## GET /api/v1/doctors/vaccination-reviews
+
+Required roles: DOCTOR
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/doctors/vaccination-reviews', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/doctors/vaccination-reviews', 'GET', undefined);
+```
+
+## POST /api/v1/doctors/vaccination-reviews/{schedule_id}
+
+Required roles: DOCTOR
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/doctors/vaccination-reviews/{schedule_id}', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/doctors/vaccination-reviews/{schedule_id}', 'POST', undefined);
+```
+
+## GET /api/v1/admin/vaccination/vaccines
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/vaccination/vaccines', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/vaccination/vaccines', 'GET', undefined);
+```
+
+## POST /api/v1/admin/vaccination/vaccines
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/vaccination/vaccines', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/vaccination/vaccines', 'POST', undefined);
+```
+
+## PUT /api/v1/admin/vaccination/vaccines/{vaccine_id}
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/vaccination/vaccines/{vaccine_id}', data: {}, options: Options(method: 'PUT'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/vaccination/vaccines/{vaccine_id}', 'PUT', undefined);
+```
+
+## GET /api/v1/admin/vaccination/schedules
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/vaccination/schedules', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/vaccination/schedules', 'GET', undefined);
+```
+
+## POST /api/v1/admin/vaccination/schedules
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/vaccination/schedules', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/vaccination/schedules', 'POST', undefined);
+```
+
+## PUT /api/v1/admin/vaccination/schedules/{schedule_id}
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/vaccination/schedules/{schedule_id}', data: {}, options: Options(method: 'PUT'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/vaccination/schedules/{schedule_id}', 'PUT', undefined);
+```
+
+## PUT /api/v1/admin/vaccination/schedules/{schedule_id}/eligibility
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/vaccination/schedules/{schedule_id}/eligibility', data: {}, options: Options(method: 'PUT'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/vaccination/schedules/{schedule_id}/eligibility', 'PUT', undefined);
+```
+
+## PUT /api/v1/admin/vaccination/schedules/{schedule_id}/reminders
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/vaccination/schedules/{schedule_id}/reminders', data: {}, options: Options(method: 'PUT'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/vaccination/schedules/{schedule_id}/reminders', 'PUT', undefined);
+```
+
+## GET /api/v1/admin/vaccination/reviewers
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/vaccination/reviewers', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/vaccination/reviewers', 'GET', undefined);
+```
+
+## POST /api/v1/admin/vaccination/schedules/{schedule_id}/submit-review
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/vaccination/schedules/{schedule_id}/submit-review', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/vaccination/schedules/{schedule_id}/submit-review', 'POST', undefined);
+```
+
+## POST /api/v1/admin/vaccination/schedules/{schedule_id}/withdraw
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/vaccination/schedules/{schedule_id}/withdraw', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/vaccination/schedules/{schedule_id}/withdraw', 'POST', undefined);
+```
+
+## POST /api/v1/admin/vaccination/schedules/{schedule_id}/publish
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/vaccination/schedules/{schedule_id}/publish', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/vaccination/schedules/{schedule_id}/publish', 'POST', undefined);
+```
+
+## POST /api/v1/admin/vaccination/schedules/{schedule_id}/retire
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/vaccination/schedules/{schedule_id}/retire', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/vaccination/schedules/{schedule_id}/retire', 'POST', undefined);
+```
+
+## GET /api/v1/admin/vaccination/audit
+
+Required roles: ADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/admin/vaccination/audit', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/admin/vaccination/audit', 'GET', undefined);
+```
+
+## GET /api/v1/superadmin/vaccination/vaccines
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/vaccination/vaccines', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/vaccination/vaccines', 'GET', undefined);
+```
+
+## POST /api/v1/superadmin/vaccination/vaccines
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/vaccination/vaccines', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/vaccination/vaccines', 'POST', undefined);
+```
+
+## PUT /api/v1/superadmin/vaccination/vaccines/{vaccine_id}
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/vaccination/vaccines/{vaccine_id}', data: {}, options: Options(method: 'PUT'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/vaccination/vaccines/{vaccine_id}', 'PUT', undefined);
+```
+
+## GET /api/v1/superadmin/vaccination/schedules
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/vaccination/schedules', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/vaccination/schedules', 'GET', undefined);
+```
+
+## POST /api/v1/superadmin/vaccination/schedules
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/vaccination/schedules', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/vaccination/schedules', 'POST', undefined);
+```
+
+## PUT /api/v1/superadmin/vaccination/schedules/{schedule_id}
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/vaccination/schedules/{schedule_id}', data: {}, options: Options(method: 'PUT'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/vaccination/schedules/{schedule_id}', 'PUT', undefined);
+```
+
+## PUT /api/v1/superadmin/vaccination/schedules/{schedule_id}/eligibility
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/vaccination/schedules/{schedule_id}/eligibility', data: {}, options: Options(method: 'PUT'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/vaccination/schedules/{schedule_id}/eligibility', 'PUT', undefined);
+```
+
+## PUT /api/v1/superadmin/vaccination/schedules/{schedule_id}/reminders
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/vaccination/schedules/{schedule_id}/reminders', data: {}, options: Options(method: 'PUT'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/vaccination/schedules/{schedule_id}/reminders', 'PUT', undefined);
+```
+
+## GET /api/v1/superadmin/vaccination/reviewers
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/vaccination/reviewers', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/vaccination/reviewers', 'GET', undefined);
+```
+
+## POST /api/v1/superadmin/vaccination/schedules/{schedule_id}/submit-review
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/vaccination/schedules/{schedule_id}/submit-review', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/vaccination/schedules/{schedule_id}/submit-review', 'POST', undefined);
+```
+
+## POST /api/v1/superadmin/vaccination/schedules/{schedule_id}/withdraw
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/vaccination/schedules/{schedule_id}/withdraw', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/vaccination/schedules/{schedule_id}/withdraw', 'POST', undefined);
+```
+
+## POST /api/v1/superadmin/vaccination/schedules/{schedule_id}/publish
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/vaccination/schedules/{schedule_id}/publish', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/vaccination/schedules/{schedule_id}/publish', 'POST', undefined);
+```
+
+## POST /api/v1/superadmin/vaccination/schedules/{schedule_id}/retire
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/vaccination/schedules/{schedule_id}/retire', data: {}, options: Options(method: 'POST'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/vaccination/schedules/{schedule_id}/retire', 'POST', undefined);
+```
+
+## GET /api/v1/superadmin/vaccination/audit
+
+Required roles: SUPERADMIN
+
+No JSON body required.
+
+HTTP 200: Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+HTTP 400: Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401: Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403: Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404: Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409: Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422: Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429: Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413: Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415: Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502: Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503: Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Flutter (Dio; use the refresh-aware client in `examples/flutter_api.dart`):
+
+```dart
+await dio.request('/api/v1/superadmin/vaccination/audit', data: {}, options: Options(method: 'GET'));
+```
+
+Web (use the cookie/CSRF client in `examples/web_api.js`):
+
+```javascript
+await api('/api/v1/superadmin/vaccination/audit', 'GET', undefined);
 ```
 
 ## GET /api/v1/health

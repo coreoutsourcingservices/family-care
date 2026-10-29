@@ -1,3 +1,4 @@
+import AccountDoctorConnection from '../components/AccountDoctorConnection';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, FileText, Heart, LogOut, ShieldCheck, Users } from 'lucide-react';
@@ -59,7 +60,7 @@ function DashboardContent({ module }: { module?: ModuleId }) {
         <div className="customer-hero-photo"><span className="customer-hero-heart heart-one"><Heart fill="currentColor" /></span><img src="/images/family.png" alt="A smiling family together" /><span className="customer-hero-heart heart-two"><Heart fill="currentColor" /></span></div>
       </section>}
       {error && <p className="customer-dashboard-error" role="alert">{t(error)}</p>}
-      {!module && <ModuleSelector selected={null} translate={t} onSelect={id => navigate(`/customer/${id}`)} />}
+      {!module&&<AccountDoctorConnection/>}{!module && <ModuleSelector selected={null} translate={t} onSelect={id => navigate(`/customer/${id}`)} />}
       {module && <section id="customer-module-content" className="customer-module-content">
         {module === 'child' ? <ChildCare key={`child-${user.id}`} accountId={user.id} /> : module === 'women' ? <WomenHealth key={`women-${user.id}`} accountId={user.id} /> : <AdultHealth key={`adult-${user.id}`} accountId={user.id} />}
       </section>}

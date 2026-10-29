@@ -433,6 +433,9 @@ backend base URL ke relative hain. Normal GET routes ko request JSON nahi chahiy
 | GET | `/api/v1/doctors/care-profiles/{profile_id}` | DOCTOR | `None` |
 | GET | `/api/v1/doctors/care-profiles/{profile_id}/reports` | DOCTOR | `None` |
 | GET | `/api/v1/doctors/care-profiles/{profile_id}/reports/{report_id}/download` | DOCTOR | `None` |
+| GET | `/api/v1/doctors/practice-profile` | DOCTOR | `None` |
+| PUT | `/api/v1/doctors/practice-profile` | DOCTOR | `None` |
+| GET | `/api/v1/doctors/care-profiles/{profile_id}/records` | DOCTOR | `None` |
 | POST | `/api/v1/patients/login` | public / limited challenge | `Login` |
 | GET | `/api/v1/patients/me` | PATIENT | `None` |
 | POST | `/api/v1/patients/register` | public / limited challenge | `PatientRegistration` |
@@ -441,6 +444,7 @@ backend base URL ke relative hain. Normal GET routes ko request JSON nahi chahiy
 | POST | `/api/v1/patients/verify-login-otp` | RETIRED: HTTP 410 | `VerifyOTP` |
 | POST | `/api/v1/patients/connect-doctor` | PATIENT | `ConnectDoctor` |
 | GET | `/api/v1/patients/doctor` | PATIENT | `None` |
+| DELETE | `/api/v1/patients/doctor` | PATIENT | `None` |
 | POST | `/api/v1/patients/profiles` | PATIENT | `CareProfileCreate` |
 | GET | `/api/v1/patients/profiles` | PATIENT | `None` |
 | GET | `/api/v1/patients/profiles/{profile_id}` | PATIENT | `None` |
@@ -448,6 +452,12 @@ backend base URL ke relative hain. Normal GET routes ko request JSON nahi chahiy
 | POST | `/api/v1/patients/profiles/{profile_id}/reports` | PATIENT | `multipart: file` |
 | GET | `/api/v1/patients/profiles/{profile_id}/reports` | PATIENT | `None` |
 | GET | `/api/v1/patients/profiles/{profile_id}/reports/{report_id}/download` | PATIENT | `None` |
+| GET | `/api/v1/patients/report-text/options` | PATIENT | `None` |
+| GET | `/api/v1/patients/profiles/{profile_id}/reports/{report_id}/text` | PATIENT | `None` |
+| POST | `/api/v1/patients/profiles/{profile_id}/reports/{report_id}/text` | PATIENT | `None` |
+| DELETE | `/api/v1/patients/profiles/{profile_id}/doctor` | PATIENT | `None` |
+| POST | `/api/v1/patients/profiles/{profile_id}/reports/{report_id}/import` | PATIENT | `None` |
+| GET | `/api/v1/patients/profiles/{profile_id}/imported-records` | PATIENT | `None` |
 | POST | `/api/v1/admin/login` | public / limited challenge | `Login` |
 | GET | `/api/v1/admin/me` | ADMIN | `None` |
 | POST | `/api/v1/admin/register` | public / limited challenge | `Registration` |
@@ -462,6 +472,9 @@ backend base URL ke relative hain. Normal GET routes ko request JSON nahi chahiy
 | POST | `/api/v1/admin/doctors/{user_id}/suspend` | ADMIN | `None` |
 | POST | `/api/v1/admin/doctors/{user_id}/reactivate` | ADMIN | `None` |
 | GET | `/api/v1/admin/patients` | ADMIN | `None` |
+| GET | `/api/v1/admin/patients/{user_id}` | ADMIN | `None` |
+| GET | `/api/v1/admin/patients/{user_id}/profiles` | ADMIN | `None` |
+| GET | `/api/v1/admin/patients/{user_id}/profiles/{profile_id}` | ADMIN | `None` |
 | POST | `/api/v1/superadmin/login` | public / limited challenge | `SuperLogin` |
 | GET | `/api/v1/superadmin/me` | SUPERADMIN | `None` |
 | GET | `/api/v1/superadmin/dashboard` | SUPERADMIN | `None` |
@@ -473,11 +486,84 @@ backend base URL ke relative hain. Normal GET routes ko request JSON nahi chahiy
 | POST | `/api/v1/superadmin/admins/{user_id}/reactivate` | SUPERADMIN | `None` |
 | GET | `/api/v1/superadmin/doctors` | SUPERADMIN | `None` |
 | GET | `/api/v1/superadmin/patients` | SUPERADMIN | `None` |
+| GET | `/api/v1/superadmin/patients/{user_id}` | SUPERADMIN | `None` |
+| GET | `/api/v1/superadmin/patients/{user_id}/profiles` | SUPERADMIN | `None` |
+| GET | `/api/v1/superadmin/patients/{user_id}/profiles/{profile_id}` | SUPERADMIN | `None` |
 | GET | `/api/v1/superadmin/audit-logs` | SUPERADMIN | `None` |
-| GET | `/api/v1/localization` | public / limited challenge | `None` |
-| GET | `/api/v1/localization/states` | public / limited challenge | `None` |
-| GET | `/api/v1/localization/languages` | public / limited challenge | `None` |
-| GET | `/api/v1/localization/messages/{language}` | public / limited challenge | `None` |
+| GET | `/api/v1/children` | PATIENT | `None` |
+| GET | `/api/v1/children/{child_id}` | PATIENT | `None` |
+| GET | `/api/v1/children/{child_id}/age` | PATIENT | `None` |
+| GET | `/api/v1/children/{child_id}/records` | PATIENT | `None` |
+| GET | `/api/v1/children/{child_id}/dashboard` | PATIENT | `None` |
+| GET | `/api/v1/children/{child_id}/health-guide` | PATIENT | `None` |
+| GET | `/api/v1/children/{child_id}/vaccinations` | PATIENT | `None` |
+| GET | `/api/v1/children/{child_id}/vaccinations/upcoming` | PATIENT | `None` |
+| GET | `/api/v1/children/{child_id}/reminders` | PATIENT | `None` |
+| PUT | `/api/v1/children/{child_id}/reminder-preferences` | PATIENT | `None` |
+| GET | `/api/v1/vaccines` | public / limited challenge | `None` |
+| GET | `/api/v1/doctors/consultation-requests` | DOCTOR | `None` |
+| GET | `/api/v1/vaccination-schedules` | public / limited challenge | `None` |
+| GET | `/api/v1/children/{child_id}/vaccinations/history` | PATIENT | `None` |
+| POST | `/api/v1/children/{child_id}/vaccinations/history` | PATIENT | `None` |
+| DELETE | `/api/v1/children/{child_id}/vaccinations/history/{record_id}` | PATIENT | `None` |
+| PATCH | `/api/v1/children/{child_id}/vaccinations/history/{record_id}` | PATIENT | `None` |
+| GET | `/api/v1/children/{child_id}/medical-history` | PATIENT | `None` |
+| POST | `/api/v1/children/{child_id}/medical-history` | PATIENT | `None` |
+| DELETE | `/api/v1/children/{child_id}/medical-history/{record_id}` | PATIENT | `None` |
+| PATCH | `/api/v1/children/{child_id}/medical-history/{record_id}` | PATIENT | `None` |
+| GET | `/api/v1/children/{child_id}/growth` | PATIENT | `None` |
+| POST | `/api/v1/children/{child_id}/growth` | PATIENT | `None` |
+| DELETE | `/api/v1/children/{child_id}/growth/{record_id}` | PATIENT | `None` |
+| PATCH | `/api/v1/children/{child_id}/growth/{record_id}` | PATIENT | `None` |
+| GET | `/api/v1/children/{child_id}/nutrition` | PATIENT | `None` |
+| POST | `/api/v1/children/{child_id}/nutrition` | PATIENT | `None` |
+| DELETE | `/api/v1/children/{child_id}/nutrition/{record_id}` | PATIENT | `None` |
+| PATCH | `/api/v1/children/{child_id}/nutrition/{record_id}` | PATIENT | `None` |
+| GET | `/api/v1/children/{child_id}/consultations` | PATIENT | `None` |
+| POST | `/api/v1/children/{child_id}/consultations` | PATIENT | `None` |
+| DELETE | `/api/v1/children/{child_id}/consultations/{record_id}` | PATIENT | `None` |
+| PATCH | `/api/v1/children/{child_id}/consultations/{record_id}` | PATIENT | `None` |
+| GET | `/api/v1/children/{child_id}/care-notes` | PATIENT | `None` |
+| POST | `/api/v1/children/{child_id}/care-notes` | PATIENT | `None` |
+| DELETE | `/api/v1/children/{child_id}/care-notes/{record_id}` | PATIENT | `None` |
+| PATCH | `/api/v1/children/{child_id}/care-notes/{record_id}` | PATIENT | `None` |
+| GET | `/api/v1/children/{child_id}/consultation-requests` | PATIENT, DOCTOR | `None` |
+| POST | `/api/v1/children/{child_id}/consultation-requests` | PATIENT | `None` |
+| DELETE | `/api/v1/children/{child_id}/consultation-requests/{record_id}` | PATIENT | `None` |
+| PATCH | `/api/v1/children/{child_id}/consultation-requests/{record_id}` | PATIENT | `None` |
+| GET | `/api/v1/vaccination-schedules/{schedule_id}` | public / limited challenge | `None` |
+| GET | `/api/v1/children/{child_id}/vaccination-context` | PATIENT | `None` |
+| PUT | `/api/v1/children/{child_id}/vaccination-context` | PATIENT | `None` |
+| GET | `/api/v1/doctors/vaccination-reviews` | DOCTOR | `None` |
+| POST | `/api/v1/doctors/vaccination-reviews/{schedule_id}` | DOCTOR | `None` |
+| GET | `/api/v1/admin/vaccination/vaccines` | ADMIN | `None` |
+| POST | `/api/v1/admin/vaccination/vaccines` | ADMIN | `None` |
+| PUT | `/api/v1/admin/vaccination/vaccines/{vaccine_id}` | ADMIN | `None` |
+| GET | `/api/v1/admin/vaccination/schedules` | ADMIN | `None` |
+| POST | `/api/v1/admin/vaccination/schedules` | ADMIN | `None` |
+| PUT | `/api/v1/admin/vaccination/schedules/{schedule_id}` | ADMIN | `None` |
+| PUT | `/api/v1/admin/vaccination/schedules/{schedule_id}/eligibility` | ADMIN | `None` |
+| PUT | `/api/v1/admin/vaccination/schedules/{schedule_id}/reminders` | ADMIN | `None` |
+| GET | `/api/v1/admin/vaccination/reviewers` | ADMIN | `None` |
+| POST | `/api/v1/admin/vaccination/schedules/{schedule_id}/submit-review` | ADMIN | `None` |
+| POST | `/api/v1/admin/vaccination/schedules/{schedule_id}/withdraw` | ADMIN | `None` |
+| POST | `/api/v1/admin/vaccination/schedules/{schedule_id}/publish` | ADMIN | `None` |
+| POST | `/api/v1/admin/vaccination/schedules/{schedule_id}/retire` | ADMIN | `None` |
+| GET | `/api/v1/admin/vaccination/audit` | ADMIN | `None` |
+| GET | `/api/v1/superadmin/vaccination/vaccines` | SUPERADMIN | `None` |
+| POST | `/api/v1/superadmin/vaccination/vaccines` | SUPERADMIN | `None` |
+| PUT | `/api/v1/superadmin/vaccination/vaccines/{vaccine_id}` | SUPERADMIN | `None` |
+| GET | `/api/v1/superadmin/vaccination/schedules` | SUPERADMIN | `None` |
+| POST | `/api/v1/superadmin/vaccination/schedules` | SUPERADMIN | `None` |
+| PUT | `/api/v1/superadmin/vaccination/schedules/{schedule_id}` | SUPERADMIN | `None` |
+| PUT | `/api/v1/superadmin/vaccination/schedules/{schedule_id}/eligibility` | SUPERADMIN | `None` |
+| PUT | `/api/v1/superadmin/vaccination/schedules/{schedule_id}/reminders` | SUPERADMIN | `None` |
+| GET | `/api/v1/superadmin/vaccination/reviewers` | SUPERADMIN | `None` |
+| POST | `/api/v1/superadmin/vaccination/schedules/{schedule_id}/submit-review` | SUPERADMIN | `None` |
+| POST | `/api/v1/superadmin/vaccination/schedules/{schedule_id}/withdraw` | SUPERADMIN | `None` |
+| POST | `/api/v1/superadmin/vaccination/schedules/{schedule_id}/publish` | SUPERADMIN | `None` |
+| POST | `/api/v1/superadmin/vaccination/schedules/{schedule_id}/retire` | SUPERADMIN | `None` |
+| GET | `/api/v1/superadmin/vaccination/audit` | SUPERADMIN | `None` |
 | GET | `/api/v1/health` | public / limited challenge | `None` |
 | GET | `/api/v1/health/ready` | public / limited challenge | `None` |
 

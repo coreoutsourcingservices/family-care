@@ -45,13 +45,18 @@ class ConnectDoctor(Schema):
 
 
 class DoctorRegistration(Registration):
-    qualification: str = Field(min_length=2, max_length=200)
+    qualification: str | None = Field(default=None, min_length=2, max_length=200)
     medical_registration_number: str = Field(pattern=r'^[A-Za-z0-9][A-Za-z0-9/ ._-]{1,99}$')
     registering_council: str = Field(min_length=2, max_length=200)
     specialization: str | None = Field(default=None, max_length=200)
     nmr_id: str | None = Field(default=None, min_length=1, max_length=100)
 
-    @field_validator('qualification', 'registering_council', 'medical_registration_number')
+    @field_validator('qualification', mode='before')
+    @classmethod
+    def optional_qualification(cls, value):
+        return value.strip().upper() or None if isinstance(value, str) else value
+
+    @field_validator('registering_council', 'medical_registration_number')
     @classmethod
     def nonempty(cls, value):
         if len(value.strip()) < 2:
@@ -123,9 +128,14 @@ class Rejection(Schema):
 class Resubmission(Schema):
     email: EmailStr
     password: str = Field(min_length=1, max_length=128)
-    qualification: str = Field(min_length=2, max_length=200)
+    qualification: str | None = Field(default=None, min_length=2, max_length=200)
     medical_registration_number: str = Field(pattern=r'^[A-Za-z0-9][A-Za-z0-9/ ._-]{1,99}$')
     registering_council: str = Field(min_length=2, max_length=200)
+
+    @field_validator('qualification', mode='before')
+    @classmethod
+    def optional_qualification(cls, value):
+        return DoctorRegistration.optional_qualification(value)
 
 
 def parse(schema):

@@ -94,7 +94,7 @@ CREATE INDEX ix_audit_logs_created_at ON familycare.audit_logs (created_at);
 
 CREATE TABLE familycare.doctor_profiles (
 	user_id UUID NOT NULL,
-	qualification VARCHAR(200) NOT NULL,
+	qualification VARCHAR(200),
 	specialization VARCHAR(200),
 	medical_registration_number VARCHAR(100) NOT NULL,
 	registering_council VARCHAR(200) NOT NULL,

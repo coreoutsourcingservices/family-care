@@ -40,7 +40,7 @@ def test_child_validation_and_unavailable_clinical_content(app, client):
     for payload in (
         dict(title=' ', date='2026-10-01', weight='20', height='110'),
         dict(title='Measurement', date='2026-10-01', weight='NaN', height='110'),
-        dict(title='Measurement', date='2026-10-01', weight='20'),
+        dict(title='Measurement', date='2026-10-01'),
         dict(title='Measurement', date='2100-10-01', weight='20', height='110'),
         dict(title='Measurement', date='2000-10-01', weight='20', height='110'),
     ):

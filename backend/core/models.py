@@ -63,7 +63,7 @@ class DoctorProfile(Base):
     __table_args__ = (UQ('registering_council', 'medical_registration_number'),)
     user_id = user_fk(primary_key=True)
     referral_id = C(S(160), unique=True, nullable=False)
-    qualification = C(S(200), nullable=False)
+    qualification = C(S(200), nullable=True)
     specialization = C(S(200))
     medical_registration_number = C(S(100), nullable=False)
     registering_council = C(S(200), nullable=False)
@@ -303,4 +303,11 @@ class ReportText(Base):
     lease_id = C(S(36))
     started_at = C(DT)
     created_at = C(DT, default=now, nullable=False)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+
+class DoctorPracticeProfile(Base):
+    __tablename__ = 'doctor_practice_profiles'
+    user_id = user_fk(primary_key=True)
+    data = C(JSON, nullable=False, default=dict)
     updated_at = C(DT, default=now, onupdate=now, nullable=False)

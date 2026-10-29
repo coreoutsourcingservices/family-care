@@ -109,7 +109,8 @@ def resubmit_doctor(data):
     if user.approval_status != 'REJECTED' or not user.email_verified or user.account_status != 'ACTIVE':
         raise APIError(409, 'invalid_state', 'Only verified active rejected doctors may resubmit')
     profile = db().get(DoctorProfile, user.id)
-    profile.qualification = data.qualification.strip().upper()
+    if data.qualification is not None:
+        profile.qualification = data.qualification.strip().upper()
     profile.medical_registration_number = data.medical_registration_number.strip().upper()
     profile.registering_council = data.registering_council.strip().upper()
     profile.verification_status = 'PENDING'

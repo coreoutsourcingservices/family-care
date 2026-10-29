@@ -147,8 +147,8 @@ def validate_record(payload, kind, profile):
         raise APIError(422, 'invalid_date', 'Record date cannot be before birth')
     if kind in ('growth', 'history', 'nutrition') and payload.date > today():
         raise APIError(422, 'invalid_date', 'This record cannot be dated in the future')
-    if kind == 'growth' and (not payload.weight or not payload.height):
-        raise APIError(422, 'missing_measurements', 'Enter weight in kg and height in cm')
+    if kind == 'growth' and not (payload.weight or payload.height):
+        raise APIError(422, 'missing_measurements', 'Enter weight in kg or height in cm')
     if kind == 'vaccination' and payload.status not in ('Completed', 'Planned','Missed'):
         raise APIError(422, 'invalid_status', 'Choose Completed, Planned or Missed')
     if kind == 'vaccination' and payload.status == 'Completed' and payload.date > today():

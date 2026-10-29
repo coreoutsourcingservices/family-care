@@ -508,6 +508,57 @@
       }
     },
     {
+      "name": "doctor get practice profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/doctors/practice-profile"
+      }
+    },
+    {
+      "name": "doctor save practice profile",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/doctors/practice-profile"
+      }
+    },
+    {
+      "name": "doctor doctor records",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/records"
+      }
+    },
+    {
       "name": "patient login",
       "request": {
         "method": "POST",
@@ -678,6 +729,23 @@
       }
     },
     {
+      "name": "patient disconnect account",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/doctor"
+      }
+    },
+    {
       "name": "patient create profile",
       "request": {
         "method": "POST",
@@ -818,6 +886,108 @@
           }
         ],
         "url": "{{base_url}}/api/v1/patients/profiles/{{profile_id}}/reports/{{report_id}}/download"
+      }
+    },
+    {
+      "name": "patient options endpoint",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/report-text/options"
+      }
+    },
+    {
+      "name": "patient get text",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/profiles/{{profile_id}}/reports/{{report_id}}/text"
+      }
+    },
+    {
+      "name": "patient request text",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/profiles/{{profile_id}}/reports/{{report_id}}/text"
+      }
+    },
+    {
+      "name": "patient disconnect profile",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/profiles/{{profile_id}}/doctor"
+      }
+    },
+    {
+      "name": "patient import report",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/profiles/{{profile_id}}/reports/{{report_id}}/import"
+      }
+    },
+    {
+      "name": "patient imported records",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/patients/profiles/{{profile_id}}/imported-records"
       }
     },
     {
@@ -1093,6 +1263,57 @@
       }
     },
     {
+      "name": "admin account detail",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/patients/{{user_id}}"
+      }
+    },
+    {
+      "name": "admin members",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/patients/{{user_id}}/profiles"
+      }
+    },
+    {
+      "name": "admin member detail",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/patients/{{user_id}}/profiles/{{profile_id}}"
+      }
+    },
+    {
       "name": "superadmin login",
       "request": {
         "method": "POST",
@@ -1294,6 +1515,57 @@
       }
     },
     {
+      "name": "superadmin account detail",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/patients/{{user_id}}"
+      }
+    },
+    {
+      "name": "superadmin members",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/patients/{{user_id}}/profiles"
+      }
+    },
+    {
+      "name": "superadmin member detail",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/patients/{{user_id}}/profiles/{{profile_id}}"
+      }
+    },
+    {
       "name": "superadmin audit logs",
       "request": {
         "method": "GET",
@@ -1308,6 +1580,1252 @@
           }
         ],
         "url": "{{base_url}}/api/v1/superadmin/audit-logs"
+      }
+    },
+    {
+      "name": "children children",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children"
+      }
+    },
+    {
+      "name": "children detail",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}"
+      }
+    },
+    {
+      "name": "children age",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/age"
+      }
+    },
+    {
+      "name": "children all records",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/records"
+      }
+    },
+    {
+      "name": "children dashboard",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/dashboard"
+      }
+    },
+    {
+      "name": "children health guide",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/health-guide"
+      }
+    },
+    {
+      "name": "children vaccinations",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/vaccinations"
+      }
+    },
+    {
+      "name": "children upcoming",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/vaccinations/upcoming"
+      }
+    },
+    {
+      "name": "children reminders",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/reminders"
+      }
+    },
+    {
+      "name": "children preferences",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/reminder-preferences"
+      }
+    },
+    {
+      "name": "children catalog",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/vaccines"
+      }
+    },
+    {
+      "name": "children doctor requests",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/doctors/consultation-requests"
+      }
+    },
+    {
+      "name": "children schedule catalog",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/vaccination-schedules"
+      }
+    },
+    {
+      "name": "children records vaccinations history",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/vaccinations/history"
+      }
+    },
+    {
+      "name": "children records vaccinations history create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/vaccinations/history"
+      }
+    },
+    {
+      "name": "children remove vaccinations history",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/vaccinations/history/{{record_id}}"
+      }
+    },
+    {
+      "name": "children edit vaccinations history",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/vaccinations/history/{{record_id}}"
+      }
+    },
+    {
+      "name": "children records medical history",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/medical-history"
+      }
+    },
+    {
+      "name": "children records medical history create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/medical-history"
+      }
+    },
+    {
+      "name": "children remove medical history",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/medical-history/{{record_id}}"
+      }
+    },
+    {
+      "name": "children edit medical history",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/medical-history/{{record_id}}"
+      }
+    },
+    {
+      "name": "children records growth",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/growth"
+      }
+    },
+    {
+      "name": "children records growth create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/growth"
+      }
+    },
+    {
+      "name": "children remove growth",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/growth/{{record_id}}"
+      }
+    },
+    {
+      "name": "children edit growth",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/growth/{{record_id}}"
+      }
+    },
+    {
+      "name": "children records nutrition",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/nutrition"
+      }
+    },
+    {
+      "name": "children records nutrition create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/nutrition"
+      }
+    },
+    {
+      "name": "children remove nutrition",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/nutrition/{{record_id}}"
+      }
+    },
+    {
+      "name": "children edit nutrition",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/nutrition/{{record_id}}"
+      }
+    },
+    {
+      "name": "children records consultations",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/consultations"
+      }
+    },
+    {
+      "name": "children records consultations create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/consultations"
+      }
+    },
+    {
+      "name": "children remove consultations",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/consultations/{{record_id}}"
+      }
+    },
+    {
+      "name": "children edit consultations",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/consultations/{{record_id}}"
+      }
+    },
+    {
+      "name": "children records care notes",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/care-notes"
+      }
+    },
+    {
+      "name": "children records care notes create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/care-notes"
+      }
+    },
+    {
+      "name": "children remove care notes",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/care-notes/{{record_id}}"
+      }
+    },
+    {
+      "name": "children edit care notes",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/care-notes/{{record_id}}"
+      }
+    },
+    {
+      "name": "children records consultation requests",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/consultation-requests"
+      }
+    },
+    {
+      "name": "children records consultation requests create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/consultation-requests"
+      }
+    },
+    {
+      "name": "children remove consultation requests",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/consultation-requests/{{record_id}}"
+      }
+    },
+    {
+      "name": "children edit consultation requests",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/consultation-requests/{{record_id}}"
+      }
+    },
+    {
+      "name": "vaccination public version",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/vaccination-schedules/{{schedule_id}}"
+      }
+    },
+    {
+      "name": "vaccination context endpoint",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/vaccination-context"
+      }
+    },
+    {
+      "name": "vaccination save context",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/children/{{child_id}}/vaccination-context"
+      }
+    },
+    {
+      "name": "vaccination review queue",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/doctors/vaccination-reviews"
+      }
+    },
+    {
+      "name": "vaccination medical review",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/doctors/vaccination-reviews/{{schedule_id}}"
+      }
+    },
+    {
+      "name": "vaccination admin vaccines GET",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/vaccination/vaccines"
+      }
+    },
+    {
+      "name": "vaccination admin vaccines POST",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/vaccination/vaccines"
+      }
+    },
+    {
+      "name": "vaccination admin vaccines vaccine id PUT",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/vaccination/vaccines/{{vaccine_id}}"
+      }
+    },
+    {
+      "name": "vaccination admin schedules GET",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/vaccination/schedules"
+      }
+    },
+    {
+      "name": "vaccination admin schedules POST",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/vaccination/schedules"
+      }
+    },
+    {
+      "name": "vaccination admin schedules schedule id PUT",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/vaccination/schedules/{{schedule_id}}"
+      }
+    },
+    {
+      "name": "vaccination admin schedules schedule id eligibility PUT",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/vaccination/schedules/{{schedule_id}}/eligibility"
+      }
+    },
+    {
+      "name": "vaccination admin schedules schedule id reminders PUT",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/vaccination/schedules/{{schedule_id}}/reminders"
+      }
+    },
+    {
+      "name": "vaccination admin reviewers GET",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/vaccination/reviewers"
+      }
+    },
+    {
+      "name": "vaccination admin schedules schedule id submit review POST",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/vaccination/schedules/{{schedule_id}}/submit-review"
+      }
+    },
+    {
+      "name": "vaccination admin schedules schedule id withdraw POST",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/vaccination/schedules/{{schedule_id}}/withdraw"
+      }
+    },
+    {
+      "name": "vaccination admin schedules schedule id publish POST",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/vaccination/schedules/{{schedule_id}}/publish"
+      }
+    },
+    {
+      "name": "vaccination admin schedules schedule id retire POST",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/vaccination/schedules/{{schedule_id}}/retire"
+      }
+    },
+    {
+      "name": "vaccination admin audit GET",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/admin/vaccination/audit"
+      }
+    },
+    {
+      "name": "vaccination superadmin vaccines GET",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/vaccination/vaccines"
+      }
+    },
+    {
+      "name": "vaccination superadmin vaccines POST",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/vaccination/vaccines"
+      }
+    },
+    {
+      "name": "vaccination superadmin vaccines vaccine id PUT",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/vaccination/vaccines/{{vaccine_id}}"
+      }
+    },
+    {
+      "name": "vaccination superadmin schedules GET",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/vaccination/schedules"
+      }
+    },
+    {
+      "name": "vaccination superadmin schedules POST",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/vaccination/schedules"
+      }
+    },
+    {
+      "name": "vaccination superadmin schedules schedule id PUT",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/vaccination/schedules/{{schedule_id}}"
+      }
+    },
+    {
+      "name": "vaccination superadmin schedules schedule id eligibility PUT",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/vaccination/schedules/{{schedule_id}}/eligibility"
+      }
+    },
+    {
+      "name": "vaccination superadmin schedules schedule id reminders PUT",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/vaccination/schedules/{{schedule_id}}/reminders"
+      }
+    },
+    {
+      "name": "vaccination superadmin reviewers GET",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/vaccination/reviewers"
+      }
+    },
+    {
+      "name": "vaccination superadmin schedules schedule id submit review POST",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/vaccination/schedules/{{schedule_id}}/submit-review"
+      }
+    },
+    {
+      "name": "vaccination superadmin schedules schedule id withdraw POST",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/vaccination/schedules/{{schedule_id}}/withdraw"
+      }
+    },
+    {
+      "name": "vaccination superadmin schedules schedule id publish POST",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/vaccination/schedules/{{schedule_id}}/publish"
+      }
+    },
+    {
+      "name": "vaccination superadmin schedules schedule id retire POST",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/vaccination/schedules/{{schedule_id}}/retire"
+      }
+    },
+    {
+      "name": "vaccination superadmin audit GET",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/superadmin/vaccination/audit"
       }
     },
     {
