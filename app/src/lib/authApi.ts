@@ -1,5 +1,5 @@
 export type AuthUser = { id: string; public_id: string; full_name: string; email?: string; phone_number?: string; role: 'PATIENT' | 'DOCTOR'; approval_status: string };
-export type AuthResponse = { setup_token?: string; requires_profile_setup?: boolean; doctor?: Record<string, string | number | null>; rejection_reason?: string; challenge_token?: string; email_status?: 'sent' | 'queued'; resend_after?: number; expires_in?: number; csrf_token?: string; user?: AuthUser; message?: string };
+export type AuthResponse = { challenge_token?: string; email_status?: 'sent' | 'queued'; resend_after?: number; expires_in?: number; csrf_token?: string; user?: AuthUser; message?: string };
 
 export class ApiError extends Error {
   constructor(message: string, public code: string, public status: number) { super(message); }
