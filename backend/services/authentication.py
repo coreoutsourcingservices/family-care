@@ -112,7 +112,21 @@ def login(data, role):
             from services.doctor_onboarding import setup_response
             return setup_response(user)
         if user.approval_status == 'PENDING_APPROVAL':
-            return jsonify(user=serialize_user(user), message='Your profile is under review.'), 202
+            profile = db().get(DoctorProfile, user.id)
+            # Old servers queued signup directly, before mandatory practice details existed.
+            if profile and (not profile.address or not profile.clinic_address or profile.years_of_experience is None):
+                application = db().scalar(select(ApprovalRequest).where(ApprovalRequest.applicant_id == user.id).with_for_update())
+                if application is None or application.status == 'PENDING':
+                    if application is not None:
+                        db().delete(application)
+                    user.approval_status = 'PROFILE_REQUIRED'
+                    audit('doctor_legacy_setup_restored', user.id, user.id)
+                    db().commit()
+                    from services.doctor_onboarding import setup_response
+                    return setup_response(user)
+            from services.doctor_onboarding import profile_details
+            from doctor.notifications import notification_token
+            return jsonify(user=serialize_user(user), notification_token=notification_token(user), doctor=profile_details(profile), message='Your profile is under review.'), 202
     if user.must_change_password:
         # Persisted single-use challenge prevents bootstrap password-change replay.
         challenge = OTPChallenge(id=uid(), user_id=user.id, purpose='change_password',

@@ -1,0 +1,24 @@
+/* Shared touch and viewport rules; each portal keeps its own visual theme. */
+html{scroll-padding-top:100px}
+@media(max-width:700px){
+  input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=range]):not([maxlength="1"]),
+  select,textarea{font-size:16px!important}
+  input,select,textarea{max-width:100%}
+  .care-input-grid,.care-other-upload-row,.care-fields,.care-form-panel{min-width:0}
+  .care-actions{flex-wrap:wrap}
+  .care-actions>button,.care-save,.auth-submit{min-height:44px}
+  .care-contact{min-width:0}
+  .care-contact input{min-width:0}
+  .site-shell img{max-width:100%}
+}
+/* Extra monitor width gives breathing room without enlarging laptop typography. */
+@media(min-width:1700px){
+  .ch-app .ch-content{max-width:1510px;margin-inline:auto}
+  .ah-app .ah-content{max-width:1510px;padding-inline:30px}
+  .ah-app .ah-hero{min-height:230px}
+  .ah-app .ah-chart{height:260px}
+  .wh-app .wh-ref-stats>a{padding:18px}
+  .wh-app .wh-ref-stats strong{font-size:20px}
+  .wh-app .wh-ref-explore>a{padding:17px}
+  .wh-app .wh-ref-explore strong{font-size:11px}
+}

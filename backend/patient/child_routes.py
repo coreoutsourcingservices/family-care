@@ -183,6 +183,9 @@ def records(child_id, resource):
     db().add(row)
     db().flush()
     db().add(ChildRecordRevision(record_id=row.id, actor_id=g.user.id, action='created', data=data))
+    if kind == 'consultation_request':
+        from doctor.notifications import queue_notification
+        queue_notification(profile.referred_doctor_id, 'consultation_requested', 'consultation:' + row.id)
     audit('child_record_created', profile.owner_id, g.user.id)
     db().commit()
     return jsonify(record=record_data(row)), 201
@@ -295,13 +298,15 @@ def catalog():
 
 
 def doctor_requests():
+    from core.models import AdultRecord
+    from sqlalchemy import union_all, literal
     page, per_page = pagination()
-    query = select(ChildRecord).join(CareProfile, ChildRecord.profile_id == CareProfile.id).where(
-        CareProfile.referred_doctor_id == g.user.id, ChildRecord.kind == 'consultation_request',
-        ChildRecord.deleted_at.is_(None))
-    rows, total = paginate(query.order_by(ChildRecord.created_at.desc(), ChildRecord.id), page, per_page)
-    return jsonify(items=[dict(record_data(row), child_id=row.profile_id) for row in rows],
-                   total=total, page=page, per_page=per_page)
+    def shared(model):
+        return select(model.id.label('id'),model.profile_id.label('profile_id'),model.kind.label('kind'),model.data.label('data'),model.created_at.label('created_at'),literal('PARENT_REPORTED' if model is ChildRecord else 'SELF_REPORTED').label('verification_status')).join(CareProfile,model.profile_id==CareProfile.id).where(CareProfile.referred_doctor_id==g.user.id,model.kind=='consultation_request',model.deleted_at.is_(None))
+    combined=union_all(shared(ChildRecord),shared(AdultRecord)).subquery()
+    total=db().scalar(select(func.count()).select_from(combined))
+    rows=db().execute(select(combined).order_by(combined.c.created_at.desc(),combined.c.id).offset((page-1)*per_page).limit(per_page)).mappings().all()
+    return jsonify(items=[dict(row['data'],id=row['id'],kind=row['kind'],child_id=row['profile_id'],profile_id=row['profile_id'],verification_status=row['verification_status']) for row in rows],total=total,page=page,per_page=per_page)
 
 
 route(bp, '/children', children, roles=('PATIENT',))

@@ -41,6 +41,9 @@ def test_app():
                 importlib.import_module('migrations.versions.0010_optional_doctor_degree').upgrade()
                 importlib.import_module('migrations.versions.0011_doctor_onboarding').upgrade()
                 importlib.import_module('migrations.versions.0012_doctor_verification_check').upgrade()
+                importlib.import_module('migrations.versions.0013_doctor_onboarding_images').upgrade()
+                importlib.import_module('migrations.versions.0014_doctor_notifications').upgrade()
+                importlib.import_module('migrations.versions.0015_adult_records').upgrade()
     else:
         Base.metadata.create_all(engine)
     yield app

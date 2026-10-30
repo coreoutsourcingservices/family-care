@@ -26,7 +26,8 @@ def create_app(overrides=None):
     from superadmin.routes import bp as superadmin
     from patient.child_routes import bp as children
     from vaccination.routes import bp as vaccination
-    for blueprint in (auth, doctor, patient, admin, superadmin, children, vaccination):
+    from patient.adult_routes import bp as adults
+    for blueprint in (auth, doctor, patient, admin, superadmin, children, vaccination, adults):
         app.register_blueprint(blueprint)
 
     @app.before_request

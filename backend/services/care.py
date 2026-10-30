@@ -49,6 +49,8 @@ def create_profile(user, data):
                           emergency_contacts=[item.model_dump() for item in data.emergency_contacts],
                           referred_doctor_id=doctor.id if doctor else None)
     db().add(profile)
+    from doctor.notifications import queue_notification
+    queue_notification(profile.referred_doctor_id, 'patient_connected', 'profile:' + profile.id)
     audit('care_profile_created', user.id, user.id)
     db().commit()
     return jsonify(profile=profile_data(profile)), 201
@@ -71,6 +73,8 @@ def connect_profile(user, profile_id, referral_id):
     if profile.referred_doctor_id and profile.referred_doctor_id != doctor.id:
         raise APIError(409, 'doctor_already_connected', 'Profile is already connected to another doctor')
     profile.referred_doctor_id = doctor.id
+    from doctor.notifications import queue_notification
+    queue_notification(doctor.id, 'patient_connected', 'profile:' + profile.id)
     audit('care_profile_doctor_connected', doctor.id, user.id)
     db().commit()
     return jsonify(profile=profile_data(profile))

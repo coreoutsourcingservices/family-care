@@ -3,6 +3,9 @@ from core.database import db
 from core.models import ApprovalRequest, DoctorProfile
 from conftest import create_account
 from test_workflows import registration, verify, bearer, submit_doctor_profile, PASSWORD
+import io
+from unittest.mock import patch
+from core.models import User
 
 
 def basic_signup(app, client, email='doctor@example.com'):
@@ -36,6 +39,7 @@ def test_setup_is_required_before_review_and_dashboard_access(app, client):
     assert submit_doctor_profile(client, resumed).status_code == 409
     pending = client.post('/api/v1/doctors/login', json=credentials)
     assert pending.status_code == 202 and 'access_token' not in pending.json
+    assert pending.json['doctor']['clinic_address'] == 'Clinic Road, Delhi 110002'
     requests = client.get('/api/v1/admin/doctor-requests', headers=admin).json
     assert requests['total'] == 1
     doctor = requests['items'][0]['doctor']
@@ -78,3 +82,54 @@ def test_duplicate_credentials_rejected_at_profile_submission(app, client):
     assert submit_doctor_profile(client, second).status_code == 409
     with app.app_context():
         assert len(db().scalars(select(ApprovalRequest)).all()) == 1
+
+
+def test_legacy_signup_pending_without_setup_resumes_profile(app, client):
+    verified = basic_signup(app, client)
+    with app.app_context():
+        user = db().get(User, verified.json['user']['id'])
+        user.approval_status = 'PENDING_APPROVAL'
+        db().add(ApprovalRequest(applicant_id=user.id, applicant_role='DOCTOR'))
+        db().commit()
+    resumed = client.post('/api/v1/doctors/login', json={'email': 'doctor@example.com', 'password': PASSWORD})
+    assert resumed.status_code == 202 and resumed.json['requires_profile_setup']
+    assert resumed.json['user']['approval_status'] == 'PROFILE_REQUIRED'
+    with app.app_context():
+        assert db().scalar(select(ApprovalRequest)) is None
+    assert submit_doctor_profile(client, resumed).status_code == 202
+
+
+def test_images_are_private_and_do_not_submit_approval(app, client):
+    verified = basic_signup(app, client)
+    app.config.update(CLOUDINARY_CLOUD_NAME='test', CLOUDINARY_API_KEY='test', CLOUDINARY_API_SECRET='test')
+    def upload(kind, content=b'\x89PNG\r\n\x1a\nimage'):
+        return client.post('/api/v1/doctors/setup-images', data={
+            'setup_token': verified.json['setup_token'], 'kind': kind,
+            'file': (io.BytesIO(content), 'doctor.png')})
+    with patch('doctor.onboarding_images.cloudinary.uploader.upload') as cloud:
+        cloud.side_effect = lambda *args, **kwargs: dict(public_id=kwargs['public_id'], type='authenticated', resource_type='image', format='png')
+        assert upload('profile_photo').status_code == 201
+        assert upload('degree_photo').status_code == 201
+        assert upload('degree_photo', b'%PDF-invalid').status_code == 422
+        assert upload('unknown').status_code == 422
+        assert cloud.call_count == 2
+    resumed = client.post('/api/v1/doctors/login', json={'email': 'doctor@example.com', 'password': PASSWORD})
+    assert set(resumed.json['doctor']['images']) == {'profile_photo', 'degree_photo'}
+    with app.app_context():
+        assert db().scalar(select(ApprovalRequest)) is None
+        assert db().get(User, verified.json['user']['id']).approval_status == 'PROFILE_REQUIRED'
+    assert submit_doctor_profile(client, resumed).status_code == 202
+    assert upload('degree_photo').status_code == 409
+
+
+def test_image_upload_failure_keeps_setup_unsubmitted(app, client):
+    verified = basic_signup(app, client)
+    app.config.update(CLOUDINARY_CLOUD_NAME='test', CLOUDINARY_API_KEY='test', CLOUDINARY_API_SECRET='test')
+    with patch('doctor.onboarding_images.cloudinary.uploader.upload', side_effect=RuntimeError('offline')):
+        result = client.post('/api/v1/doctors/setup-images', data={
+            'setup_token': verified.json['setup_token'], 'kind': 'profile_photo',
+            'file': (io.BytesIO(b'\x89PNG\r\n\x1a\nimage'), 'doctor.png')})
+    assert result.status_code == 502
+    with app.app_context():
+        assert db().scalar(select(ApprovalRequest)) is None
+        assert db().scalar(select(DoctorProfile)).onboarding_images is None

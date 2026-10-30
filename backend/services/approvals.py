@@ -36,6 +36,8 @@ def listing(role, page, per_page, status=None, pending=False):
             item['doctor'] = {k: getattr(profile, k) for k in ('qualification', 'specialization',
                               'medical_registration_number', 'registering_council', 'nmr_id', 'verification_status',
                               'address', 'clinic_address', 'years_of_experience', 'verification_check')}
+            from doctor.onboarding_images import image_details
+            item['doctor']['images'] = image_details(profile)
         items.append(item)
     return jsonify(items=items, total=total, page=page, per_page=per_page)
 
@@ -63,6 +65,9 @@ def review(actor, identifier, role, approve, reason=None):
     revoke_sessions(user.id)
     db().add(EmailNotification(user_id=user.id, template=role.lower() + '_' + status.lower(),
                                context_json=json.dumps({'reason': reason or ''})))
+    if role == 'DOCTOR':
+        from doctor.notifications import queue_notification
+        queue_notification(user.id, 'profile_approved' if approve else 'profile_rejected', 'review:' + application.id + ':' + str(application.reviewed_at))
     audit('approval_' + status.lower(), user.id, actor.id)
     db().commit()
     return jsonify(user=serialize_user(user), email_status='queued')

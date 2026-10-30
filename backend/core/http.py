@@ -19,10 +19,15 @@ def pagination():
 def profile():
     result = serialize_user(g.user)
     if g.user.role == 'DOCTOR':
+        from doctor.onboarding_images import image_details
         doctor = db().get(DoctorProfile, g.user.id)
         result['doctor'] = {key: getattr(doctor, key) for key in ('qualification', 'specialization',
                               'medical_registration_number', 'registering_council', 'nmr_id', 'verification_status',
                               'address', 'clinic_address', 'years_of_experience')}
+        result['doctor']['images'] = image_details(doctor)
+    if g.user.role == 'DOCTOR':
+        from doctor.notifications import notification_token
+        return jsonify(user=result, notification_token=notification_token(g.user, g.auth_session.id))
     return jsonify(user=result)
 
 

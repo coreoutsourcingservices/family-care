@@ -1,16 +1,5 @@
-import { createRoot } from 'react-dom/client';
-import './styles.css';
-
-function App() {
-  return (
-    <main>
-      <span className="brand">FamilyCare+</span>
-      <h1>Doctor portal</h1>
-      <p>React + TypeScript setup is ready. Portal pages will be added here.</p>
-    </main>
-  );
+// Shared router and UI shell; doctor-owned pages/components remain under doctor/src.
+if (window.location.pathname === '/') {
+  window.history.replaceState(null, '', '/doctor/login');
 }
-
-const root = document.getElementById('root');
-if (!root) throw new Error('Root element is missing');
-createRoot(root).render(<App />);
+void import('../../app/src/main');
