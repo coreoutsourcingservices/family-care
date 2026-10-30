@@ -17,6 +17,7 @@ class CareProfileCreate(Schema):
     full_name: str = Field(min_length=1, max_length=120)
     date_of_birth: date
     parent_profile_id: UUID | None = None
+    guardian_name: str = Field(default='', max_length=120)
     guardian_contact: str = Field(default='', max_length=20, pattern=r'^(?:\+?[1-9][0-9]{7,14})?$')
     emergency_contacts: list[EmergencyContact] = Field(default_factory=list, max_length=5)
     referral_id: str | None = Field(default=None, min_length=1, max_length=160, pattern=r'^[A-Za-z0-9]+$')
@@ -44,3 +45,28 @@ class CareProfileCreate(Schema):
 
 class CareProfileReferral(Schema):
     referral_id: str = Field(min_length=1, max_length=160, pattern=r'^[A-Za-z0-9]+$')
+
+
+class CareProfileUpdate(Schema):
+    full_name: str = Field(min_length=1, max_length=120)
+    date_of_birth: date
+    guardian_name: str = Field(default='', max_length=120)
+    guardian_contact: str = Field(default='', max_length=20, pattern=r'^(?:\+?[1-9][0-9]{7,14})?$')
+    emergency_contacts: list[EmergencyContact] = Field(default_factory=list, max_length=5)
+
+    @model_validator(mode='after')
+    def valid(self):
+        self.full_name=self.full_name.strip()
+        if not self.full_name or self.date_of_birth>date.today():
+            raise ValueError('Enter a name and a birth date that is not in the future')
+        return self
+
+class CareProfileEdit(Schema):
+    full_name: str = Field(min_length=1,max_length=120)
+    guardian_contact: str = Field(default='',max_length=20,pattern=r'^(?:\+?[1-9][0-9]{7,14})?$')
+
+    @field_validator('full_name')
+    @classmethod
+    def nonempty(cls,value):
+        if not value.strip():raise ValueError('Name required')
+        return value.strip()

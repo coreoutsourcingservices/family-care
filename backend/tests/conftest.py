@@ -44,6 +44,8 @@ def test_app():
                 importlib.import_module('migrations.versions.0013_doctor_onboarding_images').upgrade()
                 importlib.import_module('migrations.versions.0014_doctor_notifications').upgrade()
                 importlib.import_module('migrations.versions.0015_adult_records').upgrade()
+                importlib.import_module('migrations.versions.0016_child_profile_controls').upgrade()
+                importlib.import_module('migrations.versions.0017_realtime_notifications').upgrade()
     else:
         Base.metadata.create_all(engine)
     yield app

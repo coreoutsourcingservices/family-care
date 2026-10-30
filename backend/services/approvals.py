@@ -68,6 +68,9 @@ def review(actor, identifier, role, approve, reason=None):
     if role == 'DOCTOR':
         from doctor.notifications import queue_notification
         queue_notification(user.id, 'profile_approved' if approve else 'profile_rejected', 'review:' + application.id + ':' + str(application.reviewed_at))
+    if role!='DOCTOR':
+        from services.notifications import enqueue
+        enqueue(user.id,'account_approved' if approve else 'account_rejected','Account review updated','Sign in to review your account status.',event_key='review:'+application.id+':'+str(application.reviewed_at))
     audit('approval_' + status.lower(), user.id, actor.id)
     db().commit()
     return jsonify(user=serialize_user(user), email_status='queued')

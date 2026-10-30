@@ -82,7 +82,13 @@ def test_profile_referral_exposes_only_linked_doctors_profiles(app,client,cloud)
     doctor(app,'second@example.com','D000002')
     headers=patient(app,client)
     profile_id=create_profile(client,headers,referral_id=referral)
-    assert upload(client,headers,profile_id).status_code==201
+    uploaded=upload(client,headers,profile_id)
+    assert uploaded.status_code==201
+    # A child report is explicitly shared through an authorised care entry.
+    with app.app_context():
+        from core.models import ChildRecord
+        db().add(ChildRecord(profile_id=profile_id,kind='vaccination',data={'title':'Certificate','date':'2026-01-01','certificate_id':uploaded.json['report']['id']}))
+        db().commit()
     first=bearer(client.post('/api/v1/doctors/login',json={'email':'rahul@example.com','password':PASSWORD}))
     other=bearer(client.post('/api/v1/doctors/login',json={'email':'second@example.com','password':PASSWORD}))
     assert client.get('/api/v1/doctors/care-profiles',headers=first).json['total']==1

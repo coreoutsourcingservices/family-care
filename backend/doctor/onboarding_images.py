@@ -32,6 +32,11 @@ def upload():
     kind = request.form.get('kind')
     if kind not in ('profile_photo', 'degree_photo'):
         raise APIError(422, 'invalid_image_kind', 'Choose profile_photo or degree_photo')
+    return store_image(user, kind)
+
+
+def store_image(user, kind):
+    """Shared storage validation; callers authorize owner and permitted image kind."""
     file = request.files.get('file')
     if not file or not file.filename:
         raise APIError(422, 'image_required', 'Choose an image to upload')
@@ -68,3 +73,26 @@ def upload():
         except Exception:
             current_app.logger.warning('Could not remove replaced doctor onboarding image')
     return jsonify(images=image_details(profile)), 201
+
+
+def photo_details(profile):
+    from types import SimpleNamespace
+    asset=(profile.onboarding_images or {}).get('profile_photo') if profile else None
+    return image_details(SimpleNamespace(onboarding_images={'profile_photo':asset})).get('profile_photo') if asset else None
+
+
+def profile_photo():
+    from flask import g
+    profile=db().scalar(select(DoctorProfile).where(DoctorProfile.user_id==g.user.id).with_for_update())
+    if not profile:raise APIError(404,'profile_not_found','Doctor profile not found')
+    if request.method=='GET':return jsonify(photo=photo_details(profile))
+    request.max_content_length=5*1024*1024+65536
+    if request.method in ('POST','PUT'):
+        return store_image(g.user,'profile_photo')
+    old=(profile.onboarding_images or {}).get('profile_photo')
+    profile.onboarding_images={key:value for key,value in (profile.onboarding_images or {}).items() if key!='profile_photo'}
+    audit('doctor_profile_photo_removed',g.user.id,g.user.id);db().commit()
+    if old:
+        try:cloudinary.uploader.destroy(old['public_id'],resource_type='image',type='authenticated',**credentials())
+        except Exception:current_app.logger.warning('Could not remove unlinked doctor photo asset')
+    return jsonify(photo=None,message='Profile photo removed')

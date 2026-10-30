@@ -1,0 +1,8 @@
+import {useEffect,useState} from 'react';
+import {careApi} from '../lib/careApi';
+import type {HealthProfile} from '../lib/healthProfiles';
+export default function ProfileBasicsEditor({profile,onRefresh}:{profile:HealthProfile;onRefresh:()=>Promise<void>}){
+ const [name,setName]=useState(profile.name),[contact,setContact]=useState(profile.guardianContact),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
+ useEffect(()=>{setName(profile.name);setContact(profile.guardianContact);},[profile.id,profile.name,profile.guardianContact]);
+ return <section className="ch-panel ah-card"><h2>Edit profile information</h2><form className="dw-form" onSubmit={async e=>{e.preventDefault();setBusy(true);setError('');setNotice('');try{await careApi('/patients/profiles/'+profile.id,{full_name:name.trim(),guardian_contact:contact.trim()},true,'PUT');await onRefresh();setNotice('Profile information saved.');}catch(e){setError((e as Error).message);}finally{setBusy(false);}}}><label style={{display:'block',margin:'12px 0'}}>Full name<input aria-label="Edit profile full name" required maxLength={120} value={name} onChange={e=>setName(e.target.value)}/></label><label style={{display:'block',margin:'12px 0'}}>Guardian / contact number<input aria-label="Edit profile contact number" maxLength={20} pattern="\+?[1-9][0-9]{7,14}" value={contact} onChange={e=>setContact(e.target.value)}/></label><button className="ch-button ah-button" disabled={busy||!name.trim()}>{busy?'Saving...':'Save profile information'}</button></form>{error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}</section>;
+}

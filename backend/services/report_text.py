@@ -13,7 +13,7 @@ from sqlalchemy import select,or_,and_
 from core.schemas import Schema,parse
 from core.database import db
 from core.errors import APIError
-from core.models import ReportText,CareReport,User,now,uid
+from core.models import ReportText,CareReport,CareProfile,User,now,uid
 from services.care import accessible_report
 from services.repository import audit
 
@@ -134,6 +134,8 @@ def process_one():
     db().commit()  # Release the DB connection while CPU/network processing runs.
     try:
         if not report or not owner or owner.account_status!='ACTIVE':raise ValueError('processing_failed')
+        profile=db().get(CareProfile,report.profile_id)
+        if not profile or profile.deleted_at:raise ValueError('processing_failed')
         result=run_processor(report,options)
     except ValueError as error:
         code=str(error) if str(error) in MESSAGES else 'processing_failed'
@@ -143,5 +145,9 @@ def process_one():
     if row and row.lease_id==lease:
         row.result=result or {};row.error_code=code
         row.status='FAILED' if code else 'PARTIAL' if result.get('translation_status')=='FAILED' else 'COMPLETED'
+        report=db().get(CareReport,row.report_id)
+        if not code and report and not report.category_reviewed:
+            from services.report_records import infer_category
+            report.category=infer_category((result.get('english_text') or '')+'\n'+(result.get('original_text') or ''))
         db().commit()
     return True

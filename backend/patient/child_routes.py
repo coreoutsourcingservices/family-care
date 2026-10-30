@@ -80,7 +80,7 @@ def child(child_id, lock=False):
 
 
 def record_data(record):
-    data = dict(record.data, id=record.id, kind=record.kind, verification_status='PARENT_REPORTED')
+    data = dict(record.data, id=record.id, kind=record.kind, verification_status='DOCTOR_REPORTED' if record.data.get('source_role')=='DOCTOR' else 'PARENT_REPORTED')
     if record.kind == 'vaccination':
         from services.vaccination import display_age_group
         profile = db().get(CareProfile, record.profile_id)
@@ -124,7 +124,7 @@ def clinical_state():
 def children():
     page, per_page = pagination()
     rows, total = paginate(select(CareProfile).where(CareProfile.owner_id == g.user.id,
-                            CareProfile.module == 'child').order_by(CareProfile.created_at, CareProfile.id), page, per_page)
+                            CareProfile.module == 'child', CareProfile.deleted_at.is_(None)).order_by(CareProfile.created_at, CareProfile.id), page, per_page)
     return jsonify(items=[dict(profile_data(row), age=child_age(row)) for row in rows], total=total, page=page, per_page=per_page)
 
 
@@ -203,6 +203,8 @@ def remove_record(child_id, resource, record_id):
     row = db().scalar(query_records(profile.id, KINDS[resource]).where(ChildRecord.id == str(record_id)).with_for_update())
     if not row:
         raise APIError(404, 'record_not_found', 'Child record not found')
+    if row.data.get('source_role')=='DOCTOR':
+        raise APIError(403,'doctor_entry','Doctor-authored entries cannot be overwritten by the family')
     db().add(ChildRecordRevision(record_id=row.id, actor_id=g.user.id, action='removed', data=row.data))
     row.deleted_at = now()
     audit('child_record_removed', profile.owner_id, g.user.id)
@@ -215,12 +217,16 @@ def edit_record(child_id, resource, record_id):
     row = db().scalar(query_records(profile.id, KINDS[resource]).where(ChildRecord.id == str(record_id)).with_for_update())
     if not row:
         raise APIError(404, 'record_not_found', 'Child record not found')
+    if row.data.get('source_role')=='DOCTOR':
+        raise APIError(403,'doctor_entry','Doctor-authored entries cannot be overwritten by the family')
     patch = request.get_json()
     if not isinstance(patch, dict) or not patch:
         raise APIError(400, 'invalid_json', 'A non-empty JSON object is required')
     existing = {key:value for key,value in row.data.items() if key in RecordInput.model_fields}
     data = validate_record(RecordInput.model_validate(dict(existing, **patch)), row.kind, profile)
     db().add(ChildRecordRevision(record_id=row.id, actor_id=g.user.id, action='updated', data=row.data))
+    for key in ('source_role','author_id','source_report_id','reviewed'):
+        if key in row.data:data[key]=row.data[key]
     row.data = data
     audit('child_record_updated', profile.owner_id, g.user.id)
     db().commit()
@@ -302,7 +308,7 @@ def doctor_requests():
     from sqlalchemy import union_all, literal
     page, per_page = pagination()
     def shared(model):
-        return select(model.id.label('id'),model.profile_id.label('profile_id'),model.kind.label('kind'),model.data.label('data'),model.created_at.label('created_at'),literal('PARENT_REPORTED' if model is ChildRecord else 'SELF_REPORTED').label('verification_status')).join(CareProfile,model.profile_id==CareProfile.id).where(CareProfile.referred_doctor_id==g.user.id,model.kind=='consultation_request',model.deleted_at.is_(None))
+        return select(model.id.label('id'),model.profile_id.label('profile_id'),model.kind.label('kind'),model.data.label('data'),model.created_at.label('created_at'),literal('PARENT_REPORTED' if model is ChildRecord else 'SELF_REPORTED').label('verification_status')).join(CareProfile,model.profile_id==CareProfile.id).where(CareProfile.referred_doctor_id==g.user.id,CareProfile.deleted_at.is_(None),model.kind=='consultation_request',model.deleted_at.is_(None))
     combined=union_all(shared(ChildRecord),shared(AdultRecord)).subquery()
     total=db().scalar(select(func.count()).select_from(combined))
     rows=db().execute(select(combined).order_by(combined.c.created_at.desc(),combined.c.id).offset((page-1)*per_page).limit(per_page)).mappings().all()
@@ -358,3 +364,12 @@ for resource in KINDS:
         return handler
 
     route(bp, '/children/<uuid:child_id>/' + resource + '/<uuid:record_id>', make_edit(resource), 'PATCH', roles=('PATIENT',))
+    def make_detail(resource):
+        def handler(child_id,record_id):
+            owner=child(child_id)
+            row=db().scalar(select(ChildRecord).where(ChildRecord.id==str(record_id),ChildRecord.profile_id==owner.id,ChildRecord.kind==KINDS[resource],ChildRecord.deleted_at.is_(None)))
+            if row is None:raise APIError(404,'record_not_found','Record not found')
+            return jsonify(record=record_data(row))
+        handler.__name__='detail_'+resource.replace('/','_').replace('-','_')
+        return handler
+    route(bp,'/children/<uuid:child_id>/'+resource+'/<uuid:record_id>',make_detail(resource),roles=('PATIENT',))

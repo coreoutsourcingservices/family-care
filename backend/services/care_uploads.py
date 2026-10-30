@@ -29,7 +29,7 @@ def report_data(report):
             report.file_format if report.resource_type == 'image' else '',
             resource_type=report.resource_type, type='authenticated', attachment=report.resource_type == 'raw', expires_at=int(time.time())+300,
             secure=True, **credentials())
-    return dict(id=report.id, profile_id=report.profile_id, name=report.name,
+    return dict(id=report.id, profile_id=report.profile_id, name=report.name, category=report.category, category_reviewed=report.category_reviewed,
                 content_type=report.content_type, storage_provider=report.storage_provider,
                 url=url, secure_url=report.secure_url, url_expires_in=300 if url else None,
                 public_id=report.cloudinary_public_id, asset_id=report.cloudinary_asset_id,
