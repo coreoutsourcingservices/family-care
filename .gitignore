@@ -30,3 +30,6 @@ test-results/
 .uv-cache/
 .ocr-models/
 .vite/
+
+# Local Web Push signing key
+backend/.webpush-private.pem

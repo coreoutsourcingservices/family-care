@@ -1,0 +1,13 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { PatientName, RowActions, StatusBadge } from '../components/TableElements';
+import WorkspacePage, { PageStatus, useWorkspaceData } from '../components/WorkspacePage';
+import { loadConsultations, loadPatients } from '../lib/workspaceApi';
+
+export default function Appointments() {
+  const state = useWorkspaceData(async () => { const [requests, patients] = await Promise.all([loadConsultations(), loadPatients()]); return { requests, patients }; });
+  const [date, setDate] = useState('');
+  const [status, setStatus] = useState('all');
+  const rows = [...(state.data?.requests ?? [])].filter(row => (!date || row.date === date) && (status === 'all' || (row.status || 'REQUESTED') === status)).sort((a, b) => a.date.localeCompare(b.date));
+  return <WorkspacePage title="Appointments" description="An agenda of dates requested by your connected families." refresh={state.refresh}><div className="dw-toolbar"><label className="dw-date-filter">Requested date<input type="date" value={date} onChange={event => setDate(event.target.value)} /></label>{date && <button className="dw-secondary" onClick={() => setDate('')}>Show all dates</button>}<select aria-label="Appointment request status" value={status} onChange={event => setStatus(event.target.value)}><option value="all">All statuses</option>{[...new Set(state.data?.requests.map(row => row.status || 'REQUESTED'))].map(value => <option key={value} value={value}>{value.replaceAll('_', ' ')}</option>)}</select><Link className="dw-secondary" to="/doctor/consultations">Consultation requests</Link></div><p className="dw-info">These dates are requested by families. Confirmed time slots and online appointment booking are not available yet.</p><PageStatus loading={state.loading} error={state.error} empty={!rows.length} emptyTitle="No requests for these dates"><div className="dw-panel dw-table-wrap"><table className="dw-table"><thead><tr><th>Patient</th><th>Requested date</th><th>Preferred time</th><th>Reason</th><th>Status</th><th>Actions</th></tr></thead><tbody>{rows.map(row => <tr key={row.id}><td><PatientName name={state.data?.patients.find(patient => patient.id === row.child_id)?.full_name ?? 'Shared child profile'} /></td><td><time>{row.date}</time></td><td>Not provided</td><td><h3 className="dw-row-title">{row.title}</h3></td><td><StatusBadge status={row.status} /></td><td><RowActions label={row.title}><Link to={`/doctor/clinical-records?patient=${row.child_id}`}>Patient details</Link><Link to="/doctor/consultations">View consultation requests</Link></RowActions></td></tr>)}</tbody></table></div></PageStatus></WorkspacePage>;
+}

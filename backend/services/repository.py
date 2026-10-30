@@ -47,6 +47,8 @@ def audit(action, target_id=None, actor_id=None):
 
 
 def revoke_sessions(user_id):
-    from sqlalchemy import update
+    from sqlalchemy import update, delete
+    from doctor.notification_models import DoctorPushSubscription
+    db().execute(delete(DoctorPushSubscription).where(DoctorPushSubscription.user_id == user_id))
     db().execute(update(UserSession).where(UserSession.user_id == user_id,
                                           UserSession.revoked_at.is_(None)).values(revoked_at=now()))

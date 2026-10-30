@@ -4,30 +4,26 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Bell, CalendarDays, Check, ClipboardList, Eye, EyeOff, Heart, LockKeyhole, Mail, Pencil, ShieldCheck, Stethoscope, UserRound, Users } from 'lucide-react';
 import { Logo } from '../../components/Website';
 import './auth.css';
-import { medicalCouncils } from '../../data/medicalCouncils';
+import DoctorRegistrationFields, { DoctorSignupSteps } from '../../../../doctor/src/components/RegistrationFields';
+import type { DoctorAuthOutcome } from '../../../../doctor/src/onboarding/types';
 import { authApi, ApiError, type AuthResponse } from '../../lib/authApi';
 
 type Role = 'customer' | 'doctor';
 type Step = 'details' | 'professional' | 'otp' | 'complete';
-type Fields = { name: string; phone: string; email: string; password: string; registration: string; qualification: string; council: string; specialization: string; nmr: string };
-const initialFields: Fields = { name: '', phone: '', email: '', password: '', registration: '', qualification: '', council: '', specialization: '', nmr: '' };
+type Fields = { name: string; phone: string; email: string; password: string; registration: string; council: string; qualification: string };
+const initialFields: Fields = { name: '', phone: '', email: '', password: '', registration: '', council: '', qualification: '' };
 
 function RoleSwitch({ role, mode }: { role: Role; mode: 'signup' | 'login' }) {
   return <div className="auth-role-switch" aria-label="Account type"><Link to={`/customer/${mode}`} aria-current={role === 'customer' ? 'page' : undefined}>Customer / Parent</Link><Link to={`/doctor/${mode}`} aria-current={role === 'doctor' ? 'page' : undefined}>Doctor</Link></div>;
 }
 
-function Steps({ step }: { step: Step }) {
-  const active = step === 'details' ? 0 : step === 'professional' ? 1 : 2;
-  return <ol className="auth-steps" aria-label="Doctor registration steps">{['Basic Details', 'Professional Info', 'Verification'].map((label, index) => <li key={label} aria-current={index === active ? 'step' : undefined} className={index < active ? 'done' : ''}><span>{index < active ? <Check size={15} /> : index + 1}</span><small>{label}</small></li>)}</ol>;
-}
-
-export default function AuthPage({ role, mode }: { role: Role; mode: 'signup' | 'login' }) {
+export default function AuthPage({ role, mode, onDoctorResult }: { role: Role; mode: 'signup' | 'login'; onDoctorResult?: (data: AuthResponse) => DoctorAuthOutcome }) {
   const navigate = useNavigate();
   const doctor = role === 'doctor';
   const signup = mode === 'signup';
   const [fields, setFields] = useState<Fields>(() => ({ ...initialFields, email: signup ? '' : localStorage.getItem('familycare_remember_email') ?? '' }));
   const [step, setStep] = useState<Step>('details');
-  const [otherCouncil, setOtherCouncil] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
   const [otp, setOtp] = useState<string[]>(Array(6).fill(''));
   const [cooldown, setCooldown] = useState(0);
@@ -43,6 +39,7 @@ export default function AuthPage({ role, mode }: { role: Role; mode: 'signup' | 
   const endpoint = doctor ? '/doctors' : '/patients';
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const headingRef = useRef<HTMLHeadingElement>(null);
+
 
   useEffect(() => {
     if (step !== 'otp') return;
@@ -71,6 +68,15 @@ export default function AuthPage({ role, mode }: { role: Role; mode: 'signup' | 
     setFields(previous => ({ ...previous, password: '' }));
     if (kind === 'session') navigate(doctor ? '/doctor/dashboard' : '/customer/dashboard', { replace: true });
   }
+  function handleDoctorResponse(data: AuthResponse) {
+    if (!onDoctorResult) throw new Error('Doctor authentication is unavailable. Please reload this page.');
+    const outcome = onDoctorResult(data);
+    if (outcome === 'setup') {
+      setFields(previous => ({ ...previous, password: '' })); setChallenge(''); return true;
+    }
+    if (outcome === 'approval') { complete('approval'); return true; }
+    return false;
+  }
   async function run(action: () => Promise<void>) {
     if (requestInFlight.current) return;
     requestInFlight.current = true; setBusy(true); setError(''); setMessage('');
@@ -88,7 +94,9 @@ export default function AuthPage({ role, mode }: { role: Role; mode: 'signup' | 
         const code = otp.join('');
         if (!/^\d{6}$/.test(code)) throw new Error('Enter the 6-digit code from your email.');
         const data = await authApi(`${endpoint}/verify-email`, { challenge_token: challenge, otp: code });
-        if (doctor) complete('approval');
+        if (doctor) {
+          if (!handleDoctorResponse(data)) throw new Error('Please sign in to continue doctor account setup.');
+        }
         else {
           if (!data.csrf_token || !data.user) throw new Error('The server did not establish a session. Please sign in again.');
           complete('session');
@@ -98,6 +106,7 @@ export default function AuthPage({ role, mode }: { role: Role; mode: 'signup' | 
       if (!signup) {
         if (forgot) { const data = await authApi('/auth/forgot-password', { email: fields.email.trim() }); setMessage(data.message ?? 'If an eligible account exists, reset instructions are queued for your email.'); return; }
         const data = await authApi(`${endpoint}/login`, { email: fields.email.trim(), password: fields.password });
+        if (doctor && handleDoctorResponse(data)) return;
         if (!data.csrf_token || !data.user) throw new Error('Sign-in did not return a session. Restart the backend and try again.');
         complete('session');
         return;
@@ -107,7 +116,7 @@ export default function AuthPage({ role, mode }: { role: Role; mode: 'signup' | 
       const data = await authApi(`${endpoint}/register`, {
         full_name: fields.name.trim(), email: fields.email.trim(), mobile_number: `+91${fields.phone}`,
         password: fields.password, confirm_password: fields.password,
-        ...(doctor ? { medical_registration_number: fields.registration.trim(), registering_council: fields.council.trim(), ...(fields.qualification.trim() ? { qualification: fields.qualification.trim() } : {}), ...(fields.specialization.trim() ? { specialization: fields.specialization.trim() } : {}), ...(fields.nmr.trim() ? { nmr_id: fields.nmr.trim() } : {}) } : {}),
+        ...(doctor ? { medical_registration_number: fields.registration.trim(), registering_council: fields.council.trim(), qualification: fields.qualification.trim() } : {}),
       });
       startChallenge(data);
     });
@@ -140,15 +149,12 @@ export default function AuthPage({ role, mode }: { role: Role; mode: 'signup' | 
       <section className="auth-panel" aria-label={`${doctor ? 'Doctor' : 'Customer'} ${signup ? 'registration' : 'login'}`}>
         <Link to="/" className="auth-back"><ArrowLeft size={14} />Back to Home</Link>
         <div className="auth-form-wrap">
-          {step !== 'complete' && <><div className="auth-heading"><span className="auth-form-kicker">{signup ? 'YOUR FAMILYCARE+ JOURNEY' : 'WELCOME BACK'}</span><h1 ref={headingRef} tabIndex={-1}>{step === 'otp' ? 'Verify OTP' : step === 'professional' ? 'Professional Information' : !signup ? forgot ? 'Reset Password' : `${doctor ? 'Doctor' : 'Customer'} Login` : doctor ? 'Doctor Registration' : 'Create an Account'}</h1><p>{step === 'otp' ? <>Enter the code sent to your email.<strong className="otp-number">{fields.email}</strong></> : step === 'professional' ? 'Add your registration number and registering council. Degree and other details are optional.' : signup ? doctor ? 'Join FamilyCare+ through a separate professional account.' : 'Join FamilyCare+ to begin your family’s health journey.' : forgot ? 'Enter the email associated with your account.' : 'Choose your account type and enter your details.'}</p></div><RoleSwitch role={role} mode={mode} />{doctor && signup && <Steps step={step} />}</>}
+          {step !== 'complete' && <><div className="auth-heading"><span className="auth-form-kicker">{signup ? 'YOUR FAMILYCARE+ JOURNEY' : 'WELCOME BACK'}</span><h1 ref={headingRef} tabIndex={-1}>{step === 'otp' ? 'Verify OTP' : step === 'professional' ? 'Professional Information' : !signup ? forgot ? 'Reset Password' : `${doctor ? 'Doctor' : 'Customer'} Login` : doctor ? 'Doctor Registration' : 'Create an Account'}</h1><p>{step === 'otp' ? <>Enter the code sent to your email.<strong className="otp-number">{fields.email}</strong></> : step === 'professional' ? 'Add your registration number, council and qualification here. Complete the rest of your account setup after email verification.' : signup ? doctor ? 'Join FamilyCare+ through a separate professional account.' : 'Join FamilyCare+ to begin your family’s health journey.' : forgot ? 'Enter the email associated with your account.' : 'Choose your account type and enter your details.'}</p></div><RoleSwitch role={role} mode={mode} />{doctor && signup && <DoctorSignupSteps step={step} />}</>}
           <form onSubmit={submit} className="auth-form" aria-busy={busy}><fieldset className="auth-request-fields" disabled={busy}>
-            {step === 'complete' ? <div className="auth-complete"><span className="auth-success-icon"><Check size={32} /></span><h1 ref={headingRef} tabIndex={-1}>{completion === 'approval' ? 'Email verified.' : 'You are signed in.'}</h1><p>{completion === 'approval' ? 'Your doctor registration is awaiting approval. You can sign in after your account is approved.' : 'Your account session is active.'}</p>{completion !== 'session' && <Link to={`/${role}/login`} onClick={() => { setStep('details'); setForgot(false); }} className="button auth-submit">Go to {doctor ? 'Doctor' : 'Customer'} Login <ArrowRight size={17} /></Link>}{completion === 'session' && <button type="button" className="button auth-submit" disabled={busy} onClick={() => run(async () => { await authApi('/auth/logout'); setStep('details'); setForgot(false); })}>{busy ? 'Signing out...' : 'Sign out'}</button>}{error && <p className="auth-error" role="alert">{error}</p>}<Link to="/" className="auth-text-link">Back to Home</Link></div> : <>
+            {step === 'complete' ? <div className="auth-complete"><span className="auth-success-icon"><Check size={32} /></span><h1 ref={headingRef} tabIndex={-1}>{completion === 'approval' ? 'Your profile is under review.' : 'You are signed in.'}</h1><p>{completion === 'approval' ? 'Your doctor registration is awaiting approval. You can sign in after your account is approved.' : 'Your account session is active.'}</p>{completion !== 'session' && <Link to={`/${role}/login`} onClick={() => { setStep('details'); setForgot(false); }} className="button auth-submit">Go to {doctor ? 'Doctor' : 'Customer'} Login <ArrowRight size={17} /></Link>}{completion === 'session' && <button type="button" className="button auth-submit" disabled={busy} onClick={() => run(async () => { await authApi('/auth/logout'); setStep('details'); setForgot(false); })}>{busy ? 'Signing out...' : 'Sign out'}</button>}{error && <p className="auth-error" role="alert">{error}</p>}<Link to="/" className="auth-text-link">Back to Home</Link></div> : <>
               {signup && step === 'details' && <><label className="auth-field"><UserRound /><span>Full Name<input name="name" autoComplete="name" placeholder="Enter your full name" value={fields.name} onChange={event => update('name', event.target.value)} required minLength={2} maxLength={100} /></span></label><div className="auth-phone"><span className="country-code" aria-label="India country code">🇮🇳 <strong>+91</strong></span><label className="auth-field"><span>Mobile Number<input name="phone" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="Enter your phone number" value={fields.phone} onChange={event => update('phone', event.target.value.replace(/\D/g, '').slice(0, 10))} required pattern="[6-9][0-9]{9}" title="Enter a 10-digit Indian mobile number starting with 6, 7, 8 or 9" /></span></label></div></>}
               {(step === 'details') && <><label className="auth-field"><Mail /><span>Email Address<input name="email" type="email" autoComplete="email" placeholder="Enter your email address" value={fields.email} onChange={event => update('email', event.target.value)} required maxLength={254} /></span></label>{!forgot && <label className="auth-field password-field"><LockKeyhole /><span>Password<input name="password" type={showPassword ? 'text' : 'password'} autoComplete={signup ? 'new-password' : 'current-password'} placeholder={signup ? 'Create a password (8+ characters)' : 'Enter your password'} value={fields.password} onChange={event => update('password', event.target.value)} required minLength={signup ? 8 : undefined} maxLength={128} /></span><button className="auth-password-toggle" type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword(!showPassword)}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></label>}</>}
-              {step === 'professional' && <><label className="auth-field"><ClipboardList /><span>Medical Registration Number<input name="registration" autoComplete="off" placeholder="Enter your medical registration number" value={fields.registration} onChange={event => update('registration', event.target.value)} required minLength={3} maxLength={60} /></span></label><label className="auth-field"><Stethoscope /><span>Registering Council<select name="council" value={otherCouncil ? '__other__' : fields.council} onChange={event => { setOtherCouncil(event.target.value === '__other__'); update('council', event.target.value === '__other__' ? '' : event.target.value); }} required><option value="" disabled>Select your medical council</option>{medicalCouncils.map(council => <option key={council} value={council}>{council}</option>)}<option value="__other__">Other / Council not listed</option></select></span></label>
-{otherCouncil && <label className="auth-field"><Stethoscope /><span>Other Council Name<input name="otherCouncil" autoComplete="off" placeholder="Enter the full council name" value={fields.council} onChange={event => update('council', event.target.value)} required minLength={2} maxLength={200} pattern=".*\S.*" /></span></label>}<label className="auth-field"><ClipboardList /><span>Degree / Qualification (optional)<input name="qualification" autoComplete="off" placeholder="e.g. MBBS, MD" value={fields.qualification} onChange={event => update('qualification', event.target.value)} minLength={2} maxLength={200} /></span></label>
-<label className="auth-field"><Stethoscope /><span>Specialization (optional)<input name="specialization" autoComplete="off" placeholder="e.g. Pediatrics" value={fields.specialization} onChange={event => update('specialization', event.target.value)} maxLength={200} /></span></label>
-<label className="auth-field"><ClipboardList /><span>NMR ID (optional)<input name="nmr" autoComplete="off" placeholder="Enter your National Medical Register ID" value={fields.nmr} onChange={event => update('nmr', event.target.value)} maxLength={100} /></span></label><div className="auth-professional-note"><ShieldCheck size={20} /><p>Your registration number will need professional verification before access to patient records.</p></div><button type="button" className="auth-text-link auth-edit-basic" onClick={() => { setStep('details'); setError(''); }}>Edit basic details</button></>}
+              {step === 'professional' && <DoctorRegistrationFields registration={fields.registration} council={fields.council} qualification={fields.qualification} onChange={update} onEditBasic={() => { setStep('details'); setError(''); }} />}
               {step === 'otp' && <><fieldset className="otp-fieldset"><legend>Enter the 6-digit email OTP</legend><div className="otp-inputs">{otp.map((digit, index) => <input key={index} ref={element => { otpRefs.current[index] = element; }} value={digit} aria-label={`OTP digit ${index + 1}`} inputMode="numeric" autoComplete={index === 0 ? 'one-time-code' : 'off'} onChange={event => enterOtp(event.target.value, index)} onPaste={event => { event.preventDefault(); enterOtp(event.clipboardData.getData('text'), index); }} onFocus={event => event.target.select()} onKeyDown={event => { if (event.key === 'Backspace' && !digit && index > 0) otpRefs.current[index - 1]?.focus(); if (event.key === 'ArrowLeft' && index > 0) otpRefs.current[index - 1]?.focus(); if (event.key === 'ArrowRight' && index < 5) otpRefs.current[index + 1]?.focus(); }} maxLength={6} />)}</div></fieldset><div className="otp-resend"><span>Didn't receive OTP?</span><button type="button" disabled={busy || cooldown > 0} onClick={resend}>{cooldown > 0 ? `Resend in ${Math.floor(cooldown / 60)}:${String(cooldown % 60).padStart(2, '0')}` : 'Resend OTP'}</button></div></>}
               {!signup && !forgot && step === 'details' && <div className="auth-login-options"><label title="Remember your email on this device"><input type="checkbox" checked={remember} onChange={event => setRemember(event.target.checked)} />Remember me</label><button type="button" onClick={() => { setForgot(true); setMessage(''); setError(''); setResumeVerification(false); }}>Forgot Password?</button></div>}
               {error && <p className="auth-error" role="alert">{error}</p>}{message && <p className="auth-message" role="status">{message}</p>}{resumeVerification && step === 'details' && <button type="button" className="auth-text-link" disabled={busy} onClick={restartVerification}>Verify an unverified email</button>}{step === 'otp' && <button type="button" className="auth-text-link" disabled={busy} onClick={restartVerification}>Request a fresh verification challenge</button>}

@@ -85,6 +85,8 @@ def upload_report(user, profile_id, file):
         file_format=result.get('format') or extension, size_bytes=len(content))
     try:
         db().add(report)
+        from doctor.notifications import queue_notification
+        queue_notification(profile.referred_doctor_id, 'report_shared', 'report:' + report.id)
         audit('care_report_uploaded', user.id, user.id)
         db().commit()
     except SQLAlchemyError:

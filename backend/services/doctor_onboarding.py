@@ -11,12 +11,18 @@ FIELDS = ('qualification', 'medical_registration_number', 'registering_council',
           'specialization', 'nmr_id', 'address', 'clinic_address', 'years_of_experience')
 
 
+def profile_details(profile):
+    from doctor.onboarding_images import image_details
+    return {**{key: getattr(profile, key) for key in FIELDS}, 'images': image_details(profile)} if profile else {}
+
+
 def setup_response(user):
+    from doctor.notifications import notification_token
     profile = db().get(DoctorProfile, user.id)
     application = db().scalar(select(ApprovalRequest).where(ApprovalRequest.applicant_id == user.id))
-    return jsonify(user=serialize_user(user), requires_profile_setup=True,
+    return jsonify(user=serialize_user(user), requires_profile_setup=True, notification_token=notification_token(user),
                    setup_token=encode_token(user, 'doctor_profile_setup', 30),
-                   doctor={key: getattr(profile, key) for key in FIELDS},
+                   doctor=profile_details(profile),
                    rejection_reason=application.rejection_reason if application else None,
                    message='Complete your doctor profile and submit it for approval.'), 202
 
@@ -51,6 +57,9 @@ def submit_profile(data):
     application.status, application.requested_at = 'PENDING', now()
     application.reviewed_by = application.reviewed_at = application.rejection_reason = None
     user.approval_status = 'PENDING_APPROVAL'
+    db().flush()
+    from doctor.notifications import queue_notification
+    queue_notification(user.id, 'profile_submitted', 'profile_submitted:' + application.id + ':' + str(application.requested_at))
     audit('doctor_profile_submitted', user.id, user.id)
     db().commit()
     return jsonify(user=serialize_user(user), message='Your profile is under review.'), 202

@@ -13,7 +13,7 @@ export default function ModuleSelector({ selected, onSelect, translate = text =>
       className={`customer-module-card ${id}`} aria-pressed={selected === id}
       aria-controls="customer-module-content" onClick={() => onSelect(id)}>
       <img className="customer-module-photo" src={`/images/${id === 'women' ? 'women' : id}.png`} alt="" /><span className="customer-module-icon"><Icon size={20} strokeWidth={1.8} /></span>
-      <span><strong>{translate(title)}</strong><small>{translate(subtitle)}</small></span>
+      <span><strong>{translate(title)}</strong><span className="customer-module-stage">{translate(id==='child'?'0 - 12 Years':id==='women'?'All Stages':'Everyday Care')}</span><small>{translate(id==='child'?'Growth, vaccinations, health records & more.':subtitle)}</small></span>
       <span className="customer-card-arrow" aria-hidden="true"><ArrowRight size={15} /></span>
     </button>)}
   </div>;

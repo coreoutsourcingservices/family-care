@@ -1,7 +1,7 @@
 import AccountDoctorConnection from '../components/AccountDoctorConnection';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, FileText, Heart, LogOut, ShieldCheck, Users } from 'lucide-react';
+import { ArrowRight, FileText, Heart, LogOut, ShieldCheck, Users, UserRound, ChevronDown, Menu, X, Bell, Stethoscope, Headphones } from 'lucide-react';
 import { Logo } from '../components/Website';
 import ModuleSelector, { type ModuleId } from '../components/ModuleSelector';
 import ChildCare from '../../../customer/src/modules/child/ChildCare';
@@ -10,6 +10,7 @@ import AdultHealth from '../modules/adult/AdultHealth';
 import { ApiError, authApi, type AuthUser } from '../lib/authApi';
 import { CustomerLanguageProvider, CustomerLanguageSelector, useCustomerLanguage } from '../../../customer/src/localization/CustomerLanguage';
 import './customer-dashboard.css';
+import './customer-reference.css';
 
 export default function CustomerDashboard({ module }: { module?: ModuleId }) {
   return module ? <DashboardContent module={module}/> : <CustomerLanguageProvider><DashboardContent/></CustomerLanguageProvider>;
@@ -22,6 +23,9 @@ function DashboardContent({ module }: { module?: ModuleId }) {
   const [error, setError] = useState('');
   const [attempt, setAttempt] = useState(0);
   const [signingOut, setSigningOut] = useState(false);
+  const [accountOpen,setAccountOpen]=useState(false),[mobileOpen,setMobileOpen]=useState(false);
+  const accountRef=useRef<HTMLDivElement>(null);
+  useEffect(()=>{const close=(event:PointerEvent)=>{if(!accountRef.current?.contains(event.target as Node))setAccountOpen(false);};const escape=(event:KeyboardEvent)=>{if(event.key==='Escape'){setAccountOpen(false);setMobileOpen(false);}};document.addEventListener('pointerdown',close);document.addEventListener('keydown',escape);return()=>{document.removeEventListener('pointerdown',close);document.removeEventListener('keydown',escape);};},[]);
 
   useEffect(() => {
     let active = true;
@@ -48,28 +52,29 @@ function DashboardContent({ module }: { module?: ModuleId }) {
     } finally { setSigningOut(false); }
   }
 
-  return <div lang={language} dir={direction} className={`customer-dashboard ${module ? 'customer-form-page' : ''} ${module === 'child' ? 'customer-child-form' : ''}`}>
-    {module !== 'child' && module !== 'women' && <header className="customer-dashboard-header"><Logo tagline={t('Healthier Families. Brighter Tomorrows.')} /><nav className="customer-dashboard-nav" aria-label="Dashboard navigation"><Link to="/customer/dashboard">{t('Home')}</Link><Link to="/customer/dashboard#customer-services">{t('Services')}</Link><Link to="/customer/child">{t('My family')}</Link><Link to="/contact">{t('Support')}</Link></nav><div className="customer-account-actions">
-      {!module && user && <CustomerLanguageSelector/>}{user && <><span className="customer-account-name">{user.full_name}</span><button type="button" disabled={signingOut} onClick={signOut}><LogOut size={16} />{t(signingOut ? 'Signing out...' : 'Sign out')}</button></>}
+  return <div lang={language} dir={direction} className={`customer-dashboard ${!module ? 'customer-reference' : ''} ${module ? 'customer-form-page' : ''} ${module === 'child' ? 'customer-child-form' : ''}`}>
+    {module !== 'child' && module !== 'women' && <header className="customer-dashboard-header"><Logo tagline={t('Healthier Families. Brighter Tomorrows.')} /><nav className={"customer-dashboard-nav "+(mobileOpen?"is-open":"")} aria-label="Dashboard navigation"><Link to="/customer/dashboard">{t('Home')}</Link><Link to="/customer/dashboard#customer-services">{t('Services')}</Link><Link to="/customer/child">{t('My family')}</Link><Link to="/contact">{t('Support')}</Link></nav><div className="customer-account-actions">
+      {!module && user && <CustomerLanguageSelector/>}{user && <div className="customer-profile-menu" ref={accountRef}><button type="button" className="customer-profile-trigger" aria-label="Open account menu" aria-expanded={accountOpen} aria-controls="customer-profile-dropdown" onClick={()=>setAccountOpen(!accountOpen)}><span className="customer-profile-avatar"><UserRound size={16}/></span><span>{user.full_name}</span><ChevronDown size={13}/></button>{accountOpen&&<div id="customer-profile-dropdown" className="customer-profile-dropdown"><strong>{user.full_name}</strong><p>{user.email}</p><button type="button" disabled={signingOut} onClick={signOut}><LogOut size={16}/>{t(signingOut?'Signing out...':'Sign out')}</button></div>}</div>}
+      <button className="customer-mobile-toggle" aria-label={mobileOpen?'Close dashboard navigation':'Open dashboard navigation'} aria-expanded={mobileOpen} onClick={()=>setMobileOpen(!mobileOpen)}>{mobileOpen?<X size={19}/>:<Menu size={19}/>}</button>
     </div></header>}
     {!user ? <section className="customer-session-status" aria-live="polite">
       {error ? <><p role="alert">{t(error)}</p><button type="button" onClick={() => setAttempt(previous => previous + 1)}>{t('Try again')}</button><Link to="/customer/login">{t('Back to Login')}</Link></> : <p>{t('Loading your family dashboard...')}</p>}
     </section> : <div className="customer-dashboard-body">
       {!module && <section className="customer-family-hero">
-        <div className="customer-hero-copy"><span className="customer-hero-eyebrow">{t('YOUR FAMILY. YOUR CARE.')}</span><h1>{t('Healthcare for')} <em>{t('Every')}</em><br /><span>{t('Stage of Life')}</span></h1><p>{t('Simple. Personal. Together.')}<br />{t('A little care for everyone you love.')}</p><div className="customer-hero-trust"><ShieldCheck size={16} />{t('Your people. Their health. One place.')}</div></div>
-        <div className="customer-hero-photo"><span className="customer-hero-heart heart-one"><Heart fill="currentColor" /></span><img src="/images/family.png" alt="A smiling family together" /><span className="customer-hero-heart heart-two"><Heart fill="currentColor" /></span></div>
+        <div className="customer-hero-copy"><span className="customer-hero-eyebrow">{t('YOUR FAMILY. YOUR CARE.')}</span><h1>{t('Healthcare for')}<br/><em>{t('Every Stage')}</em> {t('of Life.')} </h1><p>{t('Simple. Personal. Together.')}<small>{t('A little care for everyone you love.')}</small></p><div className="customer-hero-features">{[[ShieldCheck,'Track','Vaccinations'],[FileText,'Manage','Health Records'],[Bell,'Set','Reminders'],[Stethoscope,'Consult','Doctors']].map(([Icon,first,last],i)=>{const FeatureIcon=Icon as typeof Heart;return <div key={i}><span><FeatureIcon size={24}/></span><strong>{t(first as string)}<br/>{t(last as string)}</strong></div>;})}</div></div>
+        <div className="customer-hero-photo"><span className="customer-hero-heart heart-one"><Heart fill="currentColor" /></span><img src="/images/family.png" alt="A smiling family together" /><span className="customer-hero-heart heart-two"><Heart /></span><span className="customer-family-note">Healthy<br/>Families<br/>Brighter<br/>Tomorrows ?</span></div>
       </section>}
       {error && <p className="customer-dashboard-error" role="alert">{t(error)}</p>}
       {!module&&<AccountDoctorConnection/>}{!module && <ModuleSelector selected={null} translate={t} onSelect={id => navigate(`/customer/${id}`)} />}
       {module && <section id="customer-module-content" className="customer-module-content">
         {module === 'child' ? <ChildCare key={`child-${user.id}`} accountId={user.id} /> : module === 'women' ? <WomenHealth key={`women-${user.id}`} accountId={user.id} /> : <AdultHealth key={`adult-${user.id}`} accountId={user.id} />}
       </section>}
-      {!module && <><section className="customer-services" id="customer-services"><div className="customer-section-title"><h2>{t('A little care. A lot of peace of mind.')}</h2><p>{t('Everything important, close to the people who matter.')}</p></div><div className="customer-service-grid">
+      {!module && <><section className="customer-services" id="customer-services"><div className="customer-section-title"><h2>{t('A little care.')} <span>{t('A lot of peace')}</span> {t('of mind.')}</h2><p>{t('Everything important, close to the people who matter.')}</p></div><div className="customer-service-grid">
         <article><span><FileText size={23} /></span><div><h3>{t('Health records, together')}</h3><p>{t('Keep reports with the right family profile.')}</p></div></article>
         <article><span><Users size={23} /></span><div><h3>{t('Space for everyone')}</h3><p>{t('Separate profiles for every family member.')}</p></div></article>
         <article><span><Heart size={23} /></span><div><h3>{t('Keep loved ones close')}</h3><p>{t('Save guardian and emergency contacts.')}</p></div></article>
       </div></section>
-      <section className="customer-support-banner"><span className="customer-support-icon"><Heart size={29} /></span><div><h2>{t('Here for your family.')}</h2><p>{t('A helping hand, whenever you need guidance.')}</p></div><Link to="/contact">{t('Contact support')}<ArrowRight size={16} /></Link></section></>}
+      <section className="customer-support-banner"><span className="customer-support-icon"><Heart size={29} /></span><div><h2>{t('Here for your family.')}</h2><p>{t('A helping hand, whenever you need guidance.')}</p></div><Link to="/contact"><Headphones size={18}/>{t('Contact support')}<ArrowRight size={16} /></Link></section></>}
     </div>}
     {module !== 'child' && module !== 'women' && <p className="customer-dashboard-footer">{t("Your family's health, together in one place.")}</p>}
   </div>;

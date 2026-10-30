@@ -73,6 +73,7 @@ class DoctorProfile(Base):
     nmr_id = C(S(100), unique=True)
     verification_status = C(S(32), default='PENDING', nullable=False)
     verification_check = C(JSON)
+    onboarding_images = C(JSON)
     approved_by = C(Uuid(as_uuid=False), FK('familycare.users.id'))
     approved_at = C(DT)
 
@@ -187,6 +188,27 @@ class CareProfile(Base):
     parent_profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='SET NULL'))
     created_at = C(DT, default=now, nullable=False)
     updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+
+class AdultRecord(Base):
+    __tablename__ = 'adult_records'
+    id = primary_id()
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), nullable=False, index=True)
+    kind = C(S(32), nullable=False)
+    data = C(JSON, nullable=False)
+    created_at = C(DT, default=now, nullable=False)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)
+    deleted_at = C(DT)
+
+
+class AdultRecordRevision(Base):
+    __tablename__ = 'adult_record_revisions'
+    id = primary_id()
+    record_id = C(Uuid(as_uuid=False), FK('familycare.adult_records.id', ondelete='CASCADE'), nullable=False, index=True)
+    actor_id = user_fk(nullable=False)
+    action = C(S(12), nullable=False)
+    data = C(JSON, nullable=False)
+    created_at = C(DT, default=now, nullable=False)
 
 
 class ChildRecord(Base):
@@ -308,3 +330,6 @@ class ReportText(Base):
     started_at = C(DT)
     created_at = C(DT, default=now, nullable=False)
     updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+# Registered here so migrations and isolated test metadata include the doctor inbox.
+from doctor.notification_models import DoctorNotification, DoctorPushSubscription, DoctorPushDelivery
