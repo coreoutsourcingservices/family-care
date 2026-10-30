@@ -82,7 +82,7 @@ def protected(*roles):
         def wrapped(*args, **kwargs):
             header = request.headers.get('Authorization', '')
             is_bearer = header.startswith('Bearer ')
-            raw = header[7:] if is_bearer else request.cookies.get('fc_access', '')
+            raw = header[7:] if is_bearer else request.cookies.get(cookie_name('access'), request.cookies.get('fc_access', ''))
             claims = decode_token(raw, 'access')
             session = db().get(UserSession, claims.get('sid')) if claims.get('sid') else None
             user = db().get(User, claims['sub'])
@@ -92,6 +92,9 @@ def protected(*roles):
             if session.transport != expected:
                 raise APIError(401, 'invalid_transport', 'Session transport mismatch')
             eligible(user)
+            portal=request.headers.get('X-FamilyCare-Portal','')
+            if not is_bearer and portal in ('patient','doctor') and user.role!=portal.upper():
+                raise APIError(401,'portal_session_changed','Please sign in to this portal again')
             if roles and user.role not in roles:
                 raise APIError(403, 'forbidden', 'Insufficient permissions')
             if not is_bearer and request.method not in ('GET', 'HEAD', 'OPTIONS'):
@@ -100,3 +103,9 @@ def protected(*roles):
             return fn(*args, **kwargs)
         return wrapped
     return decorate
+
+
+def cookie_name(kind):
+    # Public patient/doctor portals coexist on the same host and API path.
+    portal=request.headers.get('X-FamilyCare-Portal','')
+    return 'fc_'+portal+'_'+kind if portal in ('patient','doctor') else 'fc_'+kind

@@ -18,7 +18,7 @@ def create_app(overrides=None):
     limiter.init_app(app)
     CORS(app, resources={r'/api/*': {'origins': app.config['CORS_ORIGINS']}},
          supports_credentials=True, allow_headers=['Content-Type', 'Authorization', 'X-Auth-Transport',
-                                                   'X-CSRF-Token', 'X-Requested-With'])
+                                                   'X-CSRF-Token', 'X-Requested-With', 'X-FamilyCare-Portal'])
     from auth.routes import bp as auth
     from doctor.routes import bp as doctor
     from patient.routes import bp as patient

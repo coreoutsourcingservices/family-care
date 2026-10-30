@@ -1,6 +1,6 @@
 from datetime import date
 from core.database import db
-from core.models import CareProfile
+from core.models import CareProfile, VaccineSchedule
 from test_vaccination_management import setup_staff, draft, approve
 from test_care import patient, create_profile
 
@@ -8,6 +8,10 @@ from test_care import patient, create_profile
 def test_admin_age_plan_shared_with_connected_doctor_and_toggle(app,client):
     admin,reviewer,doctor_id=setup_staff(app,client)
     row,payload=draft(client,admin,age_unit='months',age_start=6,age_end=6,age_label='6 months')
+    # Pre-existing imported entries have neither availability key.
+    with app.app_context():
+        legacy=db().get(VaccineSchedule,row['id'])
+        legacy.data={k:v for k,v in legacy.data.items() if k not in ('active','child_visible')};db().commit()
     owner=patient(app,client)
     child=create_profile(client,owner,date_of_birth='2026-01-31')
     other=create_profile(client,owner,date_of_birth='2026-02-28')

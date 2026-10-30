@@ -206,6 +206,7 @@ Required roles: ADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -239,6 +240,7 @@ Required roles: ADMIN
 | `page` | query | False | `{"type": "integer", "minimum": 1, "default": 1}` |
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -267,6 +269,7 @@ Required roles: ADMIN
 | `page` | query | False | `{"type": "integer", "minimum": 1, "default": 1}` |
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -294,6 +297,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -330,6 +334,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -359,6 +364,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -406,6 +412,7 @@ Required roles: ADMIN
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `module` | query | False | `{"type": "string", "enum": ["child", "adult", "women"]}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -443,6 +450,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -471,6 +479,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -528,6 +537,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -555,6 +565,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -630,6 +641,7 @@ Required roles: ADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -668,6 +680,7 @@ Required roles: ADMIN
 | `page` | query | False | `{"type": "integer", "minimum": 1, "default": 1}` |
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -695,6 +708,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -738,6 +752,7 @@ Required roles: ADMIN
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `module` | query | False | `{"type": "string", "enum": ["child", "adult", "women"]}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -778,6 +793,7 @@ Required roles: ADMIN
 | `user_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -811,6 +827,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -901,6 +918,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -957,6 +975,7 @@ Required roles: ADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -985,6 +1004,7 @@ Required roles: ADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -1013,6 +1033,7 @@ Required roles: ADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -1046,6 +1067,7 @@ Required roles: ADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -1074,6 +1096,7 @@ Required roles: ADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -1411,6 +1434,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -1748,6 +1772,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -1908,6 +1933,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -1995,6 +2021,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -2152,6 +2179,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -2267,6 +2295,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -2381,6 +2410,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -2500,6 +2530,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -2586,6 +2617,7 @@ Required roles: ADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -2626,6 +2658,7 @@ Required roles: ADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -2742,6 +2775,7 @@ Required roles: ADMIN
 | --- | --- | --- | --- |
 | `vaccine_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -2857,6 +2891,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -2920,6 +2955,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -2983,6 +3019,7 @@ Required roles: SUPERADMIN, ADMIN, DOCTOR, PATIENT
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -3052,6 +3089,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -3108,6 +3146,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -3193,6 +3232,7 @@ Required roles: SUPERADMIN, ADMIN, DOCTOR, PATIENT
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -3218,6 +3258,7 @@ Required roles: SUPERADMIN, ADMIN, DOCTOR, PATIENT
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -3243,6 +3284,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -3301,6 +3343,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -3364,6 +3407,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -3420,6 +3464,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -3496,6 +3541,7 @@ Required roles: SUPERADMIN, ADMIN, DOCTOR, PATIENT
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -3523,6 +3569,7 @@ Required roles: SUPERADMIN, ADMIN, DOCTOR, PATIENT
 | --- | --- | --- | --- |
 | `session_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -3548,6 +3595,7 @@ Required roles: PATIENT
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -3597,6 +3645,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -3641,6 +3690,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -3678,6 +3728,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -3717,6 +3768,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -3913,6 +3965,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -3940,6 +3993,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -4131,6 +4185,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -4167,6 +4222,7 @@ Required roles: PATIENT, DOCTOR
 | `page` | query | False | `{"type": "integer", "minimum": 1, "default": 1}` |
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -4206,6 +4262,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -4402,6 +4459,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -4429,6 +4487,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -4620,6 +4679,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -4654,6 +4714,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -4693,6 +4754,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -4889,6 +4951,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -4916,6 +4979,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -5107,6 +5171,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -5141,6 +5206,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -5173,6 +5239,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -5212,6 +5279,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -5408,6 +5476,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -5435,6 +5504,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -5626,6 +5696,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -5660,6 +5731,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -5688,6 +5760,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -5727,6 +5800,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -5923,6 +5997,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -5950,6 +6025,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -6141,6 +6217,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -6175,6 +6252,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -6214,6 +6292,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -6410,6 +6489,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -6437,6 +6517,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -6628,6 +6709,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -6662,6 +6744,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -6691,6 +6774,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -6743,6 +6827,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -6774,6 +6859,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -6807,6 +6893,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -6908,6 +6995,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -6947,6 +7035,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -6986,6 +7075,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -7182,6 +7272,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -7209,6 +7300,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -7400,6 +7492,7 @@ Required roles: PATIENT
 | `record_id` | path | True | `{"type": "string"}` |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -7434,6 +7527,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -7472,6 +7566,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -7539,6 +7634,7 @@ Required roles: DOCTOR
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `module` | query | False | `{"type": "string", "enum": ["child", "adult", "women"]}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -7578,6 +7674,7 @@ Required roles: DOCTOR
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -7613,6 +7710,7 @@ Required roles: DOCTOR
 | `area` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -7648,6 +7746,7 @@ Required roles: DOCTOR
 | `area` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -7838,6 +7937,7 @@ Required roles: DOCTOR
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -7869,6 +7969,7 @@ Required roles: DOCTOR
 | `page` | query | False | `{"type": "integer", "minimum": 1, "default": 1}` |
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -7909,9 +8010,10 @@ Required roles: DOCTOR
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `report_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `report_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -7949,6 +8051,7 @@ Required roles: DOCTOR
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -7992,6 +8095,7 @@ Required roles: DOCTOR
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -8070,6 +8174,7 @@ Required roles: DOCTOR
 | `page` | query | False | `{"type": "integer", "minimum": 1, "default": 1}` |
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -8096,6 +8201,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -8184,6 +8290,7 @@ Required roles: DOCTOR
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -8238,6 +8345,7 @@ Signed doctor notification token required in Authorization bearer header; access
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -8267,6 +8375,7 @@ Signed doctor notification token required in Authorization bearer header; access
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -8293,6 +8402,7 @@ Signed doctor notification token required in Authorization bearer header; access
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -8362,6 +8472,7 @@ Signed doctor notification token required in Authorization bearer header; access
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -8412,6 +8523,7 @@ Signed doctor notification token required in Authorization bearer header; access
 | --- | --- | --- | --- |
 | `notification_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -8439,6 +8551,7 @@ Required roles: DOCTOR
 | `page` | query | False | `{"type": "integer", "minimum": 1, "default": 1}` |
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -8465,6 +8578,7 @@ Required roles: DOCTOR
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -8493,6 +8607,7 @@ Required roles: DOCTOR
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -8540,6 +8655,7 @@ Required roles: DOCTOR
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -8587,6 +8703,7 @@ Required roles: DOCTOR
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -8613,6 +8730,7 @@ Required roles: DOCTOR
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -8646,6 +8764,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -8804,6 +8923,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -8860,6 +8980,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -8946,6 +9067,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -9005,6 +9127,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -9136,6 +9259,7 @@ Required roles: DOCTOR
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -9165,6 +9289,7 @@ Required roles: DOCTOR
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -9295,6 +9420,7 @@ Required roles: DOCTOR
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -9323,6 +9449,7 @@ Required roles: DOCTOR
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -9356,6 +9483,7 @@ Required roles: DOCTOR
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -9385,6 +9513,7 @@ Required roles: DOCTOR
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -9722,6 +9851,7 @@ Required roles: DOCTOR
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -9835,6 +9965,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -9900,6 +10031,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -9927,6 +10059,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -9953,6 +10086,7 @@ Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -9978,6 +10112,7 @@ Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -10003,6 +10138,7 @@ Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -10028,6 +10164,7 @@ Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -10053,6 +10190,7 @@ Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -10079,6 +10217,7 @@ Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN
 | --- | --- | --- | --- |
 | `notification_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -10105,6 +10244,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -10144,6 +10284,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -10378,9 +10519,10 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `record_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `record_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -10615,9 +10757,10 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `record_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `record_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -10650,9 +10793,10 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `record_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `record_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -10887,9 +11031,10 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `record_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `record_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -10914,9 +11059,10 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `record_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `record_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -10942,6 +11088,7 @@ Required roles: PATIENT
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -11004,6 +11151,7 @@ Required roles: PATIENT
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -11037,6 +11185,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -11113,6 +11262,7 @@ Required roles: PATIENT
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -11150,6 +11300,7 @@ Required roles: PATIENT
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -11294,6 +11445,7 @@ Required roles: PATIENT
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `module` | query | False | `{"type": "string", "enum": ["child", "adult", "women"]}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -11333,6 +11485,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -11367,6 +11520,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -11437,6 +11591,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -11524,6 +11679,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -11558,6 +11714,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -11621,6 +11778,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -11651,6 +11809,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -11685,6 +11844,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -11719,6 +11879,7 @@ Required roles: PATIENT
 | --- | --- | --- | --- |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -11775,6 +11936,7 @@ Required roles: PATIENT
 | `page` | query | False | `{"type": "integer", "minimum": 1, "default": 1}` |
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -11815,9 +11977,10 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `report_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `report_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -11850,9 +12013,10 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `report_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `report_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -11888,9 +12052,10 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `report_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `report_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -11923,9 +12088,10 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `report_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `report_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -11953,9 +12119,10 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `report_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `report_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -12029,6 +12196,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -12135,6 +12303,7 @@ Required roles: PATIENT
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -12225,6 +12394,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -12281,6 +12451,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -12357,6 +12528,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -12422,6 +12594,7 @@ Required roles: SUPERADMIN
 | `page` | query | False | `{"type": "integer", "minimum": 1, "default": 1}` |
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -12450,6 +12623,7 @@ Required roles: SUPERADMIN
 | `page` | query | False | `{"type": "integer", "minimum": 1, "default": 1}` |
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -12477,6 +12651,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -12506,6 +12681,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -12534,6 +12710,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -12591,6 +12768,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -12620,6 +12798,7 @@ Required roles: SUPERADMIN
 | `page` | query | False | `{"type": "integer", "minimum": 1, "default": 1}` |
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -12646,6 +12825,7 @@ Required roles: SUPERADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -12679,6 +12859,7 @@ Required roles: SUPERADMIN
 | `page` | query | False | `{"type": "integer", "minimum": 1, "default": 1}` |
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -12706,6 +12887,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -12745,6 +12927,7 @@ Required roles: SUPERADMIN
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `module` | query | False | `{"type": "string", "enum": ["child", "adult", "women"]}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -12781,6 +12964,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -12887,6 +13071,7 @@ Required roles: SUPERADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -12925,6 +13110,7 @@ Required roles: SUPERADMIN
 | `page` | query | False | `{"type": "integer", "minimum": 1, "default": 1}` |
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -12952,6 +13138,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -12995,6 +13182,7 @@ Required roles: SUPERADMIN
 | `per_page` | query | False | `{"type": "integer", "minimum": 1, "maximum": 100, "default": 25}` |
 | `module` | query | False | `{"type": "string", "enum": ["child", "adult", "women"]}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -13035,6 +13223,7 @@ Required roles: SUPERADMIN
 | `user_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -13068,6 +13257,7 @@ Required roles: SUPERADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -13096,6 +13286,7 @@ Required roles: SUPERADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -13124,6 +13315,7 @@ Required roles: SUPERADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -13157,6 +13349,7 @@ Required roles: SUPERADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -13185,6 +13378,7 @@ Required roles: SUPERADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -13522,6 +13716,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -13859,6 +14054,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -14019,6 +14215,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -14106,6 +14303,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -14263,6 +14461,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -14378,6 +14577,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -14492,6 +14692,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -14611,6 +14812,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -14697,6 +14899,7 @@ Required roles: SUPERADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -14737,6 +14940,7 @@ Required roles: SUPERADMIN
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -14853,6 +15057,7 @@ Required roles: SUPERADMIN
 | --- | --- | --- | --- |
 | `vaccine_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 
@@ -14968,6 +15173,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -14996,6 +15202,7 @@ Required roles: public / limited challenge
 | --- | --- | --- | --- |
 | `schedule_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
@@ -15080,6 +15287,7 @@ Required roles: public / limited challenge
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.

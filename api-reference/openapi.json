@@ -33,6 +33,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -250,6 +262,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -454,6 +478,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -656,6 +692,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -871,6 +919,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -1081,6 +1141,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -1300,6 +1372,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -1522,6 +1606,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -1736,6 +1832,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -1938,6 +2046,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -2153,6 +2273,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -2363,6 +2495,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -2605,6 +2749,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -2838,6 +2994,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -3041,6 +3209,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -3270,6 +3450,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -3497,6 +3689,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -3700,6 +3904,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -3920,6 +4136,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -4155,6 +4383,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -4374,6 +4614,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -4589,6 +4841,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -4799,6 +5063,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -5015,6 +5291,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -5229,6 +5517,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -5460,6 +5760,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -5698,6 +6010,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -5924,6 +6248,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -6143,6 +6479,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -6380,6 +6728,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -6588,7 +6948,7 @@
         "summary": "doctor download report",
         "parameters": [
           {
-            "name": "report_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -6597,7 +6957,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "report_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -6616,6 +6976,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -6833,6 +7205,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -7047,6 +7431,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -7246,6 +7642,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -7448,6 +7856,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -7691,6 +8111,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -7912,6 +8344,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -8140,6 +8584,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -8354,6 +8810,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -8575,6 +9043,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -8803,6 +9283,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -9013,6 +9505,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -9226,6 +9730,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -9453,6 +9969,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -9663,6 +10191,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -9925,6 +10465,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -10151,6 +10703,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -10368,6 +10932,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -10603,6 +11179,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -10833,6 +11421,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -11052,6 +11652,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -11288,6 +11900,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -11503,6 +12127,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -11766,6 +12402,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -11974,7 +12622,7 @@
         "summary": "patient download report",
         "parameters": [
           {
-            "name": "report_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -11983,7 +12631,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "report_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -12002,6 +12650,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -12217,6 +12877,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -12476,7 +13148,7 @@
         "summary": "patient get text",
         "parameters": [
           {
-            "name": "report_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -12485,7 +13157,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "report_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -12504,6 +13176,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -12699,7 +13383,7 @@
         "summary": "patient request text",
         "parameters": [
           {
-            "name": "report_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -12708,7 +13392,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "report_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -12727,6 +13411,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -12968,6 +13664,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -13168,7 +13876,7 @@
         "summary": "patient import record",
         "parameters": [
           {
-            "name": "report_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -13177,7 +13885,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "report_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -13196,6 +13904,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -13398,7 +14118,7 @@
         "summary": "patient set category",
         "parameters": [
           {
-            "name": "report_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -13407,7 +14127,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "report_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -13426,6 +14146,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -13649,6 +14381,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -13859,6 +14603,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -14086,6 +14842,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -14299,6 +15067,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -14521,6 +15301,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -14732,6 +15524,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -14946,6 +15750,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -15157,6 +15973,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -15388,6 +16216,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -15612,6 +16452,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -15824,6 +16676,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -16080,6 +16944,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -16304,6 +17180,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -16518,6 +17406,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -16751,6 +17651,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -16980,6 +17892,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -17193,6 +18117,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -17420,6 +18356,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -17632,6 +18580,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -17892,6 +18852,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -18127,6 +19099,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -18346,6 +19330,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -18602,6 +19598,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -18815,6 +19823,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -19054,6 +20074,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -19267,6 +20299,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -19498,6 +20542,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -19722,6 +20778,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -19934,6 +21002,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -20150,6 +21230,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -20381,6 +21473,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -20594,6 +21698,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -20821,6 +21937,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -21045,6 +22173,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -21257,6 +22397,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -21517,6 +22669,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -21752,6 +22916,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -21983,6 +23159,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -22186,6 +23374,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -22424,6 +23624,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -22655,6 +23867,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -22879,6 +24103,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -23093,6 +24329,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -23314,6 +24562,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -23527,6 +24787,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -23755,6 +25027,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -23981,6 +25265,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -24197,6 +25493,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -24416,6 +25724,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -24633,6 +25953,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -24836,6 +26168,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -25043,6 +26387,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -25267,6 +26623,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -25515,6 +26883,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -25733,6 +27113,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -26117,6 +27509,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -26336,6 +27740,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -26560,6 +27976,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -26808,6 +28236,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -27026,6 +28466,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -27410,6 +28862,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -27629,6 +29093,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -27853,6 +29329,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -28101,6 +29589,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -28319,6 +29819,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -28703,6 +30215,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -28922,6 +30446,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -29146,6 +30682,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -29394,6 +30942,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -29612,6 +31172,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -29996,6 +31568,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -30215,6 +31799,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -30439,6 +32035,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -30687,6 +32295,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -30905,6 +32525,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -31289,6 +32921,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -31508,6 +33152,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -31732,6 +33388,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -31980,6 +33648,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -32198,6 +33878,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -32582,6 +34274,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -32822,6 +34526,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -33044,6 +34760,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -33292,6 +35020,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -33510,6 +35250,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -33894,6 +35646,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -34113,6 +35877,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -34379,6 +36155,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -34595,6 +36383,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -34826,6 +36626,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -35040,6 +36852,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -35322,6 +37146,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -35527,6 +37363,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -35736,6 +37584,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -35941,6 +37801,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -36157,6 +38029,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -36485,6 +38369,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -36763,6 +38659,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -36973,6 +38881,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -37190,6 +39110,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -37435,6 +39367,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -37669,6 +39613,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -37872,6 +39828,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -38200,6 +40168,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -38526,6 +40506,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -38812,6 +40804,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -39107,6 +41111,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -39391,6 +41407,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -39610,6 +41638,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -39899,6 +41939,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -40173,6 +42225,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -40445,6 +42509,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -40725,6 +42801,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -40930,6 +43018,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -41147,6 +43247,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -41392,6 +43504,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -41626,6 +43750,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -41829,6 +43965,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -42157,6 +44305,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -42483,6 +44643,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -42769,6 +44941,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -43064,6 +45248,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -43348,6 +45544,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -43567,6 +45775,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -43856,6 +46076,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -44130,6 +46362,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -44402,6 +46646,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -44682,6 +46938,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -44896,6 +47164,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -45124,6 +47404,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -45355,6 +47647,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -45579,6 +47883,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -45796,7 +48112,7 @@
         "summary": "adults update",
         "parameters": [
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -45805,7 +48121,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -45824,6 +48140,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -46041,7 +48369,7 @@
         "summary": "adults get record",
         "parameters": [
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -46050,7 +48378,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -46069,6 +48397,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -46269,7 +48609,7 @@
         "summary": "adults patch record",
         "parameters": [
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -46278,7 +48618,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -46297,6 +48637,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -46514,7 +48866,7 @@
         "summary": "adults delete record",
         "parameters": [
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -46523,7 +48875,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -46542,6 +48894,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -46736,7 +49100,7 @@
         "summary": "adults remove",
         "parameters": [
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -46745,7 +49109,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -46764,6 +49128,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -46986,6 +49362,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -47216,6 +49604,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -47439,6 +49839,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -47641,6 +50053,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -47847,6 +50271,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -48049,6 +50485,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -48264,6 +50712,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -48466,6 +50926,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",
@@ -48672,6 +51144,18 @@
             }
           },
           {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
             "name": "X-Requested-With",
             "in": "header",
             "schema": {
@@ -48868,6 +51352,18 @@
               ],
               "default": "bearer"
             }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
           },
           {
             "name": "X-Requested-With",

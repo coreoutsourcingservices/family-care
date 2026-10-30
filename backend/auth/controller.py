@@ -3,7 +3,7 @@ from sqlalchemy import select
 from core.database import db
 from core.models import UserSession, now
 from core.schemas import parse, ForgotPassword, ResetPassword, ChangePassword, InitialPassword
-from core.security import transport
+from core.security import transport, cookie_name
 from core.http import locked_current_user
 from core.errors import APIError
 from services import authentication, sessions
@@ -23,7 +23,7 @@ def resend_otp():
 def refresh():
     cookie_mode = transport() == 'cookie'
     if cookie_mode:
-        raw = request.cookies.get('fc_refresh')
+        raw = request.cookies.get(cookie_name('refresh'), request.cookies.get('fc_refresh'))
     else:
         data = request.get_json()
         if not isinstance(data, dict) or set(data) != {'refresh_token'}:

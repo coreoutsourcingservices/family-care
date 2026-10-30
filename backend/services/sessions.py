@@ -5,7 +5,7 @@ from flask import current_app, request, jsonify
 from sqlalchemy import select
 from core.database import db
 from core.models import UserSession, RefreshToken, User, now, uid
-from core.security import digest, encode_token, eligible, transport, check_csrf, cookie_request_guard
+from core.security import digest, encode_token, eligible, transport, check_csrf, cookie_request_guard, cookie_name
 from core.errors import APIError
 from services.repository import serialize_user, audit
 
@@ -44,8 +44,8 @@ def respond(result, session):
     access, refresh = result.pop('access_token'), result.pop('refresh_token')
     response = jsonify(result)
     options = dict(secure=current_app.config['COOKIE_SECURE'], httponly=True, samesite='Lax')
-    response.set_cookie('fc_access', access, max_age=result['expires_in'], path='/api/v1', **options)
-    response.set_cookie('fc_refresh', refresh, max_age=max(0, int((session.expires_at-now()).total_seconds())),
+    response.set_cookie(cookie_name('access'), access, max_age=result['expires_in'], path='/api/v1', **options)
+    response.set_cookie(cookie_name('refresh'), refresh, max_age=max(0, int((session.expires_at-now()).total_seconds())),
                         path='/api/v1/auth', **options)
     return response
 
@@ -65,6 +65,9 @@ def refresh_session(raw, cookie_mode):
                        .with_for_update().execution_options(populate_existing=True))
     if session.transport != ('cookie' if cookie_mode else 'bearer'):
         raise APIError(401, 'invalid_transport', 'Refresh transport mismatch')
+    portal=request.headers.get('X-FamilyCare-Portal','')
+    if cookie_mode and portal in ('patient','doctor') and user.role!=portal.upper():
+        raise APIError(401,'portal_session_changed','Please sign in to this portal again')
     if cookie_mode:
         check_csrf(session)
     if item.consumed_at:
@@ -82,6 +85,6 @@ def refresh_session(raw, cookie_mode):
 
 
 def clear_cookies(response):
-    response.delete_cookie('fc_access', path='/api/v1')
-    response.delete_cookie('fc_refresh', path='/api/v1/auth')
+    response.delete_cookie(cookie_name('access'), path='/api/v1')
+    response.delete_cookie(cookie_name('refresh'), path='/api/v1/auth')
     return response

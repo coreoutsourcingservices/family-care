@@ -61,6 +61,7 @@ def vaccine_data(row):
 
 def schedule_data(row, private=False):
     data=dict(row.data,id=row.id,status=row.status,published_at=row.published_at.isoformat()+'Z' if row.published_at else None)
+    data.setdefault('active',True);data.setdefault('child_visible',True)
     if private:data.update(reviewer_id=row.reviewer_id,created_by=row.created_by)
     return data
 
@@ -262,7 +263,7 @@ def timeline(profile,scheme='UIP',version_id=None):
     chosen={(row.vaccine_id,row.dose_code) for row in rows}
     for row in pending:
         data=row.data;key=(row.vaccine_id,row.dose_code)
-        if key in chosen or not data.get('child_visible',False) or not data.get('active',True):continue
+        if key in chosen or not data.get('child_visible',True) or not data.get('active',True):continue
         if version_id and str(version_id)!=row.id:continue
         if data['effective_from']>today().isoformat() or data.get('effective_to') and data['effective_to']<today().isoformat():continue
         rows.append(row);chosen.add(key)

@@ -8,6 +8,7 @@ const doses=states.map((status,i)=>({id:'dose-'+i,vaccine:{name_en:'Synthetic '+
 try{
  const page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/api/v1/**',route=>{const req=route.request(),path=new URL(req.url()).pathname;let json={items:[],total:0};if(req.method()!=='GET')writes.push({path,body:req.postDataJSON()});
+  if(path.startsWith('/api/v1/children/'))assert.equal(req.headers()['x-familycare-portal'],'patient');
   if(path.endsWith('/me'))json={user:{id:'test-owner',role:'PATIENT'}};
   else if(path.endsWith('/patients/profiles'))json={items:[{id:'test-child',module:'child',full_name:'Synthetic child',date_of_birth:'2024-01-01',profile_type:'member'}],total:1};
   else if(path.endsWith('/vaccinations'))json={items:new URL(req.url()).searchParams.get('schedule_type')==='IAP'?[]:doses,total_published:5,child:{age:{completed_years:2}}};
@@ -30,6 +31,7 @@ try{
  const doc=await browser.newPage({viewport:{width:1440,height:1000}});doc.on('pageerror',e=>errors.push(e.message));let imported=false;
  const draft={...doses[0],id:'draft',created_by:'doctor-test',status:'DRAFT',schedule_type:'IAP',instructions:'Synthetic source review only',source_url:'https://example.org',source_reference:'Test reference',reminders:{before_days:[7,1],overdue_days:[1,7]},age_unit:'months',age_start:6,age_end:6};
  await doc.route('**/api/v1/**',route=>{const req=route.request(),path=new URL(req.url()).pathname;let json={items:[],total:0};
+  if(path.startsWith('/api/v1/doctors/'))assert.equal(req.headers()['x-familycare-portal'],'doctor');
   if(path.endsWith('/doctors/me'))json={user:{id:'doctor-test',role:'DOCTOR',full_name:'Synthetic doctor',approval_status:'APPROVED'}};
   else if(path.endsWith('/import-iap')){imported=true;json={message:'Drafts saved for review'};}
   else if(path.endsWith('/vaccination/schedules'))json={items:imported?[draft]:[],total:imported?1:0};

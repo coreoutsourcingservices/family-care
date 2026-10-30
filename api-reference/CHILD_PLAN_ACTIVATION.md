@@ -24,8 +24,8 @@ Response 200:
 ```
 The actual response contains the complete schedule. `active: false` hides the
 version. Retired versions return 409; unauthorized roles return 403; missing
-versions return 404; invalid bodies return 422. Existing imported drafts remain
-hidden until explicitly activated using this control. Published versions are
+versions return 404; invalid bodies return 422. Existing imported drafts default
+to visible unless explicitly disabled. Published versions are
 visible by default; this endpoint can deactivate and reactivate them.
 
 `PUT /api/v1/admin/vaccination/vaccines/{vaccine_id}` (or superadmin equivalent)

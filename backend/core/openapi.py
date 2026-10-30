@@ -165,6 +165,7 @@ def specification(app):
             if meta.get('roles'):
                 operation['security'] = [{'bearerAuth': []}, {'cookieAuth': []}]
             operation['parameters'] += [{'name': 'X-Auth-Transport', 'in': 'header', 'schema': {'type': 'string', 'enum': ['bearer', 'cookie'], 'default': 'bearer'}},
+                                       {'name': 'X-FamilyCare-Portal', 'in': 'header', 'schema': {'type': 'string', 'enum': ['patient','doctor']}, 'description': 'Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy.'},
                                        {'name': 'X-Requested-With', 'in': 'header', 'schema': {'type': 'string'}, 'description': 'FamilyCare; required for cookie POST/DELETE'},
                                        {'name': 'X-CSRF-Token', 'in': 'header', 'schema': {'type': 'string'}, 'description': 'Required on authenticated cookie mutations and refresh'}]
             paths.setdefault(path, {})[method.lower()] = operation
