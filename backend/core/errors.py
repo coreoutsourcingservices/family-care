@@ -1,6 +1,6 @@
 from flask import jsonify, current_app
 from pydantic import ValidationError
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError, OperationalError
 from werkzeug.exceptions import HTTPException
 
 
@@ -27,6 +27,8 @@ def register_errors(app):
     @app.errorhandler(SQLAlchemyError)
     def database_error(error):
         current_app.logger.warning('Database operation failed: %s', type(error).__name__)
+        if isinstance(error,OperationalError):
+            return jsonify(error={'code':'database_unavailable','message':'Database connection is temporarily unavailable. Please retry shortly.'}),503
         return jsonify(error={'code': 'database_unavailable', 'message': 'Database unavailable or schema not installed'}), 503
 
     @app.errorhandler(HTTPException)

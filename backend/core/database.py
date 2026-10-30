@@ -26,9 +26,14 @@ def build_engine(url, config):
     ssl = parsed.query.get('sslmode', 'require')
     if ssl not in ('require', 'verify-ca', 'verify-full'):
         raise RuntimeError('PostgreSQL TLS required')
+    connect_args={'sslmode':ssl,'connect_timeout':5}
+    # Transaction poolers may use a different PostgreSQL connection each transaction.
+    # Named prepared statements must not be retained across those connections.
+    if parsed.port==6543:
+        connect_args['prepare_threshold']=None
     return create_engine(url, pool_pre_ping=True, pool_recycle=300,
                          pool_size=config['DB_POOL_SIZE'], max_overflow=config['DB_MAX_OVERFLOW'],
-                         pool_timeout=5, connect_args={'sslmode': ssl, 'connect_timeout': 5})
+                         pool_timeout=5, connect_args=connect_args)
 
 
 def init_database(app):
