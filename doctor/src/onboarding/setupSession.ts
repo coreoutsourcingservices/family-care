@@ -17,6 +17,7 @@ let workspace: (Pick<DoctorSetupSession, 'user' | 'doctor' | 'rejectionReason'> 
 export function beginDoctorWorkspace(response: AuthResponse) {
   if (response.user?.role !== 'DOCTOR') throw new Error('Doctor account required');
   workspace = { user: response.user, doctor: response.doctor, rejectionReason: response.rejection_reason ?? null, notificationToken: response.notification_token };
+  if(typeof window!=='undefined')window.dispatchEvent(new Event('familycare:doctor-updated'));
 }
 
 export function getDoctorWorkspace() { return workspace; }

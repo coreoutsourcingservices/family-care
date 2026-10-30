@@ -44,3 +44,14 @@ class CareProfileCreate(Schema):
 
 class CareProfileReferral(Schema):
     referral_id: str = Field(min_length=1, max_length=160, pattern=r'^[A-Za-z0-9]+$')
+
+
+class CareProfileEdit(Schema):
+    full_name: str = Field(min_length=1,max_length=120)
+    guardian_contact: str = Field(default='',max_length=20,pattern=r'^(?:\+?[1-9][0-9]{7,14})?$')
+
+    @field_validator('full_name')
+    @classmethod
+    def nonempty(cls,value):
+        if not value.strip():raise ValueError('Name required')
+        return value.strip()

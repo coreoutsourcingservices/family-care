@@ -7,7 +7,7 @@ EXAMPLES = {
     'Registration': {'full_name': 'Example User', 'email': 'user@example.com', 'mobile_number': '+919876543210',
                      'password': 'Choose-Your-Password8!', 'confirm_password': 'Choose-Your-Password8!'},
     'Login': {'email': 'user@example.com', 'password': 'Choose-Your-Password8!'},
-    'SuperLogin': {'email': 'superadmin@example.com', 'password': 'superadmin@2026'},
+    'SuperLogin': {'email': 'superadmin@example.com', 'password': 'Choose-Your-Password8!'},
     'VerifyOTP': {'challenge_token': '<challenge_token>', 'otp': '123456'},
     'Challenge': {'challenge_token': '<challenge_token>'},
     'ForgotPassword': {'email': 'user@example.com'},
@@ -155,18 +155,21 @@ def specification(app):
                     components[name] = {'type': 'object', 'additionalProperties': False, 'required': ['refresh_token'],
                                         'properties': {'refresh_token': {'type': 'string', 'maxLength': 512}}}
                 else:
-                    model = getattr(schemas, name, None) or getattr(care_schemas, name)
+                    model = name if isinstance(name,type) else getattr(schemas, name, None) or getattr(care_schemas, name)
+                    name = model.__name__ if isinstance(name,type) else name
                     definition = model.model_json_schema(ref_template='#/components/schemas/{model}')
                     components.update(definition.pop('$defs', {}))
                     components[name] = definition
                 operation['requestBody'] = {'required': name != 'RefreshRequest', 'content': {'application/json': {
-                    'schema': {'$ref': '#/components/schemas/'+name}, 'example': EXAMPLES[name]}}}
+                    'schema': {'$ref': '#/components/schemas/'+name}, 'example': EXAMPLES.get(name,{})}}}
             if meta.get('roles'):
                 operation['security'] = [{'bearerAuth': []}, {'cookieAuth': []}]
             operation['parameters'] += [{'name': 'X-Auth-Transport', 'in': 'header', 'schema': {'type': 'string', 'enum': ['bearer', 'cookie'], 'default': 'bearer'}},
                                        {'name': 'X-Requested-With', 'in': 'header', 'schema': {'type': 'string'}, 'description': 'FamilyCare; required for cookie POST/DELETE'},
                                        {'name': 'X-CSRF-Token', 'in': 'header', 'schema': {'type': 'string'}, 'description': 'Required on authenticated cookie mutations and refresh'}]
             paths.setdefault(path, {})[method.lower()] = operation
+    from core.api_contracts import enrich
+    enrich(paths,components)
     return {'openapi': '3.1.0', 'info': {'title': 'Family Care Backend API', 'version': '1.0.0',
                 'description': 'Flask backend APIs. Next.js admin/superadmin app runs on port 3005. Cookie sessions omit tokens from JSON.'},
             'servers': [{'url': 'http://127.0.0.1:5001', 'description': 'Local development'}], 'paths': paths,

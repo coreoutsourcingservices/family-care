@@ -8,8 +8,10 @@ from services.repository import audit, serialize_user
 
 def doctor_details(user, profile=None):
     profile = profile or db().get(DoctorProfile, user.id)
+    from doctor.onboarding_images import photo_details
     return dict(referral_id=profile.referral_id, public_id=user.public_id,
                 full_name=user.full_name, email=user.email, mobile_number=user.phone_number,
+                photo=photo_details(profile),specialization=profile.specialization,
                 account_status=user.account_status, approval_status=user.approval_status)
 
 

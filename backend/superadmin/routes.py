@@ -3,6 +3,9 @@ from core.routing import route
 from superadmin import controller as c
 
 bp = Blueprint('superadmin', __name__, url_prefix='/api/v1/superadmin')
+from services import doctor_directory
+route(bp,'/doctors/<user_id>',doctor_directory.detail,roles=('SUPERADMIN',))
+route(bp,'/doctors/<user_id>/profiles',doctor_directory.connected_profiles,roles=('SUPERADMIN',))
 route(bp, '/login', c.login, 'POST', schema='SuperLogin', limited=True)
 route(bp, '/me', c.me, roles=('SUPERADMIN',))
 route(bp, '/dashboard', c.dashboard, roles=('SUPERADMIN',))
