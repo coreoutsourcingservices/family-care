@@ -60,3 +60,13 @@ class CareProfileUpdate(Schema):
         if not self.full_name or self.date_of_birth>date.today():
             raise ValueError('Enter a name and a birth date that is not in the future')
         return self
+
+class CareProfileEdit(Schema):
+    full_name: str = Field(min_length=1,max_length=120)
+    guardian_contact: str = Field(default='',max_length=20,pattern=r'^(?:\+?[1-9][0-9]{7,14})?$')
+
+    @field_validator('full_name')
+    @classmethod
+    def nonempty(cls,value):
+        if not value.strip():raise ValueError('Name required')
+        return value.strip()

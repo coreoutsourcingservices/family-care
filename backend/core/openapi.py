@@ -7,7 +7,7 @@ EXAMPLES = {
     'Registration': {'full_name': 'Example User', 'email': 'user@example.com', 'mobile_number': '+919876543210',
                      'password': 'Choose-Your-Password8!', 'confirm_password': 'Choose-Your-Password8!'},
     'Login': {'email': 'user@example.com', 'password': 'Choose-Your-Password8!'},
-    'SuperLogin': {'email': 'superadmin@example.com', 'password': 'superadmin@2026'},
+    'SuperLogin': {'email': 'superadmin@example.com', 'password': 'Choose-Your-Password8!'},
     'VerifyOTP': {'challenge_token': '<challenge_token>', 'otp': '123456'},
     'Challenge': {'challenge_token': '<challenge_token>'},
     'ForgotPassword': {'email': 'user@example.com'},
@@ -168,6 +168,8 @@ def specification(app):
                                        {'name': 'X-Requested-With', 'in': 'header', 'schema': {'type': 'string'}, 'description': 'FamilyCare; required for cookie POST/DELETE'},
                                        {'name': 'X-CSRF-Token', 'in': 'header', 'schema': {'type': 'string'}, 'description': 'Required on authenticated cookie mutations and refresh'}]
             paths.setdefault(path, {})[method.lower()] = operation
+    from core.api_contracts import enrich
+    enrich(paths,components)
     return {'openapi': '3.1.0', 'info': {'title': 'Family Care Backend API', 'version': '1.0.0',
                 'description': 'Flask backend APIs. Next.js admin/superadmin app runs on port 3005. Cookie sessions omit tokens from JSON.'},
             'servers': [{'url': 'http://127.0.0.1:5001', 'description': 'Local development'}], 'paths': paths,

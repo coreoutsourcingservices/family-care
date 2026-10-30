@@ -364,3 +364,12 @@ for resource in KINDS:
         return handler
 
     route(bp, '/children/<uuid:child_id>/' + resource + '/<uuid:record_id>', make_edit(resource), 'PATCH', roles=('PATIENT',))
+    def make_detail(resource):
+        def handler(child_id,record_id):
+            owner=child(child_id)
+            row=db().scalar(select(ChildRecord).where(ChildRecord.id==str(record_id),ChildRecord.profile_id==owner.id,ChildRecord.kind==KINDS[resource],ChildRecord.deleted_at.is_(None)))
+            if row is None:raise APIError(404,'record_not_found','Record not found')
+            return jsonify(record=record_data(row))
+        handler.__name__='detail_'+resource.replace('/','_').replace('-','_')
+        return handler
+    route(bp,'/children/<uuid:child_id>/'+resource+'/<uuid:record_id>',make_detail(resource),roles=('PATIENT',))

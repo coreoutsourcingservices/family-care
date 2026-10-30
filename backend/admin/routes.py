@@ -12,6 +12,9 @@ route(bp, '/verify-login-otp', c.verify_login_otp, 'POST', schema='VerifyOTP', l
 route(bp, '/dashboard', c.dashboard, roles=('ADMIN',))
 route(bp, '/doctor-requests', c.requests_pending, roles=('ADMIN',))
 route(bp, '/doctors', c.users, roles=('ADMIN',))
+from services import doctor_directory
+route(bp,'/doctors/<user_id>',doctor_directory.detail,roles=('ADMIN',))
+route(bp,'/doctors/<user_id>/profiles',doctor_directory.connected_profiles,roles=('ADMIN',))
 route(bp, '/doctors/<user_id>/approve', c.approve, 'POST', roles=('ADMIN',))
 route(bp, '/doctors/<user_id>/check', c.check_doctor, 'POST', roles=('ADMIN',), limited=True)
 route(bp, '/doctors/<user_id>/reject', c.reject, 'POST', roles=('ADMIN',), schema='Rejection')

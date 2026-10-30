@@ -1,3 +1,4 @@
+import ProfileBasicsEditor from '../../../../app/src/components/ProfileBasicsEditor';
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useNavigate, useParams } from 'react-router-dom';
 import { gsap } from 'gsap';
