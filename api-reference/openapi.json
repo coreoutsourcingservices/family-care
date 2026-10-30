@@ -10573,6 +10573,455 @@
           }
         ],
         "x-example-kind": "synthetic-contract"
+      },
+      "patch": {
+        "operationId": "patient_update_profile_patch",
+        "tags": [
+          "patients"
+        ],
+        "summary": "patient update profile",
+        "parameters": [
+          {
+            "name": "profile_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "profile": {
+                    "id": "<profile UUID>",
+                    "profile_type": "member",
+                    "module": "child",
+                    "full_name": "Aarav Kumar",
+                    "date_of_birth": "2018-05-14",
+                    "parent_profile_id": "<parent profile UUID>",
+                    "doctor": null
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CareProfileUpdate"
+              },
+              "example": {}
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      },
+      "delete": {
+        "operationId": "patient_delete_profile_delete",
+        "tags": [
+          "patients"
+        ],
+        "summary": "patient delete profile",
+        "parameters": [
+          {
+            "name": "profile_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "profile": {
+                    "id": "<profile UUID>",
+                    "profile_type": "member",
+                    "module": "child",
+                    "full_name": "Aarav Kumar",
+                    "date_of_birth": "2018-05-14",
+                    "parent_profile_id": "<parent profile UUID>",
+                    "doctor": null
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
       }
     },
     "/api/v1/patients/profiles/{profile_id}/connect-doctor": {
@@ -12486,6 +12935,908 @@
             }
           }
         },
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/patients/profiles/{profile_id}/imported-records": {
+      "get": {
+        "operationId": "patient_imported_get",
+        "tags": [
+          "patients"
+        ],
+        "summary": "patient imported",
+        "parameters": [
+          {
+            "name": "profile_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "profile": {
+                    "id": "<profile UUID>",
+                    "profile_type": "member",
+                    "module": "child",
+                    "full_name": "Aarav Kumar",
+                    "date_of_birth": "2018-05-14",
+                    "parent_profile_id": "<parent profile UUID>",
+                    "doctor": null
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/patients/profiles/{profile_id}/reports/{report_id}/import": {
+      "post": {
+        "operationId": "patient_import_record_post",
+        "tags": [
+          "patients"
+        ],
+        "summary": "patient import record",
+        "parameters": [
+          {
+            "name": "report_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "profile_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "profile": {
+                    "id": "<profile UUID>",
+                    "profile_type": "member",
+                    "module": "child",
+                    "full_name": "Aarav Kumar",
+                    "date_of_birth": "2018-05-14",
+                    "parent_profile_id": "<parent profile UUID>",
+                    "doctor": null
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/patients/profiles/{profile_id}/reports/{report_id}/category": {
+      "patch": {
+        "operationId": "patient_set_category_patch",
+        "tags": [
+          "patients"
+        ],
+        "summary": "patient set category",
+        "parameters": [
+          {
+            "name": "report_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "profile_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "profile": {
+                    "id": "<profile UUID>",
+                    "profile_type": "member",
+                    "module": "child",
+                    "full_name": "Aarav Kumar",
+                    "date_of_birth": "2018-05-14",
+                    "parent_profile_id": "<parent profile UUID>",
+                    "doctor": null
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/patients/profiles/{profile_id}/doctor-overview": {
+      "get": {
+        "operationId": "patient_doctor_overview_get",
+        "tags": [
+          "patients"
+        ],
+        "summary": "patient doctor overview",
+        "parameters": [
+          {
+            "name": "profile_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "profile": {
+                    "id": "<profile UUID>",
+                    "profile_type": "member",
+                    "module": "child",
+                    "full_name": "Aarav Kumar",
+                    "date_of_birth": "2018-05-14",
+                    "parent_profile_id": "<parent profile UUID>",
+                    "doctor": null
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
         "x-example-kind": "synthetic-contract"
       }
     },
@@ -24134,7 +25485,7 @@
         "summary": "children remove vaccinations history",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -24143,7 +25494,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -24354,7 +25705,7 @@
         "summary": "children edit vaccinations history",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -24363,7 +25714,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -24736,7 +26087,7 @@
         "summary": "children detail vaccinations history",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -24745,7 +26096,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -25427,7 +26778,7 @@
         "summary": "children remove medical history",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -25436,7 +26787,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -25647,7 +26998,7 @@
         "summary": "children edit medical history",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -25656,7 +27007,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -26029,7 +27380,7 @@
         "summary": "children detail medical history",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -26038,7 +27389,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -26720,7 +28071,7 @@
         "summary": "children remove growth",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -26729,7 +28080,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -26940,7 +28291,7 @@
         "summary": "children edit growth",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -26949,7 +28300,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -27322,7 +28673,7 @@
         "summary": "children detail growth",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -27331,7 +28682,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -28013,7 +29364,7 @@
         "summary": "children remove nutrition",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -28022,7 +29373,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -28233,7 +29584,7 @@
         "summary": "children edit nutrition",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -28242,7 +29593,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -28615,7 +29966,7 @@
         "summary": "children detail nutrition",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -28624,7 +29975,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -29306,7 +30657,7 @@
         "summary": "children remove consultations",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -29315,7 +30666,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -29526,7 +30877,7 @@
         "summary": "children edit consultations",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -29535,7 +30886,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -29908,7 +31259,7 @@
         "summary": "children detail consultations",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -29917,7 +31268,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -30599,7 +31950,7 @@
         "summary": "children remove care notes",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -30608,7 +31959,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -30819,7 +32170,7 @@
         "summary": "children edit care notes",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -30828,7 +32179,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -31201,7 +32552,7 @@
         "summary": "children detail care notes",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -31210,7 +32561,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -31911,7 +33262,7 @@
         "summary": "children remove consultation requests",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -31920,7 +33271,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -32131,7 +33482,7 @@
         "summary": "children edit consultation requests",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -32140,7 +33491,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -32513,7 +33864,7 @@
         "summary": "children detail consultation requests",
         "parameters": [
           {
-            "name": "child_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -32522,7 +33873,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "child_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -32931,6 +34282,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -33856,6 +35209,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -34971,6 +36326,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -35051,6 +36408,8 @@
                 "$ref": "#/components/schemas/ScheduleInput"
               },
               "example": {
+                "child_visible": true,
+                "active": true,
                 "vaccine_id": "00000000-0000-4000-8000-000000000001",
                 "schedule_type": "UIP",
                 "dose_code": "Example value",
@@ -35293,6 +36652,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -36680,6 +38041,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -36760,6 +38123,8 @@
                 "$ref": "#/components/schemas/ScheduleInput"
               },
               "example": {
+                "child_visible": true,
+                "active": true,
                 "vaccine_id": "00000000-0000-4000-8000-000000000001",
                 "schedule_type": "UIP",
                 "dose_code": "Example value",
@@ -37002,6 +38367,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -37082,6 +38449,8 @@
                 "$ref": "#/components/schemas/ScheduleInput"
               },
               "example": {
+                "child_visible": true,
+                "active": true,
                 "vaccine_id": "00000000-0000-4000-8000-000000000001",
                 "schedule_type": "UIP",
                 "dose_code": "Example value",
@@ -37120,6 +38489,294 @@
                   "email": false,
                   "enabled": true
                 }
+              }
+            }
+          }
+        },
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/admin/vaccination/schedules/{schedule_id}/visibility": {
+      "patch": {
+        "operationId": "vaccination_admin_schedules_schedule_id_visibility_PATCH_patch",
+        "tags": [
+          "admin"
+        ],
+        "summary": "vaccination admin schedules schedule id visibility PATCH",
+        "parameters": [
+          {
+            "name": "schedule_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: ADMIN",
+        "responses": {
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success; example uses synthetic values",
+            "content": {
+              "application/json": {
+                "example": {
+                  "schedule": {
+                    "child_visible": true,
+                    "active": true,
+                    "vaccine_id": "00000000-0000-4000-8000-000000000001",
+                    "schedule_type": "UIP",
+                    "dose_code": "D1",
+                    "dose_name": "Example dose",
+                    "version": "example-v1",
+                    "age_label": "Source-defined age",
+                    "age_unit": "days",
+                    "age_start": 0,
+                    "age_end": 0,
+                    "minimum_age": null,
+                    "maximum_age": null,
+                    "previous_dose_code": "",
+                    "minimum_interval_days": null,
+                    "route": "Other",
+                    "injection_site": "",
+                    "instructions": "",
+                    "source_url": "https://example.org/guideline",
+                    "source_reference": "Synthetic contract example only",
+                    "effective_from": "2026-10-30",
+                    "effective_to": null,
+                    "eligibility": {
+                      "gender": "All",
+                      "country": "IN",
+                      "states": [],
+                      "districts": [],
+                      "programme": "",
+                      "requires_clinical_review": true,
+                      "active": true
+                    },
+                    "reminders": {
+                      "before_days": [
+                        7
+                      ],
+                      "on_due": true,
+                      "overdue_days": [
+                        7
+                      ],
+                      "language": "en",
+                      "in_app": true,
+                      "email": false,
+                      "enabled": true
+                    },
+                    "id": "<schedule UUID>",
+                    "vaccine": {
+                      "code": "EXAMPLE_VACCINE",
+                      "name_en": "Example vaccine",
+                      "name_hi": "",
+                      "category": "Government",
+                      "protects_against": "Source-reviewed indication",
+                      "description_en": "",
+                      "description_hi": "",
+                      "active": true,
+                      "id": "00000000-0000-4000-8000-000000000001"
+                    },
+                    "status": "DRAFT",
+                    "published_at": null,
+                    "created_by": "<author UUID>",
+                    "reviewer_id": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScheduleVisibility"
+              },
+              "example": {
+                "active": false,
+                "child_visible": true
               }
             }
           }
@@ -37324,6 +38981,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -37615,6 +39274,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -38118,6 +39779,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -38403,6 +40066,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -38675,6 +40340,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -38947,6 +40614,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -40329,6 +41998,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -40409,6 +42080,8 @@
                 "$ref": "#/components/schemas/ScheduleInput"
               },
               "example": {
+                "child_visible": true,
+                "active": true,
                 "vaccine_id": "00000000-0000-4000-8000-000000000001",
                 "schedule_type": "UIP",
                 "dose_code": "Example value",
@@ -40651,6 +42324,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -40731,6 +42406,8 @@
                 "$ref": "#/components/schemas/ScheduleInput"
               },
               "example": {
+                "child_visible": true,
+                "active": true,
                 "vaccine_id": "00000000-0000-4000-8000-000000000001",
                 "schedule_type": "UIP",
                 "dose_code": "Example value",
@@ -40769,6 +42446,294 @@
                   "email": false,
                   "enabled": true
                 }
+              }
+            }
+          }
+        },
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/superadmin/vaccination/schedules/{schedule_id}/visibility": {
+      "patch": {
+        "operationId": "vaccination_superadmin_schedules_schedule_id_visibility_PATCH_patch",
+        "tags": [
+          "superadmin"
+        ],
+        "summary": "vaccination superadmin schedules schedule id visibility PATCH",
+        "parameters": [
+          {
+            "name": "schedule_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: SUPERADMIN",
+        "responses": {
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success; example uses synthetic values",
+            "content": {
+              "application/json": {
+                "example": {
+                  "schedule": {
+                    "child_visible": true,
+                    "active": true,
+                    "vaccine_id": "00000000-0000-4000-8000-000000000001",
+                    "schedule_type": "UIP",
+                    "dose_code": "D1",
+                    "dose_name": "Example dose",
+                    "version": "example-v1",
+                    "age_label": "Source-defined age",
+                    "age_unit": "days",
+                    "age_start": 0,
+                    "age_end": 0,
+                    "minimum_age": null,
+                    "maximum_age": null,
+                    "previous_dose_code": "",
+                    "minimum_interval_days": null,
+                    "route": "Other",
+                    "injection_site": "",
+                    "instructions": "",
+                    "source_url": "https://example.org/guideline",
+                    "source_reference": "Synthetic contract example only",
+                    "effective_from": "2026-10-30",
+                    "effective_to": null,
+                    "eligibility": {
+                      "gender": "All",
+                      "country": "IN",
+                      "states": [],
+                      "districts": [],
+                      "programme": "",
+                      "requires_clinical_review": true,
+                      "active": true
+                    },
+                    "reminders": {
+                      "before_days": [
+                        7
+                      ],
+                      "on_due": true,
+                      "overdue_days": [
+                        7
+                      ],
+                      "language": "en",
+                      "in_app": true,
+                      "email": false,
+                      "enabled": true
+                    },
+                    "id": "<schedule UUID>",
+                    "vaccine": {
+                      "code": "EXAMPLE_VACCINE",
+                      "name_en": "Example vaccine",
+                      "name_hi": "",
+                      "category": "Government",
+                      "protects_against": "Source-reviewed indication",
+                      "description_en": "",
+                      "description_hi": "",
+                      "active": true,
+                      "id": "00000000-0000-4000-8000-000000000001"
+                    },
+                    "status": "DRAFT",
+                    "published_at": null,
+                    "created_by": "<author UUID>",
+                    "reviewer_id": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScheduleVisibility"
+              },
+              "example": {
+                "active": false,
+                "child_visible": true
               }
             }
           }
@@ -40973,6 +42938,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -41264,6 +43231,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -41767,6 +43736,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -42052,6 +44023,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -42324,6 +44297,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -42596,6 +44571,8 @@
               "application/json": {
                 "example": {
                   "schedule": {
+                    "child_visible": true,
+                    "active": true,
                     "vaccine_id": "00000000-0000-4000-8000-000000000001",
                     "schedule_type": "UIP",
                     "dose_code": "D1",
@@ -43819,7 +45796,7 @@
         "summary": "adults update",
         "parameters": [
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -43828,7 +45805,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -44064,7 +46041,7 @@
         "summary": "adults get record",
         "parameters": [
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -44073,7 +46050,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -44292,7 +46269,7 @@
         "summary": "adults patch record",
         "parameters": [
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -44301,7 +46278,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -44537,7 +46514,7 @@
         "summary": "adults delete record",
         "parameters": [
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -44546,7 +46523,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -44759,7 +46736,7 @@
         "summary": "adults remove",
         "parameters": [
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -44768,7 +46745,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -44956,6 +46933,1708 @@
               "application/json": {
                 "example": {
                   "message": "Record removed"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/doctors/care-profiles/{profile_id}/child-records/{area}": {
+      "get": {
+        "operationId": "doctor_child_care_entries_get",
+        "tags": [
+          "doctors"
+        ],
+        "summary": "doctor child care entries",
+        "parameters": [
+          {
+            "name": "area",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "profile_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: DOCTOR",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "profile": {
+                    "id": "<profile UUID>",
+                    "profile_type": "member",
+                    "module": "child",
+                    "full_name": "Aarav Kumar",
+                    "date_of_birth": "2018-05-14",
+                    "parent_profile_id": "<parent profile UUID>",
+                    "doctor": null
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      },
+      "post": {
+        "operationId": "doctor_child_care_add_post",
+        "tags": [
+          "doctors"
+        ],
+        "summary": "doctor child care add",
+        "parameters": [
+          {
+            "name": "area",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "profile_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: DOCTOR",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "profile": {
+                    "id": "<profile UUID>",
+                    "profile_type": "member",
+                    "module": "child",
+                    "full_name": "Aarav Kumar",
+                    "date_of_birth": "2018-05-14",
+                    "parent_profile_id": "<parent profile UUID>",
+                    "doctor": null
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordInput"
+              },
+              "example": {}
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/notifications": {
+      "get": {
+        "operationId": "notifications_inbox_get",
+        "tags": [
+          "notifications"
+        ],
+        "summary": "notifications inbox",
+        "parameters": [
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Operation completed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/notifications/unread-count": {
+      "get": {
+        "operationId": "notifications_unread_get",
+        "tags": [
+          "notifications"
+        ],
+        "summary": "notifications unread",
+        "parameters": [
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Operation completed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/notifications/socket-ticket": {
+      "post": {
+        "operationId": "notifications_ticket_post",
+        "tags": [
+          "notifications"
+        ],
+        "summary": "notifications ticket",
+        "parameters": [
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Operation completed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/notifications/test": {
+      "post": {
+        "operationId": "notifications_test_post",
+        "tags": [
+          "notifications"
+        ],
+        "summary": "notifications test",
+        "parameters": [
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Operation completed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/notifications/{notification_id}/read": {
+      "post": {
+        "operationId": "notifications_mark_post",
+        "tags": [
+          "notifications"
+        ],
+        "summary": "notifications mark",
+        "parameters": [
+          {
+            "name": "notification_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Operation completed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/notifications/read-all": {
+      "post": {
+        "operationId": "notifications_read_all_post",
+        "tags": [
+          "notifications"
+        ],
+        "summary": "notifications read all",
+        "parameters": [
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Operation completed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
                 }
               }
             }
@@ -45944,6 +49623,12 @@
             "default": null,
             "title": "Parent Profile Id"
           },
+          "guardian_name": {
+            "default": "",
+            "maxLength": 120,
+            "title": "Guardian Name",
+            "type": "string"
+          },
           "guardian_contact": {
             "default": "",
             "maxLength": 20,
@@ -46022,6 +49707,49 @@
           "referral_id"
         ],
         "title": "CareProfileReferral",
+        "type": "object"
+      },
+      "CareProfileUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "full_name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Full Name",
+            "type": "string"
+          },
+          "date_of_birth": {
+            "format": "date",
+            "title": "Date Of Birth",
+            "type": "string"
+          },
+          "guardian_name": {
+            "default": "",
+            "maxLength": 120,
+            "title": "Guardian Name",
+            "type": "string"
+          },
+          "guardian_contact": {
+            "default": "",
+            "maxLength": 20,
+            "pattern": "^(?:\\+?[1-9][0-9]{7,14})?$",
+            "title": "Guardian Contact",
+            "type": "string"
+          },
+          "emergency_contacts": {
+            "items": {
+              "$ref": "#/components/schemas/EmergencyContact"
+            },
+            "maxItems": 5,
+            "title": "Emergency Contacts",
+            "type": "array"
+          }
+        },
+        "required": [
+          "full_name",
+          "date_of_birth"
+        ],
+        "title": "CareProfileUpdate",
         "type": "object"
       },
       "Registration": {
@@ -46311,43 +50039,6 @@
         "title": "AdultInput",
         "type": "object"
       },
-      "Options": {
-        "additionalProperties": false,
-        "properties": {
-          "source_language": {
-            "default": "hi",
-            "maxLength": 8,
-            "title": "Source Language",
-            "type": "string"
-          },
-          "translate_to_english": {
-            "default": false,
-            "title": "Translate To English",
-            "type": "boolean"
-          },
-          "external_translation_consent": {
-            "default": false,
-            "title": "External Translation Consent",
-            "type": "boolean"
-          }
-        },
-        "title": "Options",
-        "type": "object"
-      },
-      "PreferencesInput": {
-        "additionalProperties": false,
-        "properties": {
-          "in_app": {
-            "title": "In App",
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "in_app"
-        ],
-        "title": "PreferencesInput",
-        "type": "object"
-      },
       "RecordInput": {
         "additionalProperties": false,
         "properties": {
@@ -46492,6 +50183,43 @@
           "date"
         ],
         "title": "RecordInput",
+        "type": "object"
+      },
+      "Options": {
+        "additionalProperties": false,
+        "properties": {
+          "source_language": {
+            "default": "hi",
+            "maxLength": 8,
+            "title": "Source Language",
+            "type": "string"
+          },
+          "translate_to_english": {
+            "default": false,
+            "title": "Translate To English",
+            "type": "boolean"
+          },
+          "external_translation_consent": {
+            "default": false,
+            "title": "External Translation Consent",
+            "type": "boolean"
+          }
+        },
+        "title": "Options",
+        "type": "object"
+      },
+      "PreferencesInput": {
+        "additionalProperties": false,
+        "properties": {
+          "in_app": {
+            "title": "In App",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "in_app"
+        ],
+        "title": "PreferencesInput",
         "type": "object"
       },
       "ChildContextInput": {
@@ -46685,6 +50413,16 @@
       "ScheduleInput": {
         "additionalProperties": false,
         "properties": {
+          "child_visible": {
+            "default": true,
+            "title": "Child Visible",
+            "type": "boolean"
+          },
+          "active": {
+            "default": true,
+            "title": "Active",
+            "type": "boolean"
+          },
           "vaccine_id": {
             "format": "uuid",
             "title": "Vaccine Id",
@@ -46945,6 +50683,25 @@
           "protects_against"
         ],
         "title": "VaccineInput",
+        "type": "object"
+      },
+      "ScheduleVisibility": {
+        "additionalProperties": false,
+        "properties": {
+          "active": {
+            "title": "Active",
+            "type": "boolean"
+          },
+          "child_visible": {
+            "default": true,
+            "title": "Child Visible",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "active"
+        ],
+        "title": "ScheduleVisibility",
         "type": "object"
       },
       "RetireInput": {

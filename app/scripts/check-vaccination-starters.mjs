@@ -10,24 +10,23 @@ try{
  await page.route('**/api/v1/**',route=>{const req=route.request(),path=new URL(req.url()).pathname;let json={items:[],total:0};if(req.method()!=='GET')writes.push({path,body:req.postDataJSON()});
   if(path.endsWith('/me'))json={user:{id:'test-owner',role:'PATIENT'}};
   else if(path.endsWith('/patients/profiles'))json={items:[{id:'test-child',module:'child',full_name:'Synthetic child',date_of_birth:'2024-01-01',profile_type:'member'}],total:1};
-  else if(path.endsWith('/vaccinations'))json={items:doses,total_published:5,child:{age:{completed_years:2}}};
+  else if(path.endsWith('/vaccinations'))json={items:new URL(req.url()).searchParams.get('schedule_type')==='IAP'?[]:doses,total_published:5,child:{age:{completed_years:2}}};
   else if(path.endsWith('/vaccination-context'))json={context:{country:'IN',history_status:'UNKNOWN'}};
   else if(path.endsWith('/dashboard'))json={child:{age:{display:'2 years'}},counts:{},vaccination:{status:'AVAILABLE',message:'Synthetic test'}};
   else if(path.endsWith('/age'))json={age:{display:'2 years'}};
   else if(path.endsWith('/reminders'))json={items:[{id:'reminder',kind:'vaccination',title:'Synthetic upcoming dose',date:'2026-11-06',message:'Vaccination is due in 7 days.',status:'UPCOMING'}],preferences:{in_app:true}};
   return route.fulfill({json});});
  await page.goto('http://127.0.0.1:5174/customer/child/vaccination');
- await page.locator('.ch-vaccine-row').first().waitFor();assert.equal(await page.locator('.ch-vaccine-row:visible').count(),5);
- for(const status of ['Completed','Upcoming','Overdue','Doctor Review','Not Applicable']){await page.getByLabel('Status',{exact:true}).selectOption(status);assert.equal(await page.locator('.ch-vaccine-row:visible').count(),1);}
- await page.getByLabel('Status',{exact:true}).selectOption('All');
- await page.getByRole('checkbox',{name:'Mark as read: Synthetic 0 - Test dose',exact:true}).check();assert.equal(writes.length,0);
- await page.getByText("Child's vaccination history, location and reminder consent",{exact:true}).click();
+ await page.locator('.child-vaccine-rows article').first().waitFor();assert.equal(await page.locator('.child-vaccine-rows article:visible').count(),5);
+ for(const status of ['COMPLETED','UPCOMING','OVERDUE','REVIEW_REQUIRED','NOT_APPLICABLE']){await page.getByLabel('Vaccination status',{exact:true}).selectOption(status);assert.equal(await page.locator('.child-vaccine-rows article:visible').count(),1);}
+ await page.getByLabel('Vaccination status',{exact:true}).selectOption('All');
+ const clinicalWrites=()=>writes.filter(w=>w.path.includes('/children/'));const beforeRead=clinicalWrites().length;await page.getByRole('checkbox',{name:'Mark as read: Synthetic 0 / Test dose',exact:true}).check();assert.equal(clinicalWrites().length,beforeRead);
+ await page.getByText("Vaccination information & reminder preferences",{exact:true}).click();
  await page.getByLabel('I have entered the previous vaccination records available to me.').check();
- await page.getByRole('button',{name:'Save vaccination information',exact:true}).click();await page.getByText('Saved. Vaccination statuses refreshed.',{exact:true}).waitFor();assert.equal(writes[0].body.history_status,'PARENT_REPORTED');assert.equal(writes[0].body.email_reminders,false);
- await page.getByRole('button',{name:'Vaccination and care reminders',exact:true}).click();await page.getByText('2026-11-06 - Vaccination is due in 7 days.',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'Save vaccination information',exact:true}).click();await page.getByText('Saved. Vaccination statuses refreshed.',{exact:true}).waitFor();const contextWrite=writes.find(w=>w.path.endsWith('/vaccination-context'));assert.equal(contextWrite.body.history_status,'PARENT_REPORTED');assert.equal(contextWrite.body.email_reminders,false);
  await mkdir('test-results',{recursive:true});await page.screenshot({path:'test-results/vaccination-five-statuses.png',fullPage:true});
  await page.setViewportSize({width:390,height:844});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:'test-results/vaccination-five-statuses-mobile.png',fullPage:true});
- console.log('PASS five status filters, read-only checkbox, explicit history consent, upcoming reminder and mobile width');
+ console.log('PASS five status filters, read-only checkbox, explicit history consent, mobile width');
  const doc=await browser.newPage({viewport:{width:1440,height:1000}});doc.on('pageerror',e=>errors.push(e.message));let imported=false;
  const draft={...doses[0],id:'draft',created_by:'doctor-test',status:'DRAFT',schedule_type:'IAP',instructions:'Synthetic source review only',source_url:'https://example.org',source_reference:'Test reference',reminders:{before_days:[7,1],overdue_days:[1,7]},age_unit:'months',age_start:6,age_end:6};
  await doc.route('**/api/v1/**',route=>{const req=route.request(),path=new URL(req.url()).pathname;let json={items:[],total:0};

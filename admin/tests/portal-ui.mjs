@@ -50,6 +50,15 @@ try{
    await page.setContent('<div id="root"></div>');await page.evaluate(({role,name})=>{window.__role=role;window.__page=name;window.__path=(role==='SUPERADMIN'?'/superadmin':'')+'/'+(name==='doctor-detail'?'doctors/D000001':name);window.fetch=async()=>({ok:true,json:async()=>({languages:[{code:'en',name:'English',translation_status:'available'}],location:{state:''},recommended_language:'en',items:[{name:'Delhi',languages:[{code:'en',name:'English',translation_status:'available'}]}],translation_status:'available',messages:{}})});},{role,name});
    await page.addStyleTag({content:css});await page.addScriptTag({content:bundle.outputFiles[0].text});await page.locator('.page-content h1').waitFor();await page.locator('.language-selector select').first().waitFor();
    await page.getByText('Loading doctor profile...',{exact:true}).waitFor({state:'hidden'});
+   if(name==='vaccination'){
+    await page.getByRole('button',{name:'Deactivate Example vaccine',exact:true}).waitFor();
+    await page.getByRole('button',{name:'Add dose schedule',exact:true}).click();
+    await page.getByLabel('Age unit',{exact:true}).selectOption('months');
+    await page.getByLabel('Recommended age start',{exact:true}).fill('6');
+    await page.getByLabel('Recommended age end',{exact:true}).fill('6');
+    assert.equal(await page.getByLabel('Active dose',{exact:true}).isChecked(),true);
+    assert.equal(await page.getByLabel('Show in child and connected doctor plan',{exact:true}).isChecked(),true);
+   }
    if(['dashboard','doctor-detail'].includes(name))await page.screenshot({path:path.join(root,`test-results/portal/${role.toLowerCase()}-${name}-desktop.png`),fullPage:true});
    for(const width of [1024,390]){
     await page.setViewportSize({width,height:900});

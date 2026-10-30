@@ -60,6 +60,7 @@ Doctor login can return 202 for profile setup/review instead of a clinical acces
 | `/api/v1/admin/vaccination/schedules/{schedule_id}/reminders` | — | — | Yes | — | — |
 | `/api/v1/admin/vaccination/schedules/{schedule_id}/retire` | — | Yes | — | — | — |
 | `/api/v1/admin/vaccination/schedules/{schedule_id}/submit-review` | — | Yes | — | — | — |
+| `/api/v1/admin/vaccination/schedules/{schedule_id}/visibility` | — | — | — | Yes | — |
 | `/api/v1/admin/vaccination/schedules/{schedule_id}/withdraw` | — | Yes | — | — | — |
 | `/api/v1/admin/vaccination/vaccines` | Yes | Yes | — | — | — |
 | `/api/v1/admin/vaccination/vaccines/{vaccine_id}` | — | — | Yes | — | — |
@@ -104,6 +105,7 @@ Doctor login can return 202 for profile setup/review instead of a clinical acces
 | `/api/v1/doctors/approval-status` | — | Yes | — | — | — |
 | `/api/v1/doctors/care-profiles` | Yes | — | — | — | — |
 | `/api/v1/doctors/care-profiles/{profile_id}` | Yes | — | — | — | — |
+| `/api/v1/doctors/care-profiles/{profile_id}/child-records/{area}` | Yes | Yes | — | — | — |
 | `/api/v1/doctors/care-profiles/{profile_id}/records` | Yes | — | — | — | — |
 | `/api/v1/doctors/care-profiles/{profile_id}/reports` | Yes | — | — | — | — |
 | `/api/v1/doctors/care-profiles/{profile_id}/reports/{report_id}/download` | Yes | — | — | — | — |
@@ -133,6 +135,12 @@ Doctor login can return 202 for profile setup/review instead of a clinical acces
 | `/api/v1/doctors/verify-email` | — | Yes | — | — | — |
 | `/api/v1/health` | Yes | — | — | — | — |
 | `/api/v1/health/ready` | Yes | — | — | — | — |
+| `/api/v1/notifications` | Yes | — | — | — | — |
+| `/api/v1/notifications/read-all` | — | Yes | — | — | — |
+| `/api/v1/notifications/socket-ticket` | — | Yes | — | — | — |
+| `/api/v1/notifications/test` | — | Yes | — | — | — |
+| `/api/v1/notifications/unread-count` | Yes | — | — | — | — |
+| `/api/v1/notifications/{notification_id}/read` | — | Yes | — | — | — |
 | `/api/v1/patients/adults/{profile_id}/records` | Yes | Yes | — | — | — |
 | `/api/v1/patients/adults/{profile_id}/records/{record_id}` | Yes | Yes | — | Yes | Yes |
 | `/api/v1/patients/adults/{profile_id}/records/{record_id}/delete` | — | Yes | — | — | — |
@@ -141,11 +149,15 @@ Doctor login can return 202 for profile setup/review instead of a clinical acces
 | `/api/v1/patients/login` | — | Yes | — | — | — |
 | `/api/v1/patients/me` | Yes | — | — | — | — |
 | `/api/v1/patients/profiles` | Yes | Yes | — | — | — |
-| `/api/v1/patients/profiles/{profile_id}` | Yes | — | Yes | — | — |
+| `/api/v1/patients/profiles/{profile_id}` | Yes | — | Yes | Yes | Yes |
 | `/api/v1/patients/profiles/{profile_id}/connect-doctor` | — | Yes | — | — | — |
 | `/api/v1/patients/profiles/{profile_id}/doctor` | — | — | — | — | Yes |
+| `/api/v1/patients/profiles/{profile_id}/doctor-overview` | Yes | — | — | — | — |
+| `/api/v1/patients/profiles/{profile_id}/imported-records` | Yes | — | — | — | — |
 | `/api/v1/patients/profiles/{profile_id}/reports` | Yes | Yes | — | — | — |
+| `/api/v1/patients/profiles/{profile_id}/reports/{report_id}/category` | — | — | — | Yes | — |
 | `/api/v1/patients/profiles/{profile_id}/reports/{report_id}/download` | Yes | — | — | — | — |
+| `/api/v1/patients/profiles/{profile_id}/reports/{report_id}/import` | — | Yes | — | — | — |
 | `/api/v1/patients/profiles/{profile_id}/reports/{report_id}/text` | Yes | Yes | — | — | — |
 | `/api/v1/patients/register` | — | Yes | — | — | — |
 | `/api/v1/patients/report-text/options` | Yes | — | — | — | — |
@@ -179,6 +191,7 @@ Doctor login can return 202 for profile setup/review instead of a clinical acces
 | `/api/v1/superadmin/vaccination/schedules/{schedule_id}/reminders` | — | — | Yes | — | — |
 | `/api/v1/superadmin/vaccination/schedules/{schedule_id}/retire` | — | Yes | — | — | — |
 | `/api/v1/superadmin/vaccination/schedules/{schedule_id}/submit-review` | — | Yes | — | — | — |
+| `/api/v1/superadmin/vaccination/schedules/{schedule_id}/visibility` | — | — | — | Yes | — |
 | `/api/v1/superadmin/vaccination/schedules/{schedule_id}/withdraw` | — | Yes | — | — | — |
 | `/api/v1/superadmin/vaccination/vaccines` | Yes | Yes | — | — | — |
 | `/api/v1/superadmin/vaccination/vaccines/{vaccine_id}` | — | — | Yes | — | — |
@@ -1068,6 +1081,8 @@ Request: **application/json**
 
 ```json
 {
+  "child_visible": true,
+  "active": true,
   "vaccine_id": "00000000-0000-4000-8000-000000000001",
   "schedule_type": "UIP",
   "dose_code": "Example value",
@@ -1115,6 +1130,16 @@ Validation schema: `ScheduleInput` (included in openapi.json).
 {
   "additionalProperties": false,
   "properties": {
+    "child_visible": {
+      "default": true,
+      "title": "Child Visible",
+      "type": "boolean"
+    },
+    "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+    },
     "vaccine_id": {
       "format": "uuid",
       "title": "Vaccine Id",
@@ -1308,6 +1333,8 @@ HTTP 201 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -1391,6 +1418,8 @@ Request: **application/json**
 
 ```json
 {
+  "child_visible": true,
+  "active": true,
   "vaccine_id": "00000000-0000-4000-8000-000000000001",
   "schedule_type": "UIP",
   "dose_code": "Example value",
@@ -1438,6 +1467,16 @@ Validation schema: `ScheduleInput` (included in openapi.json).
 {
   "additionalProperties": false,
   "properties": {
+    "child_visible": {
+      "default": true,
+      "title": "Child Visible",
+      "type": "boolean"
+    },
+    "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+    },
     "vaccine_id": {
       "format": "uuid",
       "title": "Vaccine Id",
@@ -1631,6 +1670,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -1789,6 +1830,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -1874,6 +1917,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -2029,6 +2074,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -2142,6 +2189,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -2254,6 +2303,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -2322,6 +2373,125 @@ Common failure responses: 400 invalid input/transport; 401 invalid session; 403 
 {"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
 ```
 
+## PATCH /api/v1/admin/vaccination/schedules/{schedule_id}/visibility
+
+Required roles: ADMIN
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `schedule_id` | path | True | `{"type": "string"}` |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+
+Request: **application/json**
+
+```json
+{
+  "active": false,
+  "child_visible": true
+}
+```
+
+Validation schema: `ScheduleVisibility` (included in openapi.json).
+
+```json
+{
+  "additionalProperties": false,
+  "properties": {
+    "active": {
+      "title": "Active",
+      "type": "boolean"
+    },
+    "child_visible": {
+      "default": true,
+      "title": "Child Visible",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "active"
+  ],
+  "title": "ScheduleVisibility",
+  "type": "object"
+}
+```
+
+HTTP 200 — Success; example uses synthetic values
+
+```json
+{
+  "schedule": {
+    "child_visible": true,
+    "active": true,
+    "vaccine_id": "00000000-0000-4000-8000-000000000001",
+    "schedule_type": "UIP",
+    "dose_code": "D1",
+    "dose_name": "Example dose",
+    "version": "example-v1",
+    "age_label": "Source-defined age",
+    "age_unit": "days",
+    "age_start": 0,
+    "age_end": 0,
+    "minimum_age": null,
+    "maximum_age": null,
+    "previous_dose_code": "",
+    "minimum_interval_days": null,
+    "route": "Other",
+    "injection_site": "",
+    "instructions": "",
+    "source_url": "https://example.org/guideline",
+    "source_reference": "Synthetic contract example only",
+    "effective_from": "2026-10-30",
+    "effective_to": null,
+    "eligibility": {
+      "gender": "All",
+      "country": "IN",
+      "states": [],
+      "districts": [],
+      "programme": "",
+      "requires_clinical_review": true,
+      "active": true
+    },
+    "reminders": {
+      "before_days": [
+        7
+      ],
+      "on_due": true,
+      "overdue_days": [
+        7
+      ],
+      "language": "en",
+      "in_app": true,
+      "email": false,
+      "enabled": true
+    },
+    "id": "<schedule UUID>",
+    "vaccine": {
+      "code": "EXAMPLE_VACCINE",
+      "name_en": "Example vaccine",
+      "name_hi": "",
+      "category": "Government",
+      "protects_against": "Source-reviewed indication",
+      "description_en": "",
+      "description_hi": "",
+      "active": true,
+      "id": "00000000-0000-4000-8000-000000000001"
+    },
+    "status": "DRAFT",
+    "published_at": null,
+    "created_by": "<author UUID>",
+    "reviewer_id": null
+  }
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
 ## POST /api/v1/admin/vaccination/schedules/{schedule_id}/withdraw
 
 Required roles: ADMIN
@@ -2339,6 +2509,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -3738,8 +3910,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -3765,8 +3937,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -3956,8 +4128,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -4227,8 +4399,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -4254,8 +4426,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -4445,8 +4617,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -4714,8 +4886,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -4741,8 +4913,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -4932,8 +5104,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -5233,8 +5405,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -5260,8 +5432,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -5451,8 +5623,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -5748,8 +5920,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -5775,8 +5947,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -5966,8 +6138,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -6235,8 +6407,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -6262,8 +6434,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -6453,8 +6625,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -7007,8 +7179,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -7034,8 +7206,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -7225,8 +7397,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `child_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `child_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -7409,6 +7581,232 @@ Required roles: DOCTOR
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## GET /api/v1/doctors/care-profiles/{profile_id}/child-records/{area}
+
+Required roles: DOCTOR
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `area` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## POST /api/v1/doctors/care-profiles/{profile_id}/child-records/{area}
+
+Required roles: DOCTOR
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `area` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+
+Request: **application/json**
+
+```json
+{}
+```
+
+Validation schema: `RecordInput` (included in openapi.json).
+
+```json
+{
+  "additionalProperties": false,
+  "properties": {
+    "source_id": {
+      "anyOf": [
+        {
+          "pattern": "^[a-fA-F0-9-]{36}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Id"
+    },
+    "title": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "date": {
+      "format": "date",
+      "title": "Date",
+      "type": "string"
+    },
+    "status": {
+      "default": "",
+      "maxLength": 32,
+      "title": "Status",
+      "type": "string"
+    },
+    "nextDate": {
+      "default": "",
+      "maxLength": 10,
+      "title": "Nextdate",
+      "type": "string"
+    },
+    "provider": {
+      "default": "",
+      "maxLength": 160,
+      "title": "Provider",
+      "type": "string"
+    },
+    "notes": {
+      "default": "",
+      "maxLength": 2000,
+      "title": "Notes",
+      "type": "string"
+    },
+    "category": {
+      "default": "",
+      "maxLength": 160,
+      "title": "Category",
+      "type": "string"
+    },
+    "weight": {
+      "default": "",
+      "maxLength": 12,
+      "title": "Weight",
+      "type": "string"
+    },
+    "height": {
+      "default": "",
+      "maxLength": 12,
+      "title": "Height",
+      "type": "string"
+    },
+    "meal": {
+      "default": "",
+      "maxLength": 160,
+      "title": "Meal",
+      "type": "string"
+    },
+    "vaccine_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Vaccine Id"
+    },
+    "schedule_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Schedule Id"
+    },
+    "dose_code": {
+      "default": "",
+      "maxLength": 40,
+      "title": "Dose Code",
+      "type": "string"
+    },
+    "schedule_type": {
+      "default": "",
+      "maxLength": 8,
+      "title": "Schedule Type",
+      "type": "string"
+    },
+    "vaccinator": {
+      "default": "",
+      "maxLength": 160,
+      "title": "Vaccinator",
+      "type": "string"
+    },
+    "batch_number": {
+      "default": "",
+      "maxLength": 100,
+      "title": "Batch Number",
+      "type": "string"
+    },
+    "certificate_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Certificate Id"
+    }
+  },
+  "required": [
+    "title",
+    "date"
+  ],
+  "title": "RecordInput",
+  "type": "object"
+}
+```
 
 HTTP 200 — Success
 
@@ -8820,6 +9218,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -8992,6 +9392,8 @@ Request: **application/json**
 
 ```json
 {
+  "child_visible": true,
+  "active": true,
   "vaccine_id": "00000000-0000-4000-8000-000000000001",
   "schedule_type": "UIP",
   "dose_code": "Example value",
@@ -9039,6 +9441,16 @@ Validation schema: `ScheduleInput` (included in openapi.json).
 {
   "additionalProperties": false,
   "properties": {
+    "child_visible": {
+      "default": true,
+      "title": "Child Visible",
+      "type": "boolean"
+    },
+    "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+    },
     "vaccine_id": {
       "format": "uuid",
       "title": "Vaccine Id",
@@ -9232,6 +9644,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -9344,6 +9758,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -9521,6 +9937,157 @@ HTTP 200 — Success
 {
   "status": "ready",
   "database": "postgresql"
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## GET /api/v1/notifications
+
+Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## POST /api/v1/notifications/read-all
+
+Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## POST /api/v1/notifications/socket-ticket
+
+Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## POST /api/v1/notifications/test
+
+Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## GET /api/v1/notifications/unread-count
+
+Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Success
+
+```json
+{
+  "message": "Operation completed"
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## POST /api/v1/notifications/{notification_id}/read
+
+Required roles: PATIENT, DOCTOR, ADMIN, SUPERADMIN
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `notification_id` | path | True | `{"type": "string"}` |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Success
+
+```json
+{
+  "message": "Operation completed"
 }
 ```
 
@@ -9811,8 +10378,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `profile_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -10048,8 +10615,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `profile_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -10083,8 +10650,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `profile_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -10320,8 +10887,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `profile_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -10347,8 +10914,8 @@ Required roles: PATIENT
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `profile_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
@@ -10647,6 +11214,12 @@ Validation schema: `CareProfileCreate` (included in openapi.json).
       "default": null,
       "title": "Parent Profile Id"
     },
+    "guardian_name": {
+      "default": "",
+      "maxLength": 120,
+      "title": "Guardian Name",
+      "type": "string"
+    },
     "guardian_contact": {
       "default": "",
       "maxLength": 20,
@@ -10856,6 +11429,127 @@ Common failure responses: 400 invalid input/transport; 401 invalid session; 403 
 {"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
 ```
 
+## PATCH /api/v1/patients/profiles/{profile_id}
+
+Required roles: PATIENT
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `profile_id` | path | True | `{"type": "string"}` |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+
+Request: **application/json**
+
+```json
+{}
+```
+
+Validation schema: `CareProfileUpdate` (included in openapi.json).
+
+```json
+{
+  "additionalProperties": false,
+  "properties": {
+    "full_name": {
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Full Name",
+      "type": "string"
+    },
+    "date_of_birth": {
+      "format": "date",
+      "title": "Date Of Birth",
+      "type": "string"
+    },
+    "guardian_name": {
+      "default": "",
+      "maxLength": 120,
+      "title": "Guardian Name",
+      "type": "string"
+    },
+    "guardian_contact": {
+      "default": "",
+      "maxLength": 20,
+      "pattern": "^(?:\\+?[1-9][0-9]{7,14})?$",
+      "title": "Guardian Contact",
+      "type": "string"
+    },
+    "emergency_contacts": {
+      "items": {
+        "$ref": "#/components/schemas/EmergencyContact"
+      },
+      "maxItems": 5,
+      "title": "Emergency Contacts",
+      "type": "array"
+    }
+  },
+  "required": [
+    "full_name",
+    "date_of_birth"
+  ],
+  "title": "CareProfileUpdate",
+  "type": "object"
+}
+```
+
+HTTP 200 — Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## DELETE /api/v1/patients/profiles/{profile_id}
+
+Required roles: PATIENT
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `profile_id` | path | True | `{"type": "string"}` |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
 ## POST /api/v1/patients/profiles/{profile_id}/connect-doctor
 
 Required roles: PATIENT
@@ -10940,6 +11634,74 @@ HTTP 200 — Success; example uses synthetic values
     "doctor": null
   },
   "message": "Doctor disconnected from this profile"
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## GET /api/v1/patients/profiles/{profile_id}/doctor-overview
+
+Required roles: PATIENT
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `profile_id` | path | True | `{"type": "string"}` |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## GET /api/v1/patients/profiles/{profile_id}/imported-records
+
+Required roles: PATIENT
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `profile_id` | path | True | `{"type": "string"}` |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
 }
 ```
 
@@ -11047,6 +11809,41 @@ Common failure responses: 400 invalid input/transport; 401 invalid session; 403 
 {"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
 ```
 
+## PATCH /api/v1/patients/profiles/{profile_id}/reports/{report_id}/category
+
+Required roles: PATIENT
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `report_id` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
+  }
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
 ## GET /api/v1/patients/profiles/{profile_id}/reports/{report_id}/download
 
 Required roles: PATIENT
@@ -11075,6 +11872,41 @@ HTTP 200 — Success
     "resource_type": "raw",
     "delivery_type": "authenticated",
     "url_expires_in": 300
+  }
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## POST /api/v1/patients/profiles/{profile_id}/reports/{report_id}/import
+
+Required roles: PATIENT
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `report_id` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Success
+
+```json
+{
+  "profile": {
+    "id": "<profile UUID>",
+    "profile_type": "member",
+    "module": "child",
+    "full_name": "Aarav Kumar",
+    "date_of_birth": "2018-05-14",
+    "parent_profile_id": "<parent profile UUID>",
+    "doctor": null
   }
 }
 ```
@@ -12360,6 +13192,8 @@ Request: **application/json**
 
 ```json
 {
+  "child_visible": true,
+  "active": true,
   "vaccine_id": "00000000-0000-4000-8000-000000000001",
   "schedule_type": "UIP",
   "dose_code": "Example value",
@@ -12407,6 +13241,16 @@ Validation schema: `ScheduleInput` (included in openapi.json).
 {
   "additionalProperties": false,
   "properties": {
+    "child_visible": {
+      "default": true,
+      "title": "Child Visible",
+      "type": "boolean"
+    },
+    "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+    },
     "vaccine_id": {
       "format": "uuid",
       "title": "Vaccine Id",
@@ -12600,6 +13444,8 @@ HTTP 201 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -12683,6 +13529,8 @@ Request: **application/json**
 
 ```json
 {
+  "child_visible": true,
+  "active": true,
   "vaccine_id": "00000000-0000-4000-8000-000000000001",
   "schedule_type": "UIP",
   "dose_code": "Example value",
@@ -12730,6 +13578,16 @@ Validation schema: `ScheduleInput` (included in openapi.json).
 {
   "additionalProperties": false,
   "properties": {
+    "child_visible": {
+      "default": true,
+      "title": "Child Visible",
+      "type": "boolean"
+    },
+    "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+    },
     "vaccine_id": {
       "format": "uuid",
       "title": "Vaccine Id",
@@ -12923,6 +13781,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -13081,6 +13941,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -13166,6 +14028,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -13321,6 +14185,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -13434,6 +14300,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -13546,6 +14414,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -13614,6 +14484,125 @@ Common failure responses: 400 invalid input/transport; 401 invalid session; 403 
 {"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
 ```
 
+## PATCH /api/v1/superadmin/vaccination/schedules/{schedule_id}/visibility
+
+Required roles: SUPERADMIN
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `schedule_id` | path | True | `{"type": "string"}` |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+
+Request: **application/json**
+
+```json
+{
+  "active": false,
+  "child_visible": true
+}
+```
+
+Validation schema: `ScheduleVisibility` (included in openapi.json).
+
+```json
+{
+  "additionalProperties": false,
+  "properties": {
+    "active": {
+      "title": "Active",
+      "type": "boolean"
+    },
+    "child_visible": {
+      "default": true,
+      "title": "Child Visible",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "active"
+  ],
+  "title": "ScheduleVisibility",
+  "type": "object"
+}
+```
+
+HTTP 200 — Success; example uses synthetic values
+
+```json
+{
+  "schedule": {
+    "child_visible": true,
+    "active": true,
+    "vaccine_id": "00000000-0000-4000-8000-000000000001",
+    "schedule_type": "UIP",
+    "dose_code": "D1",
+    "dose_name": "Example dose",
+    "version": "example-v1",
+    "age_label": "Source-defined age",
+    "age_unit": "days",
+    "age_start": 0,
+    "age_end": 0,
+    "minimum_age": null,
+    "maximum_age": null,
+    "previous_dose_code": "",
+    "minimum_interval_days": null,
+    "route": "Other",
+    "injection_site": "",
+    "instructions": "",
+    "source_url": "https://example.org/guideline",
+    "source_reference": "Synthetic contract example only",
+    "effective_from": "2026-10-30",
+    "effective_to": null,
+    "eligibility": {
+      "gender": "All",
+      "country": "IN",
+      "states": [],
+      "districts": [],
+      "programme": "",
+      "requires_clinical_review": true,
+      "active": true
+    },
+    "reminders": {
+      "before_days": [
+        7
+      ],
+      "on_due": true,
+      "overdue_days": [
+        7
+      ],
+      "language": "en",
+      "in_app": true,
+      "email": false,
+      "enabled": true
+    },
+    "id": "<schedule UUID>",
+    "vaccine": {
+      "code": "EXAMPLE_VACCINE",
+      "name_en": "Example vaccine",
+      "name_hi": "",
+      "category": "Government",
+      "protects_against": "Source-reviewed indication",
+      "description_en": "",
+      "description_hi": "",
+      "active": true,
+      "id": "00000000-0000-4000-8000-000000000001"
+    },
+    "status": "DRAFT",
+    "published_at": null,
+    "created_by": "<author UUID>",
+    "reviewer_id": null
+  }
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
 ## POST /api/v1/superadmin/vaccination/schedules/{schedule_id}/withdraw
 
 Required roles: SUPERADMIN
@@ -13631,6 +14620,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -14014,6 +15005,8 @@ HTTP 200 — Success; example uses synthetic values
 ```json
 {
   "schedule": {
+    "child_visible": true,
+    "active": true,
     "vaccine_id": "00000000-0000-4000-8000-000000000001",
     "schedule_type": "UIP",
     "dose_code": "D1",
@@ -14114,4 +15107,4 @@ Common failure responses: 400 invalid input/transport; 401 invalid session; 403 
 - Live contract: `/api/openapi.json`; route inventory: `/api/docs`.
 - Regenerate: from backend, `venv/Scripts/python.exe scripts/export_full_api.py`.
 
-Total registered API method operations: **192**.
+Total registered API method operations: **208**.

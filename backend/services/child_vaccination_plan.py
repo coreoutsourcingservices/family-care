@@ -36,9 +36,10 @@ def plan(profile_id):
  value=parse(Decision)
  if not value.attestation or len(value.notes.strip())<20:raise APIError(422,'attestation_required','Confirm professional review and enter substantive notes')
  schedule=v.schedule_row(value.schedule_id)
- if schedule.status!='PUBLISHED':raise APIError(409,'unpublished_schedule','Only a published schedule can be confirmed for a child')
+ if schedule.status!='PUBLISHED' and (schedule.status=='RETIRED' or not schedule.data.get('child_visible') or not schedule.data.get('active',True)):
+  raise APIError(409,'unpublished_schedule','Select an active visible child plan')
  context=dict(v.child_context(profile))
- if context.get('country')!='IN' or context.get('history_status')!='PARENT_REPORTED':raise APIError(422,'context_required','Ask the parent to confirm location and vaccination history first')
+ if value.decision=='CONFIRM' and (context.get('country')!='IN' or context.get('history_status')!='PARENT_REPORTED'):raise APIError(422,'context_required','Ask the parent to confirm location and vaccination history first')
  if schedule.data['vaccine']['code']=='FC_JE' and (not context.get('state') or not context.get('district')):raise APIError(422,'district_required','JE review needs the child state and district')
  if schedule.data['vaccine']['code']=='FC_HPV' and context.get('gender','Unknown')=='Unknown':raise APIError(422,'context_required','HPV review needs the applicable sex/gender recorded')
  decisions=dict(context.get('doctor_dose_decisions',{}));decisions[schedule.id]=dict(decision=value.decision,notes=value.notes.strip(),doctor_id=g.user.id,reviewed_at=now().isoformat()+'Z',signature=signature(profile,schedule,context))

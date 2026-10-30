@@ -5,6 +5,11 @@ from pydantic import Field, HttpUrl, field_validator, model_validator
 from core.schemas import Schema
 
 
+class ScheduleVisibility(Schema):
+    active: bool
+    child_visible: bool = True
+
+
 class VaccineInput(Schema):
     code: str = Field(pattern=r'^[A-Z0-9][A-Z0-9_-]{0,39}$')
     name_en: str = Field(min_length=1, max_length=160)
@@ -64,6 +69,8 @@ class ReminderInput(Schema):
 
 
 class ScheduleInput(Schema):
+    child_visible: bool = True
+    active: bool = True
     vaccine_id: UUID
     schedule_type: Literal['UIP','IAP']
     dose_code: str = Field(pattern=r'^[A-Z0-9][A-Z0-9_-]{0,39}$')

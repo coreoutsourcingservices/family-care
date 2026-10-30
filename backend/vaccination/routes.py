@@ -42,6 +42,7 @@ for prefix,role in (('admin','ADMIN'),('superadmin','SUPERADMIN')):
     register('schedules',service.schedules_admin)
     register('schedules',service.schedules_admin,'POST')
     register('schedules/<uuid:schedule_id>',service.edit_schedule,'PUT')
+    register('schedules/<uuid:schedule_id>/visibility',service.visibility,'PATCH')
     def eligibility(schedule_id):return service.edit_section(schedule_id,'eligibility')
     def reminders(schedule_id):return service.edit_section(schedule_id,'reminders')
     register('schedules/<uuid:schedule_id>/eligibility',eligibility,'PUT')

@@ -43,6 +43,7 @@ def enrich(paths,components):
             model=CareProfileEdit
         if '/vaccination/' in path:
             end=path.rsplit('/',1)[-1]
+            if method=='patch' and end=='visibility':model=vs.ScheduleVisibility
             if method=='post' and '/import-' in path:result(op,{'created':26 if path.endswith('uip') else 18,'skipped':0,'schedule_type':'UIP' if path.endswith('uip') else 'IAP','message':'Drafts saved. Independent medical review and admin publication are required.'})
             elif method in ('post','put'):
                 if end=='vaccines' or '/vaccines/' in path:model=vs.VaccineInput

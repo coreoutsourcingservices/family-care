@@ -184,7 +184,7 @@ def test_child_list_filters_by_age_and_only_published_doses(app,client,monkeypat
     approve(client,admin,reviewer,doctor_id,birth)
     future=client.post('/api/v1/admin/vaccination/schedules',headers=admin,json={**payload,'dose_code':'LATER','dose_name':'Later synthetic dose','age_unit':'years','age_start':6,'age_end':7,'age_label':'Synthetic later window'}).json['schedule']
     approve(client,admin,reviewer,doctor_id,future)
-    hidden=client.post('/api/v1/admin/vaccination/schedules',headers=admin,json={**payload,'dose_code':'HIDDEN','dose_name':'Unpublished dose'}).json['schedule']
+    hidden=client.post('/api/v1/admin/vaccination/schedules',headers=admin,json={**payload,'dose_code':'HIDDEN','dose_name':'Unpublished dose','child_visible':False}).json['schedule']
     # An approved draft is still invisible until publication.
     client.post('/api/v1/admin/vaccination/schedules/'+hidden['id']+'/submit-review',headers=admin,json={'reviewer_id':doctor_id})
     client.post('/api/v1/doctors/vaccination-reviews/'+hidden['id'],headers=reviewer,json={'decision':'APPROVE','notes':'Synthetic test review, not a clinical recommendation.','attestation':True})
@@ -223,7 +223,7 @@ def test_unpublished_plan_explains_setup_review_and_publication(app,client):
     assert initial['publication']['state']=='SETUP_REQUIRED'
     assert initial['publication']['catalog_count']==0 and initial['items']==[]
     admin,reviewer,doctor_id=setup_staff(app,client)
-    row,_=draft(client,admin)
+    row,_=draft(client,admin,child_visible=False)
     pending=client.get(url,headers=owner).json
     assert pending['publication']['state']=='REVIEW_PENDING'
     assert pending['publication']['catalog_count']==1 and pending['items']==[]

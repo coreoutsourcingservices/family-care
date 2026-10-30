@@ -13,7 +13,7 @@ from core.models import (Vaccine, VaccineSchedule, VaccineAudit, ChildVaccinatio
     EmailNotification, VaccineReminderDelivery, now)
 from core.schemas import parse
 from core.vaccination_schemas import (VaccineInput, ScheduleInput, EligibilityInput,
-    ReminderInput, AssignReview, MedicalReview, RetireInput, ChildContextInput)
+    ReminderInput, AssignReview, MedicalReview, RetireInput, ChildContextInput, ScheduleVisibility)
 from services.approvals import paginate
 
 
@@ -31,6 +31,7 @@ def today():
 
 
 def fingerprint(data):
+    data={key:value for key,value in data.items() if key not in ('child_visible','active')}
     return hashlib.sha256(json.dumps(data,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
 
@@ -96,6 +97,15 @@ def schedules_admin():
     row=VaccineSchedule(vaccine_id=vaccine.id,schedule_type=data['schedule_type'],dose_code=data['dose_code'],version=data['version'],created_by=g.user.id,data=data)
     db().add(row);db().flush();log('schedule_created',schedule=row);db().commit()
     return jsonify(schedule=schedule_data(row,True)),201
+
+
+def visibility(schedule_id):
+    value=parse(ScheduleVisibility)
+    row=schedule_row(schedule_id,True)
+    if row.status=='RETIRED':raise APIError(409,'retired_schedule','Create a new version of a retired dose')
+    row.data=dict(row.data,active=value.active,child_visible=value.child_visible)
+    log('schedule_visibility_updated',schedule=row);db().commit()
+    return jsonify(schedule=schedule_data(row,True))
 
 
 def require_draft(row):
@@ -200,6 +210,7 @@ def published(schedule_type='UIP', version_id=None):
     chosen={}
     for row in rows:
         data=row.data
+        if not data.get('active',True):continue
         if date.fromisoformat(data['effective_from'])>today() or data.get('effective_to') and date.fromisoformat(data['effective_to'])<today():continue
         key=(row.vaccine_id,row.dose_code)
         if key not in chosen or data['effective_from']>chosen[key].data['effective_from']:chosen[key]=row
@@ -245,7 +256,17 @@ def timeline(profile,scheme='UIP',version_id=None):
     context=child_context(profile);items=[]
     records=db().scalars(select(ChildRecord).where(ChildRecord.profile_id==profile.id,ChildRecord.kind=='vaccination',ChildRecord.deleted_at.is_(None))).all()
     complete=[row for row in records if row.data.get('status')=='Completed']
-    for row in published(scheme,version_id):
+    rows=published(scheme,version_id)
+    # Admin-configured plans are visible before review, with explicit review status.
+    pending=db().scalars(select(VaccineSchedule).join(Vaccine,Vaccine.id==VaccineSchedule.vaccine_id).where(Vaccine.active.is_(True),VaccineSchedule.schedule_type==scheme,VaccineSchedule.status.in_(['DRAFT','IN_REVIEW','APPROVED'])).order_by(VaccineSchedule.created_at.desc())).all()
+    chosen={(row.vaccine_id,row.dose_code) for row in rows}
+    for row in pending:
+        data=row.data;key=(row.vaccine_id,row.dose_code)
+        if key in chosen or not data.get('child_visible',False) or not data.get('active',True):continue
+        if version_id and str(version_id)!=row.id:continue
+        if data['effective_from']>today().isoformat() or data.get('effective_to') and data['effective_to']<today().isoformat():continue
+        rows.append(row);chosen.add(key)
+    for row in rows:
         data=row.data;rule=data['eligibility'];start=age_date(profile.dob,data['age_start'],data['age_unit']);end=age_date(profile.dob,data['age_end'],data['age_unit'])
         from services.child_vaccination_plan import current_decision
         decision=current_decision(profile,row,context)
@@ -267,6 +288,8 @@ def timeline(profile,scheme='UIP',version_id=None):
             if not previous:status='REVIEW_REQUIRED';reasons.append('Previous dose has no recorded administration date')
             elif max(date.fromisoformat(record.data['date']) for record in previous)+timedelta(days=data['minimum_interval_days'])>start:
                 status='REVIEW_REQUIRED';reasons.append('Recorded dose interval needs doctor review; no catch-up date has been generated')
+        if row.status!='PUBLISHED':
+            status='REVIEW_REQUIRED';reasons.append('Admin-configured plan: medical review and publication are pending')
         if decision and decision['decision']=='NOT_APPLICABLE':
             status='NOT_APPLICABLE';reasons.append('Connected doctor recorded this dose as not applicable for this child')
         if matching:status='COMPLETED';reasons.append('Completion is parent-reported, not clinical verification; any eligibility concerns above still require review')
@@ -277,14 +300,14 @@ def timeline(profile,scheme='UIP',version_id=None):
             age_relation='UPCOMING' if today()<start else 'CURRENT' if today()<=end else 'PAST',
             completed_date=max((record.data['date'] for record in matching),default=None),
             route=data['route'],injection_site=data['injection_site'],instructions=data['instructions'],
-            source_url=data['source_url'],source_reference=data['source_reference'],medical_review=data.get('medical_review'),reminders=data['reminders']))
+            source_url=data['source_url'],source_reference=data['source_reference'],medical_review=data.get('medical_review'),publication_status=row.status,reminders=data['reminders']))
     for item in items:
         item['display_status']={'COMPLETED':'Completed','UPCOMING':'Upcoming','DUE':'Upcoming','OVERDUE':'Overdue','REVIEW_REQUIRED':'Doctor Review','NOT_APPLICABLE':'Not Applicable'}[item['status']]
         item['due_now']=item['status']=='DUE'
     counts={key:sum(item['status']==key for item in items) for key in ('COMPLETED','UPCOMING','DUE','OVERDUE','NOT_APPLICABLE','REVIEW_REQUIRED')}
     return dict(items=sorted(items,key=lambda item:(item['recommended_date'],item['dose_name'])),total=len(items),counts=counts,
         status='AVAILABLE' if items else 'NOT_AVAILABLE',schedule_type=scheme,context=context,
-        message='Routine dates use published, medically reviewed versions. History is parent-reported. This is not a catch-up prescription.' if items else 'No reviewed schedule has been published for this schedule type.')
+        message='Dates use date of birth and the configured age window. Unpublished plans require Doctor Review. History is parent-reported.' if items else 'No active vaccination plan is available for this schedule type.')
 
 
 def child_vaccination_list(profile,scheme='UIP',version_id=None,view='all'):
@@ -304,11 +327,13 @@ def child_vaccination_list(profile,scheme='UIP',version_id=None,view='all'):
     items=state['items']
     for item in items:item['views']=[key for key,predicate in predicates.items() if predicate(item)]
     state.update(child=dict(id=profile.id,name=profile.name,date_of_birth=profile.dob.isoformat(),age=child_age(profile)),
-        as_of_date=today().isoformat(),view=view,total_published=len(items),
+        as_of_date=today().isoformat(),view=view,total_published=sum(item['publication_status']=='PUBLISHED' for item in items),total_configured=len(items),
         view_counts={key:sum(predicate(item) for item in items) for key,predicate in predicates.items()},
         items=[item for item in items if predicates[view](item)])
     state['total']=len(state['items'])
-    state['publication']=publication_readiness(scheme,len(items))
+    state['publication']=publication_readiness(scheme,sum(item['publication_status']=='PUBLISHED' for item in items))
+    if any(item['publication_status']!='PUBLISHED' for item in items):
+        state['publication']['message']='Active admin plans are visible with DOB-based dates. Unpublished entries need Doctor Review before vaccination-due reminders are enabled.'
     return state
 
 
