@@ -18,6 +18,16 @@ def save_context(child_id):return service.context_endpoint(child_id)
 route(bp,'/children/<uuid:child_id>/vaccination-context',save_context,'PUT',roles=('PATIENT',))
 route(bp,'/doctors/vaccination-reviews',service.review_queue,roles=('DOCTOR',))
 route(bp,'/doctors/vaccination-reviews/<uuid:schedule_id>',service.medical_review,'POST',roles=('DOCTOR',))
+from services import vaccination_starters as starters
+route(bp,'/admin/vaccination/import-uip',starters.import_uip,'POST',roles=('ADMIN',))
+def superadmin_import_uip():return starters.import_uip()
+route(bp,'/superadmin/vaccination/import-uip',superadmin_import_uip,'POST',roles=('SUPERADMIN',))
+route(bp,'/doctors/vaccination/import-iap',starters.import_iap,'POST',roles=('DOCTOR',))
+route(bp,'/doctors/vaccination/schedules',starters.doctor_schedules,roles=('DOCTOR',))
+route(bp,'/doctors/vaccination/schedules/<uuid:schedule_id>',starters.doctor_edit,'PUT',roles=('DOCTOR',))
+route(bp,'/doctors/vaccination/schedules/<uuid:schedule_id>/submit-review',starters.doctor_submit,'POST',roles=('DOCTOR',))
+def doctor_reviewers():return service.reviewers()
+route(bp,'/doctors/vaccination/reviewers',doctor_reviewers,roles=('DOCTOR',))
 
 
 # Each administrative portal retains its own role boundary and cookie namespace.
@@ -42,3 +52,8 @@ for prefix,role in (('admin','ADMIN'),('superadmin','SUPERADMIN')):
     register('schedules/<uuid:schedule_id>/publish',service.publish,'POST')
     register('schedules/<uuid:schedule_id>/retire',service.retire,'POST')
     register('audit',service.audits)
+
+from services.child_vaccination_plan import plan as child_plan
+route(bp,'/doctors/care-profiles/<uuid:profile_id>/vaccination-plan',child_plan,roles=('DOCTOR',))
+def save_child_plan(profile_id):return child_plan(profile_id)
+route(bp,'/doctors/care-profiles/<uuid:profile_id>/vaccination-plan',save_child_plan,'POST',roles=('DOCTOR',))

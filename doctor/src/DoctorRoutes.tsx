@@ -14,6 +14,7 @@ const Prescriptions = lazy(() => import('./pages/Prescriptions'));
 const Reports = lazy(() => import('./pages/Reports'));
 const Settings = lazy(() => import('./pages/Settings'));
 const VaccineReviews = lazy(() => import('./pages/VaccineReviews'));
+const Vaccination = lazy(() => import('./pages/Vaccination'));
 
 function ProfileRoute() {
   const status = getDoctorWorkspace()?.user.approval_status;
@@ -35,6 +36,7 @@ export default function DoctorRoutes() {
         <Route path="reports" element={<Reports />} />
         <Route path="settings" element={<Settings />} />
         <Route path="vaccination-reviews" element={<VaccineReviews />} />
+        <Route path="vaccination" element={<Vaccination />} />
       </Route>
     </Route>
     <Route index element={<Navigate to="/doctor/dashboard" replace />} />

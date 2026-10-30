@@ -1,0 +1,12 @@
+.doctor-vaccination .ch-panel { margin-block: 20px; }
+.doctor-vaccination label:not(.vr-attest) { display: inline-flex; flex-direction: column; gap: 8px; margin: 12px 16px 12px 0; max-width: 100%; font-size: 14px; font-weight: 600; }
+.doctor-vaccination input:not([type=checkbox]), .doctor-vaccination select { min-height: 44px; max-width: 100%; padding: 10px 14px; border: 1px solid #dacdea; border-radius: 12px; background: #fcfaff; color: #34245c; font: inherit; }
+.doctor-vaccination select { width: min(100%, 340px); }
+.doctor-vaccination .vr-field { display: flex !important; width: 100%; }
+.doctor-vaccination details { margin-block: 12px; }
+.doctor-vaccination summary { color: #6e3ca0; cursor: pointer; padding-block: 8px; font-weight: 600; }
+.doctor-vaccination .ch-record { margin-top: 14px; }
+.doctor-vaccination .ch-record > div { min-width: 0; width: 100%; }
+.doctor-vaccination a { overflow-wrap: anywhere; }
+.doctor-vaccination input:focus-visible, .doctor-vaccination select:focus-visible, .doctor-vaccination summary:focus-visible { outline: 2px solid #8952b3; outline-offset: 3px; }
+@media(max-width: 600px) { .doctor-vaccination label:not(.vr-attest) { display: flex; margin-right: 0; width: 100%; } .doctor-vaccination select { width: 100%; } }
