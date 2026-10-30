@@ -12,8 +12,8 @@ def test_doctor_records_are_read_only_and_limited_to_connected_profiles(app, cli
     shared = create_profile(client, patient_headers, referral_id=referral)
     private = create_profile(client, patient_headers)
     with app.app_context():
-        for profile_id, title, deleted in [(shared, 'Shared history', False), (private, 'Private history', False), (shared, 'Removed entry', True)]:
-            db().add(ChildRecord(id=uid(), profile_id=profile_id, kind='history',
+        for profile_id, title, deleted in [(shared, 'Shared care note', False), (private, 'Private care note', False), (shared, 'Removed entry', True)]:
+            db().add(ChildRecord(id=uid(), profile_id=profile_id, kind='care',
                 data=dict(title=title, date='2026-01-01', notes='Family note'),
                 deleted_at=datetime(2026, 1, 2) if deleted else None))
         db().commit()
@@ -21,7 +21,7 @@ def test_doctor_records_are_read_only_and_limited_to_connected_profiles(app, cli
     result = client.get(f'/api/v1/doctors/care-profiles/{shared}/records', headers=headers)
     assert result.status_code == 200
     assert result.json['total'] == 1
-    assert result.json['items'][0]['title'] == 'Shared history'
+    assert result.json['items'][0]['title'] == 'Shared care note'
     assert result.json['items'][0]['verification_status'] == 'PARENT_REPORTED'
     assert client.get(f'/api/v1/doctors/care-profiles/{private}/records', headers=headers).status_code == 404
     assert client.get(f'/api/v1/doctors/care-profiles/{shared}/records', headers=patient_headers).status_code == 403

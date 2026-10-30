@@ -1,6 +1,6 @@
 from flask import g, request, jsonify, current_app
 from core.schemas import parse
-from core.care_schemas import CareProfileCreate, CareProfileReferral
+from core.care_schemas import CareProfileCreate, CareProfileReferral, CareProfileUpdate
 from core.http import pagination
 from core.errors import APIError
 from services import care, care_uploads
@@ -39,3 +39,26 @@ def upload_report(profile_id):
 
 def download_report(profile_id, report_id):
     return care_uploads.download_report(g.user, str(profile_id), str(report_id))
+
+def update_profile(profile_id):
+    return care.update_profile(g.user,str(profile_id),parse(CareProfileUpdate))
+
+def delete_profile(profile_id):
+    return care.delete_profile(g.user,str(profile_id))
+
+
+def doctor_overview(profile_id):
+    from core.database import db
+    from core.models import ChildRecord, AdultRecord, User
+    from sqlalchemy import select
+    from services.approvals import paginate
+    from services.referrals import care_doctor_details
+    profile=care.accessible_profile(g.user,str(profile_id))
+    if not profile.referred_doctor_id:raise APIError(404,'doctor_not_connected','No doctor is connected to this profile')
+    doctor=db().get(User,profile.referred_doctor_id)
+    model=ChildRecord if profile.module=='child' else AdultRecord
+    query=select(model).where(model.profile_id==profile.id,model.deleted_at.is_(None),
+        model.data['source_role'].as_string()=='DOCTOR',model.data['author_id'].as_string()==doctor.id)
+    page,size=pagination()
+    rows,total=paginate(query.order_by(model.created_at.desc(),model.id),page,size)
+    return jsonify(doctor=care_doctor_details(doctor),items=[dict(row.data,id=row.id,kind=row.kind) for row in rows],total=total,page=page,per_page=size)

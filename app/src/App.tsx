@@ -3,6 +3,7 @@ import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { Header, Footer } from './components/Website';
 import Home from './pages/Home';
+import CustomerNotifications from '../../customer/src/notifications/CustomerNotifications';
 import AboutUs from './pages/AboutUs';
 import Services, { CareDetailsPage } from './pages/Services';
 import Information from './pages/Information';
@@ -33,14 +34,14 @@ export default function App() {
       '/doctor/dashboard': 'Doctor Dashboard',
       '/doctor/setup-account': 'My Doctor Profile',
       '/doctor/patients': 'Patients', '/doctor/consultations': 'Consultations',
-      '/doctor/clinical-records': 'Clinical Records', '/doctor/appointments': 'Appointments',
+      '/doctor/child-care': 'Child Care', '/doctor/vaccination':'Vaccination Plans', '/doctor/clinical-records': 'Clinical Records', '/doctor/appointments': 'Appointments',
       '/doctor/prescriptions': 'Prescriptions', '/doctor/reports': 'Reports',
       '/doctor/settings': 'Doctor Settings', '/doctor/vaccination-reviews': 'Vaccination Reviews',
       '/customer/approvals': 'Access Approvals',
       '/doctor/signup': 'Doctor Registration', '/doctor/login': 'Doctor Login',
       '/contact': 'Contact & Support', '/privacy': 'Preview Privacy', '/terms': 'Preview Terms',
     };
-    document.title = `${titles[location.pathname] ?? (isChildSpace ? 'Child Care' : isWomenSpace ? 'Women?s Health' : location.pathname.startsWith('/customer/adult') ? 'Adult Health' : 'Page Not Found')} | FamilyCare+`;
+    document.title = `${titles[location.pathname] ?? (location.pathname.startsWith('/doctor/patients/')?'Patient overview':isChildSpace ? 'Child Care' : isWomenSpace ? 'Women?s Health' : location.pathname.startsWith('/customer/adult') ? 'Adult Health' : 'Page Not Found')} | FamilyCare+`;
     if (location.hash) requestAnimationFrame(() => document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView({ behavior: 'instant' }));
     else window.scrollTo(0, 0);
     const media = gsap.matchMedia();
@@ -54,5 +55,5 @@ export default function App() {
     });
     return () => media.revert();
   }, [location.pathname, location.hash]);
-  return <div className={standalone ? 'auth-site-shell' : 'site-shell'}><a className="skip-link" href="#main-content">Skip to content</a>{!standalone && <Header />}<main id="main-content" ref={mainRef}><Routes><Route path="/doctor/*" element={<Suspense fallback={<p role="status">Opening doctor workspace...</p>}><DoctorRoutes /></Suspense>} /><Route path="/customer/child/*" element={location.search.includes("add=1")?<CustomerDashboard module="child" />:<Suspense fallback={<p role="status">Opening Child Care...</p>}><ChildDashboard/></Suspense>} /><Route path="/customer/approvals" element={<AccessApprovals />} /><Route path="/customer/women/*" element={<Suspense fallback={<p role="status">Opening Women?s Health?</p>}><WomenDashboard/></Suspense>} /><Route path="/customer/adult/*" element={<Suspense fallback={<p role="status">Opening Adult Health...</p>}><AdultDashboard/></Suspense>} /><Route path="/customer/dashboard" element={<CustomerDashboard />} /><Route path="/customer/signup" element={<AuthPage key="customer-signup" role="customer" mode="signup" />} /><Route path="/customer/login" element={<AuthPage key="customer-login" role="customer" mode="login" />} /><Route path="/" element={<Home />} /><Route path="/about" element={<AboutUs />} /><Route path="/services" element={<Services />} /><Route path="/services/:area" element={<CareDetailsPage />} /><Route path="/for-doctors" element={<Information />} /><Route path="/contact" element={<Information />} /><Route path="/privacy" element={<Information />} /><Route path="/terms" element={<Information />} /><Route path="*" element={<section className="not-found"><h1>Page not found</h1><Link to="/" className="button primary">Back to Home</Link></section>} /></Routes></main>{!standalone && <Footer />}</div>;
+  return <div className={standalone ? 'auth-site-shell' : 'site-shell'}><a className="skip-link" href="#main-content">Skip to content</a>{!standalone && <Header />}<CustomerNotifications/><main id="main-content" ref={mainRef}><Routes><Route path="/doctor/*" element={<Suspense fallback={<p role="status">Opening doctor workspace...</p>}><DoctorRoutes /></Suspense>} /><Route path="/customer/child/*" element={location.search.includes("add=1")?<CustomerDashboard module="child" />:<Suspense fallback={<p role="status">Opening Child Care...</p>}><ChildDashboard/></Suspense>} /><Route path="/customer/approvals" element={<AccessApprovals />} /><Route path="/customer/women/*" element={<Suspense fallback={<p role="status">Opening Women?s Health?</p>}><WomenDashboard/></Suspense>} /><Route path="/customer/adult/*" element={<Suspense fallback={<p role="status">Opening Adult Health...</p>}><AdultDashboard/></Suspense>} /><Route path="/customer/dashboard" element={<CustomerDashboard />} /><Route path="/customer/signup" element={<AuthPage key="customer-signup" role="customer" mode="signup" />} /><Route path="/customer/login" element={<AuthPage key="customer-login" role="customer" mode="login" />} /><Route path="/" element={<Home />} /><Route path="/about" element={<AboutUs />} /><Route path="/services" element={<Services />} /><Route path="/services/:area" element={<CareDetailsPage />} /><Route path="/for-doctors" element={<Information />} /><Route path="/contact" element={<Information />} /><Route path="/privacy" element={<Information />} /><Route path="/terms" element={<Information />} /><Route path="*" element={<section className="not-found"><h1>Page not found</h1><Link to="/" className="button primary">Back to Home</Link></section>} /></Routes></main>{!standalone && <Footer />}</div>;
 }

@@ -172,3 +172,5 @@
  .customer-dashboard-header .customer-account-actions{flex:1 1 100%;justify-content:flex-end;min-width:0;flex-wrap:wrap}
  .customer-account-actions button{min-height:40px}
 }
+
+.child-profile-fields{border:0;padding:20px 0;display:grid;grid-template-columns:1fr 1fr;gap:18px}.child-profile-fields label{display:grid;gap:8px;font-size:12px}.child-profile-fields input{width:100%;min-width:0;border:1px solid #dce5d6;border-radius:8px;padding:12px;font:inherit}.child-profile-fields>div{grid-column:1/-1;display:flex;gap:10px}.child-profile-delete{margin-top:25px;border-top:1px solid #eee;padding-top:20px}.child-profile-delete p{font-size:12px;line-height:1.7}.child-profile-delete button:hover{color:#b52d43;background:#fff0f1}@media(max-width:700px){.child-profile-fields{grid-template-columns:1fr}.child-profile-fields>div{flex-wrap:wrap}}

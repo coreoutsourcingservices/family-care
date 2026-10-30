@@ -29,7 +29,7 @@ def current_decision(profile,schedule,context):
 
 def plan(profile_id):
  v.qualified_reviewer(g.user.id)
- profile=db().scalar(select(CareProfile).where(CareProfile.id==str(profile_id),CareProfile.module=='child',CareProfile.referred_doctor_id==g.user.id).with_for_update())
+ profile=db().scalar(select(CareProfile).where(CareProfile.id==str(profile_id),CareProfile.module=='child',CareProfile.deleted_at.is_(None),CareProfile.referred_doctor_id==g.user.id).with_for_update())
  if not profile:raise APIError(404,'profile_not_found','Connected child profile not found')
  if request.method=='GET':
   return jsonify(child={'id':profile.id,'name':profile.name},UIP=v.timeline(profile,'UIP'),IAP=v.timeline(profile,'IAP'))

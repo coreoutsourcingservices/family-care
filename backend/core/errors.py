@@ -16,7 +16,7 @@ def register_errors(app):
 
     @app.errorhandler(ValidationError)
     def invalid_input(error):
-        fields = [{'field': '.'.join(map(str, e['loc'])), 'type': e['type']}
+        fields = [{'field': '.'.join(map(str, e['loc'])), 'type': e['type'], 'message':e['msg']}
                   for e in error.errors(include_input=False, include_context=False)]
         return jsonify(error={'code': 'validation_error', 'message': 'Invalid request fields', 'fields': fields}), 422
 

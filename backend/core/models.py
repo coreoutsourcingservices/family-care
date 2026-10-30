@@ -168,6 +168,20 @@ class AuditLog(Base):
     created_at = C(DT, default=now, nullable=False, index=True)
 
 
+class AppNotification(Base):
+    __tablename__ = 'app_notifications'
+    __table_args__ = (UQ('user_id','event_key'),)
+    id = C(I, primary_key=True, autoincrement=True)
+    user_id = user_fk(nullable=False,index=True)
+    kind = C(S(50), nullable=False)
+    title = C(S(160), nullable=False)
+    body = C(S(300), nullable=False)
+    data = C(JSON, nullable=False, default=dict)
+    event_key = C(S(200))
+    created_at = C(DT, default=now, nullable=False)
+    read_at = C(DT)
+
+
 class CareProfile(Base):
     __tablename__ = 'care_profiles'
     __table_args__ = (
@@ -182,6 +196,8 @@ class CareProfile(Base):
     name = C(S(120), nullable=False)
     dob = C(Date, nullable=False)
     guardian_contact = C(S(20), nullable=False, default='')
+    guardian_name = C(S(120), nullable=False, default='', server_default='')
+    deleted_at = C(DT)
     emergency_contacts = C(JSON, nullable=False, default=list)
     referred_doctor_id = C(Uuid(as_uuid=False), FK('familycare.users.id'), index=True)
     profile_type = C(S(10), nullable=False, default='member', server_default='member')
@@ -304,6 +320,8 @@ class CareReport(Base):
     id = primary_id()
     profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), nullable=False, index=True)
     name = C(S(255), nullable=False)
+    category = C(S(32), nullable=False, default='Others', server_default='Others')
+    category_reviewed = C(B, nullable=False, default=False, server_default=text('false'))
     content_type = C(S(80), nullable=False)
     content = C(LargeBinary)
     storage_provider = C(S(16), nullable=False, default='database', server_default='database')

@@ -18,7 +18,7 @@ export async function careApi<T>(path: string, body?: FormData | Record<string, 
     if (response.status === 401 && data.error?.code === 'invalid_token' && retry) {
       await refreshSession(); return careApi(path, body, false, method);
     }
-    const fields = data.error?.fields?.map((field: { field: string }) => field.field).join(', ');
+    const fields = data.error?.fields?.map((field: { field: string; message?:string }) => field.message?(field.field?field.field.replaceAll('_',' ')+': ':'')+field.message.replace(/^Value error, /,''):field.field).join(', ');
     throw new ApiError(`${data.error?.message ?? 'Request failed'}${fields ? `: ${fields}` : ''}`, data.error?.code ?? 'request_failed', response.status);
   }
   return data;

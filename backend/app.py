@@ -27,7 +27,9 @@ def create_app(overrides=None):
     from patient.child_routes import bp as children
     from vaccination.routes import bp as vaccination
     from patient.adult_routes import bp as adults
-    for blueprint in (auth, doctor, patient, admin, superadmin, children, vaccination, adults):
+    from doctor.child_care import bp as doctor_child_care
+    from services.notifications import bp as notifications
+    for blueprint in (auth, doctor, patient, admin, superadmin, children, vaccination, adults, doctor_child_care, notifications):
         app.register_blueprint(blueprint)
 
     @app.before_request

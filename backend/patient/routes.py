@@ -52,3 +52,13 @@ from services import report_text
 route(bp, '/report-text/options', report_text.options_endpoint, roles=('PATIENT',))
 route(bp, '/profiles/<uuid:profile_id>/reports/<uuid:report_id>/text', report_text.get_text, roles=('PATIENT',))
 route(bp, '/profiles/<uuid:profile_id>/reports/<uuid:report_id>/text', report_text.request_text, 'POST', roles=('PATIENT',), limited=True)
+
+route(bp, '/profiles/<uuid:profile_id>', care.update_profile, 'PATCH', roles=('PATIENT',), schema='CareProfileUpdate')
+route(bp, '/profiles/<uuid:profile_id>', care.delete_profile, 'DELETE', roles=('PATIENT',))
+
+from services import report_records
+route(bp,'/profiles/<uuid:profile_id>/imported-records',report_records.imported,roles=('PATIENT',))
+route(bp,'/profiles/<uuid:profile_id>/reports/<uuid:report_id>/import',report_records.import_record,'POST',roles=('PATIENT',))
+
+route(bp,'/profiles/<uuid:profile_id>/reports/<uuid:report_id>/category',report_records.set_category,'PATCH',roles=('PATIENT',))
+route(bp,'/profiles/<uuid:profile_id>/doctor-overview',care.doctor_overview,roles=('PATIENT',))

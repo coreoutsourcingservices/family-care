@@ -15,6 +15,24 @@ def doctor_details(user, profile=None):
                 account_status=user.account_status, approval_status=user.approval_status)
 
 
+def care_doctor_details(user):
+    """Professional card for an already connected profile; never expose degree images."""
+    from flask import current_app
+    profile=db().get(DoctorProfile,user.id)
+    result=doctor_details(user,profile)
+    result.update(id=user.id,qualification=profile.qualification,specialization=profile.specialization,
+                  registering_council=profile.registering_council,years_of_experience=profile.years_of_experience,
+                  clinic_address=profile.clinic_address,profile_photo_url=None)
+    photo=(profile.onboarding_images or {}).get('profile_photo')
+    if photo and all(current_app.config.get('CLOUDINARY_'+key) for key in ('CLOUD_NAME','API_KEY','API_SECRET')):
+        import time
+        import cloudinary.utils
+        from services.care_uploads import credentials
+        result['profile_photo_url']=cloudinary.utils.private_download_url(photo['public_id'],photo['format'],
+            resource_type='image',type='authenticated',expires_at=int(time.time())+300,secure=True,**credentials())
+    return result
+
+
 def resolve_referral(referral_id, lock=False):
     query = select(User, DoctorProfile).join(DoctorProfile, DoctorProfile.user_id == User.id).where(
         func.lower(DoctorProfile.referral_id) == referral_id.lower(), User.role == 'DOCTOR')
@@ -41,6 +59,8 @@ def connect_patient(user, referral_id):
     if not profile.referred_by_doctor_id:
         profile.referred_by_doctor_id, profile.referred_at = doctor.id, now()
         audit('doctor_referral_connected', doctor.id, user.id)
+        from doctor.notifications import queue_notification
+        queue_notification(doctor.id,'patient_connected','account:'+user.id)
         db().commit()
     return jsonify(doctor=doctor_details(doctor), message='Patient connected to doctor')
 

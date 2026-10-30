@@ -359,7 +359,7 @@ def scheduled_reminders(profile):
 
 def queue_reminder_emails():
     # Call from one or more workers; row locks + a unique delivery key deduplicate enqueue.
-    profiles=db().scalars(select(CareProfile).join(ChildVaccinationContext,ChildVaccinationContext.profile_id==CareProfile.id).where(CareProfile.module=='child')).all()
+    profiles=db().scalars(select(CareProfile).join(ChildVaccinationContext,ChildVaccinationContext.profile_id==CareProfile.id).where(CareProfile.module=='child',CareProfile.deleted_at.is_(None))).all()
     for profile in profiles:
         if not child_context(profile).get('email_reminders'):continue
         owner=db().get(User,profile.owner_id)
@@ -383,7 +383,7 @@ def reminder_still_valid(notification):
     delivery=db().scalar(select(VaccineReminderDelivery).where(VaccineReminderDelivery.notification_id==notification.id))
     if not delivery or delivery.event_date!=today():return False
     profile=db().get(CareProfile,delivery.profile_id)
-    if not profile or not child_context(profile).get('email_reminders'):return False
+    if not profile or profile.deleted_at or not child_context(profile).get('email_reminders'):return False
     owner=db().get(User,profile.owner_id)
     if not owner or not owner.email_verified or owner.account_status!='ACTIVE' or owner.approval_status!='APPROVED':return False
     schedule=db().get(VaccineSchedule,delivery.schedule_id)
