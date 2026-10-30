@@ -147,7 +147,8 @@ def specification(app):
                                            dict(name='per_page', **{'in': 'query'}, schema={'type': 'integer', 'minimum': 1, 'maximum': 100, 'default': 25})]
             if method == 'GET' and path.endswith(('/profiles', '/care-profiles')):
                 operation['parameters'].append({'name':'module','in':'query','schema':{'type':'string','enum':['child','adult','women']}})
-            name = meta.get('schema')
+            provided = meta.get('schema')
+            name = provided.__name__ if isinstance(provided,type) else provided
             if name == 'ReportUpload':
                 operation['requestBody'] = {'required': True, 'content': {'multipart/form-data': {'schema': {'type':'object','required':['file'],'properties':{'file':{'type':'string','format':'binary','description':'PDF/JPEG/PNG/WebP; max 10 MB'}}}}}}
             elif name:
@@ -155,12 +156,12 @@ def specification(app):
                     components[name] = {'type': 'object', 'additionalProperties': False, 'required': ['refresh_token'],
                                         'properties': {'refresh_token': {'type': 'string', 'maxLength': 512}}}
                 else:
-                    model = getattr(schemas, name, None) or getattr(care_schemas, name)
+                    model = provided if isinstance(provided,type) else (getattr(schemas,name,None) or getattr(care_schemas,name))
                     definition = model.model_json_schema(ref_template='#/components/schemas/{model}')
                     components.update(definition.pop('$defs', {}))
                     components[name] = definition
                 operation['requestBody'] = {'required': name != 'RefreshRequest', 'content': {'application/json': {
-                    'schema': {'$ref': '#/components/schemas/'+name}, 'example': EXAMPLES[name]}}}
+                    'schema': {'$ref': '#/components/schemas/'+name}, 'example': EXAMPLES.get(name,{})}}}
             if meta.get('roles'):
                 operation['security'] = [{'bearerAuth': []}, {'cookieAuth': []}]
             operation['parameters'] += [{'name': 'X-Auth-Transport', 'in': 'header', 'schema': {'type': 'string', 'enum': ['bearer', 'cookie'], 'default': 'bearer'}},

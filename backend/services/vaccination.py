@@ -247,6 +247,8 @@ def timeline(profile,scheme='UIP',version_id=None):
     complete=[row for row in records if row.data.get('status')=='Completed']
     for row in published(scheme,version_id):
         data=row.data;rule=data['eligibility'];start=age_date(profile.dob,data['age_start'],data['age_unit']);end=age_date(profile.dob,data['age_end'],data['age_unit'])
+        from services.child_vaccination_plan import current_decision
+        decision=current_decision(profile,row,context)
         status='UPCOMING' if today()<start else 'DUE' if today()<=end else 'OVERDUE'
         reasons=[]
         matching=[record for record in complete if record.data.get('vaccine_id')==row.vaccine_id and record.data.get('dose_code')==row.dose_code and record.data.get('schedule_type')==scheme]
@@ -258,13 +260,15 @@ def timeline(profile,scheme='UIP',version_id=None):
         elif rule['states'] and context.get('state','').casefold() not in [value.casefold() for value in rule['states']]:status='NOT_APPLICABLE';reasons.append('Outside the published state rule')
         elif rule['districts'] and not context.get('district'):status='REVIEW_REQUIRED';reasons.append('District is required for this rule')
         elif rule['districts'] and context.get('district','').casefold() not in [value.casefold() for value in rule['districts']]:status='NOT_APPLICABLE';reasons.append('Outside the published district rule')
-        elif rule['requires_clinical_review']:status='REVIEW_REQUIRED';reasons.append('This rule requires individual clinical assessment')
+        elif rule['requires_clinical_review'] and not (decision and decision['decision']=='CONFIRM'):status='REVIEW_REQUIRED';reasons.append('This rule requires individual clinical assessment')
         elif context.get('history_status')!='PARENT_REPORTED':status='REVIEW_REQUIRED';reasons.append('Vaccination history is incomplete or unknown')
         elif data.get('previous_dose_code'):
             previous=[record for record in complete if record.data.get('vaccine_id')==row.vaccine_id and record.data.get('dose_code')==data['previous_dose_code'] and record.data.get('schedule_type')==scheme]
             if not previous:status='REVIEW_REQUIRED';reasons.append('Previous dose has no recorded administration date')
             elif max(date.fromisoformat(record.data['date']) for record in previous)+timedelta(days=data['minimum_interval_days'])>start:
                 status='REVIEW_REQUIRED';reasons.append('Recorded dose interval needs doctor review; no catch-up date has been generated')
+        if decision and decision['decision']=='NOT_APPLICABLE':
+            status='NOT_APPLICABLE';reasons.append('Connected doctor recorded this dose as not applicable for this child')
         if matching:status='COMPLETED';reasons.append('Completion is parent-reported, not clinical verification; any eligibility concerns above still require review')
         elif status=='OVERDUE':reasons.append('Routine window has passed. Confirm missed-dose planning with your doctor; dates have not been shifted.')
         items.append(dict(id=row.id,vaccine_id=row.vaccine_id,vaccine=data['vaccine'],dose_code=row.dose_code,dose_name=data['dose_name'],version=row.version,schedule_type=scheme,
@@ -274,6 +278,9 @@ def timeline(profile,scheme='UIP',version_id=None):
             completed_date=max((record.data['date'] for record in matching),default=None),
             route=data['route'],injection_site=data['injection_site'],instructions=data['instructions'],
             source_url=data['source_url'],source_reference=data['source_reference'],medical_review=data.get('medical_review'),reminders=data['reminders']))
+    for item in items:
+        item['display_status']={'COMPLETED':'Completed','UPCOMING':'Upcoming','DUE':'Upcoming','OVERDUE':'Overdue','REVIEW_REQUIRED':'Doctor Review','NOT_APPLICABLE':'Not Applicable'}[item['status']]
+        item['due_now']=item['status']=='DUE'
     counts={key:sum(item['status']==key for item in items) for key in ('COMPLETED','UPCOMING','DUE','OVERDUE','NOT_APPLICABLE','REVIEW_REQUIRED')}
     return dict(items=sorted(items,key=lambda item:(item['recommended_date'],item['dose_name'])),total=len(items),counts=counts,
         status='AVAILABLE' if items else 'NOT_AVAILABLE',schedule_type=scheme,context=context,
@@ -345,13 +352,14 @@ def scheduled_reminders(profile):
             if item['status'] not in ('UPCOMING','DUE','OVERDUE') or not policy['enabled'] or not policy['in_app']:continue
             start=date.fromisoformat(item['recommended_date']);end=date.fromisoformat(item['window_end']);offset=(start-today()).days
             if offset not in policy['before_days'] and not (policy['on_due'] and start<=today()<=end) and (today()-end).days not in policy['overdue_days']:continue
-            items.append(dict(id='schedule-'+item['id'],kind='vaccination',title=item['vaccine']['name_en']+' · '+item['dose_name'],date=item['recommended_date'],status=item['status'],source='PUBLISHED_SCHEDULE',delivery_status='IN_APP',schedule_id=item['id']))
+            message=(f'टीके की तारीख {offset} दिन में आने वाली है।' if offset>0 else 'टीका लगवाने का समय आ गया है।' if today()<=end else 'टीके की निर्धारित तारीख निकल चुकी है। डॉक्टर से बात करें।') if policy['language']=='hi' else (f'Vaccination is due in {offset} days.' if offset>0 else 'Vaccination is due now.' if today()<=end else 'Vaccination is overdue. Contact your doctor.')
+            items.append(dict(id='schedule-'+item['id'],kind='vaccination',title=item['vaccine']['name_en']+' · '+item['dose_name'],date=item['recommended_date'],status=item['status'],display_status=item['display_status'],days_until_due=offset,message=message,source='PUBLISHED_SCHEDULE',delivery_status='IN_APP',schedule_id=item['id']))
     return items
 
 
 def queue_reminder_emails():
     # Call from one or more workers; row locks + a unique delivery key deduplicate enqueue.
-    profiles=db().scalars(select(CareProfile).join(ChildVaccinationContext,ChildVaccinationContext.profile_id==CareProfile.id).where(CareProfile.module=='child')).all()
+    profiles=db().scalars(select(CareProfile).join(ChildVaccinationContext,ChildVaccinationContext.profile_id==CareProfile.id).where(CareProfile.module=='child',CareProfile.deleted_at.is_(None))).all()
     for profile in profiles:
         if not child_context(profile).get('email_reminders'):continue
         owner=db().get(User,profile.owner_id)
@@ -375,7 +383,7 @@ def reminder_still_valid(notification):
     delivery=db().scalar(select(VaccineReminderDelivery).where(VaccineReminderDelivery.notification_id==notification.id))
     if not delivery or delivery.event_date!=today():return False
     profile=db().get(CareProfile,delivery.profile_id)
-    if not profile or not child_context(profile).get('email_reminders'):return False
+    if not profile or profile.deleted_at or not child_context(profile).get('email_reminders'):return False
     owner=db().get(User,profile.owner_id)
     if not owner or not owner.email_verified or owner.account_status!='ACTIVE' or owner.approval_status!='APPROVED':return False
     schedule=db().get(VaccineSchedule,delivery.schedule_id)

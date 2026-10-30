@@ -6,6 +6,7 @@ import DoctorSessionGate, { DoctorApprovalGate } from './onboarding/DoctorSessio
 import { getDoctorWorkspace } from './onboarding/setupSession';
 const AccountSetup = lazy(() => import('./pages/AccountSetup'));
 const ProfileDetails = lazy(() => import('./pages/ProfileDetails'));
+const PatientOverview = lazy(() => import('./pages/PatientOverview'));
 const Patients = lazy(() => import('./pages/Patients'));
 const Consultations = lazy(() => import('./pages/Consultations'));
 const ClinicalRecords = lazy(() => import('./pages/ClinicalRecords'));
@@ -13,6 +14,8 @@ const Appointments = lazy(() => import('./pages/Appointments'));
 const Prescriptions = lazy(() => import('./pages/Prescriptions'));
 const Reports = lazy(() => import('./pages/Reports'));
 const Settings = lazy(() => import('./pages/Settings'));
+const ChildCare = lazy(() => import('./pages/ChildCare'));
+const Vaccination = lazy(() => import('./pages/Vaccination'));
 const VaccineReviews = lazy(() => import('./pages/VaccineReviews'));
 
 function ProfileRoute() {
@@ -27,7 +30,10 @@ export default function DoctorRoutes() {
       <Route path="dashboard" element={<DoctorHome />} />
       <Route path="setup-account" element={<ProfileRoute />} />
       <Route element={<DoctorApprovalGate />}>
+        <Route path="child-care" element={<ChildCare />} />
+        <Route path="vaccination" element={<Vaccination />} />
         <Route path="patients" element={<Patients />} />
+        <Route path="patients/:profileId" element={<PatientOverview />} />
         <Route path="consultations" element={<Consultations />} />
         <Route path="clinical-records" element={<ClinicalRecords />} />
         <Route path="appointments" element={<Appointments />} />

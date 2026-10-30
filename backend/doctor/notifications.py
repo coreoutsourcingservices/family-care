@@ -14,6 +14,8 @@ from core.security import decode_token, encode_token, digest
 from doctor.notification_models import DoctorNotification, DoctorPushSubscription, DoctorPushDelivery
 
 MESSAGES = {
+    'vaccination_due': ('Child vaccination reminder','A connected child has a vaccination date to review.','/doctor/child-care'),
+    'child_record_added': ('Child care updated','A connected child care record was updated.','/doctor/child-care'),
     'patient_connected': ('New family connection', 'A family profile has connected to your practice.', '/doctor/patients'),
     'consultation_requested': ('New consultation request', 'A connected family has requested a consultation.', '/doctor/consultations'),
     'report_shared': ('New shared report', 'A connected family has shared a health document.', '/doctor/reports'),
@@ -53,6 +55,9 @@ def queue_notification(user_id, kind, event_key):
     item = DoctorNotification(id=uid(), user_id=user_id, kind=kind, event_key=event_key, title=title, body=body, path=path)
     db().add(item)
     db().flush()
+    from services.notifications import enqueue
+    general_kind={'profile_approved':'account_approved','profile_rejected':'account_rejected'}.get(kind,'profile_connected' if kind=='patient_connected' and event_key.startswith('profile:') else kind)
+    enqueue(user_id,general_kind,title,body,{'path':path},event_key=event_key,mirror=False)
     for subscription in db().scalars(select(DoctorPushSubscription).where(DoctorPushSubscription.user_id == user_id)):
         db().add(DoctorPushDelivery(notification_id=item.id, subscription_id=subscription.id))
 
@@ -74,6 +79,9 @@ def mark_read(notification_id):
     if not item:
         raise APIError(404, 'not_found', 'Notification not found')
     item.read_at = item.read_at or now()
+    from core.models import AppNotification
+    other=db().scalar(select(AppNotification).where(AppNotification.user_id==user.id,AppNotification.event_key==item.event_key))
+    if other:other.read_at=item.read_at
     db().commit()
     return jsonify(message='Notification marked as read')
 

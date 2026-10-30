@@ -6,7 +6,7 @@ from services.report_text import process_one
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--once',action='store_true');args=parser.parse_args()
-    app=create_app()
+    app=create_app({'DB_POOL_SIZE':1,'DB_MAX_OVERFLOW':0})
     while True:
         with app.app_context():
             try:worked=process_one()
