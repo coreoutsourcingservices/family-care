@@ -36,5 +36,24 @@ def entries(profile_id,area):
     return jsonify(record=record_data(row)),201
 
 def add(profile_id,area):return entries(profile_id,area)
+
+def remove_vaccination(profile_id,record_id):
+    from sqlalchemy import select
+    from core.models import now
+    from services.repository import audit
+    profile=child(profile_id,lock=True)
+    row=db().scalar(query_records(profile.id,'vaccination').where(ChildRecord.id==str(record_id)).with_for_update())
+    if not row:raise APIError(404,'record_not_found','Vaccination record not found')
+    if row.data.get('source_role')!='DOCTOR' or row.data.get('author_id')!=g.user.id:
+        raise APIError(403,'record_author_required','Only the authoring doctor can remove this vaccination record')
+    db().add(ChildRecordRevision(record_id=row.id,actor_id=g.user.id,action='removed',data=row.data))
+    row.deleted_at=now()
+    audit('doctor_vaccination_removed',profile.owner_id,g.user.id)
+    from services.notifications import enqueue
+    enqueue(profile.owner_id,'child_record_removed','Your child care record was updated','Your connected doctor removed a vaccination entry. Open Child Care to review it.',{'profile_id':profile.id,'area':'vaccination'},event_key='child-record-removed:'+row.id)
+    db().commit()
+    return jsonify(message='Vaccination entry removed from this child profile')
+
 route(bp,'/<uuid:profile_id>/child-records/<area>',entries,roles=('DOCTOR',))
 route(bp,'/<uuid:profile_id>/child-records/<area>',add,'POST',roles=('DOCTOR',),schema=RecordInput)
+route(bp,'/<uuid:profile_id>/child-records/vaccination/<uuid:record_id>',remove_vaccination,'DELETE',roles=('DOCTOR',))

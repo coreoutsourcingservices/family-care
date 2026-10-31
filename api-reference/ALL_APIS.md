@@ -13,7 +13,7 @@ Base URL: `http://127.0.0.1:5001`. All registered GET/POST/PUT/PATCH/DELETE meth
 | Superadmin | http://127.0.0.1:3005/superadmin | POST /api/v1/superadmin/login |
 
 Web uses role-scoped HttpOnly cookie sessions. Send `X-Auth-Transport: cookie`, `X-Requested-With: FamilyCare`, credentials include and `X-CSRF-Token` for authenticated mutations. App clients use `X-Auth-Transport: bearer` and `Authorization: Bearer <access_token>`. Never mix transports. JSON requests use Content-Type application/json; file uploads use multipart/form-data without manually setting its boundary.
-
+  
 Doctor login can return 202 for profile setup/review instead of a clinical access session. Follow `requires_profile_setup`, `setup_token` and approval status. Setup tokens authorize setup only. Notification tokens authorize the doctor notification inbox only. Standard access tokens authorize role-protected clinical/profile APIs.
 
 ## UI coverage and method availability

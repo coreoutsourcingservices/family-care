@@ -133,3 +133,16 @@ Doctor child-care `prescription` entries use the existing `care` record kind wit
 displayed in the patient overview alongside vaccinations and other care notes.
 The doctor patient list opens `/doctor/patients/{profile_id}`; shared document
 access restrictions remain enforced by the API.
+
+Doctor-authored vaccination history supports
+`DELETE /api/v1/doctors/care-profiles/{profile_id}/child-records/vaccination/{record_id}`.
+Only the current connected authoring doctor can remove their own entry. Removal
+is soft, audited with a record revision, and notifies the owning family. Family
+entries and entries by another doctor are denied. Shared schedule doses use the
+existing child-specific applicability review instead: `NOT_APPLICABLE` preserves
+the shared catalog and other children's plans. The doctor UI requires a clinical
+reason and explicit professional attestation; it also supports review/restore.
+
+Customer vaccination pages show recorded doses first and age-wise UIP/IAP plans
+below. Both portals default to the combined view and allow either programme to
+be selected separately. The current age group opens first for each child.

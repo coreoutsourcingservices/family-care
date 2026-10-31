@@ -73,6 +73,21 @@ def test_doctor_child_writes_are_scoped_and_private_history_hidden(app,client):
     assert client.get(base+'/prescription',headers=doc).json['total']==1
     assert client.get(overview,headers=headers).json['total']==2
 
+    vaccination=client.post(base+'/vaccination',headers=doc,json={'title':'Clinic recorded dose','date':'2026-01-01','status':'Completed'})
+    assert vaccination.status_code==201,vaccination.json
+    identifier=vaccination.json['record']['id']
+    deletion=base+'/vaccination/'+identifier
+    assert client.delete(deletion,headers=headers).status_code==403
+    assert client.delete(f'/api/v1/doctors/care-profiles/{private}/child-records/vaccination/{identifier}',headers=doc).status_code==404
+    family=client.post(f'/api/v1/children/{profile}/vaccinations/history',headers=headers,json={'title':'Family dose','date':'2026-01-01','status':'Completed'}).json['record']['id']
+    assert client.delete(base+'/vaccination/'+family,headers=doc).status_code==403
+    assert client.delete(deletion,headers=doc).status_code==200
+    assert client.delete(deletion,headers=doc).status_code==404
+    assert all(item['id']!=identifier for item in client.get(f'/api/v1/children/{profile}/records',headers=headers).json['items'])
+    with app.app_context():
+        assert db().get(ChildRecord,identifier).deleted_at is not None
+        assert db().scalar(select(ChildRecordRevision).where(ChildRecordRevision.record_id==identifier,ChildRecordRevision.action=='removed'))
+
 def test_report_review_category_persistence_and_duplicate_import(app,client):
     headers=patient(app,client)
     _,referral=doctor(app)
