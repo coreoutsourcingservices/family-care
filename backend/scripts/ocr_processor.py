@@ -98,13 +98,13 @@ def translation_chunks(text,limit=450):
     return chunks
 
 
-def translate(text,language):
+def translate(text,language,target='en'):
     from deep_translator import MyMemoryTranslator
     from deep_translator.constants import BASE_URLS
     from deep_translator.exceptions import TooManyRequests
     import requests
     from urllib.parse import urlsplit
-    codes={'hi':'hi-IN','mr':'mr-IN','ne':'ne-NP','sa':'sa-IN','ta':'ta-IN','te':'te-IN',
+    codes={'en':'en-GB','hi':'hi-IN','mr':'mr-IN','ne':'ne-NP','sa':'sa-IN','ta':'ta-IN','te':'te-IN',
         'ur':'ur-PK','ar':'ar-SA','fr':'fr-FR','de':'de-DE','es':'es-ES','pt':'pt-PT','ru':'ru-RU'}
     if len(text)>4000:raise TranslationTooLong()
     # deep-translator 1.11 defaults MyMemory to HTTP; always use verified HTTPS.
@@ -127,7 +127,7 @@ def translate(text,language):
         return response
     requests.get=bounded
     try:
-        translator=MyMemoryTranslator(source=codes[language],target='en-GB')
+        translator=MyMemoryTranslator(source=codes[language],target=codes[target])
         translated=[]
         for index,chunk in enumerate(translation_chunks(text)):
             if index:time.sleep(0.3)
@@ -136,7 +136,7 @@ def translate(text,language):
     finally:requests.get=original
 
 
-def process(path,language,wants_translation):
+def process(path,language,wants_translation,target='en'):
     pages=extract(path,language);text='\n\n'.join(page['text'] for page in pages).strip()
     result=dict(engine='PaddleOCR',source_language=language,page_count=len(pages),pages=pages,original_text=text,english_text=None,
         translation_status='NOT_REQUESTED',warnings=['Machine-extracted text and translation can contain errors. Verify names, medicine doses, dates and units against the original report.'])
@@ -144,21 +144,23 @@ def process(path,language,wants_translation):
         result['warnings'].append('No readable text found. Try a clearer printed scan; handwriting may not be recognized.')
         result['translation_status']='NO_TEXT'
     elif wants_translation:
-        if language=='en':result.update(english_text=text,translation_status='COMPLETED')
+        if language==target:result.update(translated_text=text,english_text=text if target=='en' else None,translation_status='COMPLETED')
         else:
-            try:result.update(english_text=translate(text,language),translation_status='COMPLETED',translation_provider='MyMemory via deep-translator')
+            try:
+                translated=translate(text,language) if target=='en' else translate(text,language,target)
+                result.update(translated_text=translated,english_text=translated if target=='en' else None,target_language=target,translation_status='COMPLETED',translation_provider='MyMemory via deep-translator')
             except Exception as error:
                 result['translation_status']='FAILED'
                 limited=type(error).__name__=='TooManyRequests'
-                message='MyMemory free translation quota is temporarily unavailable. Original text is retained; wait before retrying.' if limited else 'Free translation supports reports up to 4000 characters. Original text is retained; split the document for translation.' if type(error).__name__=='TranslationTooLong' else 'English translation failed. Original extracted text is retained; retry if desired.'
+                message='MyMemory free translation quota is temporarily unavailable. Original text is retained; wait before retrying.' if limited else 'Free translation supports reports up to 4000 characters. Original text is retained; split the document for translation.' if type(error).__name__=='TranslationTooLong' else 'Translation failed. Original extracted text is retained; retry if desired.'
                 result['translation_error']=dict(code='translation_rate_limited' if limited else 'translation_too_long' if type(error).__name__=='TranslationTooLong' else 'translation_unavailable',message=message)
                 result['warnings'].append(message)
     return result
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('input');parser.add_argument('output');parser.add_argument('language');parser.add_argument('--translate',action='store_true');args=parser.parse_args()
-    try:result=process(Path(args.input),args.language,args.translate)
+    parser=argparse.ArgumentParser();parser.add_argument('input');parser.add_argument('output');parser.add_argument('language');parser.add_argument('--translate',action='store_true');parser.add_argument('--target-language',default='en');args=parser.parse_args()
+    try:result=process(Path(args.input),args.language,args.translate,args.target_language)
     except ValueError as error:result={'error':str(error) if str(error) in ('invalid_document','too_many_pages','image_too_large','text_too_large') else 'processing_failed'}
     except Exception:result={'error':'processing_failed'}
     Path(args.output).write_text(json.dumps(result,ensure_ascii=False),encoding='utf-8')

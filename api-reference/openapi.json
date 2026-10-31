@@ -12338,6 +12338,29 @@
                     "type": "string",
                     "format": "binary",
                     "description": "PDF/JPEG/PNG/WebP; max 10 MB"
+                  },
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "Doctor report",
+                      "Lab tests",
+                      "Prescriptions",
+                      "Scans",
+                      "Vaccination",
+                      "Others"
+                    ]
+                  },
+                  "auto_read": {
+                    "type": "string",
+                    "enum": [
+                      "true",
+                      "false"
+                    ],
+                    "description": "Queue OCR and automatic unreviewed record creation; imaging skips OCR"
+                  },
+                  "source_language": {
+                    "type": "string",
+                    "default": "en"
                   }
                 }
               }
@@ -13608,14 +13631,6 @@
             }
           }
         },
-        "security": [
-          {
-            "bearerAuth": []
-          },
-          {
-            "cookieAuth": []
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -13625,12 +13640,23 @@
               },
               "example": {
                 "source_language": "hi",
+                "target_language": "en",
+                "translate": false,
+                "auto_import": false,
                 "translate_to_english": false,
                 "external_translation_consent": false
               }
             }
           }
         },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
         "x-example-kind": "synthetic-contract"
       }
     },
@@ -13876,7 +13902,7 @@
         "summary": "patient import record",
         "parameters": [
           {
-            "name": "profile_id",
+            "name": "report_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -13885,7 +13911,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "report_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -14095,6 +14121,17 @@
                   }
                 }
               }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportInput"
+              },
+              "example": {}
             }
           }
         },
@@ -54732,6 +54769,240 @@
         },
         "x-example-kind": "synthetic-contract"
       }
+    },
+    "/api/v1/patients/profiles/{profile_id}/reports/{report_id}": {
+      "delete": {
+        "operationId": "patient_delete_report_delete",
+        "tags": [
+          "patients"
+        ],
+        "summary": "patient delete report",
+        "parameters": [
+          {
+            "name": "profile_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "report_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Report, extracted text and linked imported records deleted"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
     }
   },
   "components": {
@@ -55996,6 +56267,22 @@
             "title": "Source Language",
             "type": "string"
           },
+          "target_language": {
+            "default": "en",
+            "maxLength": 8,
+            "title": "Target Language",
+            "type": "string"
+          },
+          "translate": {
+            "default": false,
+            "title": "Translate",
+            "type": "boolean"
+          },
+          "auto_import": {
+            "default": false,
+            "title": "Auto Import",
+            "type": "boolean"
+          },
           "translate_to_english": {
             "default": false,
             "title": "Translate To English",
@@ -56556,6 +56843,37 @@
           "attestation"
         ],
         "title": "Decision",
+        "type": "object"
+      },
+      "ImportInput": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "history",
+              "prescription",
+              "growth",
+              "vaccination",
+              "nutrition"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "reviewed": {
+            "const": true,
+            "title": "Reviewed",
+            "type": "boolean"
+          },
+          "record": {
+            "$ref": "#/components/schemas/RecordInput"
+          }
+        },
+        "required": [
+          "kind",
+          "reviewed",
+          "record"
+        ],
+        "title": "ImportInput",
         "type": "object"
       }
     },

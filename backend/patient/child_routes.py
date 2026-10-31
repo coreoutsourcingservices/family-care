@@ -80,7 +80,7 @@ def child(child_id, lock=False):
 
 
 def record_data(record):
-    data = dict(record.data, id=record.id, kind=record.kind, verification_status='DOCTOR_REPORTED' if record.data.get('source_role')=='DOCTOR' else 'PARENT_REPORTED')
+    data = dict(record.data, id=record.id, kind=record.kind, verification_status='EXTRACTED_UNREVIEWED' if record.data.get('source_role')=='REPORT' else 'DOCTOR_REPORTED' if record.data.get('source_role')=='DOCTOR' else 'PARENT_REPORTED')
     if record.kind == 'vaccination':
         from services.vaccination import display_age_group
         profile = db().get(CareProfile, record.profile_id)
@@ -149,8 +149,8 @@ def validate_record(payload, kind, profile):
         raise APIError(422, 'invalid_date', 'This record cannot be dated in the future')
     if kind == 'growth' and (not payload.weight or not payload.height):
         raise APIError(422, 'missing_measurements', 'Enter weight in kg and height in cm')
-    if kind == 'vaccination' and payload.status not in ('Completed', 'Planned','Missed'):
-        raise APIError(422, 'invalid_status', 'Choose Completed, Planned or Missed')
+    if kind == 'vaccination' and payload.status not in ('Completed', 'Planned','Missed','Review pending'):
+        raise APIError(422, 'invalid_status', 'Choose Completed, Planned, Missed or Review pending')
     if kind == 'vaccination' and payload.status == 'Completed' and payload.date > today():
         raise APIError(422, 'invalid_date', 'Completed vaccination cannot be in the future')
     if kind == 'consultation_request' and not profile.referred_doctor_id:
@@ -225,7 +225,7 @@ def edit_record(child_id, resource, record_id):
     existing = {key:value for key,value in row.data.items() if key in RecordInput.model_fields}
     data = validate_record(RecordInput.model_validate(dict(existing, **patch)), row.kind, profile)
     db().add(ChildRecordRevision(record_id=row.id, actor_id=g.user.id, action='updated', data=row.data))
-    for key in ('source_role','author_id','source_report_id','reviewed'):
+    for key in ('source_role','author_id','source_report_id','source_report_section','reviewed','extraction_status','date_source'):
         if key in row.data:data[key]=row.data[key]
     row.data = data
     audit('child_record_updated', profile.owner_id, g.user.id)

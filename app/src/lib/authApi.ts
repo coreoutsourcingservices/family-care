@@ -20,7 +20,7 @@ export function refreshSession(portal=publicPortal()) {
 export async function authApi(path: string, body?: Record<string, unknown>, method: 'POST' | 'GET' = 'POST', retry = true, portal=publicPortal(path)): Promise<AuthResponse> {
   const headers: Record<string, string> = { 'X-Auth-Transport': 'cookie', 'X-Requested-With': 'FamilyCare', 'X-FamilyCare-Portal':portal };
   if (body !== undefined) headers['Content-Type'] = 'application/json';
-  const csrf = sessionStorage.getItem('familycare_csrf_'+portal)??sessionStorage.getItem('familycare_csrf');
+  const csrf = localStorage.getItem('familycare_csrf_'+portal)??sessionStorage.getItem('familycare_csrf_'+portal)??sessionStorage.getItem('familycare_csrf');
   if (csrf) headers['X-CSRF-Token'] = csrf;
   let response: Response;
   try {
@@ -43,7 +43,7 @@ export async function authApi(path: string, body?: Record<string, unknown>, meth
     const fields = data.error?.fields?.map((field: { field: string }) => field.field.replaceAll('_', ' ')).join(', ');
     throw new ApiError(`${data.error?.message ?? 'Request failed'}${fields ? `: ${fields}` : ''}`, data.error?.code ?? 'request_failed', response.status);
   }
-  if (data.csrf_token) sessionStorage.setItem('familycare_csrf_'+portal, data.csrf_token);
-  if (path === '/auth/logout') sessionStorage.removeItem('familycare_csrf_'+portal);
+  if (data.csrf_token) { sessionStorage.setItem('familycare_csrf_'+portal, data.csrf_token); localStorage.setItem('familycare_csrf_'+portal, data.csrf_token); }
+  if (path === '/auth/logout') { sessionStorage.removeItem('familycare_csrf_'+portal); localStorage.removeItem('familycare_csrf_'+portal); }
   return data;
 }

@@ -55,6 +55,14 @@ Upload JSON responses return metadata and, when configured, a temporary signed U
 - Reports: upload -> request extraction -> poll job -> optionally request translation with explicit consent -> review extracted values before importing a diary record. OCR and translation are separate operations.
 - Women profiles use the shared profile, referral and report APIs. Only the methods in the inventory are implemented.
 
+## Report upload, reading and deletion
+
+OCR results generate editable drafts for medical history, prescriptions, growth, vaccination and nutrition when matching text is found. With `auto_read=true`, successful reading automatically saves unreviewed entries. Without automatic reading, the reviewed import endpoint remains available. The report `/import` endpoint accepts `kind: prescription` as an owner-reviewed Medicine entry in medical history. A history entry and prescription entry from the same report are independently deduplicated and both removed when the source report is deleted. No medicine dose or diagnosis is inferred beyond the extracted text.
+
+Select the report category before selecting a file. Multipart uploads accept `category` (Doctor report, Lab tests, Prescriptions, Scans, Vaccination, Others), `source_language` and `auto_read=true`. The child reports UI requests automatic reading. Successful text extraction automatically creates source-linked, unreviewed medical history plus matching medicine, growth, nutrition and vaccination observations. Vaccination mentions remain Review pending and do not confirm administration. Rereading is deduplicated and never overwrites an owner-reviewed record. `Scans` means X-ray / imaging and skips OCR. Other documents can request text extraction; poll the report `/text` endpoint for results. `source_language` selects the printed language, `target_language` selects the display language, and `translate: true` requires `external_translation_consent: true` when these differ. Existing `translate_to_english` requests remain supported.
+
+`DELETE /api/v1/patients/profiles/{profile_id}/reports/{report_id}` requires the patient session and CSRF header for cookie clients. It removes the stored file, extracted text and diary records imported from that report. Independently added records remain. Returns HTTP 200 with a confirmation message; inaccessible reports return 404 and storage deletion failure returns 502 without removing the database report.
+
 ## Every registered resource and verb
 
 | Path | GET | POST | PUT | PATCH | DELETE |
@@ -191,6 +199,7 @@ Upload JSON responses return metadata and, when configured, a temporary signed U
 | `/api/v1/patients/profiles/{profile_id}/doctor-overview` | Yes | — | — | — | — |
 | `/api/v1/patients/profiles/{profile_id}/imported-records` | Yes | — | — | — | — |
 | `/api/v1/patients/profiles/{profile_id}/reports` | Yes | Yes | — | — | — |
+| `/api/v1/patients/profiles/{profile_id}/reports/{report_id}` | — | — | — | — | Yes |
 | `/api/v1/patients/profiles/{profile_id}/reports/{report_id}/category` | — | — | — | Yes | — |
 | `/api/v1/patients/profiles/{profile_id}/reports/{report_id}/download` | Yes | — | — | — | — |
 | `/api/v1/patients/profiles/{profile_id}/reports/{report_id}/import` | — | Yes | — | — | — |

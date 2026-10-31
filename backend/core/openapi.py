@@ -48,6 +48,8 @@ def success_examples(path, method='GET'):
         report = {'id':'<report UUID>','profile_id':'<profile UUID>','name':'blood-test.pdf','storage_provider':'cloudinary','url':'<short-lived signed Cloudinary URL>','public_id':'familycare/C000001/profiles/<profile UUID>/child/reports/<report UUID>_blood-test.pdf','folder':'familycare/C000001/profiles/<profile UUID>/child/reports','resource_type':'raw','delivery_type':'authenticated','url_expires_in':300}
         if path.endswith('/reports'):
             return {201:{'report':report}} if method=='POST' else {200:{'items':[report],'total':1,'page':1,'per_page':25}}
+        if method=='DELETE' and re.search(r'/reports/[^/]+$',path):
+            return {200:{'message':'Report, extracted text and linked imported records deleted'}}
         if path.endswith('/download'):
             return {200:{'report':report}}
         if path.endswith(('/profiles','/care-profiles')):
@@ -150,7 +152,7 @@ def specification(app):
             provided = meta.get('schema')
             name = provided.__name__ if isinstance(provided,type) else provided
             if name == 'ReportUpload':
-                operation['requestBody'] = {'required': True, 'content': {'multipart/form-data': {'schema': {'type':'object','required':['file'],'properties':{'file':{'type':'string','format':'binary','description':'PDF/JPEG/PNG/WebP; max 10 MB'}}}}}}
+                operation['requestBody'] = {'required': True, 'content': {'multipart/form-data': {'schema': {'type':'object','required':['file'],'properties':{'file':{'type':'string','format':'binary','description':'PDF/JPEG/PNG/WebP; max 10 MB'},'category':{'type':'string','enum':['Doctor report','Lab tests','Prescriptions','Scans','Vaccination','Others']},'auto_read':{'type':'string','enum':['true','false'],'description':'Queue OCR and automatic unreviewed record creation; imaging skips OCR'},'source_language':{'type':'string','default':'en'}}}}}}
             elif name:
                 if name == 'RefreshRequest':
                     components[name] = {'type': 'object', 'additionalProperties': False, 'required': ['refresh_token'],

@@ -20,6 +20,7 @@ from services.repository import audit
 LANGUAGES={'hi':'Hindi','en':'English','mr':'Marathi','ne':'Nepali','sa':'Sanskrit','ta':'Tamil','te':'Telugu','ur':'Urdu','ar':'Arabic','fr':'French','de':'German','es':'Spanish','pt':'Portuguese','ru':'Russian'}
 ROOT=Path(__file__).resolve().parents[1]
 MESSAGES={'processing_failed':'Text extraction failed. Try a clearer scan or a smaller file.',
+ 'processor_stopped':'Report reading stopped before finishing. Please retry; your uploaded report is retained.',
  'processor_timeout':'Processing took too long. Try fewer pages or a clearer scan.',
  'report_download_failed':'The stored report could not be read. Please retry.',
  'invalid_document':'The image or PDF could not be decoded. Use a clear, unencrypted file.',
@@ -30,12 +31,18 @@ MESSAGES={'processing_failed':'Text extraction failed. Try a clearer scan or a s
 
 class Options(Schema):
     source_language:str=Field(default='hi',max_length=8)
+    target_language:str=Field(default='en',max_length=8)
+    translate:bool=False
+    auto_import:bool=False
     translate_to_english:bool=False
     external_translation_consent:bool=False
 
     @model_validator(mode='after')
     def valid(self):
         if self.source_language not in LANGUAGES:raise ValueError('Unsupported OCR language')
+        if self.target_language not in LANGUAGES:raise ValueError('Unsupported display language')
+        if self.translate and self.source_language!=self.target_language and not self.external_translation_consent:
+            raise ValueError('Explicit consent is required before sending extracted medical text to MyMemory')
         if self.translate_to_english and self.source_language!='en' and not self.external_translation_consent:
             raise ValueError('Explicit consent is required before sending extracted medical text to MyMemory')
         return self
@@ -60,13 +67,15 @@ def get_text(profile_id,report_id):
 
 def request_text(profile_id,report_id):
     report=accessible_report(g.user,str(profile_id),str(report_id))
+    if report.category_reviewed and report.category == 'Scans':
+        raise APIError(409,'imaging_ocr_skipped','X-ray and imaging files are stored without text extraction')
     value=parse(Options).model_dump(mode='json')
     if not processor_python().is_file():raise APIError(503,'processor_unavailable',MESSAGES['processor_unavailable'])
     # Lock the parent row, including when a result has not yet been created.
     db().scalar(select(CareReport).where(CareReport.id==report.id).with_for_update())
     row=db().get(ReportText,report.id)
     if row and row.status in ('QUEUED','PROCESSING'):return jsonify(analysis=serialize(row)),202
-    if value['translate_to_english'] and value['source_language']!='en' and row and row.status=='PARTIAL' and row.result.get('translation_error',{}).get('code')=='translation_rate_limited' and row.updated_at>now()-timedelta(seconds=60):
+    if (value['translate_to_english'] or value.get('translate')) and value['source_language']!=value.get('target_language','en') and row and row.status=='PARTIAL' and row.result.get('translation_error',{}).get('code')=='translation_rate_limited' and row.updated_at>now()-timedelta(seconds=60):
         raise APIError(429,'translation_rate_limited','The translation provider is rate-limiting requests. Wait at least one minute before retrying.')
     if row and row.status=='COMPLETED' and row.options==value:return jsonify(analysis=serialize(row))
     if not row:row=ReportText(report_id=report.id,requested_by=g.user.id,options=value);db().add(row)
@@ -112,12 +121,17 @@ def run_processor(report,options):
         source=Path(temp)/('document.'+extension);output=Path(temp)/'result.json'
         source.write_bytes(content)
         args=[str(processor_python()),str(ROOT/'scripts'/'ocr_processor.py'),str(source),str(output),options['source_language']]
-        if options['translate_to_english']:args.append('--translate')
+        if options['translate_to_english'] or options.get('translate'):args.append('--translate')
+        if options.get('translate'):
+            args.extend(['--target-language',options.get('target_language','en')])
         try:
-            subprocess.run(args,stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,
+            execution=subprocess.run(args,stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,
                 timeout=360,check=False,creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
         except subprocess.TimeoutExpired:raise ValueError('processor_timeout') from None
         except OSError:raise ValueError('processor_unavailable') from None
+        if not output.is_file() and execution.returncode!=0:
+            current_app.logger.warning('OCR processor exited before producing output: %s',execution.returncode)
+            raise ValueError('processor_stopped')
         if not output.is_file() or output.stat().st_size>2*1024*1024:raise ValueError('processing_failed')
         result=json.loads(output.read_text(encoding='utf-8'))
         if result.get('error'):raise ValueError(result['error'])
@@ -146,6 +160,10 @@ def process_one():
         row.result=result or {};row.error_code=code
         row.status='FAILED' if code else 'PARTIAL' if result.get('translation_status')=='FAILED' else 'COMPLETED'
         report=db().get(CareReport,row.report_id)
+        if not code and report and options.get('auto_import'):
+            from services.report_auto_records import save_extracted_records
+            saved=save_extracted_records(report,result,row.requested_by)
+            row.result=dict(result,auto_records=saved)
         if not code and report and not report.category_reviewed:
             from services.report_records import infer_category
             report.category=infer_category((result.get('english_text') or '')+'\n'+(result.get('original_text') or ''))

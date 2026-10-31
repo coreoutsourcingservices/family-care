@@ -5,7 +5,7 @@ export async function careApi<T>(path: string, body?: FormData | Record<string, 
   const headers: Record<string, string> = { 'X-Auth-Transport': 'cookie', 'X-Requested-With': 'FamilyCare', 'X-FamilyCare-Portal':portal };
   const multipart = body instanceof FormData;
   if (body && !multipart) headers['Content-Type'] = 'application/json';
-  const csrf = sessionStorage.getItem('familycare_csrf_'+portal)??sessionStorage.getItem('familycare_csrf');
+  const csrf = localStorage.getItem('familycare_csrf_'+portal)??sessionStorage.getItem('familycare_csrf_'+portal)??sessionStorage.getItem('familycare_csrf');
   if (csrf) headers['X-CSRF-Token'] = csrf;
   let response: Response;
   try {
@@ -20,6 +20,7 @@ export async function careApi<T>(path: string, body?: FormData | Record<string, 
     if (response.status === 401 && data.error?.code === 'invalid_token' && retry) {
       await refreshSession(portal); return careApi(path, body, false, method);
     }
+    if (data.error?.code === 'csrf_failed') throw new ApiError('Your login security token has changed. Sign out and sign in again, then retry. Your saved reports are retained.', 'csrf_failed', 403);
     const fields = data.error?.fields?.map((field: { field: string; message?:string }) => field.message?(field.field?field.field.replaceAll('_',' ')+': ':'')+field.message.replace(/^Value error, /,''):field.field).join(', ');
     throw new ApiError(`${data.error?.message ?? 'Request failed'}${fields ? `: ${fields}` : ''}`, data.error?.code ?? 'request_failed', response.status);
   }
