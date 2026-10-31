@@ -31,7 +31,8 @@ def settings(overrides=None):
                   CLOUDINARY_CLOUD_NAME=os.getenv('CLOUDINARY_CLOUD_NAME', ''),
                   CLOUDINARY_API_KEY=os.getenv('CLOUDINARY_API_KEY', ''),
                   CLOUDINARY_API_SECRET=os.getenv('CLOUDINARY_API_SECRET', ''),
-                  MAX_REPORT_BYTES=10 * 1024 * 1024)
+                  MAX_REPORT_BYTES=10 * 1024 * 1024,
+                  FAMILY_INVITE_FRONTEND_URL=os.getenv('FAMILY_INVITE_FRONTEND_URL','http://127.0.0.1:5173'))
     config.update(overrides or {})
     for key in ('JWT_SECRET_KEY', 'OTP_HMAC_SECRET'):
         if len(config[key]) < 32:
