@@ -19048,7 +19048,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"items\": [\n    {\n      \"id\": \"<child UUID>\",\n      \"full_name\": \"Example child\",\n      \"module\": \"child\",\n      \"date_of_birth\": \"2020-01-01\",\n      \"profile_type\": \"member\",\n      \"doctor\": null,\n      \"age\": {\n        \"completed_years\": 6,\n        \"remaining_months\": 9,\n        \"remaining_days\": 29,\n        \"total_completed_months\": 81,\n        \"total_days\": 2494,\n        \"display\": \"6 years 9 months 29 days\",\n        \"primary_category\": \"SCHOOL_AGE\",\n        \"secondary_categories\": [],\n        \"in_child_module_scope\": true\n      }\n    }\n  ],\n  \"total\": 1,\n  \"page\": 1,\n  \"per_page\": 25\n}"
+          "body": "{\n  \"items\": [\n    {\n      \"id\": \"<child UUID>\",\n      \"full_name\": \"Example child\",\n      \"module\": \"child\",\n      \"date_of_birth\": \"2020-01-01\",\n      \"profile_type\": \"member\",\n      \"doctor\": null,\n      \"age\": {\n        \"completed_years\": 6,\n        \"remaining_months\": 9,\n        \"remaining_days\": 30,\n        \"total_completed_months\": 81,\n        \"total_days\": 2495,\n        \"display\": \"6 years 9 months 30 days\",\n        \"primary_category\": \"SCHOOL_AGE\",\n        \"secondary_categories\": [],\n        \"in_child_module_scope\": true\n      }\n    }\n  ],\n  \"total\": 1,\n  \"page\": 1,\n  \"per_page\": 25\n}"
         }
       ]
     },
@@ -19379,7 +19379,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"child\": {\n    \"id\": \"<child UUID>\",\n    \"full_name\": \"Example child\",\n    \"module\": \"child\",\n    \"date_of_birth\": \"2020-01-01\",\n    \"profile_type\": \"member\",\n    \"doctor\": null,\n    \"age\": {\n      \"completed_years\": 6,\n      \"remaining_months\": 9,\n      \"remaining_days\": 29,\n      \"total_completed_months\": 81,\n      \"total_days\": 2494,\n      \"display\": \"6 years 9 months 29 days\",\n      \"primary_category\": \"SCHOOL_AGE\",\n      \"secondary_categories\": [],\n      \"in_child_module_scope\": true\n    }\n  }\n}"
+          "body": "{\n  \"child\": {\n    \"id\": \"<child UUID>\",\n    \"full_name\": \"Example child\",\n    \"module\": \"child\",\n    \"date_of_birth\": \"2020-01-01\",\n    \"profile_type\": \"member\",\n    \"doctor\": null,\n    \"age\": {\n      \"completed_years\": 6,\n      \"remaining_months\": 9,\n      \"remaining_days\": 30,\n      \"total_completed_months\": 81,\n      \"total_days\": 2495,\n      \"display\": \"6 years 9 months 30 days\",\n      \"primary_category\": \"SCHOOL_AGE\",\n      \"secondary_categories\": [],\n      \"in_child_module_scope\": true\n    }\n  }\n}"
         }
       ]
     },
@@ -19710,7 +19710,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"age\": {\n    \"completed_years\": 6,\n    \"remaining_months\": 9,\n    \"remaining_days\": 29,\n    \"total_completed_months\": 81,\n    \"total_days\": 2494,\n    \"display\": \"6 years 9 months 29 days\",\n    \"primary_category\": \"SCHOOL_AGE\",\n    \"secondary_categories\": [],\n    \"in_child_module_scope\": true\n  },\n  \"as_of_date\": \"2026-10-30\"\n}"
+          "body": "{\n  \"age\": {\n    \"completed_years\": 6,\n    \"remaining_months\": 9,\n    \"remaining_days\": 30,\n    \"total_completed_months\": 81,\n    \"total_days\": 2495,\n    \"display\": \"6 years 9 months 30 days\",\n    \"primary_category\": \"SCHOOL_AGE\",\n    \"secondary_categories\": [],\n    \"in_child_module_scope\": true\n  },\n  \"as_of_date\": \"2026-10-31\"\n}"
         }
       ]
     },
