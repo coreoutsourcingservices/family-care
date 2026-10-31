@@ -51123,6 +51123,1755 @@
         "x-example-kind": "synthetic-contract"
       }
     },
+    "/api/v1/patients/family-invitations": {
+      "post": {
+        "operationId": "family_invitations_create_invite_post",
+        "tags": [
+          "patients"
+        ],
+        "summary": "family invitations create invite",
+        "parameters": [
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT",
+        "responses": {
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "invitation": {
+                    "id": "<invitation UUID>",
+                    "full_name": "Example Member",
+                    "email": "member@example.com",
+                    "module": "women",
+                    "relationship": "Family member",
+                    "status": "PENDING",
+                    "expires_at": "<UTC timestamp, 24 hours after creation>",
+                    "profile_id": null
+                  },
+                  "email_status": "sent"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Invitation expired, revoked or accepted",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "invite_unavailable",
+                    "message": "Invitation expired, revoked or already accepted"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FamilyInvite"
+              },
+              "example": {
+                "full_name": "Example Member",
+                "email": "member@example.com",
+                "module": "women",
+                "relationship": "Family member"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      },
+      "get": {
+        "operationId": "family_invitations_list_invites_get",
+        "tags": [
+          "patients"
+        ],
+        "summary": "family invitations list invites",
+        "parameters": [
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT",
+        "responses": {
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "items": [
+                    {
+                      "id": "<invitation UUID>",
+                      "full_name": "Example Member",
+                      "email": "member@example.com",
+                      "module": "women",
+                      "relationship": "Family member",
+                      "status": "PENDING",
+                      "expires_at": "<UTC timestamp, 24 hours after creation>",
+                      "profile_id": null
+                    }
+                  ],
+                  "total": 1,
+                  "page": 1,
+                  "per_page": 25
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Invitation expired, revoked or accepted",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "invite_unavailable",
+                    "message": "Invitation expired, revoked or already accepted"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/patients/family-invitations/{invite_id}": {
+      "delete": {
+        "operationId": "family_invitations_revoke_invite_delete",
+        "tags": [
+          "patients"
+        ],
+        "summary": "family invitations revoke invite",
+        "parameters": [
+          {
+            "name": "invite_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT",
+        "responses": {
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Invitation revoked"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Invitation expired, revoked or accepted",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "invite_unavailable",
+                    "message": "Invitation expired, revoked or already accepted"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/family-invitations/{token}": {
+      "get": {
+        "operationId": "family_invitations_preview_get",
+        "tags": [
+          "family-invitations"
+        ],
+        "summary": "family invitations preview",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Secret invitation token from the email link; not a UUID. Never log or publish it."
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Invitation secret authorizes this operation; no login session required. One-use link expires in 24 hours.",
+        "responses": {
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "invitation": {
+                    "id": "<invitation UUID>",
+                    "full_name": "Example Member",
+                    "email": "member@example.com",
+                    "module": "women",
+                    "relationship": "Family member",
+                    "status": "PENDING",
+                    "expires_at": "<UTC timestamp, 24 hours after creation>",
+                    "profile_id": null
+                  },
+                  "family": {
+                    "full_name": "Example Family",
+                    "email": "family@example.com"
+                  },
+                  "form": {
+                    "full_name": "Example Member",
+                    "email": "member@example.com",
+                    "readonly": [
+                      "full_name",
+                      "email"
+                    ]
+                  },
+                  "otp_destination": "inviting_family_email",
+                  "shared_profile": true
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Invitation expired, revoked or accepted",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "invite_unavailable",
+                    "message": "Invitation expired, revoked or already accepted"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/family-invitations/{token}/setup": {
+      "post": {
+        "operationId": "family_invitations_setup_post",
+        "tags": [
+          "family-invitations"
+        ],
+        "summary": "family invitations setup",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Secret invitation token from the email link; not a UUID. Never log or publish it."
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Invitation secret authorizes this operation; no login session required. One-use link expires in 24 hours.",
+        "responses": {
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Approval OTP sent to the inviting family email.",
+                  "email_status": "sent",
+                  "otp_destination": "inviting_family_email",
+                  "expires_in": 300,
+                  "resend_after": 60
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Invitation expired, revoked or accepted",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "invite_unavailable",
+                    "message": "Invitation expired, revoked or already accepted"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FamilySetup"
+              },
+              "example": {
+                "full_name": "Example Member",
+                "email": "member@example.com",
+                "mobile_number": "+919876543211",
+                "date_of_birth": "1995-02-28",
+                "password": "Choose-Your-Password8!",
+                "confirm_password": "Choose-Your-Password8!"
+              }
+            }
+          }
+        },
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/family-invitations/{token}/resend-otp": {
+      "post": {
+        "operationId": "family_invitations_resend_post",
+        "tags": [
+          "family-invitations"
+        ],
+        "summary": "family invitations resend",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Secret invitation token from the email link; not a UUID. Never log or publish it."
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Invitation secret authorizes this operation; no login session required. One-use link expires in 24 hours.",
+        "responses": {
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Approval OTP sent to the inviting family email.",
+                  "email_status": "sent",
+                  "otp_destination": "inviting_family_email",
+                  "expires_in": 300,
+                  "resend_after": 60
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Invitation expired, revoked or accepted",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "invite_unavailable",
+                    "message": "Invitation expired, revoked or already accepted"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/family-invitations/{token}/verify-otp": {
+      "post": {
+        "operationId": "family_invitations_verify_post",
+        "tags": [
+          "family-invitations"
+        ],
+        "summary": "family invitations verify",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Secret invitation token from the email link; not a UUID. Never log or publish it."
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Invitation secret authorizes this operation; no login session required. One-use link expires in 24 hours.",
+        "responses": {
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Profile setup complete. Sign in with your own email and password.",
+                  "user": {
+                    "id": "<member UUID>",
+                    "public_id": "C000002",
+                    "full_name": "Example Member",
+                    "email": "member@example.com",
+                    "phone_number": "+919876543211",
+                    "role": "PATIENT",
+                    "email_verified": true,
+                    "approval_status": "APPROVED",
+                    "account_status": "ACTIVE",
+                    "must_change_password": false,
+                    "referred_doctor": null
+                  },
+                  "profile": {
+                    "id": "<profile UUID>",
+                    "profile_type": "member",
+                    "module": "women",
+                    "full_name": "Example Member",
+                    "date_of_birth": "1995-02-28",
+                    "member_email": "member@example.com",
+                    "relationship": "Family member",
+                    "linked_member": true,
+                    "parent_profile_id": null,
+                    "guardian_contact": "",
+                    "guardian_name": "",
+                    "emergency_contacts": [],
+                    "doctor": null,
+                    "created_at": "<UTC timestamp>"
+                  },
+                  "family": {
+                    "full_name": "Example Family",
+                    "relationship": "Family member"
+                  }
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Invitation expired, revoked or accepted",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "invite_unavailable",
+                    "message": "Invitation expired, revoked or already accepted"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FamilyOTP"
+              },
+              "example": {
+                "otp": "123456"
+              }
+            }
+          }
+        },
+        "x-example-kind": "synthetic-contract"
+      }
+    },
     "/api/v1/health": {
       "get": {
         "operationId": "health_get",
@@ -52679,6 +54428,107 @@
           "date"
         ],
         "title": "RecordInput",
+        "type": "object"
+      },
+      "FamilyInvite": {
+        "additionalProperties": false,
+        "properties": {
+          "full_name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Full Name",
+            "type": "string"
+          },
+          "email": {
+            "format": "email",
+            "title": "Email",
+            "type": "string"
+          },
+          "module": {
+            "enum": [
+              "adult",
+              "women"
+            ],
+            "title": "Module",
+            "type": "string"
+          },
+          "relationship": {
+            "default": "Family member",
+            "maxLength": 50,
+            "minLength": 1,
+            "title": "Relationship",
+            "type": "string"
+          }
+        },
+        "required": [
+          "full_name",
+          "email",
+          "module"
+        ],
+        "title": "FamilyInvite",
+        "type": "object"
+      },
+      "FamilySetup": {
+        "additionalProperties": false,
+        "properties": {
+          "full_name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Full Name",
+            "type": "string"
+          },
+          "email": {
+            "format": "email",
+            "title": "Email",
+            "type": "string"
+          },
+          "mobile_number": {
+            "pattern": "^\\+?[1-9][0-9]{7,14}$",
+            "title": "Mobile Number",
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 128,
+            "minLength": 8,
+            "title": "Password",
+            "type": "string"
+          },
+          "confirm_password": {
+            "maxLength": 128,
+            "minLength": 8,
+            "title": "Confirm Password",
+            "type": "string"
+          },
+          "date_of_birth": {
+            "format": "date",
+            "title": "Date Of Birth",
+            "type": "string"
+          }
+        },
+        "required": [
+          "full_name",
+          "email",
+          "mobile_number",
+          "password",
+          "confirm_password",
+          "date_of_birth"
+        ],
+        "title": "FamilySetup",
+        "type": "object"
+      },
+      "FamilyOTP": {
+        "additionalProperties": false,
+        "properties": {
+          "otp": {
+            "pattern": "^\\d{6}$",
+            "title": "Otp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "otp"
+        ],
+        "title": "FamilyOTP",
         "type": "object"
       },
       "Options": {

@@ -1,5 +1,11 @@
 # Family Care backend API
 
+Adult/women independent member logins and family email approval:
+[Family invitations: requests, responses, OTP destinations and setup](../api-reference/woman_adule_api.md).
+Run `venv/Scripts/python.exe -m alembic upgrade head` before starting the new API.
+Set `FAMILY_INVITE_FRONTEND_URL` to the trusted public frontend origin for invitation links.
+Invite/setup approval emails use SMTP synchronously; forgot-password emails use the existing mail worker.
+
 Doctor signup → OTP → profile setup → admin approval: [Doctor onboarding](docs/DOCTOR_ONBOARDING.md).
 
 Read-only admin patient/member directory: [API and UI details](docs/ADMIN_PATIENT_MEMBERS.md).

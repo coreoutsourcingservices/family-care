@@ -51,6 +51,25 @@ class AdminProfile(Base):
     user_id = user_fk(primary_key=True)
 
 
+class FamilyInvitation(Base):
+    __tablename__ = 'family_invitations'
+    __table_args__ = (CK("module IN ('adult','women')", name='module'),)
+    id = primary_id()
+    owner_id = user_fk(nullable=False, index=True)
+    member_id = user_fk(unique=True)
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id'), unique=True)
+    token_hash = C(S(64), unique=True, nullable=False)
+    email = C(S(254), nullable=False, index=True)
+    full_name = C(S(120), nullable=False)
+    module = C(S(16), nullable=False)
+    relationship = C(S(50), nullable=False, default='Family member')
+    expires_at = C(DT, nullable=False)
+    accepted_at = C(DT)
+    revoked_at = C(DT)
+    pending = C(JSON)
+    created_at = C(DT, default=now, nullable=False)
+
+
 class PatientProfile(Base):
     __tablename__ = 'patient_profiles'
     user_id = user_fk(primary_key=True)

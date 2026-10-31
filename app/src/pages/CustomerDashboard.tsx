@@ -1,3 +1,4 @@
+import FamilyInvitations from '../components/FamilyInvitations';
 import AccountDoctorConnection from '../components/AccountDoctorConnection';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -69,7 +70,7 @@ function DashboardContent({ module }: { module?: ModuleId }) {
       {module && <section id="customer-module-content" className="customer-module-content">
         {module === 'child' ? <ChildCare key={`child-${user.id}`} accountId={user.id} /> : module === 'women' ? <WomenHealth key={`women-${user.id}`} accountId={user.id} /> : <AdultHealth key={`adult-${user.id}`} accountId={user.id} />}
       </section>}
-      {!module && <><section className="customer-services" id="customer-services"><div className="customer-section-title"><h2>{t('A little care.')} <span>{t('A lot of peace')}</span> {t('of mind.')}</h2><p>{t('Everything important, close to the people who matter.')}</p></div><div className="customer-service-grid">
+      {!module && <><FamilyInvitations/><section className="customer-services" id="customer-services"><div className="customer-section-title"><h2>{t('A little care.')} <span>{t('A lot of peace')}</span> {t('of mind.')}</h2><p>{t('Everything important, close to the people who matter.')}</p></div><div className="customer-service-grid">
         <article><span><FileText size={23} /></span><div><h3>{t('Health records, together')}</h3><p>{t('Keep reports with the right family profile.')}</p></div></article>
         <article><span><Users size={23} /></span><div><h3>{t('Space for everyone')}</h3><p>{t('Separate profiles for every family member.')}</p></div></article>
         <article><span><Heart size={23} /></span><div><h3>{t('Keep loved ones close')}</h3><p>{t('Save guardian and emergency contacts.')}</p></div></article>

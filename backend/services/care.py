@@ -1,17 +1,23 @@
 from flask import jsonify
 from sqlalchemy import select
 from core.database import db
-from core.models import CareProfile, CareReport, User, uid, now
+from core.models import CareProfile, CareReport, User, FamilyInvitation, uid, now
 from core.errors import APIError
 from services.referrals import resolve_referral, doctor_details, care_doctor_details
 from services.repository import audit
 from services.approvals import paginate
 
 
+def patient_profile_access(user):
+    linked=select(FamilyInvitation.profile_id).where(FamilyInvitation.member_id==user.id,
+        FamilyInvitation.accepted_at.is_not(None),FamilyInvitation.revoked_at.is_(None))
+    return (CareProfile.owner_id==user.id) | CareProfile.id.in_(linked)
+
+
 def accessible_profile(user, profile_id, lock=False):
     query = select(CareProfile).where(CareProfile.id == profile_id, CareProfile.deleted_at.is_(None))
     if user.role == 'PATIENT':
-        query = query.where(CareProfile.owner_id == user.id)
+        query = query.where(patient_profile_access(user))
     elif user.role == 'DOCTOR':
         query = query.where(CareProfile.referred_doctor_id == user.id)
     else:
@@ -26,7 +32,10 @@ def accessible_profile(user, profile_id, lock=False):
 
 def profile_data(profile):
     doctor = db().get(User, profile.referred_doctor_id) if profile.referred_doctor_id else None
+    membership=db().scalar(select(FamilyInvitation).where(FamilyInvitation.profile_id==profile.id,FamilyInvitation.accepted_at.is_not(None)))
     return dict(id=profile.id, profile_type=profile.profile_type, module=profile.module,
+                member_email=membership.email if membership else '',relationship=membership.relationship if membership else None,
+                linked_member=bool(membership),
                 full_name=profile.name, date_of_birth=profile.dob.isoformat(),
                 parent_profile_id=profile.parent_profile_id, guardian_contact=profile.guardian_contact, guardian_name=profile.guardian_name,
                 emergency_contacts=profile.emergency_contacts,
@@ -58,7 +67,7 @@ def create_profile(user, data):
 
 
 def list_profiles(user, page, per_page, module=None):
-    query = select(CareProfile).where(CareProfile.owner_id == user.id) if user.role == 'PATIENT' else select(
+    query = select(CareProfile).where(patient_profile_access(user)) if user.role == 'PATIENT' else select(
         CareProfile).where(CareProfile.referred_doctor_id == user.id)
     query=query.where(CareProfile.deleted_at.is_(None))
     if module:
