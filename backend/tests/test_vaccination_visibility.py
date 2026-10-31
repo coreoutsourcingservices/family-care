@@ -5,6 +5,31 @@ from test_vaccination_management import setup_staff, draft, approve
 from test_care import patient, create_profile
 
 
+def test_both_programmes_visible_for_every_child_without_doctor_link(app,client,monkeypatch):
+    monkeypatch.setattr('services.vaccination.today',lambda:date(2026,10,31))
+    admin,_,_=setup_staff(app,client)
+    uip,payload=draft(client,admin,age_unit='months',age_start=6,age_end=6,age_label='6 months')
+    result=client.post('/api/v1/admin/vaccination/schedules',headers=admin,
+        json={**payload,'schedule_type':'IAP'})
+    assert result.status_code==201,result.json
+    iap=result.json['schedule']
+    owner=patient(app,client)
+    for dob in ('2026-10-01','2024-02-29','2018-05-14','2014-11-01'):
+        child=create_profile(client,owner,date_of_birth=dob)
+        for programme,schedule in (('UIP',uip),('IAP',iap)):
+            response=client.get(f'/api/v1/children/{child}/vaccinations?schedule_type={programme}&view=all',headers=owner)
+            assert response.status_code==200,response.json
+            assert response.json['child']['id']==child
+            assert response.json['total']==1
+            item=response.json['items'][0]
+            assert item['id']==schedule['id']
+            from services.vaccination import age_date
+            assert item['recommended_date']==age_date(date.fromisoformat(dob),6,'months').isoformat()
+            assert item['status']=='REVIEW_REQUIRED'
+    outsider=patient(app,client,'outside-family@example.com')
+    assert client.get(f'/api/v1/children/{child}/vaccinations',headers=outsider).status_code==404
+
+
 def test_admin_age_plan_shared_with_connected_doctor_and_toggle(app,client):
     admin,reviewer,doctor_id=setup_staff(app,client)
     row,payload=draft(client,admin,age_unit='months',age_start=6,age_end=6,age_label='6 months')
