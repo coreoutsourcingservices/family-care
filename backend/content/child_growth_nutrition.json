@@ -1,0 +1,1664 @@
+{
+  "version": "2026-10-31.v1",
+  "title": "Growth & Nutrition Guide for Children (0–12 Years)",
+  "provenance": "User-supplied educational guide; not an individual diagnosis or prescribed meal plan.",
+  "age_bands": [
+    {
+      "id": "month-0",
+      "min_months": 0,
+      "max_months_exclusive": 1,
+      "label": "Birth–1 Month",
+      "foods": "Exclusive breastfeeding",
+      "meal_frequency": "On demand",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Exclusive breastfeeding is recommended for the first six months.",
+            "No additional water is required during exclusive breastfeeding.",
+            "If breastfeeding is not possible, an appropriate infant formula may be recommended by a healthcare professional.",
+            "Feed the baby according to hunger cues."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "month-1",
+      "min_months": 1,
+      "max_months_exclusive": 2,
+      "label": "1–2 Months",
+      "foods": "Exclusive breastfeeding",
+      "meal_frequency": "On demand",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Exclusive breastfeeding is recommended for the first six months.",
+            "No additional water is required during exclusive breastfeeding.",
+            "If breastfeeding is not possible, an appropriate infant formula may be recommended by a healthcare professional.",
+            "Feed the baby according to hunger cues."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "month-2",
+      "min_months": 2,
+      "max_months_exclusive": 3,
+      "label": "2–3 Months",
+      "foods": "Exclusive breastfeeding",
+      "meal_frequency": "On demand",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Exclusive breastfeeding is recommended for the first six months.",
+            "No additional water is required during exclusive breastfeeding.",
+            "If breastfeeding is not possible, an appropriate infant formula may be recommended by a healthcare professional.",
+            "Feed the baby according to hunger cues."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "month-3",
+      "min_months": 3,
+      "max_months_exclusive": 4,
+      "label": "3–4 Months",
+      "foods": "Exclusive breastfeeding",
+      "meal_frequency": "On demand",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Exclusive breastfeeding is recommended for the first six months.",
+            "No additional water is required during exclusive breastfeeding.",
+            "If breastfeeding is not possible, an appropriate infant formula may be recommended by a healthcare professional.",
+            "Feed the baby according to hunger cues."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "month-4",
+      "min_months": 4,
+      "max_months_exclusive": 5,
+      "label": "4–5 Months",
+      "foods": "Exclusive breastfeeding",
+      "meal_frequency": "On demand",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Exclusive breastfeeding is recommended for the first six months.",
+            "No additional water is required during exclusive breastfeeding.",
+            "If breastfeeding is not possible, an appropriate infant formula may be recommended by a healthcare professional.",
+            "Feed the baby according to hunger cues."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "month-5",
+      "min_months": 5,
+      "max_months_exclusive": 6,
+      "label": "5–6 Months",
+      "foods": "Exclusive breastfeeding",
+      "meal_frequency": "On demand",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Exclusive breastfeeding is recommended for the first six months.",
+            "No additional water is required during exclusive breastfeeding.",
+            "If breastfeeding is not possible, an appropriate infant formula may be recommended by a healthcare professional.",
+            "Feed the baby according to hunger cues."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "month-6",
+      "min_months": 6,
+      "max_months_exclusive": 7,
+      "label": "6–7 Months",
+      "foods": "Breast milk + mashed khichdi, lentils, and fruits",
+      "meal_frequency": "2–3 meals daily",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Introduce appropriate complementary foods.",
+            "Continue breastfeeding alongside solid foods.",
+            "Gradually increase food variety, quantity, and texture.",
+            "Breastfeeding can continue until two years of age or beyond."
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Recommended First Foods After 6 Months"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Food",
+            "Preparation Method"
+          ],
+          "rows": [
+            [
+              "Moong Dal Khichdi",
+              "Cook thoroughly and mash"
+            ],
+            [
+              "Porridge (Dalia)",
+              "Prepare with a thick, soft consistency"
+            ],
+            [
+              "Banana",
+              "Mash thoroughly"
+            ],
+            [
+              "Papaya",
+              "Mash into a smooth texture"
+            ],
+            [
+              "Carrot",
+              "Boil or steam and mash"
+            ],
+            [
+              "Lentils",
+              "Cook thoroughly and serve thick"
+            ],
+            [
+              "Egg",
+              "Cook completely and mash or chop appropriately"
+            ],
+            [
+              "Yogurt",
+              "Serve plain and unsweetened"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Start with small amounts, such as 2–3 teaspoons, and gradually increase according to the baby's appetite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Avoid relying only on watery lentil soup or rice water. Provide thick, nutrient-rich complementary foods."
+        }
+      ]
+    },
+    {
+      "id": "month-7",
+      "min_months": 7,
+      "max_months_exclusive": 8,
+      "label": "7–8 Months",
+      "foods": "Soft porridge, khichdi, yogurt, and cooked vegetables",
+      "meal_frequency": "2–3 meals daily",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Introduce appropriate complementary foods.",
+            "Continue breastfeeding alongside solid foods.",
+            "Gradually increase food variety, quantity, and texture.",
+            "Breastfeeding can continue until two years of age or beyond."
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Recommended First Foods After 6 Months"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Food",
+            "Preparation Method"
+          ],
+          "rows": [
+            [
+              "Moong Dal Khichdi",
+              "Cook thoroughly and mash"
+            ],
+            [
+              "Porridge (Dalia)",
+              "Prepare with a thick, soft consistency"
+            ],
+            [
+              "Banana",
+              "Mash thoroughly"
+            ],
+            [
+              "Papaya",
+              "Mash into a smooth texture"
+            ],
+            [
+              "Carrot",
+              "Boil or steam and mash"
+            ],
+            [
+              "Lentils",
+              "Cook thoroughly and serve thick"
+            ],
+            [
+              "Egg",
+              "Cook completely and mash or chop appropriately"
+            ],
+            [
+              "Yogurt",
+              "Serve plain and unsweetened"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Start with small amounts, such as 2–3 teaspoons, and gradually increase according to the baby's appetite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Avoid relying only on watery lentil soup or rice water. Provide thick, nutrient-rich complementary foods."
+        }
+      ]
+    },
+    {
+      "id": "month-8",
+      "min_months": 8,
+      "max_months_exclusive": 9,
+      "label": "8–9 Months",
+      "foods": "Soft rice, lentils, fully cooked eggs, and fruits",
+      "meal_frequency": "2–3 meals daily",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Introduce appropriate complementary foods.",
+            "Continue breastfeeding alongside solid foods.",
+            "Gradually increase food variety, quantity, and texture.",
+            "Breastfeeding can continue until two years of age or beyond."
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Recommended First Foods After 6 Months"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Food",
+            "Preparation Method"
+          ],
+          "rows": [
+            [
+              "Moong Dal Khichdi",
+              "Cook thoroughly and mash"
+            ],
+            [
+              "Porridge (Dalia)",
+              "Prepare with a thick, soft consistency"
+            ],
+            [
+              "Banana",
+              "Mash thoroughly"
+            ],
+            [
+              "Papaya",
+              "Mash into a smooth texture"
+            ],
+            [
+              "Carrot",
+              "Boil or steam and mash"
+            ],
+            [
+              "Lentils",
+              "Cook thoroughly and serve thick"
+            ],
+            [
+              "Egg",
+              "Cook completely and mash or chop appropriately"
+            ],
+            [
+              "Yogurt",
+              "Serve plain and unsweetened"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Start with small amounts, such as 2–3 teaspoons, and gradually increase according to the baby's appetite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Avoid relying only on watery lentil soup or rice water. Provide thick, nutrient-rich complementary foods."
+        }
+      ]
+    },
+    {
+      "id": "month-9",
+      "min_months": 9,
+      "max_months_exclusive": 10,
+      "label": "9–10 Months",
+      "foods": "Khichdi, soft chapati, vegetables, and yogurt",
+      "meal_frequency": "3–4 meals daily",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Introduce appropriate complementary foods.",
+            "Continue breastfeeding alongside solid foods.",
+            "Gradually increase food variety, quantity, and texture.",
+            "Breastfeeding can continue until two years of age or beyond."
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Recommended First Foods After 6 Months"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Food",
+            "Preparation Method"
+          ],
+          "rows": [
+            [
+              "Moong Dal Khichdi",
+              "Cook thoroughly and mash"
+            ],
+            [
+              "Porridge (Dalia)",
+              "Prepare with a thick, soft consistency"
+            ],
+            [
+              "Banana",
+              "Mash thoroughly"
+            ],
+            [
+              "Papaya",
+              "Mash into a smooth texture"
+            ],
+            [
+              "Carrot",
+              "Boil or steam and mash"
+            ],
+            [
+              "Lentils",
+              "Cook thoroughly and serve thick"
+            ],
+            [
+              "Egg",
+              "Cook completely and mash or chop appropriately"
+            ],
+            [
+              "Yogurt",
+              "Serve plain and unsweetened"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Start with small amounts, such as 2–3 teaspoons, and gradually increase according to the baby's appetite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Avoid relying only on watery lentil soup or rice water. Provide thick, nutrient-rich complementary foods."
+        }
+      ]
+    },
+    {
+      "id": "month-10",
+      "min_months": 10,
+      "max_months_exclusive": 11,
+      "label": "10–11 Months",
+      "foods": "Soft family foods, fruits, and lentils",
+      "meal_frequency": "3–4 meals daily",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Introduce appropriate complementary foods.",
+            "Continue breastfeeding alongside solid foods.",
+            "Gradually increase food variety, quantity, and texture.",
+            "Breastfeeding can continue until two years of age or beyond."
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Recommended First Foods After 6 Months"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Food",
+            "Preparation Method"
+          ],
+          "rows": [
+            [
+              "Moong Dal Khichdi",
+              "Cook thoroughly and mash"
+            ],
+            [
+              "Porridge (Dalia)",
+              "Prepare with a thick, soft consistency"
+            ],
+            [
+              "Banana",
+              "Mash thoroughly"
+            ],
+            [
+              "Papaya",
+              "Mash into a smooth texture"
+            ],
+            [
+              "Carrot",
+              "Boil or steam and mash"
+            ],
+            [
+              "Lentils",
+              "Cook thoroughly and serve thick"
+            ],
+            [
+              "Egg",
+              "Cook completely and mash or chop appropriately"
+            ],
+            [
+              "Yogurt",
+              "Serve plain and unsweetened"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Start with small amounts, such as 2–3 teaspoons, and gradually increase according to the baby's appetite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Avoid relying only on watery lentil soup or rice water. Provide thick, nutrient-rich complementary foods."
+        }
+      ]
+    },
+    {
+      "id": "month-11",
+      "min_months": 11,
+      "max_months_exclusive": 12,
+      "label": "11–12 Months",
+      "foods": "Different nutritious and soft foods",
+      "meal_frequency": "3–4 meals daily",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Introduce appropriate complementary foods.",
+            "Continue breastfeeding alongside solid foods.",
+            "Gradually increase food variety, quantity, and texture.",
+            "Breastfeeding can continue until two years of age or beyond."
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Recommended First Foods After 6 Months"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Food",
+            "Preparation Method"
+          ],
+          "rows": [
+            [
+              "Moong Dal Khichdi",
+              "Cook thoroughly and mash"
+            ],
+            [
+              "Porridge (Dalia)",
+              "Prepare with a thick, soft consistency"
+            ],
+            [
+              "Banana",
+              "Mash thoroughly"
+            ],
+            [
+              "Papaya",
+              "Mash into a smooth texture"
+            ],
+            [
+              "Carrot",
+              "Boil or steam and mash"
+            ],
+            [
+              "Lentils",
+              "Cook thoroughly and serve thick"
+            ],
+            [
+              "Egg",
+              "Cook completely and mash or chop appropriately"
+            ],
+            [
+              "Yogurt",
+              "Serve plain and unsweetened"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Start with small amounts, such as 2–3 teaspoons, and gradually increase according to the baby's appetite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Avoid relying only on watery lentil soup or rice water. Provide thick, nutrient-rich complementary foods."
+        }
+      ]
+    },
+    {
+      "id": "year-1",
+      "min_months": 12,
+      "max_months_exclusive": 24,
+      "label": "1–2 years",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Children aged 1–2 years can gradually eat most family foods when prepared in appropriate textures and sizes."
+        },
+        {
+          "type": "heading",
+          "text": "Recommended Food Categories"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Food Category",
+            "Recommended Foods"
+          ],
+          "rows": [
+            [
+              "Grains",
+              "Chapati, rice, porridge, oats"
+            ],
+            [
+              "Pulses",
+              "Moong dal, masoor dal, toor dal"
+            ],
+            [
+              "Fruits",
+              "Banana, soft apple pieces, papaya"
+            ],
+            [
+              "Vegetables",
+              "Carrot, spinach, bottle gourd, pumpkin"
+            ],
+            [
+              "Dairy Products",
+              "Milk, yogurt, paneer"
+            ],
+            [
+              "Protein Sources",
+              "Lentils, eggs, paneer, thoroughly cooked chicken or fish"
+            ],
+            [
+              "Healthy Fats",
+              "Small amounts of oil or ghee"
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Daily Meal Frequency"
+        },
+        {
+          "type": "paragraph",
+          "text": "Generally, provide 3–4 meals and 1–2 nutritious snacks according to the child's appetite."
+        },
+        {
+          "type": "heading",
+          "text": "Example Daily Meal Plan"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Meal Time",
+            "Recommended Food"
+          ],
+          "rows": [
+            [
+              "Breakfast",
+              "Soft porridge"
+            ],
+            [
+              "Morning Snack",
+              "Banana"
+            ],
+            [
+              "Lunch",
+              "Lentils + rice + vegetables"
+            ],
+            [
+              "Evening Snack",
+              "Yogurt or soft fruit"
+            ],
+            [
+              "Dinner",
+              "Khichdi + cooked vegetables"
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Important Guidelines"
+        },
+        {
+          "type": "list",
+          "items": [
+            "Introduce different food groups.",
+            "Encourage independent eating.",
+            "Avoid force-feeding.",
+            "Provide safe drinking water.",
+            "Adjust food texture according to chewing ability."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "year-2",
+      "min_months": 24,
+      "max_months_exclusive": 36,
+      "label": "2–3 years",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "At this stage, children become increasingly active and require balanced nutrition to support growth and physical development."
+        },
+        {
+          "type": "heading",
+          "text": "Recommended Nutrition"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Category",
+            "Recommended Foods",
+            "Benefits"
+          ],
+          "rows": [
+            [
+              "Grains",
+              "Chapati, rice, porridge",
+              "Provides energy"
+            ],
+            [
+              "Protein",
+              "Lentils, eggs, paneer",
+              "Supports physical development"
+            ],
+            [
+              "Calcium",
+              "Milk, yogurt, paneer",
+              "Supports bone health"
+            ],
+            [
+              "Iron",
+              "Green leafy vegetables, lentils",
+              "Supports healthy blood formation"
+            ],
+            [
+              "Vitamins",
+              "Seasonal fruits and vegetables",
+              "Supports overall health"
+            ],
+            [
+              "Healthy Fats",
+              "Moderate amounts of oil and ghee",
+              "Provides energy"
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Daily Meal Schedule"
+        },
+        {
+          "type": "paragraph",
+          "text": "Provide approximately three main meals and one or two nutritious snacks."
+        },
+        {
+          "type": "paragraph",
+          "text": "Encourage children to eat a variety of vegetables, fruits, grains, and protein-rich foods."
+        }
+      ]
+    },
+    {
+      "id": "year-3",
+      "min_months": 36,
+      "max_months_exclusive": 48,
+      "label": "3–4 years",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "At this age, children should develop healthy eating habits and become familiar with different foods."
+        },
+        {
+          "type": "heading",
+          "text": "Example Daily Meal Plan"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Breakfast",
+            "Lunch",
+            "Evening Snack",
+            "Dinner"
+          ],
+          "rows": [
+            [
+              "Milk/yogurt + poha",
+              "Chapati + dal + vegetables",
+              "Fruit",
+              "Rice + dal"
+            ],
+            [
+              "Vegetable upma",
+              "Khichdi + yogurt",
+              "Paneer",
+              "Chapati + vegetables"
+            ],
+            [
+              "Egg + chapati",
+              "Rice + rajma",
+              "Banana",
+              "Porridge + dal"
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Essential Nutrients"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Nutrient",
+            "Food Sources",
+            "Benefits"
+          ],
+          "rows": [
+            [
+              "Protein",
+              "Lentils, paneer, eggs",
+              "Growth and development"
+            ],
+            [
+              "Iron",
+              "Lentils, chickpeas, leafy vegetables",
+              "Blood formation"
+            ],
+            [
+              "Calcium",
+              "Milk, yogurt",
+              "Bone development"
+            ],
+            [
+              "Vitamin C",
+              "Amla, guava, oranges",
+              "Supports immunity and iron absorption"
+            ],
+            [
+              "Vitamin A",
+              "Carrots, pumpkin, green vegetables",
+              "Supports vision and general health"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "year-4",
+      "min_months": 48,
+      "max_months_exclusive": 60,
+      "label": "4–5 years",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Children often begin preschool or kindergarten during this stage."
+        },
+        {
+          "type": "paragraph",
+          "text": "A balanced diet supports learning, physical activity, and overall development."
+        },
+        {
+          "type": "heading",
+          "text": "Recommended Food Plan"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Meal Category",
+            "Recommended Foods"
+          ],
+          "rows": [
+            [
+              "Breakfast",
+              "Idli with sambar, poha, porridge"
+            ],
+            [
+              "Lunch",
+              "Chapati, dal, vegetables, yogurt"
+            ],
+            [
+              "Snacks",
+              "Seasonal fruits, boiled chickpeas"
+            ],
+            [
+              "Dinner",
+              "Khichdi, chapati, vegetables"
+            ],
+            [
+              "Protein Sources",
+              "Paneer, eggs, lentils, soybeans"
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Important Habits"
+        },
+        {
+          "type": "list",
+          "items": [
+            "Encourage a variety of nutritious foods.",
+            "Provide regular meal times.",
+            "Support adequate sleep.",
+            "Encourage daily active play."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "year-5",
+      "min_months": 60,
+      "max_months_exclusive": 72,
+      "label": "5–6 years",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "At this age, proper nutrition supports school activities, physical growth, and learning."
+        },
+        {
+          "type": "heading",
+          "text": "Essential Nutrients"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Nutrient",
+            "Recommended Food Sources"
+          ],
+          "rows": [
+            [
+              "Protein",
+              "Lentils, eggs, paneer, chickpeas"
+            ],
+            [
+              "Calcium",
+              "Milk, yogurt"
+            ],
+            [
+              "Iron",
+              "Lentils, kidney beans, leafy vegetables"
+            ],
+            [
+              "Vitamin C",
+              "Guava, oranges, amla"
+            ],
+            [
+              "Fiber",
+              "Fruits, vegetables, whole grains"
+            ],
+            [
+              "Carbohydrates",
+              "Chapati, rice, porridge"
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Physical Activity"
+        },
+        {
+          "type": "paragraph",
+          "text": "Children aged 5–6 years should be encouraged to participate in regular active play."
+        },
+        {
+          "type": "paragraph",
+          "text": "For school-aged children, approximately 60 minutes of moderate-to-vigorous physical activity daily is recommended."
+        }
+      ]
+    },
+    {
+      "id": "year-6",
+      "min_months": 72,
+      "max_months_exclusive": 84,
+      "label": "6–7 years",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Children become more involved in schoolwork, sports, and outdoor activities."
+        },
+        {
+          "type": "paragraph",
+          "text": "Balanced meals should provide energy and essential nutrients."
+        },
+        {
+          "type": "heading",
+          "text": "Example Daily Meal Plan"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Meal",
+            "Recommended Foods"
+          ],
+          "rows": [
+            [
+              "Breakfast",
+              "Vegetable poha + yogurt"
+            ],
+            [
+              "School Tiffin",
+              "Chapati vegetable roll + fruit"
+            ],
+            [
+              "Lunch",
+              "Rice + dal + vegetables"
+            ],
+            [
+              "Evening Snack",
+              "Boiled chickpeas or fruit"
+            ],
+            [
+              "Dinner",
+              "Chapati + paneer/dal + vegetables"
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Nutrition Priorities"
+        },
+        {
+          "type": "paragraph",
+          "text": "Include the following regularly:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "Whole grains.",
+            "Pulses and legumes.",
+            "Milk or suitable dairy alternatives.",
+            "Seasonal fruits.",
+            "Green and colorful vegetables.",
+            "Protein-rich foods."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "year-7",
+      "min_months": 84,
+      "max_months_exclusive": 96,
+      "label": "7–8 years",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Children require balanced nutrition to support continuous growth and development."
+        },
+        {
+          "type": "heading",
+          "text": "Essential Nutrients"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Nutrient",
+            "Food Sources"
+          ],
+          "rows": [
+            [
+              "Protein",
+              "Lentils, paneer, eggs, soybeans"
+            ],
+            [
+              "Iron",
+              "Chickpeas, kidney beans, green vegetables"
+            ],
+            [
+              "Calcium",
+              "Milk, yogurt"
+            ],
+            [
+              "Zinc",
+              "Pulses, seeds, eggs"
+            ],
+            [
+              "Vitamin B12",
+              "Milk, eggs, and other animal-based foods"
+            ],
+            [
+              "Vitamin C",
+              "Guava, lemon, oranges"
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Important Note"
+        },
+        {
+          "type": "paragraph",
+          "text": "Children following a strict vegan diet may require additional attention to vitamin B12 and certain other nutrients."
+        },
+        {
+          "type": "paragraph",
+          "text": "Consult a pediatrician or registered dietitian when needed."
+        }
+      ]
+    },
+    {
+      "id": "year-8",
+      "min_months": 96,
+      "max_months_exclusive": 108,
+      "label": "8–9 years",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "A nutritious and balanced diet is important for maintaining good health and supporting physical activity."
+        },
+        {
+          "type": "heading",
+          "text": "Recommended Food Groups"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Food Group",
+            "Recommended Foods"
+          ],
+          "rows": [
+            [
+              "Whole Grains",
+              "Wheat, millet, sorghum, porridge"
+            ],
+            [
+              "Pulses",
+              "Moong dal, masoor dal, chickpeas"
+            ],
+            [
+              "Dairy",
+              "Milk, yogurt, paneer"
+            ],
+            [
+              "Vegetables",
+              "Spinach, carrot, bottle gourd"
+            ],
+            [
+              "Fruits",
+              "Banana, guava, papaya"
+            ],
+            [
+              "Protein Sources",
+              "Lentils, eggs, paneer, fish"
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Nutrition Guidelines"
+        },
+        {
+          "type": "paragraph",
+          "text": "Encourage different colorful fruits and vegetables daily."
+        },
+        {
+          "type": "paragraph",
+          "text": "According to WHO healthy-diet guidance, approximately 350 grams of fruits and vegetables per day is a recommended minimum target for children aged 6–9 years."
+        }
+      ]
+    },
+    {
+      "id": "year-9",
+      "min_months": 108,
+      "max_months_exclusive": 120,
+      "label": "9–10 years",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Some children may begin experiencing early developmental changes associated with puberty."
+        },
+        {
+          "type": "paragraph",
+          "text": "Their nutritional requirements may gradually change."
+        },
+        {
+          "type": "heading",
+          "text": "Essential Nutrients"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Nutrient",
+            "Importance",
+            "Food Sources"
+          ],
+          "rows": [
+            [
+              "Protein",
+              "Physical growth",
+              "Lentils, eggs, paneer"
+            ],
+            [
+              "Calcium",
+              "Bone development",
+              "Milk, yogurt"
+            ],
+            [
+              "Iron",
+              "Blood formation",
+              "Chickpeas, lentils, eggs"
+            ],
+            [
+              "Zinc",
+              "Growth and immune function",
+              "Pulses, seeds, eggs"
+            ],
+            [
+              "Vitamin D",
+              "Bone health",
+              "Suitable foods, safe sunlight exposure, and medical advice when needed"
+            ],
+            [
+              "Fiber",
+              "Digestive health",
+              "Fruits, vegetables, whole grains"
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Important Guidelines"
+        },
+        {
+          "type": "paragraph",
+          "text": "Adjust meal quantities according to the child's appetite, activity level, and individual nutritional requirements."
+        }
+      ]
+    },
+    {
+      "id": "year-10",
+      "min_months": 120,
+      "max_months_exclusive": 132,
+      "label": "10–11 years",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Some children experience faster growth during this stage."
+        },
+        {
+          "type": "paragraph",
+          "text": "Adequate protein, calcium, iron, and other nutrients are important for healthy development."
+        },
+        {
+          "type": "heading",
+          "text": "Example Daily Meal Plan"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Meal",
+            "Recommended Foods"
+          ],
+          "rows": [
+            [
+              "Breakfast",
+              "Paratha + yogurt + fruit"
+            ],
+            [
+              "School Tiffin",
+              "Vegetable or paneer roll"
+            ],
+            [
+              "Lunch",
+              "Chapati + dal + vegetables"
+            ],
+            [
+              "Evening Snack",
+              "Chickpeas, fruit, or yogurt"
+            ],
+            [
+              "Dinner",
+              "Rice + rajma/dal + vegetables"
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Nutrition Priorities"
+        },
+        {
+          "type": "list",
+          "items": [
+            "Adequate protein.",
+            "Calcium-rich foods.",
+            "Iron-rich foods.",
+            "Fresh fruits and vegetables.",
+            "Regular balanced meals."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "year-11",
+      "min_months": 132,
+      "max_months_exclusive": 144,
+      "label": "11–12 years",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "During early adolescence, physical growth and nutritional requirements can change."
+        },
+        {
+          "type": "heading",
+          "text": "Essential Nutrients"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Nutrient",
+            "Food Sources",
+            "Benefits"
+          ],
+          "rows": [
+            [
+              "Protein",
+              "Lentils, paneer, eggs, soybeans",
+              "Muscle and tissue development"
+            ],
+            [
+              "Calcium",
+              "Milk, yogurt, paneer",
+              "Bone development"
+            ],
+            [
+              "Iron",
+              "Lentils, chickpeas, leafy vegetables",
+              "Healthy blood formation"
+            ],
+            [
+              "Vitamin D",
+              "Suitable dietary sources and safe sunlight exposure",
+              "Supports calcium absorption"
+            ],
+            [
+              "Vitamin B12",
+              "Milk, eggs, fish",
+              "Blood and nervous system health"
+            ],
+            [
+              "Zinc",
+              "Pulses, seeds, eggs",
+              "Growth and development"
+            ],
+            [
+              "Fiber",
+              "Fruits, vegetables, whole grains",
+              "Digestive health"
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Important Note"
+        },
+        {
+          "type": "paragraph",
+          "text": "Iron requirements may increase after menstruation begins."
+        },
+        {
+          "type": "paragraph",
+          "text": "Iron supplements should only be used according to appropriate medical guidance."
+        }
+      ]
+    },
+    {
+      "id": "year-12",
+      "min_months": 144,
+      "max_months_exclusive": 156,
+      "label": "12 years",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "During early adolescence, physical growth and nutritional requirements can change."
+        },
+        {
+          "type": "heading",
+          "text": "Essential Nutrients"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Nutrient",
+            "Food Sources",
+            "Benefits"
+          ],
+          "rows": [
+            [
+              "Protein",
+              "Lentils, paneer, eggs, soybeans",
+              "Muscle and tissue development"
+            ],
+            [
+              "Calcium",
+              "Milk, yogurt, paneer",
+              "Bone development"
+            ],
+            [
+              "Iron",
+              "Lentils, chickpeas, leafy vegetables",
+              "Healthy blood formation"
+            ],
+            [
+              "Vitamin D",
+              "Suitable dietary sources and safe sunlight exposure",
+              "Supports calcium absorption"
+            ],
+            [
+              "Vitamin B12",
+              "Milk, eggs, fish",
+              "Blood and nervous system health"
+            ],
+            [
+              "Zinc",
+              "Pulses, seeds, eggs",
+              "Growth and development"
+            ],
+            [
+              "Fiber",
+              "Fruits, vegetables, whole grains",
+              "Digestive health"
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Important Note"
+        },
+        {
+          "type": "paragraph",
+          "text": "Iron requirements may increase after menstruation begins."
+        },
+        {
+          "type": "paragraph",
+          "text": "Iron supplements should only be used according to appropriate medical guidance."
+        }
+      ]
+    }
+  ],
+  "growth_monitoring": [
+    {
+      "type": "paragraph",
+      "text": "Monitoring growth helps parents and healthcare professionals understand a child's development over time."
+    },
+    {
+      "type": "paragraph",
+      "text": "Growth monitoring should consider multiple measurements rather than focusing only on body weight."
+    },
+    {
+      "type": "heading",
+      "text": "Age-Wise Growth Tracking"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Age",
+        "Recommended Measurements"
+      ],
+      "rows": [
+        [
+          "Birth–6 Months",
+          "Weight, Length, Head Circumference"
+        ],
+        [
+          "6–12 Months",
+          "Weight, Length, Head Circumference"
+        ],
+        [
+          "1–2 Years",
+          "Weight, Length, Head Circumference"
+        ],
+        [
+          "2–3 Years",
+          "Weight, Height"
+        ],
+        [
+          "3–4 Years",
+          "Weight, Height"
+        ],
+        [
+          "4–5 Years",
+          "Weight, Height"
+        ],
+        [
+          "5–6 Years",
+          "Weight, Height, BMI-for-Age"
+        ],
+        [
+          "6–7 Years",
+          "Weight, Height, BMI-for-Age"
+        ],
+        [
+          "7–8 Years",
+          "Weight, Height, BMI-for-Age"
+        ],
+        [
+          "8–9 Years",
+          "Weight, Height, BMI-for-Age"
+        ],
+        [
+          "9–10 Years",
+          "Weight, Height, BMI-for-Age"
+        ],
+        [
+          "10–11 Years",
+          "Weight, Height, BMI-for-Age"
+        ],
+        [
+          "11–12 Years",
+          "Weight, Height, BMI-for-Age"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "WHO Growth Chart Recommendations"
+    },
+    {
+      "type": "paragraph",
+      "text": "**Children Aged 0–5 Years**"
+    },
+    {
+      "type": "paragraph",
+      "text": "Use the WHO Child Growth Standards."
+    },
+    {
+      "type": "paragraph",
+      "text": "**Children Aged 5–12 Years**"
+    },
+    {
+      "type": "paragraph",
+      "text": "Use the WHO Growth Reference for children aged 5–19 years."
+    },
+    {
+      "type": "heading",
+      "text": "Important Growth Indicators"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Weight-for-age, where applicable.",
+        "Length/height-for-age.",
+        "Weight-for-length or weight-for-height in younger children.",
+        "BMI-for-age, where applicable.",
+        "Head circumference in infants and young children.",
+        "Growth trends over time."
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Growth measurements should be interpreted using age- and sex-appropriate growth charts."
+    },
+    {
+      "type": "paragraph",
+      "text": "A single measurement does not provide a complete picture of a child's growth and development."
+    }
+  ],
+  "food_safety": [
+    {
+      "type": "paragraph",
+      "text": "Different food groups provide different nutrients required for healthy growth."
+    },
+    {
+      "type": "heading",
+      "text": "Recommended Nutrition Categories"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Food Category",
+        "Main Nutrients",
+        "Food Sources"
+      ],
+      "rows": [
+        [
+          "Grains",
+          "Carbohydrates, Fiber",
+          "Chapati, rice, oats"
+        ],
+        [
+          "Pulses",
+          "Protein, Iron",
+          "Lentils, chickpeas, kidney beans"
+        ],
+        [
+          "Vegetables",
+          "Vitamins, Minerals",
+          "Spinach, carrot, pumpkin"
+        ],
+        [
+          "Fruits",
+          "Vitamins, Fiber",
+          "Banana, guava, papaya"
+        ],
+        [
+          "Dairy Products",
+          "Calcium, Protein",
+          "Milk, yogurt, paneer"
+        ],
+        [
+          "Eggs, Meat & Fish",
+          "Protein, Iron, Vitamin B12",
+          "Eggs, chicken, fish"
+        ],
+        [
+          "Healthy Fats",
+          "Essential Fatty Acids",
+          "Appropriate amounts of oils and seeds"
+        ],
+        [
+          "Water",
+          "Hydration",
+          "Clean and safe drinking water"
+        ]
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "Important Feeding Guidelines"
+    },
+    {
+      "type": "paragraph",
+      "text": "**0–6 Months:** Exclusively breastfed infants do not require additional water."
+    },
+    {
+      "type": "paragraph",
+      "text": "**After 6 Months:** Small amounts of safe drinking water can be introduced alongside complementary foods."
+    },
+    {
+      "type": "paragraph",
+      "text": "**After 12 Months:** Children should receive a varied, balanced diet and adequate safe drinking water."
+    },
+    {
+      "type": "heading",
+      "text": "⚠️ Food Safety Guidelines"
+    },
+    {
+      "type": "paragraph",
+      "text": "For children under 12 months:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Do not give honey.",
+        "Avoid using cow's milk as the main drink before 12 months.",
+        "Provide appropriately prepared foods to reduce choking risks.",
+        "Avoid hard or round foods that may cause choking."
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "For toddlers and young children:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Avoid whole nuts, whole grapes, popcorn, and other choking hazards.",
+        "Prepare food according to the child's chewing and swallowing abilities.",
+        "Ensure meals are properly cooked.",
+        "Maintain good food hygiene."
+      ]
+    },
+    {
+      "type": "heading",
+      "text": "When to Consult a Pediatrician"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seek medical advice when:"
+    },
+    {
+      "type": "list",
+      "items": [
+        "A child's weight or length/height is not increasing as expected.",
+        "The child has difficulty chewing or swallowing.",
+        "The child persistently refuses food.",
+        "A nutritional deficiency is suspected.",
+        "Growth measurements show concerning changes over time."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "title": "WHO infant and young child feeding",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding"
+    },
+    {
+      "title": "ICMR–NIN Dietary Guidelines for Indians 2024",
+      "url": "https://nin.res.in/dietaryguidelines/pdfjs/locale/DGI_2024.pdf"
+    },
+    {
+      "title": "WHO Child Growth Standards",
+      "url": "https://www.who.int/tools/child-growth-standards"
+    },
+    {
+      "title": "WHO growth reference 5–19 years",
+      "url": "https://www.who.int/tools/growth-reference-data-for-5to19-years"
+    }
+  ],
+  "notice": "General educational guidance. Your clinician adapts it for allergies, feeding difficulties, prematurity or other needs. Growth needs age- and sex-appropriate charts, not adult BMI cutoffs. No supplement dose or individual calorie target is generated."
+}

@@ -19048,7 +19048,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"items\": [\n    {\n      \"id\": \"<child UUID>\",\n      \"full_name\": \"Example child\",\n      \"module\": \"child\",\n      \"date_of_birth\": \"2020-01-01\",\n      \"profile_type\": \"member\",\n      \"doctor\": null,\n      \"age\": {\n        \"completed_years\": 6,\n        \"remaining_months\": 9,\n        \"remaining_days\": 29,\n        \"total_completed_months\": 81,\n        \"total_days\": 2494,\n        \"display\": \"6 years 9 months 29 days\",\n        \"primary_category\": \"SCHOOL_AGE\",\n        \"secondary_categories\": [],\n        \"in_child_module_scope\": true\n      }\n    }\n  ],\n  \"total\": 1,\n  \"page\": 1,\n  \"per_page\": 25\n}"
+          "body": "{\n  \"items\": [\n    {\n      \"id\": \"<child UUID>\",\n      \"full_name\": \"Example child\",\n      \"module\": \"child\",\n      \"date_of_birth\": \"2020-01-01\",\n      \"profile_type\": \"member\",\n      \"doctor\": null,\n      \"age\": {\n        \"completed_years\": 6,\n        \"remaining_months\": 9,\n        \"remaining_days\": 30,\n        \"total_completed_months\": 81,\n        \"total_days\": 2495,\n        \"display\": \"6 years 9 months 30 days\",\n        \"primary_category\": \"SCHOOL_AGE\",\n        \"secondary_categories\": [],\n        \"in_child_module_scope\": true\n      }\n    }\n  ],\n  \"total\": 1,\n  \"page\": 1,\n  \"per_page\": 25\n}"
         }
       ]
     },
@@ -19379,7 +19379,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"child\": {\n    \"id\": \"<child UUID>\",\n    \"full_name\": \"Example child\",\n    \"module\": \"child\",\n    \"date_of_birth\": \"2020-01-01\",\n    \"profile_type\": \"member\",\n    \"doctor\": null,\n    \"age\": {\n      \"completed_years\": 6,\n      \"remaining_months\": 9,\n      \"remaining_days\": 29,\n      \"total_completed_months\": 81,\n      \"total_days\": 2494,\n      \"display\": \"6 years 9 months 29 days\",\n      \"primary_category\": \"SCHOOL_AGE\",\n      \"secondary_categories\": [],\n      \"in_child_module_scope\": true\n    }\n  }\n}"
+          "body": "{\n  \"child\": {\n    \"id\": \"<child UUID>\",\n    \"full_name\": \"Example child\",\n    \"module\": \"child\",\n    \"date_of_birth\": \"2020-01-01\",\n    \"profile_type\": \"member\",\n    \"doctor\": null,\n    \"age\": {\n      \"completed_years\": 6,\n      \"remaining_months\": 9,\n      \"remaining_days\": 30,\n      \"total_completed_months\": 81,\n      \"total_days\": 2495,\n      \"display\": \"6 years 9 months 30 days\",\n      \"primary_category\": \"SCHOOL_AGE\",\n      \"secondary_categories\": [],\n      \"in_child_module_scope\": true\n    }\n  }\n}"
         }
       ]
     },
@@ -19710,7 +19710,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"age\": {\n    \"completed_years\": 6,\n    \"remaining_months\": 9,\n    \"remaining_days\": 29,\n    \"total_completed_months\": 81,\n    \"total_days\": 2494,\n    \"display\": \"6 years 9 months 29 days\",\n    \"primary_category\": \"SCHOOL_AGE\",\n    \"secondary_categories\": [],\n    \"in_child_module_scope\": true\n  },\n  \"as_of_date\": \"2026-10-30\"\n}"
+          "body": "{\n  \"age\": {\n    \"completed_years\": 6,\n    \"remaining_months\": 9,\n    \"remaining_days\": 30,\n    \"total_completed_months\": 81,\n    \"total_days\": 2495,\n    \"display\": \"6 years 9 months 30 days\",\n    \"primary_category\": \"SCHOOL_AGE\",\n    \"secondary_categories\": [],\n    \"in_child_module_scope\": true\n  },\n  \"as_of_date\": \"2026-10-31\"\n}"
         }
       ]
     },
@@ -36983,6 +36983,337 @@
       ]
     },
     {
+      "name": "GET /api/v1/children/{profile_id}/growth-nutrition-guide",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/v1/children/{{profile_id}}/growth-nutrition-guide",
+        "header": [
+          {
+            "key": "X-Auth-Transport",
+            "value": "bearer"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "400 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/children/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Invalid challenge/OTP/state",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid challenge/OTP/state\"\n  }\n}"
+        },
+        {
+          "name": "401 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/children/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Invalid credentials/token/session",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid credentials/token/session\"\n  }\n}"
+        },
+        {
+          "name": "403 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/children/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Role, approval, status, transport or CSRF denied",
+          "code": 403,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Role, approval, status, transport or CSRF denied\"\n  }\n}"
+        },
+        {
+          "name": "404 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/children/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Not found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Not found\"\n  }\n}"
+        },
+        {
+          "name": "409 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/children/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Duplicate data or invalid approval state",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Duplicate data or invalid approval state\"\n  }\n}"
+        },
+        {
+          "name": "422 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/children/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Validation failed",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Validation failed\"\n  }\n}"
+        },
+        {
+          "name": "429 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/children/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Rate limit or OTP cooldown",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Rate limit or OTP cooldown\"\n  }\n}"
+        },
+        {
+          "name": "413 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/children/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Report exceeds size limit",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Report exceeds size limit\"\n  }\n}"
+        },
+        {
+          "name": "415 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/children/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Multipart upload required",
+          "code": 415,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Multipart upload required\"\n  }\n}"
+        },
+        {
+          "name": "502 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/children/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Cloudinary upload failed",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Cloudinary upload failed\"\n  }\n}"
+        },
+        {
+          "name": "503 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/children/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Database or Cloudinary unavailable/not configured",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Database or Cloudinary unavailable/not configured\"\n  }\n}"
+        },
+        {
+          "name": "200 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/children/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Success",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"child\": {\n    \"id\": \"<child UUID>\",\n    \"full_name\": \"Example Child\",\n    \"date_of_birth\": \"2026-02-28\",\n    \"age\": {\n      \"completed_years\": 0,\n      \"remaining_months\": 8,\n      \"remaining_days\": 3,\n      \"total_completed_months\": 8,\n      \"total_days\": 245,\n      \"display\": \"0 years 8 months 3 days\",\n      \"primary_category\": \"INFANT\",\n      \"secondary_categories\": [],\n      \"in_child_module_scope\": true\n    }\n  },\n  \"active\": true,\n  \"default_active\": true,\n  \"status\": \"AVAILABLE\",\n  \"updated_at\": null,\n  \"updated_by\": null,\n  \"version\": \"2026-10-31.v1\",\n  \"age_band\": {\n    \"id\": \"month-8\",\n    \"label\": \"8–9 Months\",\n    \"min_months\": 8,\n    \"max_months_exclusive\": 9\n  },\n  \"guide\": {\n    \"title\": \"Growth & Nutrition Guide for Children (0–12 Years)\",\n    \"nutrition\": {\n      \"id\": \"month-8\",\n      \"min_months\": 8,\n      \"max_months_exclusive\": 9,\n      \"label\": \"8–9 Months\",\n      \"foods\": \"Soft rice, lentils, fully cooked eggs, and fruits\",\n      \"meal_frequency\": \"2–3 meals daily\",\n      \"blocks\": [\n        {\n          \"type\": \"list\",\n          \"items\": [\n            \"Introduce appropriate complementary foods.\",\n            \"Continue breastfeeding alongside solid foods.\",\n            \"Gradually increase food variety, quantity, and texture.\",\n            \"Breastfeeding can continue until two years of age or beyond.\"\n          ]\n        },\n        {\n          \"type\": \"heading\",\n          \"text\": \"Recommended First Foods After 6 Months\"\n        },\n        {\n          \"type\": \"table\",\n          \"headers\": [\n            \"Food\",\n            \"Preparation Method\"\n          ],\n          \"rows\": [\n            [\n              \"Moong Dal Khichdi\",\n              \"Cook thoroughly and mash\"\n            ],\n            [\n              \"Porridge (Dalia)\",\n              \"Prepare with a thick, soft consistency\"\n            ],\n            [\n              \"Banana\",\n              \"Mash thoroughly\"\n            ],\n            [\n              \"Papaya\",\n              \"Mash into a smooth texture\"\n            ],\n            [\n              \"Carrot\",\n              \"Boil or steam and mash\"\n            ],\n            [\n              \"Lentils\",\n              \"Cook thoroughly and serve thick\"\n            ],\n            [\n              \"Egg\",\n              \"Cook completely and mash or chop appropriately\"\n            ],\n            [\n              \"Yogurt\",\n              \"Serve plain and unsweetened\"\n            ]\n          ]\n        },\n        {\n          \"type\": \"paragraph\",\n          \"text\": \"Start with small amounts, such as 2–3 teaspoons, and gradually increase according to the baby's appetite.\"\n        },\n        {\n          \"type\": \"paragraph\",\n          \"text\": \"Avoid relying only on watery lentil soup or rice water. Provide thick, nutrient-rich complementary foods.\"\n        }\n      ]\n    },\n    \"growth_monitoring\": [\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Monitoring growth helps parents and healthcare professionals understand a child's development over time.\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Growth monitoring should consider multiple measurements rather than focusing only on body weight.\"\n      },\n      {\n        \"type\": \"heading\",\n        \"text\": \"Age-Wise Growth Tracking\"\n      },\n      {\n        \"type\": \"table\",\n        \"headers\": [\n          \"Age\",\n          \"Recommended Measurements\"\n        ],\n        \"rows\": [\n          [\n            \"Birth–6 Months\",\n            \"Weight, Length, Head Circumference\"\n          ],\n          [\n            \"6–12 Months\",\n            \"Weight, Length, Head Circumference\"\n          ],\n          [\n            \"1–2 Years\",\n            \"Weight, Length, Head Circumference\"\n          ],\n          [\n            \"2–3 Years\",\n            \"Weight, Height\"\n          ],\n          [\n            \"3–4 Years\",\n            \"Weight, Height\"\n          ],\n          [\n            \"4–5 Years\",\n            \"Weight, Height\"\n          ],\n          [\n            \"5–6 Years\",\n            \"Weight, Height, BMI-for-Age\"\n          ],\n          [\n            \"6–7 Years\",\n            \"Weight, Height, BMI-for-Age\"\n          ],\n          [\n            \"7–8 Years\",\n            \"Weight, Height, BMI-for-Age\"\n          ],\n          [\n            \"8–9 Years\",\n            \"Weight, Height, BMI-for-Age\"\n          ],\n          [\n            \"9–10 Years\",\n            \"Weight, Height, BMI-for-Age\"\n          ],\n          [\n            \"10–11 Years\",\n            \"Weight, Height, BMI-for-Age\"\n          ],\n          [\n            \"11–12 Years\",\n            \"Weight, Height, BMI-for-Age\"\n          ]\n        ]\n      },\n      {\n        \"type\": \"heading\",\n        \"text\": \"WHO Growth Chart Recommendations\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"**Children Aged 0–5 Years**\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Use the WHO Child Growth Standards.\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"**Children Aged 5–12 Years**\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Use the WHO Growth Reference for children aged 5–19 years.\"\n      },\n      {\n        \"type\": \"heading\",\n        \"text\": \"Important Growth Indicators\"\n      },\n      {\n        \"type\": \"list\",\n        \"items\": [\n          \"Weight-for-age, where applicable.\",\n          \"Length/height-for-age.\",\n          \"Weight-for-length or weight-for-height in younger children.\",\n          \"BMI-for-age, where applicable.\",\n          \"Head circumference in infants and young children.\",\n          \"Growth trends over time.\"\n        ]\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Growth measurements should be interpreted using age- and sex-appropriate growth charts.\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"A single measurement does not provide a complete picture of a child's growth and development.\"\n      }\n    ],\n    \"food_safety\": [\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Different food groups provide different nutrients required for healthy growth.\"\n      },\n      {\n        \"type\": \"heading\",\n        \"text\": \"Recommended Nutrition Categories\"\n      },\n      {\n        \"type\": \"table\",\n        \"headers\": [\n          \"Food Category\",\n          \"Main Nutrients\",\n          \"Food Sources\"\n        ],\n        \"rows\": [\n          [\n            \"Grains\",\n            \"Carbohydrates, Fiber\",\n            \"Chapati, rice, oats\"\n          ],\n          [\n            \"Pulses\",\n            \"Protein, Iron\",\n            \"Lentils, chickpeas, kidney beans\"\n          ],\n          [\n            \"Vegetables\",\n            \"Vitamins, Minerals\",\n            \"Spinach, carrot, pumpkin\"\n          ],\n          [\n            \"Fruits\",\n            \"Vitamins, Fiber\",\n            \"Banana, guava, papaya\"\n          ],\n          [\n            \"Dairy Products\",\n            \"Calcium, Protein\",\n            \"Milk, yogurt, paneer\"\n          ],\n          [\n            \"Eggs, Meat & Fish\",\n            \"Protein, Iron, Vitamin B12\",\n            \"Eggs, chicken, fish\"\n          ],\n          [\n            \"Healthy Fats\",\n            \"Essential Fatty Acids\",\n            \"Appropriate amounts of oils and seeds\"\n          ],\n          [\n            \"Water\",\n            \"Hydration\",\n            \"Clean and safe drinking water\"\n          ]\n        ]\n      },\n      {\n        \"type\": \"heading\",\n        \"text\": \"Important Feeding Guidelines\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"**0–6 Months:** Exclusively breastfed infants do not require additional water.\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"**After 6 Months:** Small amounts of safe drinking water can be introduced alongside complementary foods.\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"**After 12 Months:** Children should receive a varied, balanced diet and adequate safe drinking water.\"\n      },\n      {\n        \"type\": \"heading\",\n        \"text\": \"⚠️ Food Safety Guidelines\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"For children under 12 months:\"\n      },\n      {\n        \"type\": \"list\",\n        \"items\": [\n          \"Do not give honey.\",\n          \"Avoid using cow's milk as the main drink before 12 months.\",\n          \"Provide appropriately prepared foods to reduce choking risks.\",\n          \"Avoid hard or round foods that may cause choking.\"\n        ]\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"For toddlers and young children:\"\n      },\n      {\n        \"type\": \"list\",\n        \"items\": [\n          \"Avoid whole nuts, whole grapes, popcorn, and other choking hazards.\",\n          \"Prepare food according to the child's chewing and swallowing abilities.\",\n          \"Ensure meals are properly cooked.\",\n          \"Maintain good food hygiene.\"\n        ]\n      },\n      {\n        \"type\": \"heading\",\n        \"text\": \"When to Consult a Pediatrician\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Seek medical advice when:\"\n      },\n      {\n        \"type\": \"list\",\n        \"items\": [\n          \"A child's weight or length/height is not increasing as expected.\",\n          \"The child has difficulty chewing or swallowing.\",\n          \"The child persistently refuses food.\",\n          \"A nutritional deficiency is suspected.\",\n          \"Growth measurements show concerning changes over time.\"\n        ]\n      }\n    ],\n    \"sources\": [\n      {\n        \"title\": \"WHO infant and young child feeding\",\n        \"url\": \"https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding\"\n      },\n      {\n        \"title\": \"ICMR–NIN Dietary Guidelines for Indians 2024\",\n        \"url\": \"https://nin.res.in/dietaryguidelines/pdfjs/locale/DGI_2024.pdf\"\n      },\n      {\n        \"title\": \"WHO Child Growth Standards\",\n        \"url\": \"https://www.who.int/tools/child-growth-standards\"\n      },\n      {\n        \"title\": \"WHO growth reference 5–19 years\",\n        \"url\": \"https://www.who.int/tools/growth-reference-data-for-5to19-years\"\n      }\n    ],\n    \"notice\": \"General educational guidance. Your clinician adapts it for allergies, feeding difficulties, prematurity or other needs. Growth needs age- and sex-appropriate charts, not adult BMI cutoffs. No supplement dose or individual calorie target is generated.\",\n    \"provenance\": \"User-supplied educational guide; not an individual diagnosis or prescribed meal plan.\"\n  }\n}"
+        }
+      ]
+    },
+    {
       "name": "POST /api/v1/doctors/approval-status",
       "request": {
         "method": "POST",
@@ -38920,6 +39251,837 @@
             }
           ],
           "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Database or Cloudinary unavailable/not configured\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "GET /api/v1/doctors/care-profiles/{profile_id}/growth-nutrition-guide",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide",
+        "header": [
+          {
+            "key": "X-Auth-Transport",
+            "value": "bearer"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "400 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Invalid challenge/OTP/state",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid challenge/OTP/state\"\n  }\n}"
+        },
+        {
+          "name": "401 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Invalid credentials/token/session",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid credentials/token/session\"\n  }\n}"
+        },
+        {
+          "name": "403 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Role, approval, status, transport or CSRF denied",
+          "code": 403,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Role, approval, status, transport or CSRF denied\"\n  }\n}"
+        },
+        {
+          "name": "404 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Not found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Not found\"\n  }\n}"
+        },
+        {
+          "name": "409 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Duplicate data or invalid approval state",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Duplicate data or invalid approval state\"\n  }\n}"
+        },
+        {
+          "name": "422 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Validation failed",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Validation failed\"\n  }\n}"
+        },
+        {
+          "name": "429 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Rate limit or OTP cooldown",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Rate limit or OTP cooldown\"\n  }\n}"
+        },
+        {
+          "name": "413 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Report exceeds size limit",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Report exceeds size limit\"\n  }\n}"
+        },
+        {
+          "name": "415 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Multipart upload required",
+          "code": 415,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Multipart upload required\"\n  }\n}"
+        },
+        {
+          "name": "502 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Cloudinary upload failed",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Cloudinary upload failed\"\n  }\n}"
+        },
+        {
+          "name": "503 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Database or Cloudinary unavailable/not configured",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Database or Cloudinary unavailable/not configured\"\n  }\n}"
+        },
+        {
+          "name": "200 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Success",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"child\": {\n    \"id\": \"<child UUID>\",\n    \"full_name\": \"Example Child\",\n    \"date_of_birth\": \"2026-02-28\",\n    \"age\": {\n      \"completed_years\": 0,\n      \"remaining_months\": 8,\n      \"remaining_days\": 3,\n      \"total_completed_months\": 8,\n      \"total_days\": 245,\n      \"display\": \"0 years 8 months 3 days\",\n      \"primary_category\": \"INFANT\",\n      \"secondary_categories\": [],\n      \"in_child_module_scope\": true\n    }\n  },\n  \"active\": true,\n  \"default_active\": true,\n  \"status\": \"AVAILABLE\",\n  \"updated_at\": null,\n  \"updated_by\": null,\n  \"version\": \"2026-10-31.v1\",\n  \"age_band\": {\n    \"id\": \"month-8\",\n    \"label\": \"8–9 Months\",\n    \"min_months\": 8,\n    \"max_months_exclusive\": 9\n  },\n  \"guide\": {\n    \"title\": \"Growth & Nutrition Guide for Children (0–12 Years)\",\n    \"nutrition\": {\n      \"id\": \"month-8\",\n      \"min_months\": 8,\n      \"max_months_exclusive\": 9,\n      \"label\": \"8–9 Months\",\n      \"foods\": \"Soft rice, lentils, fully cooked eggs, and fruits\",\n      \"meal_frequency\": \"2–3 meals daily\",\n      \"blocks\": [\n        {\n          \"type\": \"list\",\n          \"items\": [\n            \"Introduce appropriate complementary foods.\",\n            \"Continue breastfeeding alongside solid foods.\",\n            \"Gradually increase food variety, quantity, and texture.\",\n            \"Breastfeeding can continue until two years of age or beyond.\"\n          ]\n        },\n        {\n          \"type\": \"heading\",\n          \"text\": \"Recommended First Foods After 6 Months\"\n        },\n        {\n          \"type\": \"table\",\n          \"headers\": [\n            \"Food\",\n            \"Preparation Method\"\n          ],\n          \"rows\": [\n            [\n              \"Moong Dal Khichdi\",\n              \"Cook thoroughly and mash\"\n            ],\n            [\n              \"Porridge (Dalia)\",\n              \"Prepare with a thick, soft consistency\"\n            ],\n            [\n              \"Banana\",\n              \"Mash thoroughly\"\n            ],\n            [\n              \"Papaya\",\n              \"Mash into a smooth texture\"\n            ],\n            [\n              \"Carrot\",\n              \"Boil or steam and mash\"\n            ],\n            [\n              \"Lentils\",\n              \"Cook thoroughly and serve thick\"\n            ],\n            [\n              \"Egg\",\n              \"Cook completely and mash or chop appropriately\"\n            ],\n            [\n              \"Yogurt\",\n              \"Serve plain and unsweetened\"\n            ]\n          ]\n        },\n        {\n          \"type\": \"paragraph\",\n          \"text\": \"Start with small amounts, such as 2–3 teaspoons, and gradually increase according to the baby's appetite.\"\n        },\n        {\n          \"type\": \"paragraph\",\n          \"text\": \"Avoid relying only on watery lentil soup or rice water. Provide thick, nutrient-rich complementary foods.\"\n        }\n      ]\n    },\n    \"growth_monitoring\": [\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Monitoring growth helps parents and healthcare professionals understand a child's development over time.\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Growth monitoring should consider multiple measurements rather than focusing only on body weight.\"\n      },\n      {\n        \"type\": \"heading\",\n        \"text\": \"Age-Wise Growth Tracking\"\n      },\n      {\n        \"type\": \"table\",\n        \"headers\": [\n          \"Age\",\n          \"Recommended Measurements\"\n        ],\n        \"rows\": [\n          [\n            \"Birth–6 Months\",\n            \"Weight, Length, Head Circumference\"\n          ],\n          [\n            \"6–12 Months\",\n            \"Weight, Length, Head Circumference\"\n          ],\n          [\n            \"1–2 Years\",\n            \"Weight, Length, Head Circumference\"\n          ],\n          [\n            \"2–3 Years\",\n            \"Weight, Height\"\n          ],\n          [\n            \"3–4 Years\",\n            \"Weight, Height\"\n          ],\n          [\n            \"4–5 Years\",\n            \"Weight, Height\"\n          ],\n          [\n            \"5–6 Years\",\n            \"Weight, Height, BMI-for-Age\"\n          ],\n          [\n            \"6–7 Years\",\n            \"Weight, Height, BMI-for-Age\"\n          ],\n          [\n            \"7–8 Years\",\n            \"Weight, Height, BMI-for-Age\"\n          ],\n          [\n            \"8–9 Years\",\n            \"Weight, Height, BMI-for-Age\"\n          ],\n          [\n            \"9–10 Years\",\n            \"Weight, Height, BMI-for-Age\"\n          ],\n          [\n            \"10–11 Years\",\n            \"Weight, Height, BMI-for-Age\"\n          ],\n          [\n            \"11–12 Years\",\n            \"Weight, Height, BMI-for-Age\"\n          ]\n        ]\n      },\n      {\n        \"type\": \"heading\",\n        \"text\": \"WHO Growth Chart Recommendations\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"**Children Aged 0–5 Years**\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Use the WHO Child Growth Standards.\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"**Children Aged 5–12 Years**\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Use the WHO Growth Reference for children aged 5–19 years.\"\n      },\n      {\n        \"type\": \"heading\",\n        \"text\": \"Important Growth Indicators\"\n      },\n      {\n        \"type\": \"list\",\n        \"items\": [\n          \"Weight-for-age, where applicable.\",\n          \"Length/height-for-age.\",\n          \"Weight-for-length or weight-for-height in younger children.\",\n          \"BMI-for-age, where applicable.\",\n          \"Head circumference in infants and young children.\",\n          \"Growth trends over time.\"\n        ]\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Growth measurements should be interpreted using age- and sex-appropriate growth charts.\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"A single measurement does not provide a complete picture of a child's growth and development.\"\n      }\n    ],\n    \"food_safety\": [\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Different food groups provide different nutrients required for healthy growth.\"\n      },\n      {\n        \"type\": \"heading\",\n        \"text\": \"Recommended Nutrition Categories\"\n      },\n      {\n        \"type\": \"table\",\n        \"headers\": [\n          \"Food Category\",\n          \"Main Nutrients\",\n          \"Food Sources\"\n        ],\n        \"rows\": [\n          [\n            \"Grains\",\n            \"Carbohydrates, Fiber\",\n            \"Chapati, rice, oats\"\n          ],\n          [\n            \"Pulses\",\n            \"Protein, Iron\",\n            \"Lentils, chickpeas, kidney beans\"\n          ],\n          [\n            \"Vegetables\",\n            \"Vitamins, Minerals\",\n            \"Spinach, carrot, pumpkin\"\n          ],\n          [\n            \"Fruits\",\n            \"Vitamins, Fiber\",\n            \"Banana, guava, papaya\"\n          ],\n          [\n            \"Dairy Products\",\n            \"Calcium, Protein\",\n            \"Milk, yogurt, paneer\"\n          ],\n          [\n            \"Eggs, Meat & Fish\",\n            \"Protein, Iron, Vitamin B12\",\n            \"Eggs, chicken, fish\"\n          ],\n          [\n            \"Healthy Fats\",\n            \"Essential Fatty Acids\",\n            \"Appropriate amounts of oils and seeds\"\n          ],\n          [\n            \"Water\",\n            \"Hydration\",\n            \"Clean and safe drinking water\"\n          ]\n        ]\n      },\n      {\n        \"type\": \"heading\",\n        \"text\": \"Important Feeding Guidelines\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"**0–6 Months:** Exclusively breastfed infants do not require additional water.\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"**After 6 Months:** Small amounts of safe drinking water can be introduced alongside complementary foods.\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"**After 12 Months:** Children should receive a varied, balanced diet and adequate safe drinking water.\"\n      },\n      {\n        \"type\": \"heading\",\n        \"text\": \"⚠️ Food Safety Guidelines\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"For children under 12 months:\"\n      },\n      {\n        \"type\": \"list\",\n        \"items\": [\n          \"Do not give honey.\",\n          \"Avoid using cow's milk as the main drink before 12 months.\",\n          \"Provide appropriately prepared foods to reduce choking risks.\",\n          \"Avoid hard or round foods that may cause choking.\"\n        ]\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"For toddlers and young children:\"\n      },\n      {\n        \"type\": \"list\",\n        \"items\": [\n          \"Avoid whole nuts, whole grapes, popcorn, and other choking hazards.\",\n          \"Prepare food according to the child's chewing and swallowing abilities.\",\n          \"Ensure meals are properly cooked.\",\n          \"Maintain good food hygiene.\"\n        ]\n      },\n      {\n        \"type\": \"heading\",\n        \"text\": \"When to Consult a Pediatrician\"\n      },\n      {\n        \"type\": \"paragraph\",\n        \"text\": \"Seek medical advice when:\"\n      },\n      {\n        \"type\": \"list\",\n        \"items\": [\n          \"A child's weight or length/height is not increasing as expected.\",\n          \"The child has difficulty chewing or swallowing.\",\n          \"The child persistently refuses food.\",\n          \"A nutritional deficiency is suspected.\",\n          \"Growth measurements show concerning changes over time.\"\n        ]\n      }\n    ],\n    \"sources\": [\n      {\n        \"title\": \"WHO infant and young child feeding\",\n        \"url\": \"https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding\"\n      },\n      {\n        \"title\": \"ICMR–NIN Dietary Guidelines for Indians 2024\",\n        \"url\": \"https://nin.res.in/dietaryguidelines/pdfjs/locale/DGI_2024.pdf\"\n      },\n      {\n        \"title\": \"WHO Child Growth Standards\",\n        \"url\": \"https://www.who.int/tools/child-growth-standards\"\n      },\n      {\n        \"title\": \"WHO growth reference 5–19 years\",\n        \"url\": \"https://www.who.int/tools/growth-reference-data-for-5to19-years\"\n      }\n    ],\n    \"notice\": \"General educational guidance. Your clinician adapts it for allergies, feeding difficulties, prematurity or other needs. Growth needs age- and sex-appropriate charts, not adult BMI cutoffs. No supplement dose or individual calorie target is generated.\",\n    \"provenance\": \"User-supplied educational guide; not an individual diagnosis or prescribed meal plan.\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "PATCH /api/v1/doctors/care-profiles/{profile_id}/growth-nutrition-guide/visibility",
+      "request": {
+        "method": "PATCH",
+        "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide/visibility",
+        "header": [
+          {
+            "key": "X-Auth-Transport",
+            "value": "bearer"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"active\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "400 example",
+          "originalRequest": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide/visibility",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Invalid challenge/OTP/state",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid challenge/OTP/state\"\n  }\n}"
+        },
+        {
+          "name": "401 example",
+          "originalRequest": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide/visibility",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Invalid credentials/token/session",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid credentials/token/session\"\n  }\n}"
+        },
+        {
+          "name": "403 example",
+          "originalRequest": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide/visibility",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Role, approval, status, transport or CSRF denied",
+          "code": 403,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Role, approval, status, transport or CSRF denied\"\n  }\n}"
+        },
+        {
+          "name": "404 example",
+          "originalRequest": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide/visibility",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Not found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Not found\"\n  }\n}"
+        },
+        {
+          "name": "409 example",
+          "originalRequest": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide/visibility",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Duplicate data or invalid approval state",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Duplicate data or invalid approval state\"\n  }\n}"
+        },
+        {
+          "name": "422 example",
+          "originalRequest": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide/visibility",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Validation failed",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Validation failed\"\n  }\n}"
+        },
+        {
+          "name": "429 example",
+          "originalRequest": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide/visibility",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Rate limit or OTP cooldown",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Rate limit or OTP cooldown\"\n  }\n}"
+        },
+        {
+          "name": "413 example",
+          "originalRequest": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide/visibility",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Report exceeds size limit",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Report exceeds size limit\"\n  }\n}"
+        },
+        {
+          "name": "415 example",
+          "originalRequest": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide/visibility",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Multipart upload required",
+          "code": 415,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Multipart upload required\"\n  }\n}"
+        },
+        {
+          "name": "502 example",
+          "originalRequest": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide/visibility",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Cloudinary upload failed",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Cloudinary upload failed\"\n  }\n}"
+        },
+        {
+          "name": "503 example",
+          "originalRequest": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide/visibility",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Database or Cloudinary unavailable/not configured",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Database or Cloudinary unavailable/not configured\"\n  }\n}"
+        },
+        {
+          "name": "200 example",
+          "originalRequest": {
+            "method": "PATCH",
+            "url": "{{base_url}}/api/v1/doctors/care-profiles/{{profile_id}}/growth-nutrition-guide/visibility",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Success",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"child\": {\n    \"id\": \"<child UUID>\",\n    \"full_name\": \"Example Child\",\n    \"date_of_birth\": \"2026-02-28\",\n    \"age\": {\n      \"completed_years\": 0,\n      \"remaining_months\": 8,\n      \"remaining_days\": 3,\n      \"total_completed_months\": 8,\n      \"total_days\": 245,\n      \"display\": \"0 years 8 months 3 days\",\n      \"primary_category\": \"INFANT\",\n      \"secondary_categories\": [],\n      \"in_child_module_scope\": true\n    }\n  },\n  \"active\": false,\n  \"default_active\": true,\n  \"status\": \"INACTIVE\",\n  \"updated_at\": \"<UTC timestamp>\",\n  \"updated_by\": \"<connected doctor UUID>\",\n  \"version\": \"2026-10-31.v1\"\n}"
         }
       ]
     },
@@ -51735,6 +52897,1574 @@
       ]
     },
     {
+      "name": "GET /api/v1/family-invitations/{token}",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/v1/family-invitations/{{token}}",
+        "header": [
+          {
+            "key": "X-Auth-Transport",
+            "value": "bearer"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "400 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Invalid challenge/OTP/state",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid challenge/OTP/state\"\n  }\n}"
+        },
+        {
+          "name": "401 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Invalid credentials/token/session",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid credentials/token/session\"\n  }\n}"
+        },
+        {
+          "name": "403 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Role, approval, status, transport or CSRF denied",
+          "code": 403,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Role, approval, status, transport or CSRF denied\"\n  }\n}"
+        },
+        {
+          "name": "404 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Not found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Not found\"\n  }\n}"
+        },
+        {
+          "name": "409 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Duplicate data or invalid approval state",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Duplicate data or invalid approval state\"\n  }\n}"
+        },
+        {
+          "name": "422 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Validation failed",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Validation failed\"\n  }\n}"
+        },
+        {
+          "name": "429 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Rate limit or OTP cooldown",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Rate limit or OTP cooldown\"\n  }\n}"
+        },
+        {
+          "name": "413 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Report exceeds size limit",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Report exceeds size limit\"\n  }\n}"
+        },
+        {
+          "name": "415 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Multipart upload required",
+          "code": 415,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Multipart upload required\"\n  }\n}"
+        },
+        {
+          "name": "502 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Cloudinary upload failed",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Cloudinary upload failed\"\n  }\n}"
+        },
+        {
+          "name": "503 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Database or Cloudinary unavailable/not configured",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Database or Cloudinary unavailable/not configured\"\n  }\n}"
+        },
+        {
+          "name": "200 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Success",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"invitation\": {\n    \"id\": \"<invitation UUID>\",\n    \"full_name\": \"Example Member\",\n    \"email\": \"member@example.com\",\n    \"module\": \"women\",\n    \"relationship\": \"Family member\",\n    \"status\": \"PENDING\",\n    \"expires_at\": \"<UTC timestamp, 24 hours after creation>\",\n    \"profile_id\": null\n  },\n  \"family\": {\n    \"full_name\": \"Example Family\",\n    \"email\": \"family@example.com\"\n  },\n  \"form\": {\n    \"full_name\": \"Example Member\",\n    \"email\": \"member@example.com\",\n    \"readonly\": [\n      \"full_name\",\n      \"email\"\n    ]\n  },\n  \"otp_destination\": \"inviting_family_email\",\n  \"shared_profile\": true\n}"
+        },
+        {
+          "name": "410 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Invitation expired, revoked or accepted",
+          "code": 410,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"invite_unavailable\",\n    \"message\": \"Invitation expired, revoked or already accepted\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "POST /api/v1/family-invitations/{token}/resend-otp",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/v1/family-invitations/{{token}}/resend-otp",
+        "header": [
+          {
+            "key": "X-Auth-Transport",
+            "value": "bearer"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "400 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/resend-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Invalid challenge/OTP/state",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid challenge/OTP/state\"\n  }\n}"
+        },
+        {
+          "name": "401 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/resend-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Invalid credentials/token/session",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid credentials/token/session\"\n  }\n}"
+        },
+        {
+          "name": "403 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/resend-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Role, approval, status, transport or CSRF denied",
+          "code": 403,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Role, approval, status, transport or CSRF denied\"\n  }\n}"
+        },
+        {
+          "name": "404 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/resend-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Not found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Not found\"\n  }\n}"
+        },
+        {
+          "name": "409 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/resend-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Duplicate data or invalid approval state",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Duplicate data or invalid approval state\"\n  }\n}"
+        },
+        {
+          "name": "422 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/resend-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Validation failed",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Validation failed\"\n  }\n}"
+        },
+        {
+          "name": "429 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/resend-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Rate limit or OTP cooldown",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Rate limit or OTP cooldown\"\n  }\n}"
+        },
+        {
+          "name": "413 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/resend-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Report exceeds size limit",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Report exceeds size limit\"\n  }\n}"
+        },
+        {
+          "name": "415 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/resend-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Multipart upload required",
+          "code": 415,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Multipart upload required\"\n  }\n}"
+        },
+        {
+          "name": "502 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/resend-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Cloudinary upload failed",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Cloudinary upload failed\"\n  }\n}"
+        },
+        {
+          "name": "503 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/resend-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Database or Cloudinary unavailable/not configured",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Database or Cloudinary unavailable/not configured\"\n  }\n}"
+        },
+        {
+          "name": "202 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/resend-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Success",
+          "code": 202,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Approval OTP sent to the inviting family email.\",\n  \"email_status\": \"sent\",\n  \"otp_destination\": \"inviting_family_email\",\n  \"expires_in\": 300,\n  \"resend_after\": 60\n}"
+        },
+        {
+          "name": "410 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/resend-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              }
+            ]
+          },
+          "status": "Invitation expired, revoked or accepted",
+          "code": 410,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"invite_unavailable\",\n    \"message\": \"Invitation expired, revoked or already accepted\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "POST /api/v1/family-invitations/{token}/setup",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/v1/family-invitations/{{token}}/setup",
+        "header": [
+          {
+            "key": "X-Auth-Transport",
+            "value": "bearer"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"mobile_number\": \"+919876543211\",\n  \"date_of_birth\": \"1995-02-28\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "400 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/setup",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"mobile_number\": \"+919876543211\",\n  \"date_of_birth\": \"1995-02-28\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Invalid challenge/OTP/state",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid challenge/OTP/state\"\n  }\n}"
+        },
+        {
+          "name": "401 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/setup",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"mobile_number\": \"+919876543211\",\n  \"date_of_birth\": \"1995-02-28\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Invalid credentials/token/session",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid credentials/token/session\"\n  }\n}"
+        },
+        {
+          "name": "403 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/setup",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"mobile_number\": \"+919876543211\",\n  \"date_of_birth\": \"1995-02-28\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Role, approval, status, transport or CSRF denied",
+          "code": 403,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Role, approval, status, transport or CSRF denied\"\n  }\n}"
+        },
+        {
+          "name": "404 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/setup",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"mobile_number\": \"+919876543211\",\n  \"date_of_birth\": \"1995-02-28\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Not found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Not found\"\n  }\n}"
+        },
+        {
+          "name": "409 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/setup",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"mobile_number\": \"+919876543211\",\n  \"date_of_birth\": \"1995-02-28\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Duplicate data or invalid approval state",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Duplicate data or invalid approval state\"\n  }\n}"
+        },
+        {
+          "name": "422 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/setup",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"mobile_number\": \"+919876543211\",\n  \"date_of_birth\": \"1995-02-28\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Validation failed",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Validation failed\"\n  }\n}"
+        },
+        {
+          "name": "429 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/setup",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"mobile_number\": \"+919876543211\",\n  \"date_of_birth\": \"1995-02-28\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Rate limit or OTP cooldown",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Rate limit or OTP cooldown\"\n  }\n}"
+        },
+        {
+          "name": "413 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/setup",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"mobile_number\": \"+919876543211\",\n  \"date_of_birth\": \"1995-02-28\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Report exceeds size limit",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Report exceeds size limit\"\n  }\n}"
+        },
+        {
+          "name": "415 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/setup",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"mobile_number\": \"+919876543211\",\n  \"date_of_birth\": \"1995-02-28\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Multipart upload required",
+          "code": 415,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Multipart upload required\"\n  }\n}"
+        },
+        {
+          "name": "502 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/setup",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"mobile_number\": \"+919876543211\",\n  \"date_of_birth\": \"1995-02-28\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Cloudinary upload failed",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Cloudinary upload failed\"\n  }\n}"
+        },
+        {
+          "name": "503 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/setup",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"mobile_number\": \"+919876543211\",\n  \"date_of_birth\": \"1995-02-28\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Database or Cloudinary unavailable/not configured",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Database or Cloudinary unavailable/not configured\"\n  }\n}"
+        },
+        {
+          "name": "202 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/setup",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"mobile_number\": \"+919876543211\",\n  \"date_of_birth\": \"1995-02-28\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Success",
+          "code": 202,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Approval OTP sent to the inviting family email.\",\n  \"email_status\": \"sent\",\n  \"otp_destination\": \"inviting_family_email\",\n  \"expires_in\": 300,\n  \"resend_after\": 60\n}"
+        },
+        {
+          "name": "410 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/setup",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"mobile_number\": \"+919876543211\",\n  \"date_of_birth\": \"1995-02-28\",\n  \"password\": \"Choose-Your-Password8!\",\n  \"confirm_password\": \"Choose-Your-Password8!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Invitation expired, revoked or accepted",
+          "code": 410,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"invite_unavailable\",\n    \"message\": \"Invitation expired, revoked or already accepted\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "POST /api/v1/family-invitations/{token}/verify-otp",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/v1/family-invitations/{{token}}/verify-otp",
+        "header": [
+          {
+            "key": "X-Auth-Transport",
+            "value": "bearer"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"otp\": \"123456\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "400 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/verify-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Invalid challenge/OTP/state",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid challenge/OTP/state\"\n  }\n}"
+        },
+        {
+          "name": "401 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/verify-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Invalid credentials/token/session",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid credentials/token/session\"\n  }\n}"
+        },
+        {
+          "name": "403 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/verify-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Role, approval, status, transport or CSRF denied",
+          "code": 403,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Role, approval, status, transport or CSRF denied\"\n  }\n}"
+        },
+        {
+          "name": "404 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/verify-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Not found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Not found\"\n  }\n}"
+        },
+        {
+          "name": "409 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/verify-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Duplicate data or invalid approval state",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Duplicate data or invalid approval state\"\n  }\n}"
+        },
+        {
+          "name": "422 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/verify-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Validation failed",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Validation failed\"\n  }\n}"
+        },
+        {
+          "name": "429 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/verify-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Rate limit or OTP cooldown",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Rate limit or OTP cooldown\"\n  }\n}"
+        },
+        {
+          "name": "413 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/verify-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Report exceeds size limit",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Report exceeds size limit\"\n  }\n}"
+        },
+        {
+          "name": "415 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/verify-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Multipart upload required",
+          "code": 415,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Multipart upload required\"\n  }\n}"
+        },
+        {
+          "name": "502 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/verify-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Cloudinary upload failed",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Cloudinary upload failed\"\n  }\n}"
+        },
+        {
+          "name": "503 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/verify-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Database or Cloudinary unavailable/not configured",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Database or Cloudinary unavailable/not configured\"\n  }\n}"
+        },
+        {
+          "name": "201 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/verify-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Success",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Profile setup complete. Opening your profile.\",\n  \"access_token\": \"<member access JWT; omitted in cookie mode>\",\n  \"refresh_token\": \"<member refresh token; omitted in cookie mode>\",\n  \"expires_in\": 900,\n  \"token_type\": \"Bearer\",\n  \"redirect_url\": \"/customer/women/dashboard\",\n  \"user\": {\n    \"id\": \"<member UUID>\",\n    \"public_id\": \"C000002\",\n    \"full_name\": \"Example Member\",\n    \"email\": \"member@example.com\",\n    \"phone_number\": \"+919876543211\",\n    \"role\": \"PATIENT\",\n    \"email_verified\": true,\n    \"approval_status\": \"APPROVED\",\n    \"account_status\": \"ACTIVE\",\n    \"must_change_password\": false,\n    \"referred_doctor\": null\n  },\n  \"profile\": {\n    \"id\": \"<profile UUID>\",\n    \"profile_type\": \"member\",\n    \"module\": \"women\",\n    \"full_name\": \"Example Member\",\n    \"date_of_birth\": \"1995-02-28\",\n    \"member_email\": \"member@example.com\",\n    \"relationship\": \"Family member\",\n    \"linked_member\": true,\n    \"parent_profile_id\": null,\n    \"guardian_contact\": \"\",\n    \"guardian_name\": \"\",\n    \"emergency_contacts\": [],\n    \"doctor\": null,\n    \"created_at\": \"<UTC timestamp>\"\n  },\n  \"family\": {\n    \"full_name\": \"Example Family\",\n    \"relationship\": \"Family member\"\n  }\n}"
+        },
+        {
+          "name": "410 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/family-invitations/{{token}}/verify-otp",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otp\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Invitation expired, revoked or accepted",
+          "code": 410,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"invite_unavailable\",\n    \"message\": \"Invitation expired, revoked or already accepted\"\n  }\n}"
+        }
+      ]
+    },
+    {
       "name": "GET /api/v1/health",
       "request": {
         "method": "GET",
@@ -57930,6 +60660,1259 @@
             }
           ],
           "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Database or Cloudinary unavailable/not configured\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "POST /api/v1/patients/family-invitations",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/api/v1/patients/family-invitations",
+        "header": [
+          {
+            "key": "X-Auth-Transport",
+            "value": "bearer"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"module\": \"women\",\n  \"relationship\": \"Family member\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "400 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"module\": \"women\",\n  \"relationship\": \"Family member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Invalid challenge/OTP/state",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid challenge/OTP/state\"\n  }\n}"
+        },
+        {
+          "name": "401 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"module\": \"women\",\n  \"relationship\": \"Family member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Invalid credentials/token/session",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid credentials/token/session\"\n  }\n}"
+        },
+        {
+          "name": "403 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"module\": \"women\",\n  \"relationship\": \"Family member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Role, approval, status, transport or CSRF denied",
+          "code": 403,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Role, approval, status, transport or CSRF denied\"\n  }\n}"
+        },
+        {
+          "name": "404 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"module\": \"women\",\n  \"relationship\": \"Family member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Not found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Not found\"\n  }\n}"
+        },
+        {
+          "name": "409 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"module\": \"women\",\n  \"relationship\": \"Family member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Duplicate data or invalid approval state",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Duplicate data or invalid approval state\"\n  }\n}"
+        },
+        {
+          "name": "422 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"module\": \"women\",\n  \"relationship\": \"Family member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Validation failed",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Validation failed\"\n  }\n}"
+        },
+        {
+          "name": "429 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"module\": \"women\",\n  \"relationship\": \"Family member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Rate limit or OTP cooldown",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Rate limit or OTP cooldown\"\n  }\n}"
+        },
+        {
+          "name": "413 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"module\": \"women\",\n  \"relationship\": \"Family member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Report exceeds size limit",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Report exceeds size limit\"\n  }\n}"
+        },
+        {
+          "name": "415 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"module\": \"women\",\n  \"relationship\": \"Family member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Multipart upload required",
+          "code": 415,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Multipart upload required\"\n  }\n}"
+        },
+        {
+          "name": "502 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"module\": \"women\",\n  \"relationship\": \"Family member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Cloudinary upload failed",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Cloudinary upload failed\"\n  }\n}"
+        },
+        {
+          "name": "503 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"module\": \"women\",\n  \"relationship\": \"Family member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Database or Cloudinary unavailable/not configured",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Database or Cloudinary unavailable/not configured\"\n  }\n}"
+        },
+        {
+          "name": "201 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"module\": \"women\",\n  \"relationship\": \"Family member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Success",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"invitation\": {\n    \"id\": \"<invitation UUID>\",\n    \"full_name\": \"Example Member\",\n    \"email\": \"member@example.com\",\n    \"module\": \"women\",\n    \"relationship\": \"Family member\",\n    \"status\": \"PENDING\",\n    \"expires_at\": \"<UTC timestamp, 24 hours after creation>\",\n    \"profile_id\": null\n  },\n  \"email_status\": \"sent\"\n}"
+        },
+        {
+          "name": "410 example",
+          "originalRequest": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Example Member\",\n  \"email\": \"member@example.com\",\n  \"module\": \"women\",\n  \"relationship\": \"Family member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Invitation expired, revoked or accepted",
+          "code": 410,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"invite_unavailable\",\n    \"message\": \"Invitation expired, revoked or already accepted\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "GET /api/v1/patients/family-invitations",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/v1/patients/family-invitations",
+        "header": [
+          {
+            "key": "X-Auth-Transport",
+            "value": "bearer"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "400 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Invalid challenge/OTP/state",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid challenge/OTP/state\"\n  }\n}"
+        },
+        {
+          "name": "401 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Invalid credentials/token/session",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid credentials/token/session\"\n  }\n}"
+        },
+        {
+          "name": "403 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Role, approval, status, transport or CSRF denied",
+          "code": 403,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Role, approval, status, transport or CSRF denied\"\n  }\n}"
+        },
+        {
+          "name": "404 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Not found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Not found\"\n  }\n}"
+        },
+        {
+          "name": "409 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Duplicate data or invalid approval state",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Duplicate data or invalid approval state\"\n  }\n}"
+        },
+        {
+          "name": "422 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Validation failed",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Validation failed\"\n  }\n}"
+        },
+        {
+          "name": "429 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Rate limit or OTP cooldown",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Rate limit or OTP cooldown\"\n  }\n}"
+        },
+        {
+          "name": "413 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Report exceeds size limit",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Report exceeds size limit\"\n  }\n}"
+        },
+        {
+          "name": "415 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Multipart upload required",
+          "code": 415,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Multipart upload required\"\n  }\n}"
+        },
+        {
+          "name": "502 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Cloudinary upload failed",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Cloudinary upload failed\"\n  }\n}"
+        },
+        {
+          "name": "503 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Database or Cloudinary unavailable/not configured",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Database or Cloudinary unavailable/not configured\"\n  }\n}"
+        },
+        {
+          "name": "200 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Success",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"items\": [\n    {\n      \"id\": \"<invitation UUID>\",\n      \"full_name\": \"Example Member\",\n      \"email\": \"member@example.com\",\n      \"module\": \"women\",\n      \"relationship\": \"Family member\",\n      \"status\": \"PENDING\",\n      \"expires_at\": \"<UTC timestamp, 24 hours after creation>\",\n      \"profile_id\": null\n    }\n  ],\n  \"total\": 1,\n  \"page\": 1,\n  \"per_page\": 25\n}"
+        },
+        {
+          "name": "410 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/patients/family-invitations",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Invitation expired, revoked or accepted",
+          "code": 410,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"invite_unavailable\",\n    \"message\": \"Invitation expired, revoked or already accepted\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "DELETE /api/v1/patients/family-invitations/{invite_id}",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/v1/patients/family-invitations/{{invite_id}}",
+        "header": [
+          {
+            "key": "X-Auth-Transport",
+            "value": "bearer"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "400 example",
+          "originalRequest": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/patients/family-invitations/{{invite_id}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Invalid challenge/OTP/state",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid challenge/OTP/state\"\n  }\n}"
+        },
+        {
+          "name": "401 example",
+          "originalRequest": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/patients/family-invitations/{{invite_id}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Invalid credentials/token/session",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid credentials/token/session\"\n  }\n}"
+        },
+        {
+          "name": "403 example",
+          "originalRequest": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/patients/family-invitations/{{invite_id}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Role, approval, status, transport or CSRF denied",
+          "code": 403,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Role, approval, status, transport or CSRF denied\"\n  }\n}"
+        },
+        {
+          "name": "404 example",
+          "originalRequest": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/patients/family-invitations/{{invite_id}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Not found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Not found\"\n  }\n}"
+        },
+        {
+          "name": "409 example",
+          "originalRequest": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/patients/family-invitations/{{invite_id}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Duplicate data or invalid approval state",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Duplicate data or invalid approval state\"\n  }\n}"
+        },
+        {
+          "name": "422 example",
+          "originalRequest": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/patients/family-invitations/{{invite_id}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Validation failed",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Validation failed\"\n  }\n}"
+        },
+        {
+          "name": "429 example",
+          "originalRequest": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/patients/family-invitations/{{invite_id}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Rate limit or OTP cooldown",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Rate limit or OTP cooldown\"\n  }\n}"
+        },
+        {
+          "name": "413 example",
+          "originalRequest": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/patients/family-invitations/{{invite_id}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Report exceeds size limit",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Report exceeds size limit\"\n  }\n}"
+        },
+        {
+          "name": "415 example",
+          "originalRequest": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/patients/family-invitations/{{invite_id}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Multipart upload required",
+          "code": 415,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Multipart upload required\"\n  }\n}"
+        },
+        {
+          "name": "502 example",
+          "originalRequest": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/patients/family-invitations/{{invite_id}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Cloudinary upload failed",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Cloudinary upload failed\"\n  }\n}"
+        },
+        {
+          "name": "503 example",
+          "originalRequest": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/patients/family-invitations/{{invite_id}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Database or Cloudinary unavailable/not configured",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Database or Cloudinary unavailable/not configured\"\n  }\n}"
+        },
+        {
+          "name": "200 example",
+          "originalRequest": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/patients/family-invitations/{{invite_id}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Success",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"message\": \"Invitation revoked\"\n}"
+        },
+        {
+          "name": "410 example",
+          "originalRequest": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/patients/family-invitations/{{invite_id}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Invitation expired, revoked or accepted",
+          "code": 410,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"invite_unavailable\",\n    \"message\": \"Invitation expired, revoked or already accepted\"\n  }\n}"
         }
       ]
     },

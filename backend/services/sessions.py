@@ -10,7 +10,7 @@ from core.errors import APIError
 from services.repository import serialize_user, audit
 
 
-def issue_session(user):
+def issue_session(user, extra=None, status=200):
     eligible(user)
     mode = transport()
     if mode == 'cookie':
@@ -22,8 +22,12 @@ def issue_session(user):
     user.last_login_at = now()
     audit('login_success', user.id, user.id)
     result = rotate(user, session)
+    if extra:
+        result.update(extra)
     db().commit()
-    return respond(result, session)
+    response = respond(result, session)
+    response.status_code = status
+    return response
 
 
 def rotate(user, session):
