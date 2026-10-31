@@ -30,7 +30,7 @@ Doctor login can return 202 for profile setup/review instead of a clinical acces
 
 ## Reading this single-file reference
 
-Generated on 2026-10-31 11:24 IST. This file includes every versioned REST operation, request examples, response examples, validation schemas, upload limits and realtime integration. Examples are synthetic contracts, not captured production responses. An endpoint appearing here does not mean its external SMTP, storage or OCR provider has been tested live. Path placeholders must be replaced with accessible resource IDs. Response examples show representative shapes; optional values depend on the record and account state.
+Generated on 2026-10-31 13:03 IST. This file includes every versioned REST operation, request examples, response examples, validation schemas, upload limits and realtime integration. Examples are synthetic contracts, not captured production responses. An endpoint appearing here does not mean its external SMTP, storage or OCR provider has been tested live. Path placeholders must be replaced with accessible resource IDs. Response examples show representative shapes; optional values depend on the record and account state.
 
 For cookie authentication, public portals also send `X-FamilyCare-Portal: patient` or `doctor` on every request, including login and refresh. This keeps the two sessions independent. Bearer clients omit this header.
 
@@ -85,6 +85,7 @@ Select the report category before selecting a file. Multipart uploads accept `ca
 | `/api/v1/admin/patients/{user_id}/profiles/{profile_id}` | Yes | — | — | — | — |
 | `/api/v1/admin/register` | — | Yes | — | — | — |
 | `/api/v1/admin/resend-otp` | — | Yes | — | — | — |
+| `/api/v1/admin/search` | Yes | — | — | — | — |
 | `/api/v1/admin/vaccination/audit` | Yes | — | — | — | — |
 | `/api/v1/admin/vaccination/import-uip` | — | Yes | — | — | — |
 | `/api/v1/admin/vaccination/reviewers` | Yes | — | — | — | — |
@@ -226,6 +227,7 @@ Select the report category before selecting a file. Multipart uploads accept `ca
 | `/api/v1/superadmin/patients/{user_id}` | Yes | — | — | — | — |
 | `/api/v1/superadmin/patients/{user_id}/profiles` | Yes | — | — | — | — |
 | `/api/v1/superadmin/patients/{user_id}/profiles/{profile_id}` | Yes | — | — | — | — |
+| `/api/v1/superadmin/search` | Yes | — | — | — | — |
 | `/api/v1/superadmin/vaccination/audit` | Yes | — | — | — | — |
 | `/api/v1/superadmin/vaccination/import-uip` | — | Yes | — | — | — |
 | `/api/v1/superadmin/vaccination/reviewers` | Yes | — | — | — | — |
@@ -258,17 +260,77 @@ URL: `http://127.0.0.1:5001/api/v1/admin/dashboard`
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
 
-HTTP 200 — Success
+HTTP 200 — Doctor/patient dashboard; pending requests contain doctors only.
 
 ```json
 {
   "counts": [
     {
-      "role": "ADMIN",
-      "approval_status": "PENDING_APPROVAL",
-      "count": 1
+      "role": "PATIENT",
+      "approval_status": "APPROVED",
+      "count": 3
     }
-  ]
+  ],
+  "as_of": "2026-10-31",
+  "metrics": {
+    "administrators": {
+      "total": 0,
+      "this_month": 0
+    },
+    "doctors": {
+      "total": 4,
+      "this_month": 1
+    },
+    "patients": {
+      "total": 3,
+      "this_month": 1
+    },
+    "children": {
+      "total": 5,
+      "this_month": 1
+    }
+  },
+  "monthly_growth": [
+    {
+      "month": "2026-10",
+      "patients": 3,
+      "doctors": 4,
+      "administrators": 2
+    }
+  ],
+  "recent_registrations": [
+    {
+      "id": "<UUID>",
+      "public_id": "C000001",
+      "full_name": "Example Patient",
+      "email": "patient@example.com",
+      "role": "PATIENT",
+      "approval_status": "APPROVED",
+      "account_status": "ACTIVE",
+      "created_at": "<UTC timestamp>"
+    }
+  ],
+  "pending_requests": {
+    "total": 0,
+    "items": []
+  },
+  "recent_activities": [
+    {
+      "id": "<UUID>",
+      "action": "registered",
+      "person": "Example Patient",
+      "created_at": "<UTC timestamp>"
+    }
+  ],
+  "child_care": {
+    "total_children": 5,
+    "active_guides": 4,
+    "inactive_guides": 1,
+    "growth_records": 2,
+    "nutrition_records": 3,
+    "vaccination_records": 4
+  },
+  "approved_doctors": 3
 }
 ```
 
@@ -565,6 +627,7 @@ URL: `http://127.0.0.1:5001/api/v1/admin/doctors`
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
+| `search` | query | False | `{"type": "string", "maxLength": 80}` |
 Request body: none, or `{}` for a bodyless POST action.
 
 HTTP 200 — Success
@@ -2206,6 +2269,7 @@ URL: `http://127.0.0.1:5001/api/v1/admin/patients`
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
+| `search` | query | False | `{"type": "string", "maxLength": 80}` |
 Request body: none, or `{}` for a bodyless POST action.
 
 HTTP 200 — Success
@@ -2682,8 +2746,8 @@ URL: `http://127.0.0.1:5001/api/v1/admin/patients/{user_id}/profiles/{profile_id
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `user_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -3097,6 +3161,167 @@ HTTP 200 — Success
   "expires_in": 300,
   "resend_after": 60,
   "email_status": "sent"
+}
+```
+
+HTTP 400 — Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401 — Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403 — Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404 — Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409 — Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422 — Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429 — Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413 — Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415 — Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502 — Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503 — Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## GET /api/v1/admin/search
+
+Required roles: ADMIN
+
+URL: `http://127.0.0.1:5001/api/v1/admin/search`
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+| `q` | query | False | `{"type": "string", "maxLength": 80}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Search matches
+
+```json
+{
+  "items": [
+    {
+      "id": "<UUID>",
+      "public_id": "C000001",
+      "full_name": "Example Patient",
+      "email": "patient@example.com",
+      "role": "PATIENT",
+      "approval_status": "APPROVED",
+      "account_status": "ACTIVE",
+      "created_at": "<UTC timestamp>"
+    }
+  ]
 }
 ```
 
@@ -20199,8 +20424,8 @@ URL: `http://127.0.0.1:5001/api/v1/doctors/care-profiles/{profile_id}/child-reco
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `area` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `area` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -20358,8 +20583,8 @@ URL: `http://127.0.0.1:5001/api/v1/doctors/care-profiles/{profile_id}/child-reco
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `area` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `area` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -29965,8 +30190,8 @@ URL: `http://127.0.0.1:5001/api/v1/patients/adults/{profile_id}/records/{record_
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `record_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `record_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -30326,8 +30551,8 @@ URL: `http://127.0.0.1:5001/api/v1/patients/adults/{profile_id}/records/{record_
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `record_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `record_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -30485,8 +30710,8 @@ URL: `http://127.0.0.1:5001/api/v1/patients/adults/{profile_id}/records/{record_
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `record_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `record_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -30846,8 +31071,8 @@ URL: `http://127.0.0.1:5001/api/v1/patients/adults/{profile_id}/records/{record_
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `record_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `record_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -30997,8 +31222,8 @@ URL: `http://127.0.0.1:5001/api/v1/patients/adults/{profile_id}/records/{record_
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `record_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `record_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -36574,6 +36799,7 @@ URL: `http://127.0.0.1:5001/api/v1/superadmin/admins`
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
+| `search` | query | False | `{"type": "string", "maxLength": 80}` |
 Request body: none, or `{}` for a bodyless POST action.
 
 HTTP 200 — Success
@@ -37516,17 +37742,76 @@ URL: `http://127.0.0.1:5001/api/v1/superadmin/dashboard`
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
 Request body: none, or `{}` for a bodyless POST action.
 
-HTTP 200 — Success
+HTTP 200 — Organization aggregate summary. Monthly growth contains 12 calendar months; examples abbreviate the series. Counts remain backward compatible.
 
 ```json
 {
   "counts": [
     {
-      "role": "ADMIN",
-      "approval_status": "PENDING_APPROVAL",
-      "count": 1
+      "role": "PATIENT",
+      "approval_status": "APPROVED",
+      "count": 3
     }
-  ]
+  ],
+  "as_of": "2026-10-31",
+  "metrics": {
+    "administrators": {
+      "total": 2,
+      "this_month": 1
+    },
+    "doctors": {
+      "total": 4,
+      "this_month": 1
+    },
+    "patients": {
+      "total": 3,
+      "this_month": 1
+    },
+    "children": {
+      "total": 5,
+      "this_month": 1
+    }
+  },
+  "monthly_growth": [
+    {
+      "month": "2026-10",
+      "patients": 3,
+      "doctors": 4,
+      "administrators": 2
+    }
+  ],
+  "recent_registrations": [
+    {
+      "id": "<UUID>",
+      "public_id": "C000001",
+      "full_name": "Example Patient",
+      "email": "patient@example.com",
+      "role": "PATIENT",
+      "approval_status": "APPROVED",
+      "account_status": "ACTIVE",
+      "created_at": "<UTC timestamp>"
+    }
+  ],
+  "pending_requests": {
+    "total": 0,
+    "items": []
+  },
+  "recent_activities": [
+    {
+      "id": "<UUID>",
+      "action": "registered",
+      "person": "Example Patient",
+      "created_at": "<UTC timestamp>"
+    }
+  ],
+  "child_care": {
+    "total_children": 5,
+    "active_guides": 4,
+    "inactive_guides": 1,
+    "growth_records": 2,
+    "nutrition_records": 3,
+    "vaccination_records": 4
+  }
 }
 ```
 
@@ -37671,6 +37956,7 @@ URL: `http://127.0.0.1:5001/api/v1/superadmin/doctors`
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
+| `search` | query | False | `{"type": "string", "maxLength": 80}` |
 Request body: none, or `{}` for a bodyless POST action.
 
 HTTP 200 — Success
@@ -38537,6 +38823,7 @@ URL: `http://127.0.0.1:5001/api/v1/superadmin/patients`
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
 | `X-CSRF-Token` | header | False | `{"type": "string"}` |
+| `search` | query | False | `{"type": "string", "maxLength": 80}` |
 Request body: none, or `{}` for a bodyless POST action.
 
 HTTP 200 — Success
@@ -39013,8 +39300,8 @@ URL: `http://127.0.0.1:5001/api/v1/superadmin/patients/{user_id}/profiles/{profi
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `user_id` | path | True | `{"type": "string"}` |
 | `profile_id` | path | True | `{"type": "string"}` |
+| `user_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -39034,6 +39321,167 @@ HTTP 200 — Success
     "parent_profile_id": "<parent profile UUID>",
     "doctor": null
   }
+}
+```
+
+HTTP 400 — Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401 — Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403 — Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404 — Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409 — Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422 — Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429 — Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413 — Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415 — Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502 — Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503 — Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## GET /api/v1/superadmin/search
+
+Required roles: SUPERADMIN
+
+URL: `http://127.0.0.1:5001/api/v1/superadmin/search`
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+| `q` | query | False | `{"type": "string", "maxLength": 80}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 200 — Search matches
+
+```json
+{
+  "items": [
+    {
+      "id": "<UUID>",
+      "public_id": "C000001",
+      "full_name": "Example Patient",
+      "email": "patient@example.com",
+      "role": "PATIENT",
+      "approval_status": "APPROVED",
+      "account_status": "ACTIVE",
+      "created_at": "<UTC timestamp>"
+    }
+  ]
 }
 ```
 
@@ -46250,4 +46698,4 @@ All referenced component schemas are included below so this Markdown file can be
 - `postman_collection.json`: importable request collection.
 - Regenerate: from backend, `venv/Scripts/python.exe scripts/export_full_api.py`.
 
-Total registered API method operations: **218**.
+Total registered API method operations: **220**.

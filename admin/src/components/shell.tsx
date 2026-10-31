@@ -7,7 +7,10 @@ import {useEffect,useState} from 'react';
 import {HeartPulse, LayoutDashboard, Stethoscope, Users, ShieldCheck, ScrollText, Settings, LogOut, ChevronRight, Menu, X, LoaderCircle, Syringe} from 'lucide-react';
 import {Role, User, rolePath, apiRole} from '@/lib/types';
 import {api,post} from '@/lib/api';
-export default function Shell({role,user,children}:{role:Role;user:User;children:React.ReactNode}){const {t}=useTranslation();
+import AdminShell from './admin-shell';
+import SuperadminShell from './superadmin-shell';
+export default function Shell(props:{role:Role;user:User;children:React.ReactNode}){return props.role==='SUPERADMIN'?<SuperadminShell user={props.user}>{props.children}</SuperadminShell>:<AdminShell user={props.user}>{props.children}</AdminShell>;}
+function StandardShell({role,user,children}:{role:Role;user:User;children:React.ReactNode}){const {t}=useTranslation();
  const pathname=usePathname();const router=useRouter();const [open,setOpen]=useState(false);const [busy,setBusy]=useState(false);const [error,setError]=useState(''); const root=rolePath(role);
  useEffect(()=>{setOpen(false);},[pathname]);
  useEffect(()=>{if(!open)return;const previous=document.activeElement as HTMLElement|null;const overflow=document.body.style.overflow;document.body.style.overflow='hidden';const close=(event:KeyboardEvent)=>{if(event.key==='Escape')setOpen(false);if(event.key==='Tab'){const nodes=Array.from(document.querySelectorAll<HTMLElement>('#portal-navigation a[href], #portal-navigation button:not(:disabled)')).filter(node=>node.getClientRects().length>0);const first=nodes[0],last=nodes[nodes.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}}};const resize=()=>{if(window.innerWidth>1100)setOpen(false);};window.addEventListener('resize',resize);document.addEventListener('keydown',close);const frame=requestAnimationFrame(()=>document.querySelector<HTMLButtonElement>('.mobile-close')?.focus());return()=>{cancelAnimationFrame(frame);document.body.style.overflow=overflow;document.removeEventListener('keydown',close);window.removeEventListener('resize',resize);previous?.focus();};},[open]);

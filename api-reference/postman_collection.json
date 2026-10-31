@@ -51,7 +51,7 @@
               }
             ]
           },
-          "status": "Success",
+          "status": "Doctor/patient dashboard; pending requests contain doctors only.",
           "code": 200,
           "header": [
             {
@@ -59,7 +59,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"counts\": [\n    {\n      \"role\": \"ADMIN\",\n      \"approval_status\": \"PENDING_APPROVAL\",\n      \"count\": 1\n    }\n  ]\n}"
+          "body": "{\n  \"counts\": [\n    {\n      \"role\": \"PATIENT\",\n      \"approval_status\": \"APPROVED\",\n      \"count\": 3\n    }\n  ],\n  \"as_of\": \"2026-10-31\",\n  \"metrics\": {\n    \"administrators\": {\n      \"total\": 0,\n      \"this_month\": 0\n    },\n    \"doctors\": {\n      \"total\": 4,\n      \"this_month\": 1\n    },\n    \"patients\": {\n      \"total\": 3,\n      \"this_month\": 1\n    },\n    \"children\": {\n      \"total\": 5,\n      \"this_month\": 1\n    }\n  },\n  \"monthly_growth\": [\n    {\n      \"month\": \"2026-10\",\n      \"patients\": 3,\n      \"doctors\": 4,\n      \"administrators\": 2\n    }\n  ],\n  \"recent_registrations\": [\n    {\n      \"id\": \"<UUID>\",\n      \"public_id\": \"C000001\",\n      \"full_name\": \"Example Patient\",\n      \"email\": \"patient@example.com\",\n      \"role\": \"PATIENT\",\n      \"approval_status\": \"APPROVED\",\n      \"account_status\": \"ACTIVE\",\n      \"created_at\": \"<UTC timestamp>\"\n    }\n  ],\n  \"pending_requests\": {\n    \"total\": 0,\n    \"items\": []\n  },\n  \"recent_activities\": [\n    {\n      \"id\": \"<UUID>\",\n      \"action\": \"registered\",\n      \"person\": \"Example Patient\",\n      \"created_at\": \"<UTC timestamp>\"\n    }\n  ],\n  \"child_care\": {\n    \"total_children\": 5,\n    \"active_guides\": 4,\n    \"inactive_guides\": 1,\n    \"growth_records\": 2,\n    \"nutrition_records\": 3,\n    \"vaccination_records\": 4\n  },\n  \"approved_doctors\": 3\n}"
         },
         {
           "name": "400 example",
@@ -6483,6 +6483,337 @@
                 }
               }
             }
+          },
+          "status": "Database or Cloudinary unavailable/not configured",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Database or Cloudinary unavailable/not configured\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "GET /api/v1/admin/search",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/v1/admin/search",
+        "header": [
+          {
+            "key": "X-Auth-Transport",
+            "value": "bearer"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "200 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Search matches",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"items\": [\n    {\n      \"id\": \"<UUID>\",\n      \"public_id\": \"C000001\",\n      \"full_name\": \"Example Patient\",\n      \"email\": \"patient@example.com\",\n      \"role\": \"PATIENT\",\n      \"approval_status\": \"APPROVED\",\n      \"account_status\": \"ACTIVE\",\n      \"created_at\": \"<UTC timestamp>\"\n    }\n  ]\n}"
+        },
+        {
+          "name": "400 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Invalid challenge/OTP/state",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid challenge/OTP/state\"\n  }\n}"
+        },
+        {
+          "name": "401 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Invalid credentials/token/session",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid credentials/token/session\"\n  }\n}"
+        },
+        {
+          "name": "403 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Role, approval, status, transport or CSRF denied",
+          "code": 403,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Role, approval, status, transport or CSRF denied\"\n  }\n}"
+        },
+        {
+          "name": "404 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Not found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Not found\"\n  }\n}"
+        },
+        {
+          "name": "409 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Duplicate data or invalid approval state",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Duplicate data or invalid approval state\"\n  }\n}"
+        },
+        {
+          "name": "422 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Validation failed",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Validation failed\"\n  }\n}"
+        },
+        {
+          "name": "429 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Rate limit or OTP cooldown",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Rate limit or OTP cooldown\"\n  }\n}"
+        },
+        {
+          "name": "413 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Report exceeds size limit",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Report exceeds size limit\"\n  }\n}"
+        },
+        {
+          "name": "415 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Multipart upload required",
+          "code": 415,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Multipart upload required\"\n  }\n}"
+        },
+        {
+          "name": "502 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Cloudinary upload failed",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Cloudinary upload failed\"\n  }\n}"
+        },
+        {
+          "name": "503 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/admin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
           },
           "status": "Database or Cloudinary unavailable/not configured",
           "code": 503,
@@ -73939,7 +74270,7 @@
               }
             ]
           },
-          "status": "Success",
+          "status": "Organization aggregate summary. Monthly growth contains 12 calendar months; examples abbreviate the series. Counts remain backward compatible.",
           "code": 200,
           "header": [
             {
@@ -73947,7 +74278,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"counts\": [\n    {\n      \"role\": \"ADMIN\",\n      \"approval_status\": \"PENDING_APPROVAL\",\n      \"count\": 1\n    }\n  ]\n}"
+          "body": "{\n  \"counts\": [\n    {\n      \"role\": \"PATIENT\",\n      \"approval_status\": \"APPROVED\",\n      \"count\": 3\n    }\n  ],\n  \"as_of\": \"2026-10-31\",\n  \"metrics\": {\n    \"administrators\": {\n      \"total\": 2,\n      \"this_month\": 1\n    },\n    \"doctors\": {\n      \"total\": 4,\n      \"this_month\": 1\n    },\n    \"patients\": {\n      \"total\": 3,\n      \"this_month\": 1\n    },\n    \"children\": {\n      \"total\": 5,\n      \"this_month\": 1\n    }\n  },\n  \"monthly_growth\": [\n    {\n      \"month\": \"2026-10\",\n      \"patients\": 3,\n      \"doctors\": 4,\n      \"administrators\": 2\n    }\n  ],\n  \"recent_registrations\": [\n    {\n      \"id\": \"<UUID>\",\n      \"public_id\": \"C000001\",\n      \"full_name\": \"Example Patient\",\n      \"email\": \"patient@example.com\",\n      \"role\": \"PATIENT\",\n      \"approval_status\": \"APPROVED\",\n      \"account_status\": \"ACTIVE\",\n      \"created_at\": \"<UTC timestamp>\"\n    }\n  ],\n  \"pending_requests\": {\n    \"total\": 0,\n    \"items\": []\n  },\n  \"recent_activities\": [\n    {\n      \"id\": \"<UUID>\",\n      \"action\": \"registered\",\n      \"person\": \"Example Patient\",\n      \"created_at\": \"<UTC timestamp>\"\n    }\n  ],\n  \"child_care\": {\n    \"total_children\": 5,\n    \"active_guides\": 4,\n    \"inactive_guides\": 1,\n    \"growth_records\": 2,\n    \"nutrition_records\": 3,\n    \"vaccination_records\": 4\n  }\n}"
         },
         {
           "name": "400 example",
@@ -77345,6 +77676,337 @@
           "originalRequest": {
             "method": "GET",
             "url": "{{base_url}}/api/v1/superadmin/patients/{{user_id}}/profiles/{{profile_id}}",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Database or Cloudinary unavailable/not configured",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Database or Cloudinary unavailable/not configured\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "GET /api/v1/superadmin/search",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/v1/superadmin/search",
+        "header": [
+          {
+            "key": "X-Auth-Transport",
+            "value": "bearer"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ]
+      },
+      "response": [
+        {
+          "name": "200 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/superadmin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Search matches",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"items\": [\n    {\n      \"id\": \"<UUID>\",\n      \"public_id\": \"C000001\",\n      \"full_name\": \"Example Patient\",\n      \"email\": \"patient@example.com\",\n      \"role\": \"PATIENT\",\n      \"approval_status\": \"APPROVED\",\n      \"account_status\": \"ACTIVE\",\n      \"created_at\": \"<UTC timestamp>\"\n    }\n  ]\n}"
+        },
+        {
+          "name": "400 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/superadmin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Invalid challenge/OTP/state",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid challenge/OTP/state\"\n  }\n}"
+        },
+        {
+          "name": "401 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/superadmin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Invalid credentials/token/session",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Invalid credentials/token/session\"\n  }\n}"
+        },
+        {
+          "name": "403 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/superadmin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Role, approval, status, transport or CSRF denied",
+          "code": 403,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Role, approval, status, transport or CSRF denied\"\n  }\n}"
+        },
+        {
+          "name": "404 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/superadmin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Not found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Not found\"\n  }\n}"
+        },
+        {
+          "name": "409 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/superadmin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Duplicate data or invalid approval state",
+          "code": 409,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Duplicate data or invalid approval state\"\n  }\n}"
+        },
+        {
+          "name": "422 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/superadmin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Validation failed",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Validation failed\"\n  }\n}"
+        },
+        {
+          "name": "429 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/superadmin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Rate limit or OTP cooldown",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Rate limit or OTP cooldown\"\n  }\n}"
+        },
+        {
+          "name": "413 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/superadmin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Report exceeds size limit",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Report exceeds size limit\"\n  }\n}"
+        },
+        {
+          "name": "415 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/superadmin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Multipart upload required",
+          "code": 415,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Multipart upload required\"\n  }\n}"
+        },
+        {
+          "name": "502 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/superadmin/search",
+            "header": [
+              {
+                "key": "X-Auth-Transport",
+                "value": "bearer"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ]
+          },
+          "status": "Cloudinary upload failed",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": {\n    \"code\": \"error_code\",\n    \"message\": \"Cloudinary upload failed\"\n  }\n}"
+        },
+        {
+          "name": "503 example",
+          "originalRequest": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/superadmin/search",
             "header": [
               {
                 "key": "X-Auth-Transport",

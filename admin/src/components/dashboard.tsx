@@ -5,8 +5,11 @@ import Link from 'next/link';
 import {ArrowUpRight, Stethoscope, Users, ShieldCheck, Clock3, RefreshCw, ArrowRight, CheckCircle2} from 'lucide-react';
 import {api} from '@/lib/api';
 import {Role, User, PageData, apiRole, rolePath} from '@/lib/types';
+import AdminDashboard from './admin-dashboard';
+import SuperadminDashboard from './superadmin-dashboard';
 type Count={role:string;approval_status:string;count:number};
-export default function Dashboard({role,user}:{role:Role;user:User}){const {t}=useTranslation();
+export default function Dashboard(props:{role:Role;user:User}){return props.role==='SUPERADMIN'?<SuperadminDashboard user={props.user}/>:<AdminDashboard user={props.user}/>;}
+function StandardDashboard({role,user}:{role:Role;user:User}){const {t}=useTranslation();
  const [counts,setCounts]=useState<Count[]>([]);const [pending,setPending]=useState<User[]>([]);const [total,setTotal]=useState(0);const [loading,setLoading]=useState(true);const [error,setError]=useState('');
  const load=useCallback(async()=>{setLoading(true);setError('');try{const [summary,queue]=await Promise.all([api<{counts:Count[]}>(`${apiRole(role)}/dashboard`),api<PageData>(`${apiRole(role)}/${role==='SUPERADMIN'?'admin-requests':'doctor-requests'}?per_page=5`)]);setCounts(summary.counts);setPending(queue.items);setTotal(queue.total);}catch(e){setError((e as Error).message);}finally{setLoading(false);}},[role]);useEffect(()=>{void load();},[load]);
  const sum=(r:string,status?:string)=>counts.filter(c=>c.role===r&&(!status||c.approval_status===status)).reduce((a,c)=>a+c.count,0);
