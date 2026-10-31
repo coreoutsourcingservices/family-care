@@ -323,6 +323,14 @@ class ChildVaccinationContext(Base):
     updated_at = C(DT, default=now, onupdate=now, nullable=False)
 
 
+class ChildGrowthNutritionSetting(Base):
+    __tablename__ = 'child_growth_nutrition_settings'
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), primary_key=True)
+    active = C(B, nullable=False, default=True)
+    updated_by = user_fk(nullable=False)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+
 class VaccineReminderDelivery(Base):
     __tablename__ = 'vaccine_reminder_deliveries'
     __table_args__ = (UQ('profile_id','schedule_id','event_date','channel'),)

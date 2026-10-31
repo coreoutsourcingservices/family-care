@@ -19069,15 +19069,6 @@
         "summary": "admin member detail",
         "parameters": [
           {
-            "name": "profile_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Resource UUID"
-          },
-          {
             "name": "user_id",
             "in": "path",
             "required": true,
@@ -19085,6 +19076,15 @@
               "type": "string"
             },
             "description": "UUID or public ID"
+          },
+          {
+            "name": "profile_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
           },
           {
             "name": "X-Auth-Transport",
@@ -22886,15 +22886,6 @@
         "summary": "superadmin member detail",
         "parameters": [
           {
-            "name": "profile_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Resource UUID"
-          },
-          {
             "name": "user_id",
             "in": "path",
             "required": true,
@@ -22902,6 +22893,15 @@
               "type": "string"
             },
             "description": "UUID or public ID"
+          },
+          {
+            "name": "profile_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
           },
           {
             "name": "X-Auth-Transport",
@@ -48112,7 +48112,7 @@
         "summary": "adults update",
         "parameters": [
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -48121,7 +48121,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -48369,7 +48369,7 @@
         "summary": "adults get record",
         "parameters": [
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -48378,7 +48378,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -48609,7 +48609,7 @@
         "summary": "adults patch record",
         "parameters": [
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -48618,7 +48618,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -48866,7 +48866,7 @@
         "summary": "adults delete record",
         "parameters": [
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -48875,7 +48875,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -49100,7 +49100,7 @@
         "summary": "adults remove",
         "parameters": [
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -49109,7 +49109,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -49334,7 +49334,7 @@
         "summary": "doctor child care entries",
         "parameters": [
           {
-            "name": "profile_id",
+            "name": "area",
             "in": "path",
             "required": true,
             "schema": {
@@ -49343,7 +49343,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "area",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -49574,7 +49574,7 @@
         "summary": "doctor child care add",
         "parameters": [
           {
-            "name": "profile_id",
+            "name": "area",
             "in": "path",
             "required": true,
             "schema": {
@@ -49583,7 +49583,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "area",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -52804,7 +52804,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "message": "Profile setup complete. Sign in with your own email and password.",
+                  "message": "Profile setup complete. Opening your profile.",
+                  "access_token": "<member access JWT; omitted in cookie mode>",
+                  "refresh_token": "<member refresh token; omitted in cookie mode>",
+                  "expires_in": 900,
+                  "token_type": "Bearer",
+                  "redirect_url": "/customer/women/dashboard",
                   "user": {
                     "id": "<member UUID>",
                     "public_id": "C000002",
@@ -52869,6 +52874,1443 @@
             }
           }
         },
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/children/{profile_id}/growth-nutrition-guide": {
+      "get": {
+        "operationId": "growth_nutrition_read_get",
+        "tags": [
+          "children"
+        ],
+        "summary": "growth nutrition read",
+        "parameters": [
+          {
+            "name": "profile_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: PATIENT. Default active for all children. Uses DOB and India calendar; no rows need to be provisioned. Inactive or age 13+ returns guide: null.",
+        "responses": {
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "child": {
+                    "id": "<child UUID>",
+                    "full_name": "Example Child",
+                    "date_of_birth": "2026-02-28",
+                    "age": {
+                      "completed_years": 0,
+                      "remaining_months": 8,
+                      "remaining_days": 3,
+                      "total_completed_months": 8,
+                      "total_days": 245,
+                      "display": "0 years 8 months 3 days",
+                      "primary_category": "INFANT",
+                      "secondary_categories": [],
+                      "in_child_module_scope": true
+                    }
+                  },
+                  "active": true,
+                  "default_active": true,
+                  "status": "AVAILABLE",
+                  "updated_at": null,
+                  "updated_by": null,
+                  "version": "2026-10-31.v1",
+                  "age_band": {
+                    "id": "month-8",
+                    "label": "8–9 Months",
+                    "min_months": 8,
+                    "max_months_exclusive": 9
+                  },
+                  "guide": {
+                    "title": "Growth & Nutrition Guide for Children (0–12 Years)",
+                    "nutrition": {
+                      "id": "month-8",
+                      "min_months": 8,
+                      "max_months_exclusive": 9,
+                      "label": "8–9 Months",
+                      "foods": "Soft rice, lentils, fully cooked eggs, and fruits",
+                      "meal_frequency": "2–3 meals daily",
+                      "blocks": [
+                        {
+                          "type": "list",
+                          "items": [
+                            "Introduce appropriate complementary foods.",
+                            "Continue breastfeeding alongside solid foods.",
+                            "Gradually increase food variety, quantity, and texture.",
+                            "Breastfeeding can continue until two years of age or beyond."
+                          ]
+                        },
+                        {
+                          "type": "heading",
+                          "text": "Recommended First Foods After 6 Months"
+                        },
+                        {
+                          "type": "table",
+                          "headers": [
+                            "Food",
+                            "Preparation Method"
+                          ],
+                          "rows": [
+                            [
+                              "Moong Dal Khichdi",
+                              "Cook thoroughly and mash"
+                            ],
+                            [
+                              "Porridge (Dalia)",
+                              "Prepare with a thick, soft consistency"
+                            ],
+                            [
+                              "Banana",
+                              "Mash thoroughly"
+                            ],
+                            [
+                              "Papaya",
+                              "Mash into a smooth texture"
+                            ],
+                            [
+                              "Carrot",
+                              "Boil or steam and mash"
+                            ],
+                            [
+                              "Lentils",
+                              "Cook thoroughly and serve thick"
+                            ],
+                            [
+                              "Egg",
+                              "Cook completely and mash or chop appropriately"
+                            ],
+                            [
+                              "Yogurt",
+                              "Serve plain and unsweetened"
+                            ]
+                          ]
+                        },
+                        {
+                          "type": "paragraph",
+                          "text": "Start with small amounts, such as 2–3 teaspoons, and gradually increase according to the baby's appetite."
+                        },
+                        {
+                          "type": "paragraph",
+                          "text": "Avoid relying only on watery lentil soup or rice water. Provide thick, nutrient-rich complementary foods."
+                        }
+                      ]
+                    },
+                    "growth_monitoring": [
+                      {
+                        "type": "paragraph",
+                        "text": "Monitoring growth helps parents and healthcare professionals understand a child's development over time."
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "Growth monitoring should consider multiple measurements rather than focusing only on body weight."
+                      },
+                      {
+                        "type": "heading",
+                        "text": "Age-Wise Growth Tracking"
+                      },
+                      {
+                        "type": "table",
+                        "headers": [
+                          "Age",
+                          "Recommended Measurements"
+                        ],
+                        "rows": [
+                          [
+                            "Birth–6 Months",
+                            "Weight, Length, Head Circumference"
+                          ],
+                          [
+                            "6–12 Months",
+                            "Weight, Length, Head Circumference"
+                          ],
+                          [
+                            "1–2 Years",
+                            "Weight, Length, Head Circumference"
+                          ],
+                          [
+                            "2–3 Years",
+                            "Weight, Height"
+                          ],
+                          [
+                            "3–4 Years",
+                            "Weight, Height"
+                          ],
+                          [
+                            "4–5 Years",
+                            "Weight, Height"
+                          ],
+                          [
+                            "5–6 Years",
+                            "Weight, Height, BMI-for-Age"
+                          ],
+                          [
+                            "6–7 Years",
+                            "Weight, Height, BMI-for-Age"
+                          ],
+                          [
+                            "7–8 Years",
+                            "Weight, Height, BMI-for-Age"
+                          ],
+                          [
+                            "8–9 Years",
+                            "Weight, Height, BMI-for-Age"
+                          ],
+                          [
+                            "9–10 Years",
+                            "Weight, Height, BMI-for-Age"
+                          ],
+                          [
+                            "10–11 Years",
+                            "Weight, Height, BMI-for-Age"
+                          ],
+                          [
+                            "11–12 Years",
+                            "Weight, Height, BMI-for-Age"
+                          ]
+                        ]
+                      },
+                      {
+                        "type": "heading",
+                        "text": "WHO Growth Chart Recommendations"
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "**Children Aged 0–5 Years**"
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "Use the WHO Child Growth Standards."
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "**Children Aged 5–12 Years**"
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "Use the WHO Growth Reference for children aged 5–19 years."
+                      },
+                      {
+                        "type": "heading",
+                        "text": "Important Growth Indicators"
+                      },
+                      {
+                        "type": "list",
+                        "items": [
+                          "Weight-for-age, where applicable.",
+                          "Length/height-for-age.",
+                          "Weight-for-length or weight-for-height in younger children.",
+                          "BMI-for-age, where applicable.",
+                          "Head circumference in infants and young children.",
+                          "Growth trends over time."
+                        ]
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "Growth measurements should be interpreted using age- and sex-appropriate growth charts."
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "A single measurement does not provide a complete picture of a child's growth and development."
+                      }
+                    ],
+                    "food_safety": [
+                      {
+                        "type": "paragraph",
+                        "text": "Different food groups provide different nutrients required for healthy growth."
+                      },
+                      {
+                        "type": "heading",
+                        "text": "Recommended Nutrition Categories"
+                      },
+                      {
+                        "type": "table",
+                        "headers": [
+                          "Food Category",
+                          "Main Nutrients",
+                          "Food Sources"
+                        ],
+                        "rows": [
+                          [
+                            "Grains",
+                            "Carbohydrates, Fiber",
+                            "Chapati, rice, oats"
+                          ],
+                          [
+                            "Pulses",
+                            "Protein, Iron",
+                            "Lentils, chickpeas, kidney beans"
+                          ],
+                          [
+                            "Vegetables",
+                            "Vitamins, Minerals",
+                            "Spinach, carrot, pumpkin"
+                          ],
+                          [
+                            "Fruits",
+                            "Vitamins, Fiber",
+                            "Banana, guava, papaya"
+                          ],
+                          [
+                            "Dairy Products",
+                            "Calcium, Protein",
+                            "Milk, yogurt, paneer"
+                          ],
+                          [
+                            "Eggs, Meat & Fish",
+                            "Protein, Iron, Vitamin B12",
+                            "Eggs, chicken, fish"
+                          ],
+                          [
+                            "Healthy Fats",
+                            "Essential Fatty Acids",
+                            "Appropriate amounts of oils and seeds"
+                          ],
+                          [
+                            "Water",
+                            "Hydration",
+                            "Clean and safe drinking water"
+                          ]
+                        ]
+                      },
+                      {
+                        "type": "heading",
+                        "text": "Important Feeding Guidelines"
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "**0–6 Months:** Exclusively breastfed infants do not require additional water."
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "**After 6 Months:** Small amounts of safe drinking water can be introduced alongside complementary foods."
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "**After 12 Months:** Children should receive a varied, balanced diet and adequate safe drinking water."
+                      },
+                      {
+                        "type": "heading",
+                        "text": "⚠️ Food Safety Guidelines"
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "For children under 12 months:"
+                      },
+                      {
+                        "type": "list",
+                        "items": [
+                          "Do not give honey.",
+                          "Avoid using cow's milk as the main drink before 12 months.",
+                          "Provide appropriately prepared foods to reduce choking risks.",
+                          "Avoid hard or round foods that may cause choking."
+                        ]
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "For toddlers and young children:"
+                      },
+                      {
+                        "type": "list",
+                        "items": [
+                          "Avoid whole nuts, whole grapes, popcorn, and other choking hazards.",
+                          "Prepare food according to the child's chewing and swallowing abilities.",
+                          "Ensure meals are properly cooked.",
+                          "Maintain good food hygiene."
+                        ]
+                      },
+                      {
+                        "type": "heading",
+                        "text": "When to Consult a Pediatrician"
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "Seek medical advice when:"
+                      },
+                      {
+                        "type": "list",
+                        "items": [
+                          "A child's weight or length/height is not increasing as expected.",
+                          "The child has difficulty chewing or swallowing.",
+                          "The child persistently refuses food.",
+                          "A nutritional deficiency is suspected.",
+                          "Growth measurements show concerning changes over time."
+                        ]
+                      }
+                    ],
+                    "sources": [
+                      {
+                        "title": "WHO infant and young child feeding",
+                        "url": "https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding"
+                      },
+                      {
+                        "title": "ICMR–NIN Dietary Guidelines for Indians 2024",
+                        "url": "https://nin.res.in/dietaryguidelines/pdfjs/locale/DGI_2024.pdf"
+                      },
+                      {
+                        "title": "WHO Child Growth Standards",
+                        "url": "https://www.who.int/tools/child-growth-standards"
+                      },
+                      {
+                        "title": "WHO growth reference 5–19 years",
+                        "url": "https://www.who.int/tools/growth-reference-data-for-5to19-years"
+                      }
+                    ],
+                    "notice": "General educational guidance. Your clinician adapts it for allergies, feeding difficulties, prematurity or other needs. Growth needs age- and sex-appropriate charts, not adult BMI cutoffs. No supplement dose or individual calorie target is generated.",
+                    "provenance": "User-supplied educational guide; not an individual diagnosis or prescribed meal plan."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/doctors/care-profiles/{profile_id}/growth-nutrition-guide": {
+      "get": {
+        "operationId": "growth_nutrition_doctor_read_get",
+        "tags": [
+          "doctors"
+        ],
+        "summary": "growth nutrition doctor read",
+        "parameters": [
+          {
+            "name": "profile_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: DOCTOR. Default active for all children. Uses DOB and India calendar; no rows need to be provisioned. Inactive or age 13+ returns guide: null.",
+        "responses": {
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "child": {
+                    "id": "<child UUID>",
+                    "full_name": "Example Child",
+                    "date_of_birth": "2026-02-28",
+                    "age": {
+                      "completed_years": 0,
+                      "remaining_months": 8,
+                      "remaining_days": 3,
+                      "total_completed_months": 8,
+                      "total_days": 245,
+                      "display": "0 years 8 months 3 days",
+                      "primary_category": "INFANT",
+                      "secondary_categories": [],
+                      "in_child_module_scope": true
+                    }
+                  },
+                  "active": true,
+                  "default_active": true,
+                  "status": "AVAILABLE",
+                  "updated_at": null,
+                  "updated_by": null,
+                  "version": "2026-10-31.v1",
+                  "age_band": {
+                    "id": "month-8",
+                    "label": "8–9 Months",
+                    "min_months": 8,
+                    "max_months_exclusive": 9
+                  },
+                  "guide": {
+                    "title": "Growth & Nutrition Guide for Children (0–12 Years)",
+                    "nutrition": {
+                      "id": "month-8",
+                      "min_months": 8,
+                      "max_months_exclusive": 9,
+                      "label": "8–9 Months",
+                      "foods": "Soft rice, lentils, fully cooked eggs, and fruits",
+                      "meal_frequency": "2–3 meals daily",
+                      "blocks": [
+                        {
+                          "type": "list",
+                          "items": [
+                            "Introduce appropriate complementary foods.",
+                            "Continue breastfeeding alongside solid foods.",
+                            "Gradually increase food variety, quantity, and texture.",
+                            "Breastfeeding can continue until two years of age or beyond."
+                          ]
+                        },
+                        {
+                          "type": "heading",
+                          "text": "Recommended First Foods After 6 Months"
+                        },
+                        {
+                          "type": "table",
+                          "headers": [
+                            "Food",
+                            "Preparation Method"
+                          ],
+                          "rows": [
+                            [
+                              "Moong Dal Khichdi",
+                              "Cook thoroughly and mash"
+                            ],
+                            [
+                              "Porridge (Dalia)",
+                              "Prepare with a thick, soft consistency"
+                            ],
+                            [
+                              "Banana",
+                              "Mash thoroughly"
+                            ],
+                            [
+                              "Papaya",
+                              "Mash into a smooth texture"
+                            ],
+                            [
+                              "Carrot",
+                              "Boil or steam and mash"
+                            ],
+                            [
+                              "Lentils",
+                              "Cook thoroughly and serve thick"
+                            ],
+                            [
+                              "Egg",
+                              "Cook completely and mash or chop appropriately"
+                            ],
+                            [
+                              "Yogurt",
+                              "Serve plain and unsweetened"
+                            ]
+                          ]
+                        },
+                        {
+                          "type": "paragraph",
+                          "text": "Start with small amounts, such as 2–3 teaspoons, and gradually increase according to the baby's appetite."
+                        },
+                        {
+                          "type": "paragraph",
+                          "text": "Avoid relying only on watery lentil soup or rice water. Provide thick, nutrient-rich complementary foods."
+                        }
+                      ]
+                    },
+                    "growth_monitoring": [
+                      {
+                        "type": "paragraph",
+                        "text": "Monitoring growth helps parents and healthcare professionals understand a child's development over time."
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "Growth monitoring should consider multiple measurements rather than focusing only on body weight."
+                      },
+                      {
+                        "type": "heading",
+                        "text": "Age-Wise Growth Tracking"
+                      },
+                      {
+                        "type": "table",
+                        "headers": [
+                          "Age",
+                          "Recommended Measurements"
+                        ],
+                        "rows": [
+                          [
+                            "Birth–6 Months",
+                            "Weight, Length, Head Circumference"
+                          ],
+                          [
+                            "6–12 Months",
+                            "Weight, Length, Head Circumference"
+                          ],
+                          [
+                            "1–2 Years",
+                            "Weight, Length, Head Circumference"
+                          ],
+                          [
+                            "2–3 Years",
+                            "Weight, Height"
+                          ],
+                          [
+                            "3–4 Years",
+                            "Weight, Height"
+                          ],
+                          [
+                            "4–5 Years",
+                            "Weight, Height"
+                          ],
+                          [
+                            "5–6 Years",
+                            "Weight, Height, BMI-for-Age"
+                          ],
+                          [
+                            "6–7 Years",
+                            "Weight, Height, BMI-for-Age"
+                          ],
+                          [
+                            "7–8 Years",
+                            "Weight, Height, BMI-for-Age"
+                          ],
+                          [
+                            "8–9 Years",
+                            "Weight, Height, BMI-for-Age"
+                          ],
+                          [
+                            "9–10 Years",
+                            "Weight, Height, BMI-for-Age"
+                          ],
+                          [
+                            "10–11 Years",
+                            "Weight, Height, BMI-for-Age"
+                          ],
+                          [
+                            "11–12 Years",
+                            "Weight, Height, BMI-for-Age"
+                          ]
+                        ]
+                      },
+                      {
+                        "type": "heading",
+                        "text": "WHO Growth Chart Recommendations"
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "**Children Aged 0–5 Years**"
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "Use the WHO Child Growth Standards."
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "**Children Aged 5–12 Years**"
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "Use the WHO Growth Reference for children aged 5–19 years."
+                      },
+                      {
+                        "type": "heading",
+                        "text": "Important Growth Indicators"
+                      },
+                      {
+                        "type": "list",
+                        "items": [
+                          "Weight-for-age, where applicable.",
+                          "Length/height-for-age.",
+                          "Weight-for-length or weight-for-height in younger children.",
+                          "BMI-for-age, where applicable.",
+                          "Head circumference in infants and young children.",
+                          "Growth trends over time."
+                        ]
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "Growth measurements should be interpreted using age- and sex-appropriate growth charts."
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "A single measurement does not provide a complete picture of a child's growth and development."
+                      }
+                    ],
+                    "food_safety": [
+                      {
+                        "type": "paragraph",
+                        "text": "Different food groups provide different nutrients required for healthy growth."
+                      },
+                      {
+                        "type": "heading",
+                        "text": "Recommended Nutrition Categories"
+                      },
+                      {
+                        "type": "table",
+                        "headers": [
+                          "Food Category",
+                          "Main Nutrients",
+                          "Food Sources"
+                        ],
+                        "rows": [
+                          [
+                            "Grains",
+                            "Carbohydrates, Fiber",
+                            "Chapati, rice, oats"
+                          ],
+                          [
+                            "Pulses",
+                            "Protein, Iron",
+                            "Lentils, chickpeas, kidney beans"
+                          ],
+                          [
+                            "Vegetables",
+                            "Vitamins, Minerals",
+                            "Spinach, carrot, pumpkin"
+                          ],
+                          [
+                            "Fruits",
+                            "Vitamins, Fiber",
+                            "Banana, guava, papaya"
+                          ],
+                          [
+                            "Dairy Products",
+                            "Calcium, Protein",
+                            "Milk, yogurt, paneer"
+                          ],
+                          [
+                            "Eggs, Meat & Fish",
+                            "Protein, Iron, Vitamin B12",
+                            "Eggs, chicken, fish"
+                          ],
+                          [
+                            "Healthy Fats",
+                            "Essential Fatty Acids",
+                            "Appropriate amounts of oils and seeds"
+                          ],
+                          [
+                            "Water",
+                            "Hydration",
+                            "Clean and safe drinking water"
+                          ]
+                        ]
+                      },
+                      {
+                        "type": "heading",
+                        "text": "Important Feeding Guidelines"
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "**0–6 Months:** Exclusively breastfed infants do not require additional water."
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "**After 6 Months:** Small amounts of safe drinking water can be introduced alongside complementary foods."
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "**After 12 Months:** Children should receive a varied, balanced diet and adequate safe drinking water."
+                      },
+                      {
+                        "type": "heading",
+                        "text": "⚠️ Food Safety Guidelines"
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "For children under 12 months:"
+                      },
+                      {
+                        "type": "list",
+                        "items": [
+                          "Do not give honey.",
+                          "Avoid using cow's milk as the main drink before 12 months.",
+                          "Provide appropriately prepared foods to reduce choking risks.",
+                          "Avoid hard or round foods that may cause choking."
+                        ]
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "For toddlers and young children:"
+                      },
+                      {
+                        "type": "list",
+                        "items": [
+                          "Avoid whole nuts, whole grapes, popcorn, and other choking hazards.",
+                          "Prepare food according to the child's chewing and swallowing abilities.",
+                          "Ensure meals are properly cooked.",
+                          "Maintain good food hygiene."
+                        ]
+                      },
+                      {
+                        "type": "heading",
+                        "text": "When to Consult a Pediatrician"
+                      },
+                      {
+                        "type": "paragraph",
+                        "text": "Seek medical advice when:"
+                      },
+                      {
+                        "type": "list",
+                        "items": [
+                          "A child's weight or length/height is not increasing as expected.",
+                          "The child has difficulty chewing or swallowing.",
+                          "The child persistently refuses food.",
+                          "A nutritional deficiency is suspected.",
+                          "Growth measurements show concerning changes over time."
+                        ]
+                      }
+                    ],
+                    "sources": [
+                      {
+                        "title": "WHO infant and young child feeding",
+                        "url": "https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding"
+                      },
+                      {
+                        "title": "ICMR–NIN Dietary Guidelines for Indians 2024",
+                        "url": "https://nin.res.in/dietaryguidelines/pdfjs/locale/DGI_2024.pdf"
+                      },
+                      {
+                        "title": "WHO Child Growth Standards",
+                        "url": "https://www.who.int/tools/child-growth-standards"
+                      },
+                      {
+                        "title": "WHO growth reference 5–19 years",
+                        "url": "https://www.who.int/tools/growth-reference-data-for-5to19-years"
+                      }
+                    ],
+                    "notice": "General educational guidance. Your clinician adapts it for allergies, feeding difficulties, prematurity or other needs. Growth needs age- and sex-appropriate charts, not adult BMI cutoffs. No supplement dose or individual calorie target is generated.",
+                    "provenance": "User-supplied educational guide; not an individual diagnosis or prescribed meal plan."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/doctors/care-profiles/{profile_id}/growth-nutrition-guide/visibility": {
+      "patch": {
+        "operationId": "growth_nutrition_set_visibility_patch",
+        "tags": [
+          "doctors"
+        ],
+        "summary": "growth nutrition set visibility",
+        "parameters": [
+          {
+            "name": "profile_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Resource UUID"
+          },
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          }
+        ],
+        "description": "Required roles: DOCTOR. Changes only this child. Saved measurements and meal notes remain available. active must be a JSON boolean.",
+        "responses": {
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "child": {
+                    "id": "<child UUID>",
+                    "full_name": "Example Child",
+                    "date_of_birth": "2026-02-28",
+                    "age": {
+                      "completed_years": 0,
+                      "remaining_months": 8,
+                      "remaining_days": 3,
+                      "total_completed_months": 8,
+                      "total_days": 245,
+                      "display": "0 years 8 months 3 days",
+                      "primary_category": "INFANT",
+                      "secondary_categories": [],
+                      "in_child_module_scope": true
+                    }
+                  },
+                  "active": false,
+                  "default_active": true,
+                  "status": "INACTIVE",
+                  "updated_at": "<UTC timestamp>",
+                  "updated_by": "<connected doctor UUID>",
+                  "version": "2026-10-31.v1"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuideVisibility"
+              },
+              "example": {
+                "active": false
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
         "x-example-kind": "synthetic-contract"
       }
     },
@@ -54529,6 +55971,20 @@
           "otp"
         ],
         "title": "FamilyOTP",
+        "type": "object"
+      },
+      "GuideVisibility": {
+        "additionalProperties": false,
+        "properties": {
+          "active": {
+            "title": "Active",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "active"
+        ],
+        "title": "GuideVisibility",
         "type": "object"
       },
       "Options": {

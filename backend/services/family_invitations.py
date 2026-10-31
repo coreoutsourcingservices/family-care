@@ -145,10 +145,15 @@ def verify(token):
         row.member_id=user.id;row.profile_id=profile.id;row.accepted_at=now();row.pending=None
         from services.notifications import enqueue
         enqueue(owner.id,'family_member_joined','Family member joined',f'{row.full_name} completed their profile.',{'profile_id':profile.id,'module':row.module},'family-joined:'+row.id)
-        audit('family_member_joined',user.id,owner.id);db().commit()
+        audit('family_member_joined',user.id,owner.id)
+        from services.sessions import issue_session
+        redirect='/customer/'+row.module+'/dashboard'
+        if row.module=='adult':redirect+='?profile='+profile.id
+        return issue_session(user,extra=dict(message='Profile setup complete. Opening your profile.',
+            profile=profile_data(profile),family=dict(full_name=owner.full_name,relationship=row.relationship),
+            redirect_url=redirect),status=201)
     except IntegrityError:
         db().rollback();raise APIError(409,'account_exists','The account or invitation was already completed') from None
-    return jsonify(message='Profile setup complete. Sign in with your own email and password.',user=serialize_user(user),profile=profile_data(profile),family=dict(full_name=owner.full_name,relationship=row.relationship)),201
 
 
 route(bp,'/patients/family-invitations',create_invite,'POST',roles=('PATIENT',),schema=FamilyInvite,limited=True)

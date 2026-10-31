@@ -30,7 +30,7 @@ Doctor login can return 202 for profile setup/review instead of a clinical acces
 
 ## Reading this single-file reference
 
-Generated on 2026-10-31 10:38 IST. This file includes every versioned REST operation, request examples, response examples, validation schemas, upload limits and realtime integration. Examples are synthetic contracts, not captured production responses. An endpoint appearing here does not mean its external SMTP, storage or OCR provider has been tested live. Path placeholders must be replaced with accessible resource IDs. Response examples show representative shapes; optional values depend on the record and account state.
+Generated on 2026-10-31 11:24 IST. This file includes every versioned REST operation, request examples, response examples, validation schemas, upload limits and realtime integration. Examples are synthetic contracts, not captured production responses. An endpoint appearing here does not mean its external SMTP, storage or OCR provider has been tested live. Path placeholders must be replaced with accessible resource IDs. Response examples show representative shapes; optional values depend on the record and account state.
 
 For cookie authentication, public portals also send `X-FamilyCare-Portal: patient` or `doctor` on every request, including login and refresh. This keeps the two sessions independent. Bearer clients omit this header.
 
@@ -129,10 +129,13 @@ Upload JSON responses return metadata and, when configured, a temporary signed U
 | `/api/v1/children/{child_id}/vaccinations/history` | Yes | Yes | — | — | — |
 | `/api/v1/children/{child_id}/vaccinations/history/{record_id}` | Yes | — | — | Yes | Yes |
 | `/api/v1/children/{child_id}/vaccinations/upcoming` | Yes | — | — | — | — |
+| `/api/v1/children/{profile_id}/growth-nutrition-guide` | Yes | — | — | — | — |
 | `/api/v1/doctors/approval-status` | — | Yes | — | — | — |
 | `/api/v1/doctors/care-profiles` | Yes | — | — | — | — |
 | `/api/v1/doctors/care-profiles/{profile_id}` | Yes | — | — | — | — |
 | `/api/v1/doctors/care-profiles/{profile_id}/child-records/{area}` | Yes | Yes | — | — | — |
+| `/api/v1/doctors/care-profiles/{profile_id}/growth-nutrition-guide` | Yes | — | — | — | — |
+| `/api/v1/doctors/care-profiles/{profile_id}/growth-nutrition-guide/visibility` | — | — | — | Yes | — |
 | `/api/v1/doctors/care-profiles/{profile_id}/records` | Yes | — | — | — | — |
 | `/api/v1/doctors/care-profiles/{profile_id}/reports` | Yes | — | — | — | — |
 | `/api/v1/doctors/care-profiles/{profile_id}/reports/{report_id}/download` | Yes | — | — | — | — |
@@ -2670,8 +2673,8 @@ URL: `http://127.0.0.1:5001/api/v1/admin/patients/{user_id}/profiles/{profile_id
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `profile_id` | path | True | `{"type": "string"}` |
 | `user_id` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -19154,6 +19157,520 @@ Common failure responses: 400 invalid input/transport; 401 invalid session; 403 
 {"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
 ```
 
+## GET /api/v1/children/{profile_id}/growth-nutrition-guide
+
+Required roles: PATIENT. Default active for all children. Uses DOB and India calendar; no rows need to be provisioned. Inactive or age 13+ returns guide: null.
+
+URL: `http://127.0.0.1:5001/api/v1/children/{profile_id}/growth-nutrition-guide`
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `profile_id` | path | True | `{"type": "string"}` |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 400 — Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401 — Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403 — Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404 — Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409 — Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422 — Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429 — Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413 — Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415 — Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502 — Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503 — Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+HTTP 200 — Success
+
+```json
+{
+  "child": {
+    "id": "<child UUID>",
+    "full_name": "Example Child",
+    "date_of_birth": "2026-02-28",
+    "age": {
+      "completed_years": 0,
+      "remaining_months": 8,
+      "remaining_days": 3,
+      "total_completed_months": 8,
+      "total_days": 245,
+      "display": "0 years 8 months 3 days",
+      "primary_category": "INFANT",
+      "secondary_categories": [],
+      "in_child_module_scope": true
+    }
+  },
+  "active": true,
+  "default_active": true,
+  "status": "AVAILABLE",
+  "updated_at": null,
+  "updated_by": null,
+  "version": "2026-10-31.v1",
+  "age_band": {
+    "id": "month-8",
+    "label": "8–9 Months",
+    "min_months": 8,
+    "max_months_exclusive": 9
+  },
+  "guide": {
+    "title": "Growth & Nutrition Guide for Children (0–12 Years)",
+    "nutrition": {
+      "id": "month-8",
+      "min_months": 8,
+      "max_months_exclusive": 9,
+      "label": "8–9 Months",
+      "foods": "Soft rice, lentils, fully cooked eggs, and fruits",
+      "meal_frequency": "2–3 meals daily",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Introduce appropriate complementary foods.",
+            "Continue breastfeeding alongside solid foods.",
+            "Gradually increase food variety, quantity, and texture.",
+            "Breastfeeding can continue until two years of age or beyond."
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Recommended First Foods After 6 Months"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Food",
+            "Preparation Method"
+          ],
+          "rows": [
+            [
+              "Moong Dal Khichdi",
+              "Cook thoroughly and mash"
+            ],
+            [
+              "Porridge (Dalia)",
+              "Prepare with a thick, soft consistency"
+            ],
+            [
+              "Banana",
+              "Mash thoroughly"
+            ],
+            [
+              "Papaya",
+              "Mash into a smooth texture"
+            ],
+            [
+              "Carrot",
+              "Boil or steam and mash"
+            ],
+            [
+              "Lentils",
+              "Cook thoroughly and serve thick"
+            ],
+            [
+              "Egg",
+              "Cook completely and mash or chop appropriately"
+            ],
+            [
+              "Yogurt",
+              "Serve plain and unsweetened"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Start with small amounts, such as 2–3 teaspoons, and gradually increase according to the baby's appetite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Avoid relying only on watery lentil soup or rice water. Provide thick, nutrient-rich complementary foods."
+        }
+      ]
+    },
+    "growth_monitoring": [
+      {
+        "type": "paragraph",
+        "text": "Monitoring growth helps parents and healthcare professionals understand a child's development over time."
+      },
+      {
+        "type": "paragraph",
+        "text": "Growth monitoring should consider multiple measurements rather than focusing only on body weight."
+      },
+      {
+        "type": "heading",
+        "text": "Age-Wise Growth Tracking"
+      },
+      {
+        "type": "table",
+        "headers": [
+          "Age",
+          "Recommended Measurements"
+        ],
+        "rows": [
+          [
+            "Birth–6 Months",
+            "Weight, Length, Head Circumference"
+          ],
+          [
+            "6–12 Months",
+            "Weight, Length, Head Circumference"
+          ],
+          [
+            "1–2 Years",
+            "Weight, Length, Head Circumference"
+          ],
+          [
+            "2–3 Years",
+            "Weight, Height"
+          ],
+          [
+            "3–4 Years",
+            "Weight, Height"
+          ],
+          [
+            "4–5 Years",
+            "Weight, Height"
+          ],
+          [
+            "5–6 Years",
+            "Weight, Height, BMI-for-Age"
+          ],
+          [
+            "6–7 Years",
+            "Weight, Height, BMI-for-Age"
+          ],
+          [
+            "7–8 Years",
+            "Weight, Height, BMI-for-Age"
+          ],
+          [
+            "8–9 Years",
+            "Weight, Height, BMI-for-Age"
+          ],
+          [
+            "9–10 Years",
+            "Weight, Height, BMI-for-Age"
+          ],
+          [
+            "10–11 Years",
+            "Weight, Height, BMI-for-Age"
+          ],
+          [
+            "11–12 Years",
+            "Weight, Height, BMI-for-Age"
+          ]
+        ]
+      },
+      {
+        "type": "heading",
+        "text": "WHO Growth Chart Recommendations"
+      },
+      {
+        "type": "paragraph",
+        "text": "**Children Aged 0–5 Years**"
+      },
+      {
+        "type": "paragraph",
+        "text": "Use the WHO Child Growth Standards."
+      },
+      {
+        "type": "paragraph",
+        "text": "**Children Aged 5–12 Years**"
+      },
+      {
+        "type": "paragraph",
+        "text": "Use the WHO Growth Reference for children aged 5–19 years."
+      },
+      {
+        "type": "heading",
+        "text": "Important Growth Indicators"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Weight-for-age, where applicable.",
+          "Length/height-for-age.",
+          "Weight-for-length or weight-for-height in younger children.",
+          "BMI-for-age, where applicable.",
+          "Head circumference in infants and young children.",
+          "Growth trends over time."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Growth measurements should be interpreted using age- and sex-appropriate growth charts."
+      },
+      {
+        "type": "paragraph",
+        "text": "A single measurement does not provide a complete picture of a child's growth and development."
+      }
+    ],
+    "food_safety": [
+      {
+        "type": "paragraph",
+        "text": "Different food groups provide different nutrients required for healthy growth."
+      },
+      {
+        "type": "heading",
+        "text": "Recommended Nutrition Categories"
+      },
+      {
+        "type": "table",
+        "headers": [
+          "Food Category",
+          "Main Nutrients",
+          "Food Sources"
+        ],
+        "rows": [
+          [
+            "Grains",
+            "Carbohydrates, Fiber",
+            "Chapati, rice, oats"
+          ],
+          [
+            "Pulses",
+            "Protein, Iron",
+            "Lentils, chickpeas, kidney beans"
+          ],
+          [
+            "Vegetables",
+            "Vitamins, Minerals",
+            "Spinach, carrot, pumpkin"
+          ],
+          [
+            "Fruits",
+            "Vitamins, Fiber",
+            "Banana, guava, papaya"
+          ],
+          [
+            "Dairy Products",
+            "Calcium, Protein",
+            "Milk, yogurt, paneer"
+          ],
+          [
+            "Eggs, Meat & Fish",
+            "Protein, Iron, Vitamin B12",
+            "Eggs, chicken, fish"
+          ],
+          [
+            "Healthy Fats",
+            "Essential Fatty Acids",
+            "Appropriate amounts of oils and seeds"
+          ],
+          [
+            "Water",
+            "Hydration",
+            "Clean and safe drinking water"
+          ]
+        ]
+      },
+      {
+        "type": "heading",
+        "text": "Important Feeding Guidelines"
+      },
+      {
+        "type": "paragraph",
+        "text": "**0–6 Months:** Exclusively breastfed infants do not require additional water."
+      },
+      {
+        "type": "paragraph",
+        "text": "**After 6 Months:** Small amounts of safe drinking water can be introduced alongside complementary foods."
+      },
+      {
+        "type": "paragraph",
+        "text": "**After 12 Months:** Children should receive a varied, balanced diet and adequate safe drinking water."
+      },
+      {
+        "type": "heading",
+        "text": "⚠️ Food Safety Guidelines"
+      },
+      {
+        "type": "paragraph",
+        "text": "For children under 12 months:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Do not give honey.",
+          "Avoid using cow's milk as the main drink before 12 months.",
+          "Provide appropriately prepared foods to reduce choking risks.",
+          "Avoid hard or round foods that may cause choking."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "For toddlers and young children:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Avoid whole nuts, whole grapes, popcorn, and other choking hazards.",
+          "Prepare food according to the child's chewing and swallowing abilities.",
+          "Ensure meals are properly cooked.",
+          "Maintain good food hygiene."
+        ]
+      },
+      {
+        "type": "heading",
+        "text": "When to Consult a Pediatrician"
+      },
+      {
+        "type": "paragraph",
+        "text": "Seek medical advice when:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "A child's weight or length/height is not increasing as expected.",
+          "The child has difficulty chewing or swallowing.",
+          "The child persistently refuses food.",
+          "A nutritional deficiency is suspected.",
+          "Growth measurements show concerning changes over time."
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "title": "WHO infant and young child feeding",
+        "url": "https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding"
+      },
+      {
+        "title": "ICMR–NIN Dietary Guidelines for Indians 2024",
+        "url": "https://nin.res.in/dietaryguidelines/pdfjs/locale/DGI_2024.pdf"
+      },
+      {
+        "title": "WHO Child Growth Standards",
+        "url": "https://www.who.int/tools/child-growth-standards"
+      },
+      {
+        "title": "WHO growth reference 5–19 years",
+        "url": "https://www.who.int/tools/growth-reference-data-for-5to19-years"
+      }
+    ],
+    "notice": "General educational guidance. Your clinician adapts it for allergies, feeding difficulties, prematurity or other needs. Growth needs age- and sex-appropriate charts, not adult BMI cutoffs. No supplement dose or individual calorie target is generated.",
+    "provenance": "User-supplied educational guide; not an individual diagnosis or prescribed meal plan."
+  }
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
 ## POST /api/v1/doctors/approval-status
 
 Required roles: public / limited challenge
@@ -19673,8 +20190,8 @@ URL: `http://127.0.0.1:5001/api/v1/doctors/care-profiles/{profile_id}/child-reco
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `profile_id` | path | True | `{"type": "string"}` |
 | `area` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -19832,8 +20349,8 @@ URL: `http://127.0.0.1:5001/api/v1/doctors/care-profiles/{profile_id}/child-reco
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `profile_id` | path | True | `{"type": "string"}` |
 | `area` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -20130,6 +20647,717 @@ HTTP 503 — Database or Cloudinary unavailable/not configured
     "code": "error_code",
     "message": "Database or Cloudinary unavailable/not configured"
   }
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## GET /api/v1/doctors/care-profiles/{profile_id}/growth-nutrition-guide
+
+Required roles: DOCTOR. Default active for all children. Uses DOB and India calendar; no rows need to be provisioned. Inactive or age 13+ returns guide: null.
+
+URL: `http://127.0.0.1:5001/api/v1/doctors/care-profiles/{profile_id}/growth-nutrition-guide`
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `profile_id` | path | True | `{"type": "string"}` |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+Request body: none, or `{}` for a bodyless POST action.
+
+HTTP 400 — Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401 — Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403 — Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404 — Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409 — Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422 — Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429 — Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413 — Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415 — Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502 — Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503 — Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+HTTP 200 — Success
+
+```json
+{
+  "child": {
+    "id": "<child UUID>",
+    "full_name": "Example Child",
+    "date_of_birth": "2026-02-28",
+    "age": {
+      "completed_years": 0,
+      "remaining_months": 8,
+      "remaining_days": 3,
+      "total_completed_months": 8,
+      "total_days": 245,
+      "display": "0 years 8 months 3 days",
+      "primary_category": "INFANT",
+      "secondary_categories": [],
+      "in_child_module_scope": true
+    }
+  },
+  "active": true,
+  "default_active": true,
+  "status": "AVAILABLE",
+  "updated_at": null,
+  "updated_by": null,
+  "version": "2026-10-31.v1",
+  "age_band": {
+    "id": "month-8",
+    "label": "8–9 Months",
+    "min_months": 8,
+    "max_months_exclusive": 9
+  },
+  "guide": {
+    "title": "Growth & Nutrition Guide for Children (0–12 Years)",
+    "nutrition": {
+      "id": "month-8",
+      "min_months": 8,
+      "max_months_exclusive": 9,
+      "label": "8–9 Months",
+      "foods": "Soft rice, lentils, fully cooked eggs, and fruits",
+      "meal_frequency": "2–3 meals daily",
+      "blocks": [
+        {
+          "type": "list",
+          "items": [
+            "Introduce appropriate complementary foods.",
+            "Continue breastfeeding alongside solid foods.",
+            "Gradually increase food variety, quantity, and texture.",
+            "Breastfeeding can continue until two years of age or beyond."
+          ]
+        },
+        {
+          "type": "heading",
+          "text": "Recommended First Foods After 6 Months"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Food",
+            "Preparation Method"
+          ],
+          "rows": [
+            [
+              "Moong Dal Khichdi",
+              "Cook thoroughly and mash"
+            ],
+            [
+              "Porridge (Dalia)",
+              "Prepare with a thick, soft consistency"
+            ],
+            [
+              "Banana",
+              "Mash thoroughly"
+            ],
+            [
+              "Papaya",
+              "Mash into a smooth texture"
+            ],
+            [
+              "Carrot",
+              "Boil or steam and mash"
+            ],
+            [
+              "Lentils",
+              "Cook thoroughly and serve thick"
+            ],
+            [
+              "Egg",
+              "Cook completely and mash or chop appropriately"
+            ],
+            [
+              "Yogurt",
+              "Serve plain and unsweetened"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Start with small amounts, such as 2–3 teaspoons, and gradually increase according to the baby's appetite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Avoid relying only on watery lentil soup or rice water. Provide thick, nutrient-rich complementary foods."
+        }
+      ]
+    },
+    "growth_monitoring": [
+      {
+        "type": "paragraph",
+        "text": "Monitoring growth helps parents and healthcare professionals understand a child's development over time."
+      },
+      {
+        "type": "paragraph",
+        "text": "Growth monitoring should consider multiple measurements rather than focusing only on body weight."
+      },
+      {
+        "type": "heading",
+        "text": "Age-Wise Growth Tracking"
+      },
+      {
+        "type": "table",
+        "headers": [
+          "Age",
+          "Recommended Measurements"
+        ],
+        "rows": [
+          [
+            "Birth–6 Months",
+            "Weight, Length, Head Circumference"
+          ],
+          [
+            "6–12 Months",
+            "Weight, Length, Head Circumference"
+          ],
+          [
+            "1–2 Years",
+            "Weight, Length, Head Circumference"
+          ],
+          [
+            "2–3 Years",
+            "Weight, Height"
+          ],
+          [
+            "3–4 Years",
+            "Weight, Height"
+          ],
+          [
+            "4–5 Years",
+            "Weight, Height"
+          ],
+          [
+            "5–6 Years",
+            "Weight, Height, BMI-for-Age"
+          ],
+          [
+            "6–7 Years",
+            "Weight, Height, BMI-for-Age"
+          ],
+          [
+            "7–8 Years",
+            "Weight, Height, BMI-for-Age"
+          ],
+          [
+            "8–9 Years",
+            "Weight, Height, BMI-for-Age"
+          ],
+          [
+            "9–10 Years",
+            "Weight, Height, BMI-for-Age"
+          ],
+          [
+            "10–11 Years",
+            "Weight, Height, BMI-for-Age"
+          ],
+          [
+            "11–12 Years",
+            "Weight, Height, BMI-for-Age"
+          ]
+        ]
+      },
+      {
+        "type": "heading",
+        "text": "WHO Growth Chart Recommendations"
+      },
+      {
+        "type": "paragraph",
+        "text": "**Children Aged 0–5 Years**"
+      },
+      {
+        "type": "paragraph",
+        "text": "Use the WHO Child Growth Standards."
+      },
+      {
+        "type": "paragraph",
+        "text": "**Children Aged 5–12 Years**"
+      },
+      {
+        "type": "paragraph",
+        "text": "Use the WHO Growth Reference for children aged 5–19 years."
+      },
+      {
+        "type": "heading",
+        "text": "Important Growth Indicators"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Weight-for-age, where applicable.",
+          "Length/height-for-age.",
+          "Weight-for-length or weight-for-height in younger children.",
+          "BMI-for-age, where applicable.",
+          "Head circumference in infants and young children.",
+          "Growth trends over time."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "Growth measurements should be interpreted using age- and sex-appropriate growth charts."
+      },
+      {
+        "type": "paragraph",
+        "text": "A single measurement does not provide a complete picture of a child's growth and development."
+      }
+    ],
+    "food_safety": [
+      {
+        "type": "paragraph",
+        "text": "Different food groups provide different nutrients required for healthy growth."
+      },
+      {
+        "type": "heading",
+        "text": "Recommended Nutrition Categories"
+      },
+      {
+        "type": "table",
+        "headers": [
+          "Food Category",
+          "Main Nutrients",
+          "Food Sources"
+        ],
+        "rows": [
+          [
+            "Grains",
+            "Carbohydrates, Fiber",
+            "Chapati, rice, oats"
+          ],
+          [
+            "Pulses",
+            "Protein, Iron",
+            "Lentils, chickpeas, kidney beans"
+          ],
+          [
+            "Vegetables",
+            "Vitamins, Minerals",
+            "Spinach, carrot, pumpkin"
+          ],
+          [
+            "Fruits",
+            "Vitamins, Fiber",
+            "Banana, guava, papaya"
+          ],
+          [
+            "Dairy Products",
+            "Calcium, Protein",
+            "Milk, yogurt, paneer"
+          ],
+          [
+            "Eggs, Meat & Fish",
+            "Protein, Iron, Vitamin B12",
+            "Eggs, chicken, fish"
+          ],
+          [
+            "Healthy Fats",
+            "Essential Fatty Acids",
+            "Appropriate amounts of oils and seeds"
+          ],
+          [
+            "Water",
+            "Hydration",
+            "Clean and safe drinking water"
+          ]
+        ]
+      },
+      {
+        "type": "heading",
+        "text": "Important Feeding Guidelines"
+      },
+      {
+        "type": "paragraph",
+        "text": "**0–6 Months:** Exclusively breastfed infants do not require additional water."
+      },
+      {
+        "type": "paragraph",
+        "text": "**After 6 Months:** Small amounts of safe drinking water can be introduced alongside complementary foods."
+      },
+      {
+        "type": "paragraph",
+        "text": "**After 12 Months:** Children should receive a varied, balanced diet and adequate safe drinking water."
+      },
+      {
+        "type": "heading",
+        "text": "⚠️ Food Safety Guidelines"
+      },
+      {
+        "type": "paragraph",
+        "text": "For children under 12 months:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Do not give honey.",
+          "Avoid using cow's milk as the main drink before 12 months.",
+          "Provide appropriately prepared foods to reduce choking risks.",
+          "Avoid hard or round foods that may cause choking."
+        ]
+      },
+      {
+        "type": "paragraph",
+        "text": "For toddlers and young children:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "Avoid whole nuts, whole grapes, popcorn, and other choking hazards.",
+          "Prepare food according to the child's chewing and swallowing abilities.",
+          "Ensure meals are properly cooked.",
+          "Maintain good food hygiene."
+        ]
+      },
+      {
+        "type": "heading",
+        "text": "When to Consult a Pediatrician"
+      },
+      {
+        "type": "paragraph",
+        "text": "Seek medical advice when:"
+      },
+      {
+        "type": "list",
+        "items": [
+          "A child's weight or length/height is not increasing as expected.",
+          "The child has difficulty chewing or swallowing.",
+          "The child persistently refuses food.",
+          "A nutritional deficiency is suspected.",
+          "Growth measurements show concerning changes over time."
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "title": "WHO infant and young child feeding",
+        "url": "https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding"
+      },
+      {
+        "title": "ICMR–NIN Dietary Guidelines for Indians 2024",
+        "url": "https://nin.res.in/dietaryguidelines/pdfjs/locale/DGI_2024.pdf"
+      },
+      {
+        "title": "WHO Child Growth Standards",
+        "url": "https://www.who.int/tools/child-growth-standards"
+      },
+      {
+        "title": "WHO growth reference 5–19 years",
+        "url": "https://www.who.int/tools/growth-reference-data-for-5to19-years"
+      }
+    ],
+    "notice": "General educational guidance. Your clinician adapts it for allergies, feeding difficulties, prematurity or other needs. Growth needs age- and sex-appropriate charts, not adult BMI cutoffs. No supplement dose or individual calorie target is generated.",
+    "provenance": "User-supplied educational guide; not an individual diagnosis or prescribed meal plan."
+  }
+}
+```
+
+Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.
+
+```json
+{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}
+```
+
+## PATCH /api/v1/doctors/care-profiles/{profile_id}/growth-nutrition-guide/visibility
+
+Required roles: DOCTOR. Changes only this child. Saved measurements and meal notes remain available. active must be a JSON boolean.
+
+URL: `http://127.0.0.1:5001/api/v1/doctors/care-profiles/{profile_id}/growth-nutrition-guide/visibility`
+
+| Parameter | Location | Required | Schema |
+| --- | --- | --- | --- |
+| `profile_id` | path | True | `{"type": "string"}` |
+| `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
+| `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
+| `X-Requested-With` | header | False | `{"type": "string"}` |
+| `X-CSRF-Token` | header | False | `{"type": "string"}` |
+
+Request: **application/json**
+
+```json
+{
+  "active": false
+}
+```
+
+Validation schema: `GuideVisibility` (included in openapi.json).
+
+```json
+{
+  "additionalProperties": false,
+  "properties": {
+    "active": {
+      "title": "Active",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "active"
+  ],
+  "title": "GuideVisibility",
+  "type": "object"
+}
+```
+
+HTTP 400 — Invalid challenge/OTP/state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid challenge/OTP/state"
+  }
+}
+```
+
+HTTP 401 — Invalid credentials/token/session
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Invalid credentials/token/session"
+  }
+}
+```
+
+HTTP 403 — Role, approval, status, transport or CSRF denied
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Role, approval, status, transport or CSRF denied"
+  }
+}
+```
+
+HTTP 404 — Not found
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Not found"
+  }
+}
+```
+
+HTTP 409 — Duplicate data or invalid approval state
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Duplicate data or invalid approval state"
+  }
+}
+```
+
+HTTP 422 — Validation failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Validation failed"
+  }
+}
+```
+
+HTTP 429 — Rate limit or OTP cooldown
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Rate limit or OTP cooldown"
+  }
+}
+```
+
+HTTP 413 — Report exceeds size limit
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Report exceeds size limit"
+  }
+}
+```
+
+HTTP 415 — Multipart upload required
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Multipart upload required"
+  }
+}
+```
+
+HTTP 502 — Cloudinary upload failed
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Cloudinary upload failed"
+  }
+}
+```
+
+HTTP 503 — Database or Cloudinary unavailable/not configured
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "Database or Cloudinary unavailable/not configured"
+  }
+}
+```
+
+HTTP 200 — Success
+
+```json
+{
+  "child": {
+    "id": "<child UUID>",
+    "full_name": "Example Child",
+    "date_of_birth": "2026-02-28",
+    "age": {
+      "completed_years": 0,
+      "remaining_months": 8,
+      "remaining_days": 3,
+      "total_completed_months": 8,
+      "total_days": 245,
+      "display": "0 years 8 months 3 days",
+      "primary_category": "INFANT",
+      "secondary_categories": [],
+      "in_child_module_scope": true
+    }
+  },
+  "active": false,
+  "default_active": true,
+  "status": "INACTIVE",
+  "updated_at": "<UTC timestamp>",
+  "updated_by": "<connected doctor UUID>",
+  "version": "2026-10-31.v1"
 }
 ```
 
@@ -26942,7 +28170,12 @@ HTTP 201 — Success
 
 ```json
 {
-  "message": "Profile setup complete. Sign in with your own email and password.",
+  "message": "Profile setup complete. Opening your profile.",
+  "access_token": "<member access JWT; omitted in cookie mode>",
+  "refresh_token": "<member refresh token; omitted in cookie mode>",
+  "expires_in": 900,
+  "token_type": "Bearer",
+  "redirect_url": "/customer/women/dashboard",
   "user": {
     "id": "<member UUID>",
     "public_id": "C000002",
@@ -28723,8 +29956,8 @@ URL: `http://127.0.0.1:5001/api/v1/patients/adults/{profile_id}/records/{record_
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `profile_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -29084,8 +30317,8 @@ URL: `http://127.0.0.1:5001/api/v1/patients/adults/{profile_id}/records/{record_
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `profile_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -29243,8 +30476,8 @@ URL: `http://127.0.0.1:5001/api/v1/patients/adults/{profile_id}/records/{record_
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `profile_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -29604,8 +30837,8 @@ URL: `http://127.0.0.1:5001/api/v1/patients/adults/{profile_id}/records/{record_
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `profile_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -29755,8 +30988,8 @@ URL: `http://127.0.0.1:5001/api/v1/patients/adults/{profile_id}/records/{record_
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `profile_id` | path | True | `{"type": "string"}` |
 | `record_id` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -37771,8 +39004,8 @@ URL: `http://127.0.0.1:5001/api/v1/superadmin/patients/{user_id}/profiles/{profi
 
 | Parameter | Location | Required | Schema |
 | --- | --- | --- | --- |
-| `profile_id` | path | True | `{"type": "string"}` |
 | `user_id` | path | True | `{"type": "string"}` |
+| `profile_id` | path | True | `{"type": "string"}` |
 | `X-Auth-Transport` | header | False | `{"type": "string", "enum": ["bearer", "cookie"], "default": "bearer"}` |
 | `X-FamilyCare-Portal` | header | False | `{"type": "string", "enum": ["patient", "doctor"]}` |
 | `X-Requested-With` | header | False | `{"type": "string"}` |
@@ -42456,7 +43689,7 @@ All examples use synthetic identities and abbreviated IDs. Replace placeholders.
 | --- | --- | --- |
 | Family sends adult/women invitation | Invited member's email | One-use setup link with family name/email, relationship and care area |
 | Member submits name/email/mobile/DOB/password form | Inviting family's email | Six-digit setup approval OTP; family shares it with the member |
-| Member enters correct family approval OTP | No extra OTP email | Creates member PATIENT account and linked adult/women profile atomically |
+| Member enters correct family approval OTP | No extra OTP email | Creates member PATIENT account, linked profile and authenticated member session atomically |
 | Member signs in | No login OTP | Member's own email and password |
 | Member chooses forgot password | Member's own email | Password reset OTP; never routed to the inviting family |
 
@@ -42632,7 +43865,12 @@ HTTP 201 (representative response):
 
 ```json
 {
-  "message": "Profile setup complete. Sign in with your own email and password.",
+  "message": "Profile setup complete. Opening your profile.",
+  "access_token": "<member JWT; bearer mode only>",
+  "refresh_token": "<member refresh token; bearer mode only>",
+  "token_type": "Bearer",
+  "expires_in": 900,
+  "redirect_url": "/customer/women/dashboard",
   "user": {
     "id": "<member UUID>",
     "public_id": "C000002",
@@ -42666,7 +43904,7 @@ HTTP 201 (representative response):
 }
 ```
 
-The account, profile and membership are committed together. Five wrong OTP attempts exhaust the current code. OTP expiry: five minutes. Used links cannot be replayed. Verification does not replace the browser's current patient session; member signs in explicitly.
+The account, profile and membership are committed together. Five wrong OTP attempts exhaust the current code. OTP expiry: five minutes. Used links cannot be replayed. Verification immediately signs the member in. Cookie mode sets the member's HttpOnly patient cookies and returns csrf_token; bearer mode returns member tokens. The UI saves the new CSRF token and replaces the invite page with redirect_url, removing the secret link from the current page. The setup password remains unchanged and no immediate password change is required. If the browser was signed in as the inviting family, this browser's patient cookies now belong to the member; the family can sign in again to its own account. Other independent family sessions are not revoked.
 
 The care profile belongs to the inviting family and is accessible by both family and the accepted member. The member only gains access to that specific profile, not the family's children, other adults, women, invitation list or family account settings. Doctor access still requires an explicit referral. Shared server records/reports use the existing APIs. Existing women's diary entries remain browser-local; this change does not convert those entries into server-synced data.
 
@@ -42752,9 +43990,219 @@ HTTP 200: `{"message":"Password reset. Sign in again."}`. Existing sessions are 
 
 #### UI entry points and validation
 
-Family dashboard includes an invite form and invitation list with revoke/refresh actions. Adding another adult/women member uses this invite form. Self profiles and child profiles preserve existing flows. The email link opens the prefilled member form and OTP step. Once accepted, the shared profile appears in the matching adult/women workspace for both accounts.
+Family dashboard includes an invite form and invitation list with revoke/refresh actions. Adding another adult/women member uses this invite form. Self profiles and child profiles preserve existing flows. The email link opens the prefilled member form and OTP step. Successful OTP verification automatically opens the member?s adult/women dashboard. Once accepted, the shared profile appears in the matching adult/women workspace for both accounts.
 
 Automated tests: `venv/Scripts/python.exe -m pytest tests/test_family_invitations.py -q` from `backend`. Tests use isolated database fixtures and mocked SMTP, covering both modules, locked invite identity, OTP destinations, expiry, attempts, resend, replay, shared access, unrelated-family denial and member password reset.
+
+
+## Integration notes: Growth_Nutrition_API.md
+
+### Growth & Nutrition API: age-based child guidance
+
+Base URL: `http://127.0.0.1:5001`. JSON examples use synthetic identities.
+
+#### Implemented behavior
+
+- Your supplied Growth & Nutrition text is preserved in `backend/content/child_growth_nutrition_source.md` and converted into structured, versioned educational content in `backend/content/child_growth_nutrition.json`.
+- Every existing/new child gets the guide **active by default**. No batch assignment, doctor connection, or manual activation is required for initial visibility.
+- Age is calculated from the child's saved DOB using the India product calendar on every read. Clients do not submit or override age.
+- There are 24 continuous, nonoverlapping age bands: 12 monthly bands in the first year, then one yearly band for each completed age 1 through 12. Exactly age 13 returns `OUT_OF_SCOPE` and no guide. The supplied 11–12-year content also covers completed age 12 until the 13th birthday.
+- Only the currently connected doctor can activate/deactivate **this child's educational guide**. A change does not change another child's guide or the global source content.
+- Deactivation returns `guide: null`; it does not delete or disable saved growth measurements, meal notes, existing diary APIs or doctor notes.
+- Parent/other doctors/admins cannot use the doctor visibility endpoint. A doctor who is disconnected immediately loses this permission.
+- Parents see the guidance on Child Care → Growth & nutrition. Doctors see it with Activate/Deactivate controls under Child Care → Growth or Nutrition.
+
+#### Authentication
+
+Bearer/mobile:
+
+```http
+X-Auth-Transport: bearer
+Authorization: Bearer <patient_or_doctor_access_token>
+Content-Type: application/json
+```
+
+Browser: HttpOnly cookies, `credentials: include`, `X-Auth-Transport: cookie`, `X-Requested-With: FamilyCare`, and `X-FamilyCare-Portal: patient` or `doctor`. Doctor PATCH additionally requires that doctor's `X-CSRF-Token` from login/refresh.
+
+`profile_id` is the child's CareProfile UUID. Parent access requires ownership; doctor access requires the current referral connection. Public/unauthenticated access is not provided.
+
+#### 1. Parent reads the child's current guide
+
+`GET /api/v1/children/{profile_id}/growth-nutrition-guide`
+
+Request body: none. No age, module or active parameter is accepted from the client.
+
+HTTP 200 (abbreviated representative body):
+
+```json
+{
+  "child": {
+    "id": "<child UUID>",
+    "full_name": "Example Child",
+    "date_of_birth": "2026-02-28",
+    "age": {
+      "completed_years": 0,
+      "remaining_months": 8,
+      "remaining_days": 3,
+      "total_completed_months": 8,
+      "total_days": 245,
+      "display": "0 years 8 months 3 days",
+      "primary_category": "INFANT",
+      "secondary_categories": [],
+      "in_child_module_scope": true
+    }
+  },
+  "active": true,
+  "default_active": true,
+  "status": "AVAILABLE",
+  "updated_at": null,
+  "updated_by": null,
+  "version": "2026-10-31.v1",
+  "age_band": {
+    "id": "month-8",
+    "label": "8–9 Months",
+    "min_months": 8,
+    "max_months_exclusive": 9
+  },
+  "guide": {
+    "title": "Growth & Nutrition Guide for Children (0–12 Years)",
+    "nutrition": {
+      "id": "month-8",
+      "min_months": 8,
+      "max_months_exclusive": 9,
+      "label": "8–9 Months",
+      "foods": "Soft rice, lentils, fully cooked eggs, and fruits",
+      "meal_frequency": "2–3 meals daily",
+      "blocks": [{"type":"paragraph","text":"Example educational paragraph from the supplied guide."}]
+    },
+    "growth_monitoring": [],
+    "food_safety": [],
+    "sources": [
+      {"title":"WHO infant and young child feeding","url":"https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding"}
+    ],
+    "provenance": "User-supplied educational guide; not an individual diagnosis or prescribed meal plan.",
+    "notice": "General educational guidance. Your clinician adapts it for allergies, feeding difficulties, prematurity or other needs. Growth needs age- and sex-appropriate charts, not adult BMI cutoffs. No supplement dose or individual calorie target is generated."
+  }
+}
+```
+
+The actual response includes the complete matching age content, growth-monitoring guidance, food-safety sections and references. Empty arrays and the example paragraph above abbreviate those parts; see the full generated response in `ALL_APIS.md`, `all-api.md` or OpenAPI JSON. `default_active` describes initial policy; `active` is the child's saved effective setting.
+
+##### Block format for rendering
+
+No raw HTML is required. Render these structured block types:
+
+```json
+[
+  {"type":"heading","text":"Recommended foods"},
+  {"type":"paragraph","text":"Educational text"},
+  {"type":"list","items":["First item","Second item"]},
+  {"type":"table","headers":["Food","Preparation"],"rows":[["Lentils","Cook thoroughly"]]}
+]
+```
+
+Content contains the supplied text; inline `**bold**` markers may occur. The UI safely renders text, lists and tables; it does not inject HTML.
+
+#### 2. Connected doctor reads the same child guide
+
+`GET /api/v1/doctors/care-profiles/{profile_id}/growth-nutrition-guide`
+
+Request body: none. Doctor access token/cookie required.
+HTTP 200: identical response shape and age selection as the parent endpoint. A doctor cannot read an unconnected child's guide.
+
+#### 3. Doctor deactivates or activates for the selected child
+
+`PATCH /api/v1/doctors/care-profiles/{profile_id}/growth-nutrition-guide/visibility`
+
+Deactivate request:
+
+```json
+{"active":false}
+```
+
+Activate request:
+
+```json
+{"active":true}
+```
+
+Use a JSON boolean; strings such as `"false"` or numeric values are rejected.
+No POST endpoint is needed: use PATCH to change the setting and GET to read guidance.
+
+HTTP 200 after deactivation (child object abbreviated):
+
+```json
+{
+  "child": {"id":"<child UUID>","full_name":"Example Child","date_of_birth":"2026-02-28","age":{"total_completed_months":8}},
+  "active": false,
+  "default_active": true,
+  "status": "INACTIVE",
+  "updated_at": "<UTC timestamp>",
+  "updated_by": "<connected doctor UUID>",
+  "version": "2026-10-31.v1"
+}
+```
+
+The PATCH response includes the complete child/age object but no content payload. Fetch either GET endpoint again to see effective guidance:
+
+```json
+{
+  "child": {"id":"<child UUID>"},
+  "active": false,
+  "default_active": true,
+  "status": "INACTIVE",
+  "updated_at": "<UTC timestamp>",
+  "updated_by": "<connected doctor UUID>",
+  "version": "2026-10-31.v1",
+  "age_band": null,
+  "guide": null
+}
+```
+
+Reactivation exposes the content for the child's **current** age, not a cached age at the time of deactivation. Setting persists across restarts. The family receives a persistent in-app `growth_nutrition_updated` notice with `profile_id` and `area: growth`; live delivery uses the existing notification gateway. An audit action records the doctor change.
+
+#### Statuses and errors
+
+| Status / HTTP | Meaning |
+| --- | --- |
+| `AVAILABLE` / 200 | Active and age is under 13; guide included |
+| `INACTIVE` / 200 | Doctor deactivated this child's guide; no educational content returned |
+| `OUT_OF_SCOPE` / 200 | Active child profile has reached age 13; no guide returned |
+| 401 | Invalid/missing session or token |
+| 403 | Wrong role or cookie CSRF failure |
+| 404 | Child missing/deleted, owned by another family, not a child profile, or not connected to this doctor |
+| 422 | Missing/invalid active boolean, extra fields or invalid JSON |
+| 503 | Database unavailable or migration not installed |
+
+```json
+{"error":{"code":"child_not_found","message":"Child profile not found"}}
+```
+
+An inaccessible profile can instead return `profile_not_found` to avoid exposing its existence. There is no global activate/deactivate API in this feature.
+
+#### Supplied text and scope
+
+The source guide's age-wise foods, meal ideas, nutrients, food preparation, safety and growth-monitoring information are available as educational content. For the eight-month infant row, the supplied quantity note is supplemented with the WHO 6–8-month meal-frequency guidance. Source references are included in the response. Breastfeeding/food-safety and growth-reference sources were checked; the guide is not marked as an individual doctor's prescription.
+
+App feature suggestions in section 15 of the pasted text are preserved in the source file. They are not automatically represented as already implemented nutrient calculations, WHO percentiles, sex-specific growth curves, dietary prescriptions, allergy tracking or new head-circumference APIs. Existing diary/measurement routes remain documented separately. There is no automatic malnutrition diagnosis, supplement dose or calorie prescription.
+
+References:
+
+- [WHO infant and young child feeding](https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding)
+- [ICMR–NIN Dietary Guidelines for Indians 2024](https://nin.res.in/dietaryguidelines/pdfjs/locale/DGI_2024.pdf)
+- [WHO Child Growth Standards](https://www.who.int/tools/child-growth-standards)
+- [WHO growth reference 5–19 years](https://www.who.int/tools/growth-reference-data-for-5to19-years)
+
+#### Setup and regeneration
+
+From `backend`:
+
+1. `venv/Scripts/python.exe -m alembic upgrade head` applies `0019_child_growth_nutrition`.
+2. Restart the API.
+3. Rebuild content after an intentional source edit: `venv/Scripts/python.exe scripts/build_growth_nutrition_content.py`.
+4. Regenerate API docs: `venv/Scripts/python.exe scripts/export_full_api.py`.
+
+Tests: `venv/Scripts/python.exe -m pytest tests/test_growth_nutrition_guide.py -q` from `backend`. Tests cover all 24 age bands, default-active behavior, age 13 boundary, doctor scope, strict booleans, toggles, cross-family denial and continued measurement access while disabled.
 
 
 ## Complete validation schema appendix
@@ -43774,6 +45222,25 @@ All referenced component schemas are included below so this Markdown file can be
 }
 ```
 
+### Schema: GuideVisibility
+
+```json
+{
+  "additionalProperties": false,
+  "properties": {
+    "active": {
+      "title": "Active",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "active"
+  ],
+  "title": "GuideVisibility",
+  "type": "object"
+}
+```
+
 ### Schema: InitialPassword
 
 ```json
@@ -44774,4 +46241,4 @@ All referenced component schemas are included below so this Markdown file can be
 - `postman_collection.json`: importable request collection.
 - Regenerate: from backend, `venv/Scripts/python.exe scripts/export_full_api.py`.
 
-Total registered API method operations: **215**.
+Total registered API method operations: **218**.

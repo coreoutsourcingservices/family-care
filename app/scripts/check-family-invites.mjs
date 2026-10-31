@@ -9,9 +9,9 @@ try{
    const response=await route.fetch({url:url.toString()});await route.fulfill({response});
  });
  const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('http://127.0.0.1:5173/customer/login');
+ await page.goto('http://127.0.0.1:5173/customer/login',{waitUntil:'domcontentloaded',timeout:60000});
  await page.evaluate(async()=>{const response=await fetch('/api/v1/patients/login',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json','X-Auth-Transport':'cookie','X-Requested-With':'FamilyCare','X-FamilyCare-Portal':'patient'},body:JSON.stringify({email:'family@example.com',password:'FamilyPassword8!'})});const data=await response.json();if(!response.ok)throw Error(JSON.stringify(data));sessionStorage.setItem('familycare_csrf_patient',data.csrf_token);});
- await page.goto('http://127.0.0.1:5173/customer/dashboard');
+ await page.goto('http://127.0.0.1:5173/customer/dashboard',{waitUntil:'domcontentloaded',timeout:60000});
  const panel=page.locator('.family-invitations');await panel.getByLabel('Member name',{exact:true}).fill('Example Member');
  await panel.getByLabel('Member email',{exact:true}).fill('member@example.com');
  await panel.getByLabel('Care area').selectOption('women');await panel.getByLabel('Relationship').selectOption('Mother');
@@ -19,7 +19,7 @@ try{
  await panel.getByRole('status').waitFor();
  const mail=await (await fetch('http://127.0.0.1:5508/__test/mail')).json();assert.equal(mail.items[0].email,'member@example.com');
  const link=mail.items[0].body.match(/http:\/\/127[^\s]+/)[0];
- await context.clearCookies();await page.goto(link);
+ await context.clearCookies();await page.goto(link,{waitUntil:'domcontentloaded',timeout:60000});
  await page.getByText('Example Family',{exact:true}).waitFor();
  assert.equal(await page.getByLabel('Name',{exact:true}).inputValue(),'Example Member');
  assert.equal(await page.getByLabel('Email',{exact:true}).inputValue(),'member@example.com');
@@ -31,12 +31,12 @@ try{
  const otpMail=await (await fetch('http://127.0.0.1:5508/__test/mail')).json();assert.equal(otpMail.items.at(-1).email,'family@example.com');
  const code=otpMail.items.at(-1).body.match(/OTP with that member only: (\d{6})/)[1];
  await page.getByLabel('Family approval OTP',{exact:true}).fill(code);await page.getByRole('button',{name:'Verify and create my profile',exact:true}).click();
- await page.getByRole('heading',{name:'Your profile is ready'}).waitFor();
- await page.screenshot({path:'test-results/family-invite-complete.png',fullPage:true});
- await page.getByRole('link',{name:'Sign in',exact:true}).click();
- const result=await page.evaluate(async()=>{const response=await fetch('/api/v1/patients/login',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json','X-Auth-Transport':'cookie','X-Requested-With':'FamilyCare','X-FamilyCare-Portal':'patient'},body:JSON.stringify({email:'member@example.com',password:'MemberPassword8!'})});return {status:response.status,data:await response.json()};});
+ await page.waitForURL('**/customer/women/dashboard');
+ await page.getByText('Example Member',{exact:true}).first().waitFor();
+ const result=await page.evaluate(async()=>{const response=await fetch('/api/v1/patients/me',{credentials:'include',headers:{'X-Auth-Transport':'cookie','X-Requested-With':'FamilyCare','X-FamilyCare-Portal':'patient'}});return {status:response.status,data:await response.json()};});
  assert.equal(result.status,200);assert.equal(result.data.user.email,'member@example.com');
- await page.goto('http://127.0.0.1:5173/customer/women/dashboard');await page.getByRole('heading',{name:/Example Member/}).first().waitFor({timeout:30000}).catch(async()=>{assert((await page.locator('body').innerText()).includes('Example Member'));});
+ assert.equal(result.data.user.must_change_password,false);
+ await page.screenshot({path:'test-results/family-invite-complete.png',fullPage:true});
  assert.deepEqual(errors,[]);
- console.log('PASS: family invite form, member email link, locked identity, family OTP, member verification/login and linked women workspace');
+ console.log('PASS: family invite form, member email link, locked identity, family OTP, automatic member session after OTP and direct women workspace');
 }finally{await browser.close();}

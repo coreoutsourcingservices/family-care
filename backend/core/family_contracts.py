@@ -20,7 +20,10 @@ def enrich(paths):
                     'otp_destination':'inviting_family_email','expires_in':300,'resend_after':60};code=202
             elif path.endswith('/verify-otp'):
                 request={'otp':'123456'};code=201
-                example={'message':'Profile setup complete. Sign in with your own email and password.',
+                example={'message':'Profile setup complete. Opening your profile.',
+                    'access_token':'<member access JWT; omitted in cookie mode>',
+                    'refresh_token':'<member refresh token; omitted in cookie mode>',
+                    'expires_in':900,'token_type':'Bearer','redirect_url':'/customer/women/dashboard',
                     'user':{'id':'<member UUID>','public_id':'C000002','full_name':'Example Member',
                         'email':'member@example.com','phone_number':'+919876543211','role':'PATIENT','email_verified':True,
                         'approval_status':'APPROVED','account_status':'ACTIVE','must_change_password':False,'referred_doctor':None},

@@ -82,7 +82,7 @@ def main():
         lines+=['','Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.','', '```json','{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}','```']
         responses=[{'name':status+' example','originalRequest':request,'status':response['description'],'code':int(status),'header':[{'key':'Content-Type','value':'application/json'}],'body':json.dumps(response.get('content',{}).get('application/json',{}).get('example',{}),indent=2,ensure_ascii=False)} for status,response in op['responses'].items()]
         collection['item'].append({'name':method.upper()+' '+path,'request':request,'response':responses})
-    for filename in ('CHILD_PLAN_ACTIVATION.md','PUBLIC_PORTAL_SESSIONS.md','REALTIME_NOTIFICATIONS.md','woman_adule_api.md'):
+    for filename in ('CHILD_PLAN_ACTIVATION.md','PUBLIC_PORTAL_SESSIONS.md','REALTIME_NOTIFICATIONS.md','woman_adule_api.md','Growth_Nutrition_API.md'):
       source=root/filename
       if source.exists():
         lines+=['','## Integration notes: '+filename,'',re.sub(r'^(#+) ',r'##\1 ',source.read_text(encoding='utf-8'),flags=re.M)]
@@ -91,6 +91,7 @@ def main():
       lines+=['',f'### Schema: {name}','','```json',json.dumps(schema,indent=2,ensure_ascii=False),'```']
     lines+=['','## Operational endpoints outside the versioned REST inventory','','- `GET /health`: liveness; example `{"auth":"flask-jwt","service":"familycare-backend","status":"ok"}`.','- `GET /api/v1/health/ready`: database/schema readiness; documented in the inventory.','- `GET /api/docs`: JSON route inventory.','- `GET /api/openapi.json`: OpenAPI JSON contract.','- WebSocket `/ws/notifications`: see realtime integration above; not a REST method.','','## Files and regeneration','','- `ALL_APIS.md`: this complete single-file human-readable reference.','- `openapi.json`: machine-readable companion.','- `postman_collection.json`: importable request collection.','- Regenerate: from backend, `venv/Scripts/python.exe scripts/export_full_api.py`.','',f'Total registered API method operations: **{count}**.']
     (root/'ALL_APIS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+    (root/'all-api.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
     (root/'postman_collection.json').write_text(json.dumps(collection,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
     print(f'Exported {count} operations to {root}')
 

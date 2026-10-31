@@ -55,6 +55,10 @@ def test_family_member_join_login_shared_profile_and_own_reset(app,client,mails,
     response=client.post(base+'/verify-otp',json={'otp':code})
     assert response.status_code==201,response.json
     profile=response.json['profile']['id']
+    auto=bearer(response)
+    assert client.get('/api/v1/patients/me',headers=auto).json['user']['email']=='member@example.com'
+    assert response.json['redirect_url'].startswith('/customer/'+module+'/dashboard')
+    assert response.json['user']['must_change_password'] is False
     assert client.post(base+'/verify-otp',json={'otp':code}).status_code==410
     assert client.get(base).status_code==410
     login=client.post('/api/v1/patients/login',json={'email':'member@example.com','password':'MemberPassword8!'})
@@ -126,3 +130,17 @@ def test_invite_otp_attempt_limit_and_resend_invalidates_old_code(app,client,mai
         saved=db().scalar(select(FamilyInvitation).where(FamilyInvitation.email=='member@example.com'));code=otp_code(saved.pending['cid'])
     if old!=code:assert client.post(base+'/verify-otp',json={'otp':old}).status_code==400
     assert client.post(base+'/verify-otp',json={'otp':code}).status_code==201
+
+
+def test_cookie_verification_signs_in_member_immediately(app,client,mails):
+    owner=patient(app,client);row,token=invite(client,owner,mails)
+    base='/api/v1/family-invitations/'+token
+    assert client.post(base+'/setup',json=setup_data()).status_code==202
+    with app.app_context():code=otp_code(db().get(FamilyInvitation,row['id']).pending['cid'])
+    headers={'X-Auth-Transport':'cookie','X-Requested-With':'FamilyCare','X-FamilyCare-Portal':'patient'}
+    response=client.post(base+'/verify-otp',headers=headers,json={'otp':code})
+    assert response.status_code==201,response.json
+    assert response.json['csrf_token'] and 'access_token' not in response.json
+    assert 'fc_patient_access=' in str(response.headers.getlist('Set-Cookie'))
+    assert client.get('/api/v1/patients/me',headers=headers).json['user']['email']=='member@example.com'
+    assert client.get('/api/v1/patients/me',headers=owner).json['user']['email']=='family@example.com'

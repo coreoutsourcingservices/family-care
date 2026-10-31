@@ -47,6 +47,7 @@ def test_app():
                 importlib.import_module('migrations.versions.0016_child_profile_controls').upgrade()
                 importlib.import_module('migrations.versions.0017_realtime_notifications').upgrade()
                 importlib.import_module('migrations.versions.0018_family_invitations').upgrade()
+                importlib.import_module('migrations.versions.0019_child_growth_nutrition').upgrade()
     else:
         Base.metadata.create_all(engine)
     yield app

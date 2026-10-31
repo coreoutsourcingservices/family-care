@@ -9,7 +9,7 @@ All examples use synthetic identities and abbreviated IDs. Replace placeholders.
 | --- | --- | --- |
 | Family sends adult/women invitation | Invited member's email | One-use setup link with family name/email, relationship and care area |
 | Member submits name/email/mobile/DOB/password form | Inviting family's email | Six-digit setup approval OTP; family shares it with the member |
-| Member enters correct family approval OTP | No extra OTP email | Creates member PATIENT account and linked adult/women profile atomically |
+| Member enters correct family approval OTP | No extra OTP email | Creates member PATIENT account, linked profile and authenticated member session atomically |
 | Member signs in | No login OTP | Member's own email and password |
 | Member chooses forgot password | Member's own email | Password reset OTP; never routed to the inviting family |
 
@@ -185,7 +185,12 @@ HTTP 201 (representative response):
 
 ```json
 {
-  "message": "Profile setup complete. Sign in with your own email and password.",
+  "message": "Profile setup complete. Opening your profile.",
+  "access_token": "<member JWT; bearer mode only>",
+  "refresh_token": "<member refresh token; bearer mode only>",
+  "token_type": "Bearer",
+  "expires_in": 900,
+  "redirect_url": "/customer/women/dashboard",
   "user": {
     "id": "<member UUID>",
     "public_id": "C000002",
@@ -219,7 +224,7 @@ HTTP 201 (representative response):
 }
 ```
 
-The account, profile and membership are committed together. Five wrong OTP attempts exhaust the current code. OTP expiry: five minutes. Used links cannot be replayed. Verification does not replace the browser's current patient session; member signs in explicitly.
+The account, profile and membership are committed together. Five wrong OTP attempts exhaust the current code. OTP expiry: five minutes. Used links cannot be replayed. Verification immediately signs the member in. Cookie mode sets the member's HttpOnly patient cookies and returns csrf_token; bearer mode returns member tokens. The UI saves the new CSRF token and replaces the invite page with redirect_url, removing the secret link from the current page. The setup password remains unchanged and no immediate password change is required. If the browser was signed in as the inviting family, this browser's patient cookies now belong to the member; the family can sign in again to its own account. Other independent family sessions are not revoked.
 
 The care profile belongs to the inviting family and is accessible by both family and the accepted member. The member only gains access to that specific profile, not the family's children, other adults, women, invitation list or family account settings. Doctor access still requires an explicit referral. Shared server records/reports use the existing APIs. Existing women's diary entries remain browser-local; this change does not convert those entries into server-synced data.
 
@@ -305,6 +310,6 @@ HTTP 200: `{"message":"Password reset. Sign in again."}`. Existing sessions are 
 
 ## UI entry points and validation
 
-Family dashboard includes an invite form and invitation list with revoke/refresh actions. Adding another adult/women member uses this invite form. Self profiles and child profiles preserve existing flows. The email link opens the prefilled member form and OTP step. Once accepted, the shared profile appears in the matching adult/women workspace for both accounts.
+Family dashboard includes an invite form and invitation list with revoke/refresh actions. Adding another adult/women member uses this invite form. Self profiles and child profiles preserve existing flows. The email link opens the prefilled member form and OTP step. Successful OTP verification automatically opens the member?s adult/women dashboard. Once accepted, the shared profile appears in the matching adult/women workspace for both accounts.
 
 Automated tests: `venv/Scripts/python.exe -m pytest tests/test_family_invitations.py -q` from `backend`. Tests use isolated database fixtures and mocked SMTP, covering both modules, locked invite identity, OTP destinations, expiry, attempts, resend, replay, shared access, unrelated-family denial and member password reset.
