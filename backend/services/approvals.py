@@ -1,5 +1,5 @@
 import json
-from flask import jsonify
+from flask import jsonify,g,request
 from sqlalchemy import select, func, or_
 from core.database import db
 from core.errors import APIError
@@ -15,6 +15,10 @@ def paginate(query, page=1, per_page=25):
 
 def listing(role, page, per_page, status=None, pending=False):
     query = select(User).where(User.role == role)
+    search=request.args.get('search','').strip()[:80]
+    if search:
+        pattern='%'+search.replace('\\','\\\\').replace('%','\\%').replace('_','\\_')+'%'
+        query=query.where(or_(User.full_name.ilike(pattern,escape='\\'),User.email.ilike(pattern,escape='\\'),User.public_id.ilike(pattern,escape='\\')))
     if role == 'DOCTOR':
         query = query.where(User.id.in_(select(ApprovalRequest.applicant_id).where(ApprovalRequest.applicant_role == 'DOCTOR')))
         status = {'pending': 'PENDING_APPROVAL', 'verified': 'APPROVED', 'rejected': 'REJECTED'}.get(status, status)
@@ -93,8 +97,13 @@ def dashboard():
     counts = db().execute(select(User.role, User.approval_status, func.count())
                            .where(or_(User.role != 'DOCTOR', User.id.in_(select(ApprovalRequest.applicant_id))))
                            .group_by(User.role, User.approval_status)).all()
-    return jsonify(counts=[{'role': role, 'approval_status': status, 'count': count}
+    if g.user.role=='ADMIN':counts=[row for row in counts if row[0] in ('DOCTOR','PATIENT')]
+    result=dict(counts=[{'role': role, 'approval_status': status, 'count': count}
                            for role, status, count in counts])
+    if g.user.role in ('SUPERADMIN','ADMIN'):
+        from services.management_dashboard import summary
+        result.update(summary(admin=g.user.role=='ADMIN'))
+    return jsonify(**result)
 
 
 def audit_logs(page, per_page):

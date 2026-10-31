@@ -9,6 +9,8 @@ route(bp,'/doctors/<user_id>/profiles',doctor_directory.connected_profiles,roles
 route(bp, '/login', c.login, 'POST', schema='SuperLogin', limited=True)
 route(bp, '/me', c.me, roles=('SUPERADMIN',))
 route(bp, '/dashboard', c.dashboard, roles=('SUPERADMIN',))
+from services.management_dashboard import search
+route(bp,'/search',search,roles=('SUPERADMIN',))
 route(bp, '/admin-requests', c.requests_pending, roles=('SUPERADMIN',))
 route(bp, '/admins', c.users, roles=('SUPERADMIN',))
 route(bp, '/admins/<user_id>/approve', c.approve, 'POST', roles=('SUPERADMIN',))

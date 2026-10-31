@@ -16006,17 +16006,77 @@
         "description": "Required roles: ADMIN",
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "Doctor/patient dashboard; pending requests contain doctors only.",
             "content": {
               "application/json": {
                 "example": {
                   "counts": [
                     {
-                      "role": "ADMIN",
-                      "approval_status": "PENDING_APPROVAL",
-                      "count": 1
+                      "role": "PATIENT",
+                      "approval_status": "APPROVED",
+                      "count": 3
                     }
-                  ]
+                  ],
+                  "as_of": "2026-10-31",
+                  "metrics": {
+                    "administrators": {
+                      "total": 0,
+                      "this_month": 0
+                    },
+                    "doctors": {
+                      "total": 4,
+                      "this_month": 1
+                    },
+                    "patients": {
+                      "total": 3,
+                      "this_month": 1
+                    },
+                    "children": {
+                      "total": 5,
+                      "this_month": 1
+                    }
+                  },
+                  "monthly_growth": [
+                    {
+                      "month": "2026-10",
+                      "patients": 3,
+                      "doctors": 4,
+                      "administrators": 2
+                    }
+                  ],
+                  "recent_registrations": [
+                    {
+                      "id": "<UUID>",
+                      "public_id": "C000001",
+                      "full_name": "Example Patient",
+                      "email": "patient@example.com",
+                      "role": "PATIENT",
+                      "approval_status": "APPROVED",
+                      "account_status": "ACTIVE",
+                      "created_at": "<UTC timestamp>"
+                    }
+                  ],
+                  "pending_requests": {
+                    "total": 0,
+                    "items": []
+                  },
+                  "recent_activities": [
+                    {
+                      "id": "<UUID>",
+                      "action": "registered",
+                      "person": "Example Patient",
+                      "created_at": "<UTC timestamp>"
+                    }
+                  ],
+                  "child_care": {
+                    "total_children": 5,
+                    "active_guides": 4,
+                    "inactive_guides": 1,
+                    "growth_records": 2,
+                    "nutrition_records": 3,
+                    "vaccination_records": 4
+                  },
+                  "approved_doctors": 3
                 }
               }
             }
@@ -16478,6 +16538,15 @@
               "type": "string"
             },
             "description": "Required on authenticated cookie mutations and refresh"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "description": "Literal case-insensitive name/email/public-ID filter before pagination."
           }
         ],
         "description": "Required roles: ADMIN",
@@ -18382,6 +18451,15 @@
               "type": "string"
             },
             "description": "Required on authenticated cookie mutations and refresh"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "description": "Literal case-insensitive name/email/public-ID filter before pagination."
           }
         ],
         "description": "Required roles: ADMIN",
@@ -19069,15 +19147,6 @@
         "summary": "admin member detail",
         "parameters": [
           {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "UUID or public ID"
-          },
-          {
             "name": "profile_id",
             "in": "path",
             "required": true,
@@ -19085,6 +19154,15 @@
               "type": "string"
             },
             "description": "Resource UUID"
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "UUID or public ID"
           },
           {
             "name": "X-Auth-Transport",
@@ -19143,6 +19221,242 @@
                     "parent_profile_id": "<parent profile UUID>",
                     "doctor": null
                   }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/admin/search": {
+      "get": {
+        "operationId": "admin_<lambda>_get",
+        "tags": [
+          "admin"
+        ],
+        "summary": "admin <lambda>",
+        "parameters": [
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "description": "At least 2 characters. Literal case-insensitive name/email/public-ID search. Returns at most 8 accounts."
+          }
+        ],
+        "description": "Required roles: ADMIN",
+        "responses": {
+          "200": {
+            "description": "Search matches",
+            "content": {
+              "application/json": {
+                "example": {
+                  "items": [
+                    {
+                      "id": "<UUID>",
+                      "public_id": "C000001",
+                      "full_name": "Example Patient",
+                      "email": "patient@example.com",
+                      "role": "PATIENT",
+                      "approval_status": "APPROVED",
+                      "account_status": "ACTIVE",
+                      "created_at": "<UTC timestamp>"
+                    }
+                  ]
                 }
               }
             }
@@ -20332,15 +20646,310 @@
         "description": "Required roles: SUPERADMIN",
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "Organization aggregate summary. Monthly growth contains 12 calendar months; examples abbreviate the series. Counts remain backward compatible.",
             "content": {
               "application/json": {
                 "example": {
                   "counts": [
                     {
-                      "role": "ADMIN",
-                      "approval_status": "PENDING_APPROVAL",
-                      "count": 1
+                      "role": "PATIENT",
+                      "approval_status": "APPROVED",
+                      "count": 3
+                    }
+                  ],
+                  "as_of": "2026-10-31",
+                  "metrics": {
+                    "administrators": {
+                      "total": 2,
+                      "this_month": 1
+                    },
+                    "doctors": {
+                      "total": 4,
+                      "this_month": 1
+                    },
+                    "patients": {
+                      "total": 3,
+                      "this_month": 1
+                    },
+                    "children": {
+                      "total": 5,
+                      "this_month": 1
+                    }
+                  },
+                  "monthly_growth": [
+                    {
+                      "month": "2026-10",
+                      "patients": 3,
+                      "doctors": 4,
+                      "administrators": 2
+                    }
+                  ],
+                  "recent_registrations": [
+                    {
+                      "id": "<UUID>",
+                      "public_id": "C000001",
+                      "full_name": "Example Patient",
+                      "email": "patient@example.com",
+                      "role": "PATIENT",
+                      "approval_status": "APPROVED",
+                      "account_status": "ACTIVE",
+                      "created_at": "<UTC timestamp>"
+                    }
+                  ],
+                  "pending_requests": {
+                    "total": 0,
+                    "items": []
+                  },
+                  "recent_activities": [
+                    {
+                      "id": "<UUID>",
+                      "action": "registered",
+                      "person": "Example Patient",
+                      "created_at": "<UTC timestamp>"
+                    }
+                  ],
+                  "child_care": {
+                    "total_children": 5,
+                    "active_guides": 4,
+                    "inactive_guides": 1,
+                    "growth_records": 2,
+                    "nutrition_records": 3,
+                    "vaccination_records": 4
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid challenge/OTP/state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid challenge/OTP/state"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials/token/session",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Invalid credentials/token/session"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, approval, status, transport or CSRF denied",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Role, approval, status, transport or CSRF denied"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate data or invalid approval state",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Duplicate data or invalid approval state"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Validation failed"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit or OTP cooldown",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Rate limit or OTP cooldown"
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Report exceeds size limit",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Report exceeds size limit"
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Multipart upload required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Multipart upload required"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Cloudinary upload failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Cloudinary upload failed"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database or Cloudinary unavailable/not configured",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": {
+                    "code": "error_code",
+                    "message": "Database or Cloudinary unavailable/not configured"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "x-example-kind": "synthetic-contract"
+      }
+    },
+    "/api/v1/superadmin/search": {
+      "get": {
+        "operationId": "superadmin_search_get",
+        "tags": [
+          "superadmin"
+        ],
+        "summary": "superadmin search",
+        "parameters": [
+          {
+            "name": "X-Auth-Transport",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "bearer",
+                "cookie"
+              ],
+              "default": "bearer"
+            }
+          },
+          {
+            "name": "X-FamilyCare-Portal",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "patient",
+                "doctor"
+              ]
+            },
+            "description": "Public cookie clients select their independent patient or doctor session; omit for bearer clients and admin proxy."
+          },
+          {
+            "name": "X-Requested-With",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "FamilyCare; required for cookie POST/DELETE"
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Required on authenticated cookie mutations and refresh"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "description": "At least 2 characters. Literal case-insensitive name/email/public-ID search. Returns at most 8 accounts."
+          }
+        ],
+        "description": "Required roles: SUPERADMIN",
+        "responses": {
+          "200": {
+            "description": "Search matches",
+            "content": {
+              "application/json": {
+                "example": {
+                  "items": [
+                    {
+                      "id": "<UUID>",
+                      "public_id": "C000001",
+                      "full_name": "Example Patient",
+                      "email": "patient@example.com",
+                      "role": "PATIENT",
+                      "approval_status": "APPROVED",
+                      "account_status": "ACTIVE",
+                      "created_at": "<UTC timestamp>"
                     }
                   ]
                 }
@@ -20804,6 +21413,15 @@
               "type": "string"
             },
             "description": "Required on authenticated cookie mutations and refresh"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "description": "Literal case-insensitive name/email/public-ID filter before pagination."
           }
         ],
         "description": "Required roles: SUPERADMIN",
@@ -21963,6 +22581,15 @@
               "type": "string"
             },
             "description": "Required on authenticated cookie mutations and refresh"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "description": "Literal case-insensitive name/email/public-ID filter before pagination."
           }
         ],
         "description": "Required roles: SUPERADMIN",
@@ -22199,6 +22826,15 @@
               "type": "string"
             },
             "description": "Required on authenticated cookie mutations and refresh"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            },
+            "description": "Literal case-insensitive name/email/public-ID filter before pagination."
           }
         ],
         "description": "Required roles: SUPERADMIN",
@@ -22886,15 +23522,6 @@
         "summary": "superadmin member detail",
         "parameters": [
           {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "UUID or public ID"
-          },
-          {
             "name": "profile_id",
             "in": "path",
             "required": true,
@@ -22902,6 +23529,15 @@
               "type": "string"
             },
             "description": "Resource UUID"
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "UUID or public ID"
           },
           {
             "name": "X-Auth-Transport",
@@ -48112,7 +48748,7 @@
         "summary": "adults update",
         "parameters": [
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -48121,7 +48757,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -48369,7 +49005,7 @@
         "summary": "adults get record",
         "parameters": [
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -48378,7 +49014,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -48609,7 +49245,7 @@
         "summary": "adults patch record",
         "parameters": [
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -48618,7 +49254,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -48866,7 +49502,7 @@
         "summary": "adults delete record",
         "parameters": [
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -48875,7 +49511,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -49100,7 +49736,7 @@
         "summary": "adults remove",
         "parameters": [
           {
-            "name": "record_id",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -49109,7 +49745,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "record_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -49334,7 +49970,7 @@
         "summary": "doctor child care entries",
         "parameters": [
           {
-            "name": "area",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -49343,7 +49979,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "area",
             "in": "path",
             "required": true,
             "schema": {
@@ -49574,7 +50210,7 @@
         "summary": "doctor child care add",
         "parameters": [
           {
-            "name": "area",
+            "name": "profile_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -49583,7 +50219,7 @@
             "description": "Resource UUID"
           },
           {
-            "name": "profile_id",
+            "name": "area",
             "in": "path",
             "required": true,
             "schema": {

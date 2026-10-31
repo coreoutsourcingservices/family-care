@@ -6,10 +6,16 @@ from websockets.asyncio.client import connect
 from websockets.exceptions import ConnectionClosed,InvalidStatus
 from test_care import patient
 
-def test_real_websocket_delivery_origin_and_session_revocation(app,client,monkeypatch):
+@pytest.mark.parametrize('role',['patient','doctor'])
+def test_real_websocket_delivery_origin_and_session_revocation(app,client,monkeypatch,role):
     import scripts.notification_socket as gateway
     monkeypatch.setattr(gateway,'app',app)
-    headers=patient(app,client)
+    if role=='patient':headers=patient(app,client)
+    else:
+        from test_referrals import doctor
+        from test_workflows import bearer,PASSWORD
+        doctor(app)
+        headers=bearer(client.post('/api/v1/doctors/login',json={'email':'rahul@example.com','password':PASSWORD}))
     ticket=client.post('/api/v1/notifications/socket-ticket',headers=headers,json={}).json['ticket']
     async def scenario():
         async with serve(gateway.connection,'127.0.0.1',0,process_request=gateway.handshake) as server:

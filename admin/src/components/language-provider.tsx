@@ -17,6 +17,13 @@ export default function LanguageProvider({children}:{children:React.ReactNode}){
   if(persist)manualSelection.current=true;
   const requestVersion=++version.current;setError('');
   try{
+   // English is bundled with the portal, so it remains usable without the optional catalogue API.
+   if(code==='en'){
+    await i18n.changeLanguage('en');if(requestVersion!==version.current)return;
+    setLanguage('en');document.documentElement.lang='en';document.documentElement.dir='ltr';
+    if(persist){try{localStorage.setItem('familycare-language','en');}catch{}}
+    return;
+   }
    const response=await fetch(`/api/v1/localization/messages/${encodeURIComponent(code)}`);if(!response.ok)throw new Error();
    const data=await response.json();if(requestVersion!==version.current)return;
    if(data.translation_status!=='available'){setError('Translation unavailable');return;}

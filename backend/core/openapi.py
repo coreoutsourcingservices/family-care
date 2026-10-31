@@ -175,6 +175,8 @@ def specification(app):
     family_contracts(paths)
     from core.growth_nutrition_contracts import enrich as growth_contracts
     growth_contracts(paths)
+    from core.management_contracts import enrich as management_contracts
+    management_contracts(paths)
     return {'openapi': '3.1.0', 'info': {'title': 'Family Care Backend API', 'version': '1.0.0',
                 'description': 'Flask backend APIs. Next.js admin/superadmin app runs on port 3005. Cookie sessions omit tokens from JSON.'},
             'servers': [{'url': 'http://127.0.0.1:5001', 'description': 'Local development'}], 'paths': paths,
