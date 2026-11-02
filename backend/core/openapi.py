@@ -19,6 +19,8 @@ EXAMPLES['CareProfileCreate'] = {'profile_type':'member','module':'child','full_
 EXAMPLES['CareProfileReferral'] = {'referral_id':'rahulkumarD000001'}
 EXAMPLES['PatientRegistration'] = dict(EXAMPLES['Registration'], referral_id='rahulkumarD000001')
 EXAMPLES['ConnectDoctor'] = {'referral_id': 'rahulkumarD000001'}
+EXAMPLES['WomenGrantInput'] = {'recipient_id':'22222222-2222-4222-8222-222222222222','permissions':{'cycle':'view','pregnancy':'edit','records':'view'},'expires_at':'2026-12-01T12:00:00+05:30'}
+EXAMPLES['WomenRecordInput'] = {'section':'cycle','version':0,'data':{'date':'2026-11-01','title':'Period entry','flow':'Medium'}}
 EXAMPLES['DoctorRegistration'] = dict(EXAMPLES['Registration'])
 EXAMPLES['DoctorProfileSetup'] = dict(setup_token='<limited-purpose setup_token>', qualification='MBBS',
     medical_registration_number='EXAMPLE-12345', registering_council='Example Medical Council',
@@ -34,6 +36,18 @@ CHALLENGE = {'challenge_token': '<limited-purpose JWT>', 'expires_in': 300, 'res
 
 
 def success_examples(path, method='GET'):
+    if '/women/' in path:
+        permissions={'cycle':'view','pregnancy':'edit'}
+        grant={'id':'<grant UUID>','recipient_id':'<recipient UUID>','name':'Selected family member','role':'PATIENT','permissions':permissions,'expires_at':'2026-12-01T06:30:00Z','active':True}
+        record={'id':'<record UUID>','section':'cycle','version':'1','date':'2026-11-01','title':'Period entry','flow':'Medium'}
+        if method=='DELETE':return {200:{'message':'Access revoked' if '/sharing/' in path else 'Diary entry deleted' if '/diary/' in path else 'Report deleted'}}
+        if path.endswith('/shared'):return {200:{'items':[{'id':'<profile UUID>','name':'Example Woman','permissions':permissions}]}}
+        if path.endswith('/workspace'):return {200:{'profile':{'id':'<profile UUID>','name':'Example Woman','dob':'1990-01-01'},'owner':False,'permissions':permissions,'records':[record],'access_expires_at':grant['expires_at']}}
+        if path.endswith('/sharing'):return {200:{'grant':grant}} if method=='PUT' else {200:{'tabs':{'cycle':'Period & cycle'},'recipients':[{'id':'<recipient UUID>','name':'Selected family member','role':'PATIENT'}],'grants':[grant]}}
+        if '/diary/' in path:return {200:{'record':record}}
+        if path.endswith('/download'):return {200:{'description':'Authenticated file bytes'}}
+        report={'id':'<report UUID>','name':'report.pdf','category':'Lab tests','created_at':'2026-11-01T00:00:00Z','url':None,'secure_url':None}
+        if path.endswith('/reports'):return {201:{'report':report}} if method=='POST' else {200:{'items':[report]}}
     session = deepcopy(SESSION)
     namespace = path.split('/')[3] if len(path.split('/')) > 3 else ''
     roles = {'admin':('ADMIN','A000001'), 'superadmin':('SUPERADMIN','superadmin'), 'doctors':('DOCTOR','D000001'), 'patients':('PATIENT','C000001')}

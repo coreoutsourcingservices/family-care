@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request, g
 from sqlalchemy import select
 from core.database import db
 from core.models import CareProfile, CareReport, User, FamilyInvitation, uid, now
@@ -21,6 +21,16 @@ def patient_profile_access(user):
 
 
 def accessible_profile(user, profile_id, lock=False):
+    # Delegates use the scoped Women workspace. Legacy APIs cannot bypass tab expiry.
+    women_profile = db().get(CareProfile, profile_id)
+    if women_profile and women_profile.module == 'women':
+        from services.women_workspace import is_primary, recipients
+        if getattr(g, 'women_authorized', None) == profile_id:
+            return women_profile
+        if not is_primary(user, women_profile):
+            if user.id not in {recipient.id for recipient in recipients(women_profile)}:
+                raise APIError(404, 'profile_not_found', 'Care profile not found')
+            raise APIError(403, 'women_scoped_workspace_required', 'Open the shared Women workspace to use your tab permissions')
     query = select(CareProfile).where(CareProfile.id == profile_id, CareProfile.deleted_at.is_(None))
     if user.role == 'PATIENT':
         query = query.where(patient_profile_access(user))
@@ -90,6 +100,12 @@ def list_profiles(user, page, per_page, module=None):
     rows, total = paginate(query.order_by(CareProfile.created_at, CareProfile.id), page, per_page)
     items=[]
     for item in rows:
+        if item.module == 'women':
+            from services.women_workspace import is_primary
+            if not is_primary(user, item):
+                items.append(dict(id=item.id,full_name=item.name,module=item.module,profile_type=item.profile_type,
+                    created_at=item.created_at.isoformat()+'Z',family_access=False,linked_member=True))
+                continue
         invitation=db().scalar(select(FamilyInvitation).where(FamilyInvitation.profile_id==item.id,FamilyInvitation.accepted_at.is_not(None))) if item.module in ('adult','women') else None
         if user.role=='PATIENT' and item.owner_id==user.id and invitation and not (invitation.pending or {}).get('family_access'):
             items.append(dict(id=item.id,full_name=item.name,module=item.module,profile_type=item.profile_type,created_at=item.created_at.isoformat()+'Z',family_access=False,linked_member=True))

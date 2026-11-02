@@ -1,5 +1,10 @@
 # Family Care backend API
 
+Women tab sharing, family/doctor View + Edit permissions, expiry and diary APIs:
+[Women tab access](docs/WOMEN_TAB_ACCESS.md).
+Frontend section mapping and request/response JSON for all Women tabs:
+[Women frontend APIs](docs/WOMEN_FRONTEND_APIS.md).
+
 Adult/women independent member logins and family email approval:
 [Family invitations: requests, responses, OTP destinations and setup](../api-reference/woman_adule_api.md).
 Run `venv/Scripts/python.exe -m alembic upgrade head` before starting the new API.
@@ -46,6 +51,10 @@ Run the email worker in a second terminal:
 ```powershell
 .\venv\Scripts\python.exe -m scripts.mail_worker
 ```
+
+The local `server.py` launcher also starts the notification WebSocket gateway on
+`127.0.0.1:5002` in the API process. Production deployments using `wsgi.py` run
+`python -m scripts.notification_socket` as a separate service.
 
 Base URL: http://127.0.0.1:5001
 

@@ -32,7 +32,7 @@ def doctor_profile_filter(user):
     configured=exists(select(grant.profile_id).where(grant.profile_id==CareProfile.id))
     active=exists(select(grant.profile_id).where(grant.profile_id==CareProfile.id,grant.doctor_id==user.id,
         grant.revoked_at.is_(None),or_(grant.expires_at.is_(None),grant.expires_at>now())))
-    return and_(CareProfile.referred_doctor_id==user.id,or_(CareProfile.module=='child',~configured,active))
+    return and_(CareProfile.module!='women',CareProfile.referred_doctor_id==user.id,or_(CareProfile.module=='child',~configured,active))
 
 
 def current_grant(profile):
@@ -40,6 +40,7 @@ def current_grant(profile):
 
 
 def require_scope(user,profile,scope):
+    if getattr(g,'women_authorized',None)==profile.id:return None
     if user.role!='DOCTOR':return None
     grant=current_grant(profile)
     if grant and (grant.doctor_id!=user.id or grant.revoked_at or grant.expires_at and grant.expires_at<=now() or scope not in grant.scopes):
@@ -57,6 +58,7 @@ def serialize(grant):
 def manage(profile_id):
     from services.care import accessible_profile
     profile=accessible_profile(g.user,str(profile_id),lock=True)
+    if profile.module=='women':raise APIError(422,'women_tab_sharing_required','Use Women tab sharing for family and doctor permissions')
     if profile.module not in ('adult','women'):raise APIError(422,'invalid_module','Timed permissions apply only to adult and women profiles')
     return profile
 

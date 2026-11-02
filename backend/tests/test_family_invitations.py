@@ -79,7 +79,8 @@ def test_family_member_join_login_shared_profile_and_own_reset(app,client,mails,
     listed=client.get('/api/v1/patients/profiles',headers=owner).json['items']
     assert 'date_of_birth' not in next(p for p in listed if p['id']==profile)
     assert client.put(permission,headers=member,json={'enabled':True}).status_code==200
-    assert client.get('/api/v1/patients/profiles/'+profile,headers=owner).status_code==200
+    # Women sharing now uses tab-specific grants; the old broad family flag cannot bypass them.
+    assert client.get('/api/v1/patients/profiles/'+profile,headers=owner).status_code==(403 if module=='women' else 200)
     outsider=patient(app,client,'other@example.com')
     assert client.get('/api/v1/patients/profiles/'+profile,headers=outsider).status_code==404
     if module=='adult':

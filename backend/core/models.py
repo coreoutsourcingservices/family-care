@@ -355,6 +355,32 @@ class ProfileDoctorGrant(Base):
     created_at = C(DT, default=now, nullable=False)
 
 
+class WomenAccessGrant(Base):
+    __tablename__ = 'women_access_grants'
+    __table_args__ = (UQ('profile_id', 'recipient_id'),)
+    id = primary_id()
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), nullable=False, index=True)
+    recipient_id = user_fk(nullable=False)
+    granted_by = user_fk(nullable=False)
+    permissions = C(JSON, nullable=False)
+    expires_at = C(DT)
+    revoked_at = C(DT)
+    created_at = C(DT, default=now, nullable=False)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+
+class WomenDiaryRecord(Base):
+    __tablename__ = 'women_diary_records'
+    id = primary_id()
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), nullable=False, index=True)
+    section = C(S(24), nullable=False)
+    data = C(JSON, nullable=False)
+    version = C(I, nullable=False, default=1)
+    updated_by = user_fk(nullable=False)
+    deleted_at = C(DT)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+
 class CareReport(Base):
     __tablename__ = 'care_reports'
     id = primary_id()
