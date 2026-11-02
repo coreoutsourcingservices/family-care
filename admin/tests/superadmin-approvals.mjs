@@ -1,0 +1,30 @@
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+const browser=await chromium.launch({channel:'msedge',headless:true});
+try {
+ const context=await browser.newContext({viewport:{width:1440,height:1000}});
+ const login=await context.request.post('http://localhost:3006/api/v1/superadmin/login',{headers:{Origin:'http://localhost:3006','X-Requested-With':'FamilyCare'},data:{username:'superadmin',password:'SmokePassword8!'}});
+ assert.equal(login.status(),200);
+ const page=await context.newPage();page.setDefaultTimeout(90000);page.setDefaultNavigationTimeout(120000);
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://localhost:3006/superadmin/approvals/doctors');
+ await page.getByRole('heading',{name:'Doctors approvals.'}).waitFor();
+ await page.getByRole('button',{name:'Review request'}).first().click();
+ await page.getByRole('dialog').waitFor();
+ await page.getByRole('button',{name:'Confirm approval',exact:true}).waitFor();
+ await page.getByRole('button',{name:'Close approval review'}).click();
+ await page.goto('http://localhost:3006/superadmin/doctors');
+ await page.getByRole('link',{name:'Open dashboard →'}).first().click();
+ await page.getByText('CARE NETWORK / DOCTOR DASHBOARD',{exact:true}).waitFor();
+ await page.goto('http://localhost:3006/superadmin/patients');
+ await page.getByRole('link',{name:'Open dashboard →'}).first().click();
+ await page.getByRole('heading',{name:'Patient dashboard.',exact:true}).waitFor();
+ await page.goto('http://localhost:3006/superadmin/approvals/patients');
+ await page.getByRole('heading',{name:'Patients approvals.'}).waitFor();
+ await page.setViewportSize({width:390,height:844});
+ await page.getByRole('button',{name:'Open navigation',exact:true}).click();
+ await page.locator('.sa-sidebar.is-open').waitFor();
+ assert.ok(await page.locator('.sa-sidebar').getByRole('link',{name:/Doctors/}).count());
+ assert.deepEqual(errors,[]);
+ console.log('PASS approval dialog, doctor and patient dashboards, separate queues and mobile navigation');
+} finally {await browser.close();}

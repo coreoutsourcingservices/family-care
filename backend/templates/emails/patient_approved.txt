@@ -1,0 +1,6 @@
+Hello {{ full_name }},
+
+Your FamilyCare account review is complete and your account has been approved.
+You can now sign in to FamilyCare using your email and password.
+
+FamilyCare

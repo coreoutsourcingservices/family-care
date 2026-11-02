@@ -4,7 +4,7 @@ import {api} from '@/lib/api';
 export type NetworkPerson={id:string;public_id:string;full_name:string;email:string;role:string;approval_status:string;account_status:string;created_at:string;can_review?:boolean};
 export type DashboardData={as_of:string;approved_doctors?:number;metrics:Record<'administrators'|'doctors'|'patients'|'children',{total:number;this_month:number}>;
  monthly_growth:{month:string;patients:number;doctors:number;administrators:number}[];
- recent_registrations:NetworkPerson[];pending_requests:{total:number;items:NetworkPerson[]};
+ recent_registrations:NetworkPerson[];pending_requests:{total:number;by_role?:Partial<Record<'DOCTOR'|'PATIENT'|'ADMIN',number>>;items:NetworkPerson[]};
  recent_activities:{id:string;action:string;person:string;created_at:string}[];
  child_care:{total_children:number;active_guides:number;inactive_guides:number;growth_records:number;nutrition_records:number;vaccination_records:number}};
 const Context=createContext<{data?:DashboardData;loading:boolean;error:string;refresh:()=>Promise<void>}>({loading:true,error:'',refresh:async()=>{}});

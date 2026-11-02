@@ -33,3 +33,4 @@ test-results/
 
 # Local Web Push signing key
 backend/.webpush-private.pem
+admin/.next-*/

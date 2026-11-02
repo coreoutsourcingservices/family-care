@@ -43,7 +43,8 @@ def summary(admin=False):
     inactive=db().scalar(select(func.count()).select_from(CareProfile).join(ChildGrowthNutritionSetting,ChildGrowthNutritionSetting.profile_id==CareProfile.id).where(*child_filters,ChildGrowthNutritionSetting.active.is_(False)))
     record_counts=dict(db().execute(select(ChildRecord.kind,func.count()).join(CareProfile,CareProfile.id==ChildRecord.profile_id)
         .where(*child_filters,ChildRecord.deleted_at.is_(None),ChildRecord.kind.in_(['growth','nutrition','vaccination'])).group_by(ChildRecord.kind)).all())
-    pending_query=select(User).where(*filters,User.role.in_(['ADMIN','DOCTOR']),User.approval_status=='PENDING_APPROVAL',User.email_verified.is_(True))
+    pending_query=select(User).where(*filters,User.role.in_(['DOCTOR'] if admin else ['ADMIN','DOCTOR','PATIENT']),User.approval_status=='PENDING_APPROVAL',User.email_verified.is_(True))
+    pending_by_role=dict(db().execute(pending_query.with_only_columns(User.role,func.count()).group_by(User.role)).all())
     pending_total=db().scalar(select(func.count()).select_from(pending_query.subquery()))
     pending=db().scalars(pending_query.order_by(User.created_at,User.id).limit(4)).all()
     recent=db().scalars(select(User).where(*filters).order_by(User.created_at.desc(),User.id).limit(5)).all()
@@ -56,7 +57,7 @@ def summary(admin=False):
     return dict(approved_doctors=approved,metrics={key:dict(total=totals.get(role,0),this_month=added.get(role,0)) for key,role in [('administrators','ADMIN'),('doctors','DOCTOR'),('patients','PATIENT')]}|
             {'children':dict(total=children,this_month=new_children)},monthly_growth=growth,
         recent_registrations=[person(user) for user in recent],
-        pending_requests=dict(total=pending_total,items=[dict(person(user),can_review=user.role==('DOCTOR' if admin else 'ADMIN')) for user in pending]),
+        pending_requests=dict(total=pending_total,by_role=pending_by_role,items=[dict(person(user),can_review=user.role=='DOCTOR' if admin else user.role in ('ADMIN','DOCTOR','PATIENT')) for user in pending]),
         recent_activities=[dict(id=row.id,action=row.action,person=names.get(row.target_id) or names.get(row.actor_id) or 'System',created_at=row.created_at.isoformat()+'Z') for row in events],
         child_care=dict(total_children=children,active_guides=children-inactive,inactive_guides=inactive,
             growth_records=record_counts.get('growth',0),nutrition_records=record_counts.get('nutrition',0),vaccination_records=record_counts.get('vaccination',0)),

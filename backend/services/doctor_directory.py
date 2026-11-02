@@ -1,6 +1,6 @@
 """Administrative doctor detail with paginated connected-profile metadata."""
 from flask import jsonify
-from sqlalchemy import select
+from sqlalchemy import select,func
 from core.database import db
 from core.errors import APIError
 from core.http import pagination
@@ -13,11 +13,15 @@ def detail(user_id):
     user=user_by_id(user_id)
     if not user or user.role!='DOCTOR':raise APIError(404,'doctor_not_found','Doctor not found')
     profile=db().get(DoctorProfile,user.id)
-    return jsonify(user={**serialize_user(user),'doctor':profile_details(profile)})
+    filters=(CareProfile.referred_doctor_id==user.id,CareProfile.deleted_at.is_(None))
+    counts=dict(db().execute(select(CareProfile.module,func.count()).where(*filters).group_by(CareProfile.module)).all())
+    families=db().scalar(select(func.count(func.distinct(CareProfile.owner_id))).where(*filters))
+    return jsonify(user={**serialize_user(user),'doctor':profile_details(profile)},
+        dashboard=dict(connected_profiles=sum(counts.values()),families=families,child=counts.get('child',0),adult=counts.get('adult',0),women=counts.get('women',0)))
 
 def connected_profiles(user_id):
     user=user_by_id(user_id)
     if not user or user.role!='DOCTOR':raise APIError(404,'doctor_not_found','Doctor not found')
     page,size=pagination()
-    rows,total=paginate(select(CareProfile).where(CareProfile.referred_doctor_id==user.id).order_by(CareProfile.created_at,CareProfile.id),page,size)
+    rows,total=paginate(select(CareProfile).where(CareProfile.referred_doctor_id==user.id,CareProfile.deleted_at.is_(None)).order_by(CareProfile.created_at,CareProfile.id),page,size)
     return jsonify(items=[dict(id=p.id,full_name=p.name,module=p.module,owner_id=p.owner_id,date_of_birth=p.dob.isoformat()) for p in rows],total=total,page=page,per_page=size)
