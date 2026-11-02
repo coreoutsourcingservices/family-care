@@ -1,0 +1,8 @@
+Hello {{ full_name }},
+
+Your FamilyCare account review is complete. Your request was not approved.
+Reason: {{ reason }}
+
+Contact your care administrator if you need help with this decision.
+
+FamilyCare

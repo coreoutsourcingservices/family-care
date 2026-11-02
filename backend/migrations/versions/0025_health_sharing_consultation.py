@@ -2,8 +2,8 @@
 from alembic import op
 from sqlalchemy import Column, DateTime, inspect
 from core.models import AdultTabGrant, HealthAccessEvent, DoctorConsultation, DoctorReview
-revision='0024_health_sharing_consultation'
-down_revision='0023_merge_notes_women'
+revision='0025_health_sharing_consultation'
+down_revision='0024_profile_planner'
 branch_labels=None
 depends_on=None
 

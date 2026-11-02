@@ -1968,3 +1968,22 @@
     transition: none;
   }
 }
+
+/* Separate approval queues and account dashboards. */
+.sa-approval-group>.sa-nav-item{width:100%;border:0;font:inherit;text-align:left;cursor:pointer;background:transparent}
+.sa-approval-group>.sa-nav-item.active{background:#e7f5ef;color:#008b70}
+.sa-approval-chevron{transition:transform .18s;flex-shrink:0}.sa-approval-chevron.expanded{transform:rotate(180deg)}
+.sa-approval-submenu{margin:5px 0 10px 32px;padding-left:15px;border-left:2px solid #dcefe7;display:grid;gap:4px}
+.sa-approval-submenu a{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:9px;text-decoration:none;color:#536f82;font-size:13px}
+.sa-approval-submenu a span{flex:1}.sa-approval-submenu a:hover,.sa-approval-submenu a.active{background:#eaf7f1;color:#008b70}
+.sa-approval-submenu b{border-radius:6px;background:#e0eee9;color:#007f63;padding:2px 6px;font-size:11px}
+.approval-kind-tabs{display:flex;gap:8px;margin:0 0 22px}.approval-kind-tabs a{border:1px solid #dce8e5;border-radius:9px;padding:11px 22px;color:#536b7f;text-decoration:none;background:white;font-weight:600}
+.approval-kind-tabs a.active{background:#008c71;color:white;border-color:#008c71}.approval-info{background:#edf7f4;border:1px solid #d8ece5;padding:14px 18px;border-radius:10px;color:#416d60;font-size:13px;line-height:1.6;margin:0 0 20px}
+.approval-dashboard-link{display:block;color:#008b70;font-size:12px;margin-top:10px;text-decoration:none}
+.approval-review-dialog{border:1px solid #deebe5;border-radius:18px;padding:30px;margin:auto;max-height:90dvh;overflow:auto;width:min(700px,calc(100vw - 30px));max-width:700px;color:#173a4c}
+.approval-review-dialog:not([open]){display:none}.approval-review-dialog::backdrop{background:#183c426b;backdrop-filter:blur(3px)}
+.approval-review-details{margin:20px 0}.approval-review-dialog textarea{display:block;width:100%;min-height:100px;margin:9px 0}
+.approval-decision{display:flex;gap:10px;margin:24px 0}.approval-decision button{display:flex;gap:8px;align-items:center;border:1px solid #dfe8e5;border-radius:9px;background:#fff;padding:11px 18px;color:#567565;cursor:pointer}
+.approval-decision button.active{background:#e5f7ed;color:#087947;border-color:#82c8a1}.approval-decision button.active.reject{background:#fff0f1;color:#bb3b4c;border-color:#eea6af}
+.directory-dashboard-row{cursor:pointer}.directory-dashboard-row:hover{background:#f2faf7}
+@media(max-width:600px){.approval-review-dialog{padding:24px 18px}.approval-kind-tabs a{flex:1;text-align:center}.sa-approval-submenu{margin-left:28px}}

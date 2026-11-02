@@ -47,12 +47,17 @@ def listing(role, page, per_page, status=None, pending=False):
 
 
 def review(actor, identifier, role, approve, reason=None):
-    if (role == 'ADMIN' and actor.role != 'SUPERADMIN') or (role == 'DOCTOR' and actor.role != 'ADMIN'):
+    allowed={'ADMIN':('SUPERADMIN',),'DOCTOR':('ADMIN','SUPERADMIN'),'PATIENT':('SUPERADMIN',)}
+    if actor.role not in allowed.get(role,()):
         raise APIError(403, 'forbidden', 'This role cannot review the requested account')
     user = user_by_id(identifier, lock=True)
     if not user or user.role != role:
         raise APIError(404, 'not_found', 'Applicant not found')
     application = db().scalar(select(ApprovalRequest).where(ApprovalRequest.applicant_id == user.id).with_for_update())
+    if role=='PATIENT' and application is None and user.approval_status=='PENDING_APPROVAL' and user.email_verified:
+        application=ApprovalRequest(applicant_id=user.id,applicant_role='PATIENT',status='PENDING')
+        db().add(application)
+        db().flush()
     if not application or application.status != 'PENDING' or user.approval_status != 'PENDING_APPROVAL':
         raise APIError(409, 'invalid_state', 'Applicant is not pending approval')
     if not user.email_verified:

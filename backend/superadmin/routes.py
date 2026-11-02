@@ -19,6 +19,10 @@ route(bp, '/admins/<user_id>/suspend', c.suspend, 'POST', roles=('SUPERADMIN',))
 route(bp, '/admins/<user_id>/reactivate', c.reactivate, 'POST', roles=('SUPERADMIN',))
 route(bp, '/doctors', c.doctors, roles=('SUPERADMIN',))
 route(bp, '/patients', c.patients, roles=('SUPERADMIN',))
+from services import superadmin_approvals
+route(bp,'/approvals/<kind>',superadmin_approvals.queue,roles=('SUPERADMIN',))
+route(bp,'/approvals/<kind>/<user_id>/approve',superadmin_approvals.approve_applicant,'POST',roles=('SUPERADMIN',))
+route(bp,'/approvals/<kind>/<user_id>/reject',superadmin_approvals.reject_applicant,'POST',roles=('SUPERADMIN',),schema='Rejection')
 from services import patient_directory
 route(bp, '/patients/<user_id>', patient_directory.account_detail, roles=('SUPERADMIN',))
 route(bp, '/patients/<user_id>/profiles', patient_directory.members, roles=('SUPERADMIN',))

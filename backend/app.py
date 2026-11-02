@@ -30,6 +30,8 @@ def create_app(overrides=None):
     from doctor.child_care import bp as doctor_child_care
     from services.notifications import bp as notifications
     from services.family_invitations import bp as family_invitations
+    from services.profile_planner import bp as planner
+    app.register_blueprint(planner)
     from services.women_workspace import bp as women_workspace
     from services.adult_workspace import bp as adult_workspace
     from services.consultation_directory import bp as consultation_directory

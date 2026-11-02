@@ -34,6 +34,8 @@ def count(user_id):
     return db().scalar(select(func.count()).select_from(AppNotification).where(AppNotification.user_id==user_id,AppNotification.read_at.is_(None)))
 
 def inbox():
+    from services.profile_planner import scan_tasks
+    if g.user.role=='PATIENT':scan_tasks(g.user.id)
     page,size=pagination()
     rows,total=paginate(select(AppNotification).where(AppNotification.user_id==g.user.id).order_by(AppNotification.id.desc()),page,size)
     return jsonify(items=[serialize(row) for row in rows],total=total,unread_count=count(g.user.id),page=page,per_page=size)
@@ -85,6 +87,8 @@ route(bp,'/read-all',read_all,'POST',roles=ROLES)
 
 def scan_due():
     """Generic notices only; no measurements, medicine names or patient names in payloads."""
+    from services.profile_planner import scan_tasks
+    scan_tasks()
     from datetime import timedelta, date
     from core.models import CareProfile, ChildPreferences, ChildRecord
     from patient.child_routes import today
