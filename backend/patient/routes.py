@@ -14,6 +14,11 @@ route(bp, '/connect-doctor', c.connect_doctor, 'POST', roles=('PATIENT',), schem
 route(bp, '/doctor', c.connected_doctor, roles=('PATIENT',))
 
 from patient import care_controller as care
+from services import customer_notes
+route(bp,'/notes',customer_notes.list_notes,roles=('PATIENT',))
+route(bp,'/notes',customer_notes.create_note,'POST',roles=('PATIENT',),schema=customer_notes.NoteInput)
+route(bp,'/notes/<uuid:note_id>',customer_notes.update_note,'PUT',roles=('PATIENT',),schema=customer_notes.NoteInput)
+route(bp,'/notes/<uuid:note_id>',customer_notes.delete_note,'DELETE',roles=('PATIENT',))
 def family_access(profile_id):
     from flask import g, jsonify, request
     from sqlalchemy import select

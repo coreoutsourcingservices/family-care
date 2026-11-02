@@ -1,3 +1,4 @@
+import MemberSetup from './MemberSetup';
 import FamilyInvitations from './FamilyInvitations';
 import { ImportedReportRecords } from './ReportRecordReview';
 import ProfileDoctorConnection from './ProfileDoctorConnection';
@@ -52,6 +53,7 @@ export default function MemberProfiles({accountId,module}:{accountId:string;modu
     if((normalized.guardianContact&&!/^\+?[1-9][0-9]{7,14}$/.test(normalized.guardianContact))||normalized.contacts.some(c=>!c.name||!/^\+?[1-9][0-9]{7,14}$/.test(c.mobile))){setError('Enter valid contact names and mobile numbers.');return;}
     pending.current=true;setSaving(true);setError('');try{const saved=await saveProfile(normalized);setProfiles(old=>[...old.filter(p=>p.id!==saved.id),saved]);setActive(saved);setDraft(undefined);setNotice('Saved successfully.');if(module==='child'){sessionStorage.setItem('familycare.selectedChild.'+accountId,saved.id);navigate('/customer/child/dashboard');}else if(module==='women'){sessionStorage.setItem('familycare.selectedWoman.'+accountId,saved.id);navigate('/customer/women/dashboard');}else if(module==='adult'){sessionStorage.setItem('familycare.selectedAdult.'+accountId,saved.id);navigate('/customer/adult/dashboard',{replace:true,state:null});}}
     catch(e){if(e instanceof PartialSaveError){setActive(e.profile);setDraft({...e.profile,reports:draft.reports.filter(r=>r.blob&&!e.profile.reports.some(saved=>saved.name===r.name))});setError('Profile saved. A report could not be uploaded: '+e.message);}else setError(e instanceof Error?e.message:'Could not save profile.');}finally{pending.current=false;setSaving(false);}}
+  if(!loading&&isNew&&draft&&(draft.profileType==='self'||module==='child'))return <MemberSetup key={draft.id} initial={draft}/>;
   if((module==='adult'||module==='women')&&isNew&&draft?.profileType==='member')return <FamilyInvitations module={module} showSelf={()=>void chooseSelf()}/>;
   return <div className={'care-workspace '+module}><section className="care-form-panel"><Link className="care-back" to="/customer/dashboard"><ArrowLeft size={20}/>Back</Link>
     <div className="care-form-title"><span><Icon size={35}/></span><div><h1>{draft?isNew?'Add your '+titles[module]:'Add health reports':module==='child'?'Child care profiles':module==='women'?"Women\u2019s health profiles":'Adult health profiles'}</h1><p>{module==='child'?"For children aged 0-12. Add their details and guardian contact.":'Keep personal details, emergency contacts and reports together.'}</p></div></div>

@@ -91,13 +91,7 @@ or **Manage family & doctor access** on any diary page.
 Apply `backend/venv/Scripts/python.exe -m alembic upgrade head` before restarting.
 Migration `0021_women_tab_access` creates diary and consent tables without replacing data.
 
-Local database note (2026-11-02): the connected database already records
-`0021_customer_notes`, whose source migration is absent from this checkout and remote
-main. Normal Alembic upgrade therefore cannot resolve that revision. The two Women
-tables were created additively using their exact migration metadata; existing data
-and `alembic_version` were preserved. Restore that missing migration and reconcile
-the migration branches before the next deployment. Do not stamp/reset the database.
-
+Migration integration (2026-11-02): remote main restored `0021_customer_notes`.
+Migration `0023_merge_notes_women` joins that revision and `0022_women_no_expiry`.
+Run `alembic upgrade head`; existing notes, diary data and consent are preserved.
 No-expiry grants use explicit `"expires_at": null`. Missing expiry fields remain invalid.
-Migration `0022_women_no_expiry` allows nullable expiry; local schema was altered
-additively while preserving the existing missing-revision migration history.

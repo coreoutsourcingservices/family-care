@@ -1,0 +1,2 @@
+.customer-floating-back-anchor{display:none}
+@media(max-width:760px){.customer-floating-back-anchor{display:block;position:sticky;top:78px;z-index:45;height:0;width:0;overflow:visible}.customer-floating-back{position:absolute;top:0;left:12px;display:grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid #e4d6fa;border-radius:50%;background:#ffffffee;box-shadow:0 4px 15px #70539824;color:#9453d7;cursor:pointer;backdrop-filter:blur(8px)}.customer-floating-back:focus-visible{outline:3px solid #bda0f1;outline-offset:3px}}

@@ -70,6 +70,16 @@ class FamilyInvitation(Base):
     created_at = C(DT, default=now, nullable=False)
 
 
+class CustomerNote(Base):
+    __tablename__ = 'customer_notes'
+    id = primary_id()
+    owner_id = user_fk(nullable=False, index=True)
+    title = C(S(160), nullable=False)
+    body = C(Text, nullable=False)
+    created_at = C(DT, default=now, nullable=False)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+
 class PatientProfile(Base):
     __tablename__ = 'patient_profiles'
     user_id = user_fk(primary_key=True)
@@ -214,6 +224,7 @@ class CareProfile(Base):
     module = C(S(10), nullable=False)
     name = C(S(120), nullable=False)
     dob = C(Date, nullable=False)
+    gender = C(S(16), nullable=False, default='', server_default='')
     guardian_contact = C(S(20), nullable=False, default='')
     guardian_name = C(S(120), nullable=False, default='', server_default='')
     deleted_at = C(DT)

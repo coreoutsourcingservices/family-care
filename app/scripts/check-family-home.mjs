@@ -9,14 +9,19 @@ await page.route('**/api/v1/**',async route=>{const path=new URL(route.request()
  if(path.endsWith('/patients/profiles'))return route.fulfill({json:{items:[{id:'private-member',profile_type:'member',full_name:'Example Member',module:'women',family_access:false,created_at:'2026-01-01'},{id:'child-profile',profile_type:'member',full_name:'Example Child',module:'child',family_access:true,created_at:'2026-01-01'}],total:2}});
  return route.fulfill({json:{items:[],total:0}});
 });
-for(const width of [360,440,1366,1920]){
+for(const width of [320,360,440,1366,1920]){
  await page.setViewportSize({width,height:900});await page.goto('http://127.0.0.1:5173/customer/dashboard');await page.getByRole('heading',{name:'Family members',exact:true}).waitFor();await page.getByText('Example Member',{exact:true}).waitFor();
  assert.equal(await page.locator('.fh-member.women a').count(),0);
- assert.equal(await page.locator('.fh-member.child a').count(),1);
+ assert.equal(await page.locator('button.fh-member.child').isEnabled(),true);
+ assert.equal(await page.getByText('Open profile',{exact:true}).count(),0);
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`Overflow at ${width}`);
+ assert.equal(await page.locator('.fh-member-list').evaluate(el=>el.scrollWidth>el.clientWidth),false);
+ if(width<=760)await page.getByRole('button',{name:'Go back',exact:true}).waitFor();
  await page.getByRole('button',{name:'Add account',exact:true}).first().click();
  assert.equal(await page.getByRole('dialog').getByRole('link',{name:/Women's Health/}).getAttribute('href'),'/customer/women?add=1&self=1');
  assert.equal(await page.getByRole('dialog').getByRole('link').count(),2);
+ const box=await page.getByRole('dialog').boundingBox();assert.ok(box.width<=461);
+ await page.screenshot({path:`.preview/self-chooser-compact-${width}.png`});
  assert.equal(await page.getByRole('dialog').getByText('Child Care',{exact:true}).count(),0);
  await page.getByRole('button',{name:'Close',exact:true}).click();
  await page.screenshot({path:`.preview/family-home-${width}.png`,fullPage:true});
@@ -27,7 +32,18 @@ assert.equal(await page.getByRole('dialog').getByRole('link',{name:/Child Care/}
 await page.getByRole('button',{name:'Close',exact:true}).click();
 await page.getByRole('button',{name:'Add account',exact:true}).first().click();
 await page.getByRole('dialog').getByRole('link',{name:/Women's Health/}).click();
-await page.getByRole('heading',{name:/Add your .*health profile/}).waitFor();
+await page.getByRole('heading',{name:/Self account/}).waitFor();
+assert.equal(new URL(page.url()).pathname,'/customer/dashboard');
+assert.equal(await page.locator('.care-workspace').count(),0);
+assert.equal(await page.locator('.ms-overlay').count(),1);
 assert.equal(await page.locator('input[name="memberName"]').inputValue(),user.full_name);
-assert.equal(await page.locator('input[name="profileKind"]').first().isChecked(),true);
+assert.equal(await page.getByLabel('Gender',{exact:true}).count(),0);
+await page.screenshot({path:'.preview/self-form-dashboard-overlay.png'});
+await page.getByRole('link',{name:'Close setup'}).click();
+await page.locator('.fh-add').click();
+await page.getByRole('dialog').getByRole('link',{name:/Women's Health/}).click();
+await page.getByRole('heading',{name:/Invite to/}).waitFor();
+assert.equal(new URL(page.url()).pathname,'/customer/dashboard');
+assert.equal(await page.locator('.fh-invite-overlay').count(),1);
+await page.screenshot({path:'.preview/member-invitation-dashboard-overlay.png'});
 assert.deepEqual(errors,[]);await browser.close();console.log('Family dashboard: private members, child access, self setup and responsive widths passed.');

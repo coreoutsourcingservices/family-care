@@ -58,7 +58,7 @@ def profile_data(profile):
     return dict(access_permissions=serialize(current_grant(profile)),id=profile.id, profile_type=profile.profile_type, module=profile.module,
                 member_email=membership.email if membership else '',relationship=membership.relationship if membership else None,
                 linked_member=bool(membership),
-                full_name=profile.name, date_of_birth=profile.dob.isoformat(),
+                full_name=profile.name, date_of_birth=profile.dob.isoformat(), gender=profile.gender,
                 parent_profile_id=profile.parent_profile_id, guardian_contact=profile.guardian_contact, guardian_name=profile.guardian_name,
                 emergency_contacts=profile.emergency_contacts,
                 doctor=care_doctor_details(doctor) if doctor else None,
@@ -75,7 +75,7 @@ def create_profile(user, data):
         raise APIError(422, 'invalid_parent', 'Parent must be an older adult/women profile in your account')
     doctor, _ = resolve_referral(data.referral_id, lock=True) if data.referral_id else (None, None)
     profile = CareProfile(id=uid(), owner_id=user.id, profile_type=data.profile_type,
-                          module=data.module, name=data.full_name, dob=data.date_of_birth,
+                          module=data.module, name=data.full_name, dob=data.date_of_birth,gender=data.gender,
                           parent_profile_id=parent.id if parent else None,
                           guardian_contact=data.guardian_contact or ((user.phone_number or '') if data.module=='child' else ''),
                           guardian_name=data.guardian_name or (user.full_name if data.module=='child' else ''),
