@@ -66,6 +66,8 @@ def test_family_member_join_login_shared_profile_and_own_reset(app,client,mails,
     assert login.json['user']['is_family_member'] is True
     assert login.json['redirect_url'].startswith('/customer/'+module+'/dashboard')
     member=bearer(login)
+    assert client.get('/api/v1/patients/notes',headers=member).status_code==403
+    assert client.post('/api/v1/patients/notes',headers=member,json={'title':'Blocked','body':'Member cannot create main-account notes'}).status_code==403
     assert client.post('/api/v1/patients/family-invitations',headers=member,json={'full_name':'Blocked','email':'blocked@example.com','module':'adult'}).status_code==403
     assert client.post('/api/v1/patients/profiles',headers=member,json={'full_name':'Blocked','module':'child','profile_type':'member','date_of_birth':'2020-01-01'}).status_code==403
     listing=client.get('/api/v1/patients/profiles',headers=member).json

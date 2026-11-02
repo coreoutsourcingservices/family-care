@@ -49,6 +49,7 @@ def test_app():
                 importlib.import_module('migrations.versions.0018_family_invitations').upgrade()
                 importlib.import_module('migrations.versions.0019_child_growth_nutrition').upgrade()
                 importlib.import_module('migrations.versions.0020_profile_doctor_grants').upgrade()
+                importlib.import_module('migrations.versions.0021_customer_notes').upgrade()
     else:
         Base.metadata.create_all(engine)
     yield app

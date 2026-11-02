@@ -1,0 +1,81 @@
+/* A mobile dashboard must use the viewport, even if an outer shell expands. */
+@media (max-width: 760px) {
+  html:has(.fh),
+  body:has(.fh),
+  #root:has(.fh) {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
+  }
+
+  #root:has(.fh),
+  #root .auth-site-shell:has(.fh),
+  #root .auth-site-shell:has(.fh) > #main-content,
+  #root #main-content > .fh {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: min(100%, 100dvw);
+    max-inline-size: min(100%, 100dvw);
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+
+  #root .fh > .fh-header,
+  #root .fh > .fh-main {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: min(100%, 100dvw);
+    max-inline-size: min(100%, 100dvw);
+    margin-inline: 0;
+  }
+
+  #root .fh > .fh-main {
+    padding: 12px 12px 90px;
+  }
+
+  #root .fh-main .fh-top,
+  #root .fh-main .fh-columns,
+  #root .fh-main .fh-columns > div,
+  #root .fh-main .fh-right {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #root .fh-main :is(.fh-card, .fh-quick, .fh-welcome) {
+    box-sizing: border-box;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #root .fh-main :is(.fh-quick > div, .fh-overview, .fh-chart-grid, .fh-stats) {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  #root .fh-main :is(p, h1, h2, h3, strong, small, button, a) {
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  #root .fh .fh-header .brand {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: calc(100% - 90px);
+  }
+
+  #root .fh .fh-header .fh-account {
+    flex: 0 0 37px;
+    width: 37px;
+  }
+
+  #root .fh .fh-header .fh-account > span:last-child {
+    display: none;
+  }
+}

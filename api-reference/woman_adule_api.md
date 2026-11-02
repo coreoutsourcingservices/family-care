@@ -336,3 +336,7 @@ Basic profile identity remains visible while any permission is active. Permissio
 Existing legacy referrals retain their previous access until replaced with a scoped permission. New grants can be issued for adult/women profiles only; Child Care keeps its existing flow. Device-local women's diary entries are not automatically synced or exposed by granting permission. An accepted member cannot create other profiles or invite more members; their login and protected customer navigation open only their linked adult/women profile.
 
 Install migration `0020_profile_doctor_grants` using the backend Alembic upgrade command. Tests: `tests/test_profile_doctor_access.py` and `tests/test_family_invitations.py`. SMTP delivery is mocked in these tests.
+
+## Main account notes and setup
+
+See [CUSTOMER_NOTES.md](CUSTOMER_NOTES.md) for main-customer-only database-backed notes, CRUD endpoints and migration `0021_customer_notes`. Self setup has Basic info / Health info / Preferences steps. Child setup has Basic info / Details / Confirm and a saved-profile confirmation screen. Gender is stored explicitly; existing profiles retain an empty value until recorded. Adult/women invitations preserve the email-link and family OTP approval flow.

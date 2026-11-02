@@ -12,6 +12,7 @@ class EmergencyContact(Schema):
 
 
 class CareProfileCreate(Schema):
+    gender: Literal['', 'Male', 'Female', 'Other'] = ''
     profile_type: Literal['self', 'member']
     module: Literal['child', 'adult', 'women']
     full_name: str = Field(min_length=1, max_length=120)
