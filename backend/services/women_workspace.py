@@ -11,6 +11,7 @@ from core.models import CareProfile, FamilyInvitation, User, WomenAccessGrant, W
 from core.routing import route
 from core.schemas import Schema, parse
 from services.repository import audit
+from services.health_access import GrantInput, event, history
 
 bp = Blueprint('women_workspace', __name__, url_prefix='/api/v1/women')
 TABS = dict(health='My health', cycle='Period & cycle', pcos='PCOS & hormonal',
@@ -39,6 +40,7 @@ def permissions(profile):
         return {tab: 'edit' for tab in TABS}
     grant = db().scalar(select(WomenAccessGrant).where(WomenAccessGrant.profile_id == profile.id,
         WomenAccessGrant.recipient_id == g.user.id, WomenAccessGrant.revoked_at.is_(None),
+        or_(WomenAccessGrant.starts_at.is_(None),WomenAccessGrant.starts_at<=now()),
         or_(WomenAccessGrant.expires_at.is_(None), WomenAccessGrant.expires_at > now())))
     if not grant:
         raise APIError(403, 'women_access_denied', 'Permission is missing, expired or revoked')
@@ -78,27 +80,15 @@ def recipients(profile):
 
 def grant_data(row):
     user = db().get(User, row.recipient_id)
-    return dict(id=row.id, recipient_id=row.recipient_id, name=user.full_name, role=user.role,
-        permissions=row.permissions, expires_at=row.expires_at.isoformat()+'Z' if row.expires_at else None,
-        active=not row.revoked_at and (row.expires_at is None or row.expires_at > now()))
+    return dict(revoked_at=row.revoked_at.isoformat()+'Z' if row.revoked_at else None,id=row.id, recipient_id=row.recipient_id, name=user.full_name, role=user.role,
+        permissions=row.permissions, starts_at=row.starts_at.isoformat()+'Z' if row.starts_at else None, expires_at=row.expires_at.isoformat()+'Z' if row.expires_at else None,
+        active=not row.revoked_at and (row.starts_at is None or row.starts_at<=now()) and (row.expires_at is None or row.expires_at > now()))
 
 
-class WomenGrantInput(Schema):
-    recipient_id: UUID
-    permissions: dict[str, Literal['view', 'edit']] = Field(min_length=1, max_length=10)
-    expires_at: datetime | None
-
+class WomenGrantInput(GrantInput):
     @model_validator(mode='after')
-    def validate_grant(self):
-        if set(self.permissions) - set(TABS):
-            raise ValueError('Choose valid Women tabs')
-        if self.expires_at is None:
-            return self
-        if self.expires_at.tzinfo is None:
-            raise ValueError('Expiry must include a timezone')
-        self.expires_at = self.expires_at.astimezone(timezone.utc).replace(tzinfo=None)
-        if self.expires_at <= now():
-            raise ValueError('Expiry must be in the future')
+    def validate_tabs(self):
+        if set(self.permissions)-set(TABS):raise ValueError('Choose valid Women tabs')
         return self
 
 
@@ -121,8 +111,10 @@ def save_sharing(profile_id):
         db().add(grant)
     grant.granted_by = g.user.id
     grant.permissions = value.permissions
+    grant.starts_at = value.starts_at
     grant.expires_at = value.expires_at
     grant.revoked_at = None
+    event(profile,grant,'granted')
     audit('women_tab_access_granted', recipient_id, g.user.id)
     db().commit()
     return jsonify(grant=grant_data(grant))
@@ -135,6 +127,7 @@ def revoke_sharing(profile_id, grant_id):
     if not grant:
         raise APIError(404, 'grant_not_found', 'Permission not found')
     grant.revoked_at = now()
+    event(profile,grant,'revoked')
     audit('women_tab_access_revoked', grant.recipient_id, g.user.id)
     db().commit()
     return jsonify(message='Access revoked')
@@ -293,3 +286,7 @@ route(bp, '/profiles/<uuid:profile_id>/reports', reports, roles=ROLES)
 route(bp, '/profiles/<uuid:profile_id>/reports', upload, 'POST', roles=ROLES)
 route(bp, '/profiles/<uuid:profile_id>/reports/<uuid:report_id>/download', download, roles=ROLES)
 route(bp, '/profiles/<uuid:profile_id>/reports/<uuid:report_id>', remove_report, 'DELETE', roles=ROLES)
+
+
+def access_history(profile_id):return history(get_profile(profile_id,manage=True)[0])
+route(bp,'/profiles/<uuid:profile_id>/history',access_history,roles=('PATIENT',))

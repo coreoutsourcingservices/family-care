@@ -31,6 +31,12 @@ def accessible_profile(user, profile_id, lock=False):
             if user.id not in {recipient.id for recipient in recipients(women_profile)}:
                 raise APIError(404, 'profile_not_found', 'Care profile not found')
             raise APIError(403, 'women_scoped_workspace_required', 'Open the shared Women workspace to use your tab permissions')
+    if women_profile and women_profile.module=='adult':
+        from core.models import AdultTabGrant
+        from services.women_workspace import is_primary
+        if getattr(g,'adult_authorized',None)==profile_id:return women_profile
+        if not is_primary(user,women_profile) and db().scalar(select(AdultTabGrant.id).where(AdultTabGrant.profile_id==profile_id).limit(1)):
+            raise APIError(403,'adult_scoped_workspace_required','Open the shared Adult workspace to use tab permissions')
     query = select(CareProfile).where(CareProfile.id == profile_id, CareProfile.deleted_at.is_(None))
     if user.role == 'PATIENT':
         query = query.where(patient_profile_access(user))

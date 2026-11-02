@@ -1,0 +1,19 @@
+/* Women's Health: white surfaces, soft pink accents. */
+.hs-page.hs-women,.dc-page.hs-women{--hs-accent:#ec3f96;--hs-soft:#fff0f7;--hs-border:#f7d8e7}
+.hs-women .hs-hero{background:radial-gradient(at right,#ffe3f0,transparent 65%)}
+.hs-women .hs-nav .active,.hs-women .hs-primary{background:linear-gradient(110deg,#f052a4,#e87ab5)}
+.hs-women .hs-section{border-color:#f7dce9;background:linear-gradient(140deg,#fff,#fffafd)}
+.hs-women .hs-tab.selected{border-color:#f4bbd7;background:#fff0f7}
+.hs-women .hs-hero-art{color:#efb7d2}
+.hs-women .hs-hero h1,.hs-women .hs-section h2,.hs-women .hs-section h3{color:#5a2844}
+.wh-app{background:linear-gradient(135deg,#fffafd,#fff0f6);color:#54364a}
+.wh-app .ch-sidebar{background:#fffafd;border-color:#f8e1ec}
+.wh-app .ch-sidebar nav a{color:#8c617a}
+.wh-app .ch-sidebar nav a.active{background:linear-gradient(100deg,#ffe8f3,#fff3f9);color:#e23f91;border-color:#f7bdd9}
+.wh-app .ch-topbar{background:#ffffffed;border-color:#f8e0ec}
+.wh-app .ch-panel,.wh-app .wh-ref-hero,.wh-app .wh-ref-stats>a{background:#fff;border-color:#f5deea}
+.wh-app .ch-button{background:linear-gradient(110deg,#ed5ba4,#ed80b8);border-color:#f4bad6;color:#fff}
+.wh-app .ch-tabs a.active,.wh-app .ch-tabs button.active{background:#ffe9f4;color:#db3e8a;border-color:#f6bdd8}
+.wh-shared-workspace.wh-app{background:linear-gradient(135deg,#fff,#fff1f7)}
+.wh-shared-workspace.wh-app nav button{background:#fff5fa;border-color:#f3cfe0;color:#b45586}
+.wh-shared-workspace.wh-app nav button[aria-pressed=true]{background:#ffe3f1;color:#dd378a}

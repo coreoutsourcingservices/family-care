@@ -31,8 +31,10 @@ def create_app(overrides=None):
     from services.notifications import bp as notifications
     from services.family_invitations import bp as family_invitations
     from services.women_workspace import bp as women_workspace
+    from services.adult_workspace import bp as adult_workspace
+    from services.consultation_directory import bp as consultation_directory
     from services.growth_nutrition import bp as growth_nutrition
-    for blueprint in (auth, doctor, patient, admin, superadmin, children, vaccination, adults, doctor_child_care, notifications, family_invitations, growth_nutrition, women_workspace):
+    for blueprint in (auth, doctor, patient, admin, superadmin, children, vaccination, adults, doctor_child_care, notifications, family_invitations, growth_nutrition, women_workspace, adult_workspace, consultation_directory):
         app.register_blueprint(blueprint)
 
     @app.before_request

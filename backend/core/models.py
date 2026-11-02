@@ -374,6 +374,7 @@ class WomenAccessGrant(Base):
     recipient_id = user_fk(nullable=False)
     granted_by = user_fk(nullable=False)
     permissions = C(JSON, nullable=False)
+    starts_at = C(DT)
     expires_at = C(DT)
     revoked_at = C(DT)
     created_at = C(DT, default=now, nullable=False)
@@ -428,3 +429,59 @@ class ReportText(Base):
 
 # Registered here so migrations and isolated test metadata include the doctor inbox.
 from doctor.notification_models import DoctorNotification, DoctorPushSubscription, DoctorPushDelivery
+
+
+class AdultTabGrant(Base):
+    __tablename__ = 'adult_tab_grants'
+    __table_args__ = (UQ('profile_id','recipient_id'),)
+    id = primary_id()
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id',ondelete='CASCADE'),nullable=False,index=True)
+    recipient_id = user_fk(nullable=False)
+    granted_by = user_fk(nullable=False)
+    permissions = C(JSON,nullable=False)
+    starts_at = C(DT)
+    expires_at = C(DT)
+    revoked_at = C(DT)
+    created_at = C(DT,default=now,nullable=False)
+    updated_at = C(DT,default=now,onupdate=now,nullable=False)
+
+
+class HealthAccessEvent(Base):
+    __tablename__ = 'health_access_events'
+    id = primary_id()
+    profile_id = C(Uuid(as_uuid=False),FK('familycare.care_profiles.id',ondelete='CASCADE'),nullable=False,index=True)
+    actor_id = user_fk(nullable=False)
+    recipient_id = user_fk(nullable=False)
+    action = C(S(20),nullable=False)
+    permissions = C(JSON,nullable=False)
+    starts_at = C(DT)
+    expires_at = C(DT)
+    created_at = C(DT,default=now,nullable=False)
+
+
+class DoctorConsultation(Base):
+    __tablename__ = 'doctor_consultations'
+    __table_args__ = (CK("status IN ('REQUESTED','CONFIRMED','DECLINED','COMPLETED','CANCELLED')",name='status'),)
+    id = primary_id()
+    profile_id = C(Uuid(as_uuid=False),FK('familycare.care_profiles.id',ondelete='CASCADE'),nullable=False,index=True)
+    patient_id = user_fk(nullable=False)
+    doctor_id = user_fk(nullable=False,index=True)
+    concern = C(S(160),nullable=False)
+    notes = C(Text,nullable=False,default='')
+    requested_at = C(DT,nullable=False)
+    status = C(S(20),nullable=False,default='REQUESTED')
+    created_at = C(DT,default=now,nullable=False)
+    updated_at = C(DT,default=now,onupdate=now,nullable=False)
+
+
+class DoctorReview(Base):
+    __tablename__ = 'doctor_reviews'
+    __table_args__ = (UQ('doctor_id','patient_id'),CK('rating >= 1 AND rating <= 5',name='rating'))
+    id = primary_id()
+    doctor_id = user_fk(nullable=False,index=True)
+    patient_id = user_fk(nullable=False)
+    consultation_id = C(Uuid(as_uuid=False),FK('familycare.doctor_consultations.id'),nullable=False)
+    rating = C(I,nullable=False)
+    comment = C(S(1000),nullable=False,default='')
+    created_at = C(DT,default=now,nullable=False)
+    updated_at = C(DT,default=now,onupdate=now,nullable=False)
