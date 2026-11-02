@@ -1,5 +1,5 @@
 'use client';
-import {createContext,useCallback,useContext,useEffect,useState,type ReactNode} from 'react';
+import {createContext,useCallback,useContext,useEffect,useRef,useState,type ReactNode} from 'react';
 import {api} from '@/lib/api';
 export type NetworkPerson={id:string;public_id:string;full_name:string;email:string;role:string;approval_status:string;account_status:string;created_at:string;can_review?:boolean};
 export type DashboardData={as_of:string;approved_doctors?:number;metrics:Record<'administrators'|'doctors'|'patients'|'children',{total:number;this_month:number}>;
@@ -10,8 +10,10 @@ export type DashboardData={as_of:string;approved_doctors?:number;metrics:Record<
 const Context=createContext<{data?:DashboardData;loading:boolean;error:string;refresh:()=>Promise<void>}>({loading:true,error:'',refresh:async()=>{}});
 export function SuperadminDataProvider({children,scope='superadmin'}:{children:ReactNode;scope?:'admin'|'superadmin'}){
  const [data,setData]=useState<DashboardData>(),[loading,setLoading]=useState(true),[error,setError]=useState('');
- const refresh=useCallback(async()=>{setLoading(true);setError('');try{const result=await api<DashboardData>(scope+'/dashboard');if(!result.metrics)throw Error('Dashboard update is starting. Please refresh shortly.');setData(result);}catch(e){setError((e as Error).message);}finally{setLoading(false);}},[scope]);
+ const lastUpdate=useRef(0);
+ const refresh=useCallback(async()=>{setLoading(true);setError('');try{const result=await api<DashboardData>(scope+'/dashboard');if(!result.metrics)throw Error('Dashboard update is starting. Please refresh shortly.');setData(result);lastUpdate.current=Date.now();}catch(e){setError((e as Error).message);}finally{setLoading(false);}},[scope]);
  useEffect(()=>{void refresh();},[refresh]);
+ useEffect(()=>{const onFocus=()=>{if(document.visibilityState==='visible'&&navigator.onLine&&Date.now()-lastUpdate.current>60_000)void refresh();};window.addEventListener('focus',onFocus);document.addEventListener('visibilitychange',onFocus);return()=>{window.removeEventListener('focus',onFocus);window.removeEventListener('visibilitychange',onFocus);};},[refresh]);
  return <Context.Provider value={{data,loading,error,refresh}}>{children}</Context.Provider>;
 }
 export const useSuperadminData=()=>useContext(Context);

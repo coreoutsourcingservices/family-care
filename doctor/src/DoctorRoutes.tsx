@@ -7,6 +7,7 @@ import { getDoctorWorkspace } from './onboarding/setupSession';
 const AccountSetup = lazy(() => import('./pages/AccountSetup'));
 const ProfileDetails = lazy(() => import('./pages/ProfileDetails'));
 const PatientOverview = lazy(() => import('./pages/PatientOverview'));
+const SharedWomenWorkspace = lazy(() => import('../../customer/src/modules/women/SharedWomenWorkspace'));
 const Patients = lazy(() => import('./pages/Patients'));
 const Consultations = lazy(() => import('./pages/Consultations'));
 const ClinicalRecords = lazy(() => import('./pages/ClinicalRecords'));
@@ -32,7 +33,7 @@ export default function DoctorRoutes() {
       <Route element={<DoctorApprovalGate />}>
         <Route path="child-care" element={<ChildCare />} />
         <Route path="vaccination" element={<Vaccination />} />
-        <Route path="patients" element={<Patients />} />
+        <Route path="women/:profileId" element={<SharedWomenWorkspace/>}/><Route path="patients" element={<Patients />} />
         <Route path="patients/:profileId" element={<PatientOverview />} />
         <Route path="consultations" element={<Consultations />} />
         <Route path="clinical-records" element={<ClinicalRecords />} />

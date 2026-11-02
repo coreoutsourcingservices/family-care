@@ -2,9 +2,13 @@
 import asyncio
 import json
 import os
+import socket
+import threading
 from http import HTTPStatus
 from sqlalchemy import select, func
 from websockets.asyncio.server import serve
+from websockets.exceptions import ConnectionClosed
+from core.errors import APIError
 from app import create_app
 from core.database import db
 from core.models import AppNotification
@@ -33,8 +37,13 @@ async def connection(ws):
             if current!=unread:
                 unread=current;await ws.send(json.dumps({'type':'unread_count','unread_count':current}))
         await ws.close(4000,'Reconnect to continue')
-    except Exception:
+    except ConnectionClosed:
+        return
+    except (APIError,ValueError,asyncio.TimeoutError):
         await ws.close(4401,'Sign in or reconnect')
+    except Exception as error:
+        app.logger.warning('Notification connection interrupted: %s',type(error).__name__)
+        await ws.close(1011,'Temporarily unavailable; reconnect')
 
 async def handshake(connection,request):
     origin=request.headers.get('Origin')
@@ -50,8 +59,29 @@ async def reminders():
         except Exception:pass  # API diagnostics expose readiness; never log medical payloads.
         await asyncio.sleep(60)
 
-async def main():
-    async with serve(connection,'127.0.0.1',int(os.getenv('NOTIFICATION_PORT','5002')),process_request=handshake,max_size=4096,ping_interval=20,ping_timeout=20):
+async def main(port=None):
+    async with serve(connection,'127.0.0.1',int(port or os.getenv('NOTIFICATION_PORT','5002')),process_request=handshake,max_size=4096,ping_interval=20,ping_timeout=20):
         await reminders()
+
+
+def start_background(flask_app=None,port=None):
+    """Keep the local notification gateway alive with the API process."""
+    global app
+    if flask_app is not None:
+        app=flask_app
+    port=int(port or os.getenv('NOTIFICATION_PORT','5002'))
+    with socket.socket() as probe:
+        try:probe.bind(('127.0.0.1',port))
+        except OSError:
+            print(f'[FamilyCare] Notification port {port} is already in use; keeping the existing service.',flush=True)
+            return None
+    def run():
+        try:asyncio.run(main(port))
+        except Exception as error:
+            app.logger.warning('Notification gateway stopped: %s',type(error).__name__)
+    worker=threading.Thread(target=run,name='familycare-notifications',daemon=True)
+    worker.start()
+    print(f'[FamilyCare] Notification gateway: ws://127.0.0.1:{port}/ws/notifications',flush=True)
+    return worker
 
 if __name__=='__main__':asyncio.run(main())

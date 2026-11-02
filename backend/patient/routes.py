@@ -64,6 +64,11 @@ def disconnect_profile_doctor(profile_id):
     profile=accessible_profile(g.user,str(profile_id),lock=True)
     previous=profile.referred_doctor_id
     profile.referred_doctor_id=None
+    if profile.module=='women' and previous:
+        from core.models import WomenAccessGrant,now
+        from sqlalchemy import select
+        for grant in db().scalars(select(WomenAccessGrant).where(WomenAccessGrant.profile_id==profile.id,WomenAccessGrant.recipient_id==previous)):
+            grant.revoked_at=now()
     audit('care_profile_doctor_disconnected',previous,g.user.id)
     db().commit()
     return jsonify(profile=profile_data(profile),message='Doctor disconnected from this profile')
