@@ -3,7 +3,7 @@ import { ApiError } from '../../../../app/src/lib/authApi';
 import { careApi } from '../../../../app/src/lib/careApi';
 export type WomenRecord={id:string;section:string;date:string;title:string;[key:string]:string};
 export type WomenField={key:string;label:string;type?:string;options?:string[];required?:boolean};
-export const womenPages=[['dashboard','Dashboard'],['health','My health'],['cycle','Period & cycle'],['pcos','PCOS & hormonal'],['pregnancy','Pregnancy care'],['fertility','Fertility & reproductive'],['symptoms','Symptoms & wellness'],['nutrition','Nutrition & lifestyle'],['screening','Screening & preventive'],['records','Medical records'],['consultation','Doctor consultation'],['settings','Settings']] as const;
+export const womenPages=[['dashboard','Dashboard'],['health','My health'],['cycle','Period & cycle'],['pcos','PCOS & hormonal'],['pregnancy','Pregnancy care'],['fertility','Fertility & reproductive'],['symptoms','Symptoms & wellness'],['nutrition','Nutrition & lifestyle'],['screening','Screening & preventive'],['records','Medical records'],['consultation','Doctor consultation'],['settings','Settings'],['planner','Notes & tasks']] as const;
 export const today=()=>new Date().toLocaleDateString('en-CA');
 export type WomenWorkspace={profile:{id:string;name:string;dob:string};owner:boolean;permissions:Record<string,'view'|'edit'>;records:WomenRecord[];access_expires_at:string|null};
 export function useWomenRecords(owner:string,profile:string){

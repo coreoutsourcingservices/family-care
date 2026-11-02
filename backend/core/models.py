@@ -70,6 +70,22 @@ class FamilyInvitation(Base):
     created_at = C(DT, default=now, nullable=False)
 
 
+class ProfilePlanner(Base):
+    __tablename__ = 'profile_planner'
+    id = primary_id()
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), nullable=False, index=True)
+    user_id = user_fk(nullable=False, index=True)
+    kind = C(S(8), nullable=False)
+    title = C(S(160), nullable=False)
+    body = C(Text, nullable=False, default='')
+    due_at = C(DT, index=True)
+    completed_at = C(DT)
+    version = C(I, nullable=False, default=1)
+    deleted_at = C(DT)
+    created_at = C(DT, nullable=False, default=now)
+    updated_at = C(DT, nullable=False, default=now, onupdate=now)
+
+
 class CustomerNote(Base):
     __tablename__ = 'customer_notes'
     id = primary_id()

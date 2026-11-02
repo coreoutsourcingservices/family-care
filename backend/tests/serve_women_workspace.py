@@ -40,6 +40,7 @@ with app.app_context():
     db().flush()
     db().add(FamilyInvitation(owner_id=owner,member_id=member,profile_id=member_profile,token_hash='browser-qa-only',
         email='family@example.com',full_name='QA Family',module='adult',relationship='Partner',accepted_at=now(),expires_at=now()+timedelta(days=1)))
+    db().add(CareProfile(id='66666666-6666-4666-8666-666666666666',owner_id=owner,module='adult',profile_type='member',name='QA Adult',dob=date(1985,1,1),guardian_contact='',guardian_name='',emergency_contacts=[]))
     db().add(CareReport(profile_id=profile,name='QA-report.pdf',content_type='application/pdf',content=b'%PDF-1.7\nSynthetic QA report',storage_provider='database'))
     db().commit()
 if __name__=='__main__':
