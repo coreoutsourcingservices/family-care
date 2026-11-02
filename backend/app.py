@@ -32,6 +32,8 @@ def create_app(overrides=None):
     from services.family_invitations import bp as family_invitations
     from services.profile_planner import bp as planner
     app.register_blueprint(planner)
+    from services.pregnancy_guide import bp as pregnancy_guide
+    app.register_blueprint(pregnancy_guide)
     from services.women_workspace import bp as women_workspace
     from services.adult_workspace import bp as adult_workspace
     from services.consultation_directory import bp as consultation_directory

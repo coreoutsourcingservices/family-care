@@ -89,6 +89,8 @@ def scan_due():
     """Generic notices only; no measurements, medicine names or patient names in payloads."""
     from services.profile_planner import scan_tasks
     scan_tasks()
+    from services.pregnancy_guide import scan_guides
+    scan_guides()
     from datetime import timedelta, date
     from core.models import CareProfile, ChildPreferences, ChildRecord
     from patient.child_routes import today

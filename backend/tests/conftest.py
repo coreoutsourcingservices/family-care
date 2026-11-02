@@ -54,6 +54,7 @@ def test_app():
                 importlib.import_module('migrations.versions.0022_women_no_expiry').upgrade()
                 importlib.import_module('migrations.versions.0024_profile_planner').upgrade()
                 importlib.import_module('migrations.versions.0025_health_sharing_consultation').upgrade()
+                importlib.import_module('migrations.versions.0026_pregnancy_care').upgrade()
     else:
         Base.metadata.create_all(engine)
     yield app

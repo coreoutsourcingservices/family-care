@@ -397,6 +397,18 @@ class WomenAccessGrant(Base):
     updated_at = C(DT, default=now, onupdate=now, nullable=False)
 
 
+class PregnancyCare(Base):
+    __tablename__ = 'pregnancy_care'
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), primary_key=True)
+    baseline_week = C(I, nullable=False)
+    input_month = C(I)
+    as_of_date = C(Date, nullable=False)
+    active = C(B, nullable=False, default=True)
+    version = C(I, nullable=False, default=1)
+    updated_by = user_fk(nullable=False)
+    updated_at = C(DT, nullable=False, default=now, onupdate=now)
+
+
 class WomenDiaryRecord(Base):
     __tablename__ = 'women_diary_records'
     id = primary_id()
