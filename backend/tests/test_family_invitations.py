@@ -63,11 +63,22 @@ def test_family_member_join_login_shared_profile_and_own_reset(app,client,mails,
     assert client.get(base).status_code==410
     login=client.post('/api/v1/patients/login',json={'email':'member@example.com','password':'MemberPassword8!'})
     assert login.status_code==200,login.json
+    assert login.json['user']['is_family_member'] is True
+    assert login.json['redirect_url'].startswith('/customer/'+module+'/dashboard')
     member=bearer(login)
+    assert client.post('/api/v1/patients/family-invitations',headers=member,json={'full_name':'Blocked','email':'blocked@example.com','module':'adult'}).status_code==403
+    assert client.post('/api/v1/patients/profiles',headers=member,json={'full_name':'Blocked','module':'child','profile_type':'member','date_of_birth':'2020-01-01'}).status_code==403
     listing=client.get('/api/v1/patients/profiles',headers=member).json
     assert [p['id'] for p in listing['items']]==[profile]
     assert listing['items'][0]['member_email']=='member@example.com'
     assert client.get('/api/v1/patients/profiles/'+private,headers=member).status_code==404
+    assert client.get('/api/v1/patients/profiles/'+profile,headers=owner).status_code==403
+    assert client.get('/api/v1/patients/profiles/'+private,headers=owner).status_code==200
+    permission='/api/v1/patients/profiles/'+profile+'/family-access'
+    assert client.put(permission,headers=owner,json={'enabled':True}).status_code==403
+    listed=client.get('/api/v1/patients/profiles',headers=owner).json['items']
+    assert 'date_of_birth' not in next(p for p in listed if p['id']==profile)
+    assert client.put(permission,headers=member,json={'enabled':True}).status_code==200
     assert client.get('/api/v1/patients/profiles/'+profile,headers=owner).status_code==200
     outsider=patient(app,client,'other@example.com')
     assert client.get('/api/v1/patients/profiles/'+profile,headers=outsider).status_code==404
@@ -75,6 +86,9 @@ def test_family_member_join_login_shared_profile_and_own_reset(app,client,mails,
         body=dict(kind='history',title='Shared member record',date='2026-01-01',notes='Synthetic test')
         assert client.post('/api/v1/patients/adults/'+profile+'/records',headers=member,json=body).status_code==201
         assert client.get('/api/v1/patients/adults/'+profile+'/records',headers=owner).json['items'][0]['title']==body['title']
+    assert client.put(permission,headers=member,json={'enabled':False}).status_code==200
+    assert client.get('/api/v1/patients/profiles/'+profile,headers=owner).status_code==403
+    assert client.get('/api/v1/patients/profiles/'+profile+'/reports',headers=owner).status_code==403
     reset=client.post('/api/v1/auth/forgot-password',json={'email':'member@example.com'})
     assert reset.status_code==202,reset.json
     reset_mail=[]
@@ -144,3 +158,16 @@ def test_cookie_verification_signs_in_member_immediately(app,client,mails):
     assert 'fc_patient_access=' in str(response.headers.getlist('Set-Cookie'))
     assert client.get('/api/v1/patients/me',headers=headers).json['user']['email']=='member@example.com'
     assert client.get('/api/v1/patients/me',headers=owner).json['user']['email']=='family@example.com'
+def test_optional_relationship_matches_care_area():
+    from core.family_schemas import FamilyInvite
+    from pydantic import ValidationError
+    import pytest
+
+    fields = dict(full_name='Example Member', email='member@example.com', module='women')
+    assert FamilyInvite(**fields, relationship=' ').relationship == 'Family member'
+    assert FamilyInvite(**fields, relationship='Cousin').relationship == 'Cousin'
+    for relationship in ('boy', 'Brother', 'Father'):
+        with pytest.raises(ValidationError, match='Enter a valid relationship'):
+            FamilyInvite(**fields, relationship=relationship)
+    fields['module'] = 'adult'
+    assert FamilyInvite(**fields, relationship='Brother').relationship == 'Brother'

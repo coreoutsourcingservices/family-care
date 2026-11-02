@@ -307,8 +307,17 @@ def doctor_requests():
     from core.models import AdultRecord
     from sqlalchemy import union_all, literal
     page, per_page = pagination()
+    from services.profile_doctor_access import doctor_profile_filter,require_scope
+    from core.errors import APIError
+    permitted=[]
+    for profile in db().scalars(select(CareProfile).where(doctor_profile_filter(g.user),CareProfile.deleted_at.is_(None))):
+        try:
+            grant=require_scope(g.user,profile,'records')
+            if grant and grant.record_kinds is not None and 'consultation_request' not in grant.record_kinds:continue
+            permitted.append(profile.id)
+        except APIError:continue
     def shared(model):
-        return select(model.id.label('id'),model.profile_id.label('profile_id'),model.kind.label('kind'),model.data.label('data'),model.created_at.label('created_at'),literal('PARENT_REPORTED' if model is ChildRecord else 'SELF_REPORTED').label('verification_status')).join(CareProfile,model.profile_id==CareProfile.id).where(CareProfile.referred_doctor_id==g.user.id,CareProfile.deleted_at.is_(None),model.kind=='consultation_request',model.deleted_at.is_(None))
+        return select(model.id.label('id'),model.profile_id.label('profile_id'),model.kind.label('kind'),model.data.label('data'),model.created_at.label('created_at'),literal('PARENT_REPORTED' if model is ChildRecord else 'SELF_REPORTED').label('verification_status')).join(CareProfile,model.profile_id==CareProfile.id).where(CareProfile.id.in_(permitted),CareProfile.deleted_at.is_(None),model.kind=='consultation_request',model.deleted_at.is_(None))
     combined=union_all(shared(ChildRecord),shared(AdultRecord)).subquery()
     total=db().scalar(select(func.count()).select_from(combined))
     rows=db().execute(select(combined).order_by(combined.c.created_at.desc(),combined.c.id).offset((page-1)*per_page).limit(per_page)).mappings().all()

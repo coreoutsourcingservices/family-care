@@ -22,6 +22,7 @@ def issue_session(user, extra=None, status=200):
     user.last_login_at = now()
     audit('login_success', user.id, user.id)
     result = rotate(user, session)
+    if result['user'].get('redirect_url'):result['redirect_url']=result['user']['redirect_url']
     if extra:
         result.update(extra)
     db().commit()

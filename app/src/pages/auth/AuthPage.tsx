@@ -59,14 +59,14 @@ export default function AuthPage({ role, mode, onDoctorResult }: { role: Role; m
     setOtp(Array(6).fill('')); setCooldown(data.resend_after ?? 60); setStep('otp');
     setMessage(data.email_status === 'sent' ? 'OTP sent to your email. Please check your inbox and spam folder.' : 'Your email OTP is queued. Please check your inbox and spam folder.');
   }
-  function complete(kind: 'session' | 'approval') {
+  function complete(kind: 'session' | 'approval',redirect?:string) {
     if (kind === 'session' && !signup) {
       if (remember) localStorage.setItem('familycare_remember_email', fields.email.trim());
       else localStorage.removeItem('familycare_remember_email');
     }
     setCompletion(kind); setStep('complete'); setChallenge('');
     setFields(previous => ({ ...previous, password: '' }));
-    if (kind === 'session') navigate(doctor ? '/doctor/dashboard' : '/customer/dashboard', { replace: true });
+    if (kind === 'session') navigate(doctor ? '/doctor/dashboard' : redirect||'/customer/dashboard', { replace: true });
   }
   function handleDoctorResponse(data: AuthResponse) {
     if (!onDoctorResult) throw new Error('Doctor authentication is unavailable. Please reload this page.');
@@ -99,7 +99,7 @@ export default function AuthPage({ role, mode, onDoctorResult }: { role: Role; m
         }
         else {
           if (!data.csrf_token || !data.user) throw new Error('The server did not establish a session. Please sign in again.');
-          complete('session');
+          complete('session',data.redirect_url||data.user?.redirect_url);
         }
         return;
       }
@@ -108,7 +108,7 @@ export default function AuthPage({ role, mode, onDoctorResult }: { role: Role; m
         const data = await authApi(`${endpoint}/login`, { email: fields.email.trim(), password: fields.password });
         if (doctor && handleDoctorResponse(data)) return;
         if (!data.csrf_token || !data.user) throw new Error('Sign-in did not return a session. Restart the backend and try again.');
-        complete('session');
+        complete('session',data.redirect_url||data.user?.redirect_url);
         return;
       }
       if (step === 'details' && doctor) { setStep('professional'); return; }

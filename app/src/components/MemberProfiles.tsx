@@ -1,3 +1,4 @@
+import FamilyInvitations from './FamilyInvitations';
 import { ImportedReportRecords } from './ReportRecordReview';
 import ProfileDoctorConnection from './ProfileDoctorConnection';
 import ReportTextPanel from './ReportTextPanel';
@@ -14,6 +15,7 @@ export default function MemberProfiles({accountId,module}:{accountId:string;modu
   const navigate=useNavigate();
   const location=useLocation();
   const addingChild=new URLSearchParams(location.search).get('add')==='1';
+  const addingSelf=new URLSearchParams(location.search).get('self')==='1';
   const requestedProfile=module==='adult'?new URLSearchParams(location.search).get('profile'):null;
   const incomingAdult=module==='adult'?location.state?.adultDraft as HealthProfile|undefined:undefined;
   const [profiles,setProfiles]=useState<HealthProfile[]>([]);
@@ -28,6 +30,7 @@ export default function MemberProfiles({accountId,module}:{accountId:string;modu
   async function open(profile:HealthProfile) {setLoading(true);setError('');setDraft(undefined);try{setActive(await loadProfile(profile.id));}catch(e){setError(e instanceof Error?e.message:'Could not load profile.');}finally{setLoading(false);}}
   useEffect(()=>{let current=true;setLoading(true);setError('');setActive(undefined);setDraft(undefined);
     (async()=>{const [saved,own]=await Promise.all([loadProfiles(accountId,module),selfProfile()]);if(!current)return;if(own)setAccount(own.account);setProfiles(module==='child'?saved.filter(p=>!belongsToAdult(p.dob)):saved);
+      if(addingSelf){if(own?.profile){navigate('/customer/'+own.profile.module+'/dashboard?profile='+own.profile.id,{replace:true});return;}setDraft(blank('self',own?.account));return;}
       if(module==='adult'&&requestedProfile){const detail=await loadProfile(requestedProfile);if(current){setActive(detail);if(belongsToAdult(detail.dob)&&detail.module==='child')setNotice('This profile is over 12, so it opens in Adult Health. Existing reports stay with the same profile.');}return;}
       if(incomingAdult?.id.startsWith('new-')){setDraft({...incomingAdult,module:'adult',profileType:'member'});setNotice('Age is above 12. Continue this member profile in Adult Health.');return;}
       if(module==='child'){const eligible=saved.filter(p=>!belongsToAdult(p.dob));if(eligible.length&&!addingChild){navigate('/customer/child/'+eligible[0].id+'/dashboard',{replace:true});return;}setDraft(blank('member',own?.account));return;}
@@ -37,7 +40,7 @@ export default function MemberProfiles({accountId,module}:{accountId:string;modu
       else if(own?.profile){if(current)setActive(own.profile);}
       else setDraft(blank('self',own?.account));
     })().catch(e=>{if(current)setError(e instanceof Error?e.message:'Could not load profiles.');}).finally(()=>{if(current)setLoading(false);});return()=>{current=false;};
-  },[accountId,module,attempt,addingChild,navigate,requestedProfile]);
+  },[accountId,module,attempt,addingChild,addingSelf,navigate,requestedProfile]);
   function update(values:Partial<HealthProfile>){setDraft(old=>old?{...old,...values}:old);setError('');}
   function routeByAge(dob:string){if(module!=='child'||!draft||!belongsToAdult(dob))return false;navigate('/customer/adult',{state:{adultDraft:{...draft,dob,module:'adult',profileType:'member'}}});return true;}
   async function chooseSelf(){setError('');try{const own=await selfProfile();setAccount(own.account);if(own.profile){setDraft(undefined);setActive(own.profile);}else setDraft(blank('self',own.account));}catch(e){setError(e instanceof Error?e.message:'Could not load your profile.');}}
@@ -49,6 +52,7 @@ export default function MemberProfiles({accountId,module}:{accountId:string;modu
     if((normalized.guardianContact&&!/^\+?[1-9][0-9]{7,14}$/.test(normalized.guardianContact))||normalized.contacts.some(c=>!c.name||!/^\+?[1-9][0-9]{7,14}$/.test(c.mobile))){setError('Enter valid contact names and mobile numbers.');return;}
     pending.current=true;setSaving(true);setError('');try{const saved=await saveProfile(normalized);setProfiles(old=>[...old.filter(p=>p.id!==saved.id),saved]);setActive(saved);setDraft(undefined);setNotice('Saved successfully.');if(module==='child'){sessionStorage.setItem('familycare.selectedChild.'+accountId,saved.id);navigate('/customer/child/dashboard');}else if(module==='women'){sessionStorage.setItem('familycare.selectedWoman.'+accountId,saved.id);navigate('/customer/women/dashboard');}else if(module==='adult'){sessionStorage.setItem('familycare.selectedAdult.'+accountId,saved.id);navigate('/customer/adult/dashboard',{replace:true,state:null});}}
     catch(e){if(e instanceof PartialSaveError){setActive(e.profile);setDraft({...e.profile,reports:draft.reports.filter(r=>r.blob&&!e.profile.reports.some(saved=>saved.name===r.name))});setError('Profile saved. A report could not be uploaded: '+e.message);}else setError(e instanceof Error?e.message:'Could not save profile.');}finally{pending.current=false;setSaving(false);}}
+  if((module==='adult'||module==='women')&&isNew&&draft?.profileType==='member')return <FamilyInvitations module={module} showSelf={()=>void chooseSelf()}/>;
   return <div className={'care-workspace '+module}><section className="care-form-panel"><Link className="care-back" to="/customer/dashboard"><ArrowLeft size={20}/>Back</Link>
     <div className="care-form-title"><span><Icon size={35}/></span><div><h1>{draft?isNew?'Add your '+titles[module]:'Add health reports':module==='child'?'Child care profiles':module==='women'?"Women\u2019s health profiles":'Adult health profiles'}</h1><p>{module==='child'?"For children aged 0-12. Add their details and guardian contact.":'Keep personal details, emergency contacts and reports together.'}</p></div></div>
     {error&&<p role="alert" className="customer-dashboard-error">{error}{!draft&&!active&&<button onClick={()=>setAttempt(n=>n+1)}>Try again</button>}</p>}{notice&&<p role="status" className="member-notice">{notice}</p>}

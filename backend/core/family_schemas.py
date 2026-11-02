@@ -1,4 +1,5 @@
 from datetime import date
+import re
 from typing import Literal
 from pydantic import EmailStr, Field, model_validator
 from core.schemas import Schema, Registration
@@ -8,14 +9,16 @@ class FamilyInvite(Schema):
     full_name: str = Field(min_length=1, max_length=120)
     email: EmailStr
     module: Literal['adult', 'women']
-    relationship: str = Field(default='Family member', min_length=1, max_length=50)
+    relationship: str = Field(default='Family member', max_length=50)
 
     @model_validator(mode='after')
     def clean(self):
         self.full_name=self.full_name.strip()
-        self.relationship=self.relationship.strip()
+        self.relationship=self.relationship.strip() or 'Family member'
         self.email=str(self.email).lower()
-        if not self.full_name or not self.relationship:raise ValueError('Name and relationship must not be blank')
+        if not self.full_name:raise ValueError('Name must not be blank')
+        if self.module=='women' and re.search(r'\b(?:boy|boyfriend|man|male|father|dad|brother|son|husband|uncle|grandfather)\b',self.relationship,re.I):
+            raise ValueError("Enter a valid relationship for Women's Health")
         return self
 
 

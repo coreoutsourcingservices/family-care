@@ -1,6 +1,6 @@
-export type AuthUser = { id: string; public_id: string; referral_id?: string | null; doctor?: import('../../../doctor/src/onboarding/types').DoctorSetupDetails; full_name: string; email?: string; phone_number?: string; role: 'PATIENT' | 'DOCTOR'; approval_status: string };
+export type AuthUser = { is_family_member?:boolean; member_profile_id?:string;member_module?:'adult'|'women';redirect_url?:string; id: string; public_id: string; referral_id?: string | null; doctor?: import('../../../doctor/src/onboarding/types').DoctorSetupDetails; full_name: string; email?: string; phone_number?: string; role: 'PATIENT' | 'DOCTOR'; approval_status: string };
 import type { DoctorAuthFields } from '../../../doctor/src/onboarding/types';
-export type AuthResponse = { challenge_token?: string; email_status?: 'sent' | 'queued'; resend_after?: number; expires_in?: number; csrf_token?: string; user?: AuthUser; message?: string } & DoctorAuthFields;
+export type AuthResponse = { redirect_url?:string; challenge_token?: string; email_status?: 'sent' | 'queued'; resend_after?: number; expires_in?: number; csrf_token?: string; user?: AuthUser; message?: string } & DoctorAuthFields;
 
 export class ApiError extends Error {
   constructor(message: string, public code: string, public status: number) { super(message); }

@@ -9,11 +9,14 @@ from services.care import accessible_profile
 
 def records(profile_id):
     profile = accessible_profile(g.user, str(profile_id))
+    from services.profile_doctor_access import require_scope
+    grant=require_scope(g.user,profile,'records')
     from datetime import date
     age=date.today().year-profile.dob.year-((date.today().month,date.today().day)<(profile.dob.month,profile.dob.day))
     page, per_page = pagination()
     def shared(model):
         query=select(model.id.label('id'),model.kind.label('kind'),model.data.label('data'),model.created_at.label('created_at'),literal('PARENT_REPORTED' if model is ChildRecord else 'SELF_REPORTED').label('verification_status')).where(model.profile_id==profile.id,model.deleted_at.is_(None))
+        if grant and grant.record_kinds is not None:query=query.where(model.kind.in_(grant.record_kinds))
         if profile.module=='child' and age<=12 and model is ChildRecord:query=query.where(model.kind.in_(['vaccination','growth','nutrition','care','consultation_request']))
         return query
     combined=union_all(shared(ChildRecord),shared(AdultRecord)).subquery()

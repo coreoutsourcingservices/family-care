@@ -39,6 +39,10 @@ def serialize_user(user):
         profile = db().get(PatientProfile, user.id)
         doctor = db().get(User, profile.referred_by_doctor_id) if profile and profile.referred_by_doctor_id else None
         result['referred_doctor'] = doctor_details(doctor) if doctor else None
+        from services.care import member_profile
+        linked=member_profile(user)
+        if linked:
+            result.update(is_family_member=True,member_profile_id=linked.id,member_module=linked.module,redirect_url='/customer/'+linked.module+'/dashboard?profile='+linked.id)
     return result
 
 

@@ -1,3 +1,4 @@
+import FamilyHome from '../components/FamilyHome';
 import AccountDoctorConnection from '../components/AccountDoctorConnection';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -52,6 +53,7 @@ function DashboardContent({ module }: { module?: ModuleId }) {
     } finally { setSigningOut(false); }
   }
 
+  if (!module && user) return <FamilyHome user={user} onSignOut={()=>void signOut()}/>;
   return <div lang={language} dir={direction} className={`customer-dashboard ${!module ? 'customer-reference' : ''} ${module ? 'customer-form-page' : ''} ${module === 'child' ? 'customer-child-form' : ''}`}>
     {module !== 'child' && module !== 'women' && <header className="customer-dashboard-header"><Logo tagline={t('Healthier Families. Brighter Tomorrows.')} /><nav className={"customer-dashboard-nav "+(mobileOpen?"is-open":"")} aria-label="Dashboard navigation"><Link to="/customer/dashboard">{t('Home')}</Link><Link to="/customer/dashboard#customer-services">{t('Services')}</Link><Link to="/customer/child">{t('My family')}</Link><Link to="/contact">{t('Support')}</Link></nav><div className="customer-account-actions">
       {!module && user && <CustomerLanguageSelector/>}{user && <div className="customer-profile-menu" ref={accountRef}><button type="button" className="customer-profile-trigger" aria-label="Open account menu" aria-expanded={accountOpen} aria-controls="customer-profile-dropdown" onClick={()=>setAccountOpen(!accountOpen)}><span className="customer-profile-avatar"><UserRound size={16}/></span><span>{user.full_name}</span><ChevronDown size={13}/></button>{accountOpen&&<div id="customer-profile-dropdown" className="customer-profile-dropdown"><strong>{user.full_name}</strong><p>{user.email}</p><button type="button" disabled={signingOut} onClick={signOut}><LogOut size={16}/>{t(signingOut?'Signing out...':'Sign out')}</button></div>}</div>}

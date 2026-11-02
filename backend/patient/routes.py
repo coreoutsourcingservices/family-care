@@ -14,6 +14,25 @@ route(bp, '/connect-doctor', c.connect_doctor, 'POST', roles=('PATIENT',), schem
 route(bp, '/doctor', c.connected_doctor, roles=('PATIENT',))
 
 from patient import care_controller as care
+def family_access(profile_id):
+    from flask import g, jsonify, request
+    from sqlalchemy import select
+    from core.database import db
+    from core.models import FamilyInvitation
+    from core.errors import APIError
+    from services.repository import audit
+    row=db().scalar(select(FamilyInvitation).where(FamilyInvitation.profile_id==str(profile_id),FamilyInvitation.member_id==g.user.id,FamilyInvitation.accepted_at.is_not(None),FamilyInvitation.revoked_at.is_(None)).with_for_update())
+    if not row: raise APIError(403,'member_only','Only the invited member can manage family access')
+    enabled=bool((row.pending or {}).get('family_access'))
+    if request.method=='PUT':
+        data=request.get_json(silent=True)
+        if not isinstance(data,dict) or set(data)!={'enabled'} or not isinstance(data['enabled'],bool):raise APIError(422,'invalid_permission','Send enabled as a boolean')
+        enabled=data['enabled'];row.pending={**(row.pending or {}),'family_access':enabled}
+        audit('member_family_access_updated',row.owner_id,g.user.id);db().commit()
+    return jsonify(enabled=enabled)
+route(bp,'/profiles/<uuid:profile_id>/family-access',family_access,roles=('PATIENT',))
+def update_family_access(profile_id):return family_access(profile_id)
+route(bp,'/profiles/<uuid:profile_id>/family-access',update_family_access,'PUT',roles=('PATIENT',))
 route(bp, '/profiles', care.create_profile, 'POST', roles=('PATIENT',), schema='CareProfileCreate')
 route(bp, '/profiles', care.profiles, roles=('PATIENT',))
 route(bp, '/profiles/<uuid:profile_id>', care.profile, roles=('PATIENT',))
@@ -63,3 +82,8 @@ route(bp,'/profiles/<uuid:profile_id>/reports/<uuid:report_id>/import',report_re
 route(bp,'/profiles/<uuid:profile_id>/reports/<uuid:report_id>/category',report_records.set_category,'PATCH',roles=('PATIENT',))
 route(bp,'/profiles/<uuid:profile_id>/reports/<uuid:report_id>',report_records.delete_report,'DELETE',roles=('PATIENT',))
 route(bp,'/profiles/<uuid:profile_id>/doctor-overview',care.doctor_overview,roles=('PATIENT',))
+
+from services import profile_doctor_access
+route(bp,'/profiles/<uuid:profile_id>/doctor-access',profile_doctor_access.get_grant,roles=('PATIENT',))
+route(bp,'/profiles/<uuid:profile_id>/doctor-access',profile_doctor_access.put_grant,'PUT',roles=('PATIENT',),schema=profile_doctor_access.GrantInput)
+route(bp,'/profiles/<uuid:profile_id>/doctor-access',profile_doctor_access.revoke_grant,'DELETE',roles=('PATIENT',))

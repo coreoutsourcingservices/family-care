@@ -12,7 +12,7 @@ All examples use synthetic identities and abbreviated IDs. Replace placeholders.
 | Member enters correct family approval OTP | No extra OTP email | Creates member PATIENT account, linked profile and authenticated member session atomically |
 | Member signs in | No login OTP | Member's own email and password |
 | Member chooses forgot password | Member's own email | Password reset OTP; never routed to the inviting family |
-
+mne change kiya hai mereko nhib lag raha hai yaar dekho isse 
 `relationship` is from the inviting family's perspective; default is `Family member`. Send a value such as `Mother`, `Father`, `Spouse`, `Sister`, `Brother`, `Son` or `Daughter`. The API accepts a nonblank relationship up to 50 characters.
 `module` is exactly `adult` or `women` (not `woman`). These areas accept age 13–120, matching the existing product split after Child Care (0–12). No gender is inferred from an email address.
 
@@ -310,6 +310,29 @@ HTTP 200: `{"message":"Password reset. Sign in again."}`. Existing sessions are 
 
 ## UI entry points and validation
 
-Family dashboard includes an invite form and invitation list with revoke/refresh actions. Adding another adult/women member uses this invite form. Self profiles and child profiles preserve existing flows. The email link opens the prefilled member form and OTP step. Successful OTP verification automatically opens the member?s adult/women dashboard. Once accepted, the shared profile appears in the matching adult/women workspace for both accounts.
+The invitation form and invitation list live only under Adult Health / Women’s Health -> Add member. The main family dashboard does not contain the form. Adding another adult/women member uses this invite form. Self profiles and child profiles preserve existing flows. The email link opens the prefilled member form and OTP step. Successful OTP verification automatically opens the member?s adult/women dashboard. Once accepted, the shared profile appears in the matching adult/women workspace for both accounts.
 
 Automated tests: `venv/Scripts/python.exe -m pytest tests/test_family_invitations.py -q` from `backend`. Tests use isolated database fixtures and mocked SMTP, covering both modules, locked invite identity, OTP destinations, expiry, attempts, resend, replay, shared access, unrelated-family denial and member password reset.
+
+
+## 9. Read-only, scoped doctor permission (adult / women only)
+
+Family or the accepted member can manage only their accessible profile:
+
+- `GET /api/v1/patients/profiles/{profile_id}/doctor-access`
+- `PUT /api/v1/patients/profiles/{profile_id}/doctor-access`
+- `DELETE /api/v1/patients/profiles/{profile_id}/doctor-access`
+
+PUT example (synthetic IDs):
+
+```json
+{"referral_id":"exampleD000001","scopes":["reports"],"report_ids":["00000000-0000-4000-8000-000000000001"],"record_kinds":null,"expires_at":"<future ISO-8601 timestamp including timezone>"}
+```
+
+`scopes` contains `reports`, `records`, or both. `report_ids: null` allows all profile reports, including later uploads; otherwise only the selected report IDs are readable. Every ID must belong to this profile. `record_kinds: null` permits all server-saved record types; a non-empty list limits the shared types (for example `bp`, `glucose`, `medicine`, `history`). `expires_at: null` explicitly grants access until revoked; a timestamp must include a timezone and be in the future. The UI offers 1/7/30 days, a custom expiry, or until revoked.
+
+Basic profile identity remains visible while any permission is active. Permissions are checked server-side for profile lists, record lists, report lists, direct downloads and the consultation-request inbox. Expired/revoked profiles disappear from the doctor's list; out-of-scope report URLs return 404 and denied areas return 403. Scoped doctor downloads stream through the authenticated backend with `Cache-Control: no-store`, without exposing reusable signed storage URLs. Revocation immediately blocks subsequent API requests.
+
+Existing legacy referrals retain their previous access until replaced with a scoped permission. New grants can be issued for adult/women profiles only; Child Care keeps its existing flow. Device-local women's diary entries are not automatically synced or exposed by granting permission. An accepted member cannot create other profiles or invite more members; their login and protected customer navigation open only their linked adult/women profile.
+
+Install migration `0020_profile_doctor_grants` using the backend Alembic upgrade command. Tests: `tests/test_profile_doctor_access.py` and `tests/test_family_invitations.py`. SMTP delivery is mocked in these tests.

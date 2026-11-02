@@ -3,11 +3,11 @@ import re
 import time
 import cloudinary.uploader
 import cloudinary.utils
-from flask import current_app, jsonify, send_file, request
+from flask import current_app, jsonify, send_file, request, g
 from werkzeug.utils import secure_filename
 from sqlalchemy.exc import SQLAlchemyError
 from core.database import db
-from core.models import CareReport, uid
+from core.models import CareReport, ProfileDoctorGrant, uid
 from core.errors import APIError
 from services.repository import audit
 from services.care import accessible_profile, accessible_report
@@ -21,7 +21,7 @@ def credentials():
     return values
 
 
-def report_data(report):
+def report_data(report,internal=False):
     url = None
     if report.storage_provider == 'cloudinary' and all(current_app.config.get('CLOUDINARY_'+key)
             for key in ('CLOUD_NAME', 'API_KEY', 'API_SECRET')):
@@ -29,6 +29,11 @@ def report_data(report):
             report.file_format if report.resource_type == 'image' else '',
             resource_type=report.resource_type, type='authenticated', attachment=report.resource_type == 'raw', expires_at=int(time.time())+300,
             secure=True, **credentials())
+    if not internal and getattr(g,'user',None) and g.user.role=='DOCTOR' and db().get(ProfileDoctorGrant,report.profile_id):url=None
+    if not internal and getattr(g,'user',None) and g.user.role=='PATIENT':
+        from core.models import FamilyInvitation
+        from sqlalchemy import select
+        if db().scalar(select(FamilyInvitation.id).where(FamilyInvitation.profile_id==report.profile_id,FamilyInvitation.owner_id==g.user.id,FamilyInvitation.accepted_at.is_not(None))):url=None
     return dict(id=report.id, profile_id=report.profile_id, name=report.name, category=report.category, category_reviewed=report.category_reviewed,
                 content_type=report.content_type, storage_provider=report.storage_provider,
                 url=url, secure_url=report.secure_url, url_expires_in=300 if url else None,
@@ -116,6 +121,14 @@ def upload_report(user, profile_id, file):
 
 def download_report(user, profile_id, report_id):
     report = accessible_report(user, profile_id, report_id)
+    from core.models import FamilyInvitation
+    from sqlalchemy import select
+    family_view=user.role=='PATIENT' and db().scalar(select(FamilyInvitation.id).where(FamilyInvitation.profile_id==profile_id,FamilyInvitation.owner_id==user.id,FamilyInvitation.accepted_at.is_not(None)))
+    if family_view or user.role=='DOCTOR' and db().get(ProfileDoctorGrant,report.profile_id):
+        from services.report_text import report_bytes
+        response=send_file(io.BytesIO(report_bytes(report)),mimetype=report.content_type,as_attachment=True,download_name=report.name)
+        response.headers['Cache-Control']='no-store'
+        return response
     if report.storage_provider == 'database':
         return send_file(io.BytesIO(report.content or b''), mimetype=report.content_type,
                          as_attachment=True, download_name=report.name)

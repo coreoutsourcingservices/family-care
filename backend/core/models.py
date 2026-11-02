@@ -342,6 +342,19 @@ class VaccineReminderDelivery(Base):
     notification_id = C(Uuid(as_uuid=False), FK('familycare.email_notifications.id'))
 
 
+class ProfileDoctorGrant(Base):
+    __tablename__ = 'profile_doctor_grants'
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), primary_key=True)
+    doctor_id = user_fk(nullable=False)
+    granted_by = user_fk(nullable=False)
+    scopes = C(JSON, nullable=False)
+    report_ids = C(JSON)
+    record_kinds = C(JSON)
+    expires_at = C(DT)
+    revoked_at = C(DT)
+    created_at = C(DT, default=now, nullable=False)
+
+
 class CareReport(Base):
     __tablename__ = 'care_reports'
     id = primary_id()

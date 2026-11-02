@@ -102,7 +102,7 @@ def report_bytes(report):
         content=report.content or b''
     else:
         from services.care_uploads import report_data,credentials
-        cloud=credentials()['cloud_name'];url=report_data(report)['url']
+        cloud=credentials()['cloud_name'];url=report_data(report,internal=True)['url']
         if not url or not allowed_download(url,cloud):
             raise ValueError('report_download_failed')
         try:

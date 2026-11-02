@@ -43,6 +43,8 @@ def success_examples(path, method='GET'):
             session['user']['referral_id'] = 'rahulkumarD000001'
         if namespace == 'patients':
             session['user']['referred_doctor'] = None
+    if path.endswith('/doctor-access'):
+        return {200:{'message':'Doctor access revoked'}} if method=='DELETE' else {200:{'access':{'active':True,'doctor_id':'<doctor UUID>','scopes':['reports'],'report_ids':None,'record_kinds':None,'expires_at':None}}}
     if '/profiles' in path or '/care-profiles' in path:
         profile = {'id':'<profile UUID>','profile_type':'member','module':'child','full_name':'Aarav Kumar','date_of_birth':'2018-05-14','parent_profile_id':'<parent profile UUID>','doctor':None}
         report = {'id':'<report UUID>','profile_id':'<profile UUID>','name':'blood-test.pdf','storage_provider':'cloudinary','url':'<short-lived signed Cloudinary URL>','public_id':'familycare/C000001/profiles/<profile UUID>/child/reports/<report UUID>_blood-test.pdf','folder':'familycare/C000001/profiles/<profile UUID>/child/reports','resource_type':'raw','delivery_type':'authenticated','url_expires_in':300}

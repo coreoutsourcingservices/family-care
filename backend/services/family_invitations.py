@@ -45,6 +45,8 @@ def resolve(token):
 
 
 def create_invite():
+    from services.care import member_profile
+    if member_profile(g.user):raise APIError(403,'member_profile_only','Only the main family account can invite members')
     value=parse(FamilyInvite)
     if find_user(value.email):raise APIError(409,'account_exists','This email already has an account; no existing account is linked automatically')
     # Serialise invitation creation within a family.

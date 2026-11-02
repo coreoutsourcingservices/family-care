@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from sqlalchemy import select
 from core.database import db
 from core.models import CareProfile, CareReport, User, FamilyInvitation, uid, now
@@ -8,7 +8,13 @@ from services.repository import audit
 from services.approvals import paginate
 
 
+def member_profile(user):
+    return db().scalar(select(CareProfile).join(FamilyInvitation,FamilyInvitation.profile_id==CareProfile.id).where(FamilyInvitation.member_id==user.id,FamilyInvitation.accepted_at.is_not(None),FamilyInvitation.revoked_at.is_(None),CareProfile.deleted_at.is_(None)))
+
+
 def patient_profile_access(user):
+    member=member_profile(user)
+    if member:return CareProfile.id==member.id
     linked=select(FamilyInvitation.profile_id).where(FamilyInvitation.member_id==user.id,
         FamilyInvitation.accepted_at.is_not(None),FamilyInvitation.revoked_at.is_(None))
     return (CareProfile.owner_id==user.id) | CareProfile.id.in_(linked)
@@ -19,7 +25,8 @@ def accessible_profile(user, profile_id, lock=False):
     if user.role == 'PATIENT':
         query = query.where(patient_profile_access(user))
     elif user.role == 'DOCTOR':
-        query = query.where(CareProfile.referred_doctor_id == user.id)
+        from services.profile_doctor_access import doctor_profile_filter
+        query = query.where(doctor_profile_filter(user))
     else:
         raise APIError(403, 'forbidden', 'Profile access denied')
     if lock:
@@ -27,13 +34,18 @@ def accessible_profile(user, profile_id, lock=False):
     profile = db().scalar(query)
     if not profile:
         raise APIError(404, 'profile_not_found', 'Care profile not found')
+    if user.role == 'PATIENT' and profile.owner_id == user.id and profile.module in ('adult','women') and profile.profile_type != 'self':
+        invitation = db().scalar(select(FamilyInvitation).where(FamilyInvitation.profile_id == profile.id, FamilyInvitation.accepted_at.is_not(None)))
+        if invitation and (not (invitation.pending or {}).get('family_access') or request.method != 'GET'):
+            raise APIError(403, 'member_permission_required', 'This member must allow family access before you can view their medical details')
     return profile
 
 
 def profile_data(profile):
     doctor = db().get(User, profile.referred_doctor_id) if profile.referred_doctor_id else None
     membership=db().scalar(select(FamilyInvitation).where(FamilyInvitation.profile_id==profile.id,FamilyInvitation.accepted_at.is_not(None)))
-    return dict(id=profile.id, profile_type=profile.profile_type, module=profile.module,
+    from services.profile_doctor_access import current_grant,serialize
+    return dict(access_permissions=serialize(current_grant(profile)),id=profile.id, profile_type=profile.profile_type, module=profile.module,
                 member_email=membership.email if membership else '',relationship=membership.relationship if membership else None,
                 linked_member=bool(membership),
                 full_name=profile.name, date_of_birth=profile.dob.isoformat(),
@@ -44,6 +56,7 @@ def profile_data(profile):
 
 
 def create_profile(user, data):
+    if member_profile(user):raise APIError(403,'member_profile_only','This member account is limited to its invited profile')
     if data.profile_type == 'self' and db().scalar(select(CareProfile.id).where(
             CareProfile.owner_id == user.id, CareProfile.profile_type == 'self')):
         raise APIError(409, 'self_profile_exists', 'A self profile already exists')
@@ -67,15 +80,22 @@ def create_profile(user, data):
 
 
 def list_profiles(user, page, per_page, module=None):
-    query = select(CareProfile).where(patient_profile_access(user)) if user.role == 'PATIENT' else select(
-        CareProfile).where(CareProfile.referred_doctor_id == user.id)
+    from services.profile_doctor_access import doctor_profile_filter
+    query = select(CareProfile).where(patient_profile_access(user)) if user.role == 'PATIENT' else select(CareProfile).where(doctor_profile_filter(user))
     query=query.where(CareProfile.deleted_at.is_(None))
     if module:
         if module not in ('child', 'adult', 'women'):
             raise APIError(422, 'invalid_module', 'module must be child, adult or women')
         query = query.where(CareProfile.module == module)
     rows, total = paginate(query.order_by(CareProfile.created_at, CareProfile.id), page, per_page)
-    return jsonify(items=[profile_data(item) for item in rows], total=total, page=page, per_page=per_page)
+    items=[]
+    for item in rows:
+        invitation=db().scalar(select(FamilyInvitation).where(FamilyInvitation.profile_id==item.id,FamilyInvitation.accepted_at.is_not(None))) if item.module in ('adult','women') else None
+        if user.role=='PATIENT' and item.owner_id==user.id and invitation and not (invitation.pending or {}).get('family_access'):
+            items.append(dict(id=item.id,full_name=item.name,module=item.module,profile_type=item.profile_type,created_at=item.created_at.isoformat()+'Z',family_access=False,linked_member=True))
+        else:
+            items.append(dict(**profile_data(item),family_access=True))
+    return jsonify(items=items, total=total, page=page, per_page=per_page)
 
 
 def connect_profile(user, profile_id, referral_id):
@@ -93,7 +113,10 @@ def connect_profile(user, profile_id, referral_id):
 
 def list_reports(user, profile_id, page, per_page):
     profile=accessible_profile(user, profile_id)
+    from services.profile_doctor_access import require_scope
+    grant=require_scope(user,profile,'reports')
     query=select(CareReport).where(CareReport.profile_id == profile_id)
+    if grant and grant.report_ids is not None:query=query.where(CareReport.id.in_(grant.report_ids))
     if user.role=='DOCTOR' and profile.module=='child':query=query.where(CareReport.id.in_(shared_report_ids(profile_id)))
     rows, total = paginate(query.order_by(
         CareReport.created_at.desc(), CareReport.id), page, per_page)
@@ -103,6 +126,9 @@ def list_reports(user, profile_id, page, per_page):
 
 def accessible_report(user, profile_id, report_id):
     profile=accessible_profile(user, profile_id)
+    from services.profile_doctor_access import require_scope
+    grant=require_scope(user,profile,'reports')
+    if grant and grant.report_ids is not None and report_id not in grant.report_ids:raise APIError(404,'report_not_found','Report is outside the shared permission')
     if user.role=='DOCTOR' and profile.module=='child' and report_id not in shared_report_ids(profile_id):
         raise APIError(404,'report_not_found','Report is not shared in an authorised child care area')
     report = db().scalar(select(CareReport).where(CareReport.id == report_id, CareReport.profile_id == profile_id))

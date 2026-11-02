@@ -189,6 +189,7 @@ Upload JSON responses return metadata and, when configured, a temporary signed U
 | `/api/v1/patients/profiles/{profile_id}` | Yes | — | Yes | Yes | Yes |
 | `/api/v1/patients/profiles/{profile_id}/connect-doctor` | — | Yes | — | — | — |
 | `/api/v1/patients/profiles/{profile_id}/doctor` | — | — | — | — | Yes |
+| `/api/v1/patients/profiles/{profile_id}/doctor-access` | Yes | — | Yes | — | Yes |
 | `/api/v1/patients/profiles/{profile_id}/doctor-overview` | Yes | — | — | — | — |
 | `/api/v1/patients/profiles/{profile_id}/imported-records` | Yes | — | — | — | — |
 | `/api/v1/patients/profiles/{profile_id}/reports` | Yes | Yes | — | — | — |
@@ -46690,3 +46691,8 @@ All referenced component schemas are included below so this Markdown file can be
 - Regenerate: from backend, `venv/Scripts/python.exe scripts/export_full_api.py`.
 
 Total registered API method operations: **220**.
+
+
+## Adult / women profile doctor permission
+
+`GET`, `PUT` and `DELETE /api/v1/patients/profiles/{profile_id}/doctor-access` require a PATIENT session with access to that profile. PUT accepts `referral_id`, non-empty `scopes` (`reports`, `records`), optional selected `report_ids` / `record_kinds`, and `expires_at` (future ISO timestamp with timezone, or null for until revoked). Unselected reports and record types remain private. Expiry/revoke is enforced on doctor profile lists, direct report downloads and consultation inbox reads. Child profiles return 422 for this permission endpoint. See [adult/women invitation and permission guide](woman_adule_api.md) for examples and legacy referral behavior.
