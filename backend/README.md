@@ -1,5 +1,7 @@
 # Family Care backend API
 
+[Admin Recycle Bin and Recent Activity](docs/ADMIN_RECYCLE_ACTIVITY.md): 30-day retention, recovery and cleanup worker setup.
+
 Patient-approved doctor-to-doctor Women report referrals and external report sharing:
 [Doctor handoffs](../api-reference/DOCTOR_HANDOFFS.md).
 

@@ -207,6 +207,8 @@ def remove_record(child_id, resource, record_id):
         raise APIError(403,'doctor_entry','Doctor-authored entries cannot be overwritten by the family')
     db().add(ChildRecordRevision(record_id=row.id, actor_id=g.user.id, action='removed', data=row.data))
     row.deleted_at = now()
+    from services.recycle_bin import retain
+    retain('child_record',row,profile_id=profile.id)
     audit('child_record_removed', profile.owner_id, g.user.id)
     db().commit()
     return jsonify(message='Record removed')

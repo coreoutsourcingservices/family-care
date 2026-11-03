@@ -358,7 +358,7 @@ def publication_readiness(scheme,published_count):
 
 def validate_record(data,profile):
     if data.get('certificate_id'):
-        report=db().scalar(select(CareReport).where(CareReport.id==data['certificate_id'],CareReport.profile_id==profile.id))
+        report=db().scalar(select(CareReport).where(CareReport.id==data['certificate_id'],CareReport.profile_id==profile.id,CareReport.deleted_at.is_(None)))
         if not report:raise APIError(422,'invalid_certificate','Certificate must be a report uploaded to this child’s profile')
     if data.get('schedule_id'):
         schedule=schedule_row(data['schedule_id'])

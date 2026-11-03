@@ -147,7 +147,7 @@ def process_one():
     result=None;code=None
     db().commit()  # Release the DB connection while CPU/network processing runs.
     try:
-        if not report or not owner or owner.account_status!='ACTIVE':raise ValueError('processing_failed')
+        if not report or report.deleted_at or not owner or owner.account_status!='ACTIVE':raise ValueError('processing_failed')
         profile=db().get(CareProfile,report.profile_id)
         if not profile or profile.deleted_at:raise ValueError('processing_failed')
         result=run_processor(report,options)

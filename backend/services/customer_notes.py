@@ -34,7 +34,7 @@ def list_notes():
     try:page=int(request.args.get('page',1));per_page=int(request.args.get('per_page',25))
     except (ValueError,TypeError):raise APIError(422,'invalid_pagination','Use integer page and per_page')
     if page<1 or not 1<=per_page<=100:raise APIError(422,'invalid_pagination','Invalid pagination')
-    rows,total=paginate(select(CustomerNote).where(CustomerNote.owner_id==g.user.id).order_by(CustomerNote.updated_at.desc(),CustomerNote.id),page,per_page)
+    rows,total=paginate(select(CustomerNote).where(CustomerNote.owner_id==g.user.id,CustomerNote.deleted_at.is_(None)).order_by(CustomerNote.updated_at.desc(),CustomerNote.id),page,per_page)
     return jsonify(items=[data(row) for row in rows],total=total,page=page,per_page=per_page)
 
 
@@ -47,7 +47,7 @@ def create_note():
 
 def owned(note_id):
     main_customer()
-    row=db().scalar(select(CustomerNote).where(CustomerNote.id==str(note_id),CustomerNote.owner_id==g.user.id))
+    row=db().scalar(select(CustomerNote).where(CustomerNote.id==str(note_id),CustomerNote.owner_id==g.user.id,CustomerNote.deleted_at.is_(None)))
     if not row:raise APIError(404,'note_not_found','Note not found')
     return row
 
@@ -59,5 +59,7 @@ def update_note(note_id):
 
 
 def delete_note(note_id):
-    row=owned(note_id);db().delete(row);audit('customer_note_deleted',g.user.id,g.user.id);db().commit()
+    from core.models import now
+    from services.recycle_bin import retain
+    row=owned(note_id);row.deleted_at=now();retain('customer_note',row);audit('customer_note_deleted',g.user.id,g.user.id);db().commit()
     return jsonify(message='Note deleted')

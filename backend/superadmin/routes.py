@@ -27,4 +27,11 @@ from services import patient_directory
 route(bp, '/patients/<user_id>', patient_directory.account_detail, roles=('SUPERADMIN',))
 route(bp, '/patients/<user_id>/profiles', patient_directory.members, roles=('SUPERADMIN',))
 route(bp, '/patients/<user_id>/profiles/<uuid:profile_id>', patient_directory.member_detail, roles=('SUPERADMIN',))
-route(bp, '/audit-logs', c.audit_logs, roles=('SUPERADMIN',))
+from services import management_dashboard,recycle_bin
+def audit_history():return management_dashboard.recent_activity(superadmin=True)
+def delete_audit_history():return management_dashboard.delete_recent_activity(superadmin=True)
+route(bp, '/audit-logs', audit_history, roles=('SUPERADMIN',))
+route(bp, '/audit-logs/delete', delete_audit_history, 'POST', roles=('SUPERADMIN',))
+route(bp, '/recycle-bin', recycle_bin.listing, roles=('SUPERADMIN',))
+route(bp, '/recycle-bin/<uuid:item_id>/restore', recycle_bin.restore, 'POST', roles=('SUPERADMIN',))
+route(bp, '/recycle-bin/empty', recycle_bin.empty_bin, 'POST', roles=('SUPERADMIN',))

@@ -29,3 +29,11 @@ route(bp, '/patients/<user_id>/profiles/<uuid:profile_id>', patient_directory.me
 
 from services import management_dashboard
 route(bp, '/search', lambda: management_dashboard.search(admin=True), roles=('ADMIN',))
+route(bp, '/recent-activity', management_dashboard.recent_activity, roles=('ADMIN',))
+from services import recycle_bin
+route(bp, '/recycle-bin', recycle_bin.listing, roles=('ADMIN',))
+route(bp, '/recycle-bin/<uuid:item_id>/restore', recycle_bin.restore, 'POST', roles=('ADMIN',))
+
+route(bp, '/recent-activity/delete', management_dashboard.delete_recent_activity, 'POST', roles=('ADMIN',))
+
+route(bp, '/recycle-bin/empty', recycle_bin.empty_bin, 'POST', roles=('ADMIN',))

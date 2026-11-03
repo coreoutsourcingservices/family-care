@@ -108,7 +108,7 @@ def test_imaging_skips_ocr_and_selected_translation_needs_consent(app,client,mon
         assert db().get(ReportText,identifier).options['target_language']=='hi'
 
 
-def test_report_delete_removes_extraction_and_only_linked_imports(app,client):
+def test_report_delete_retains_extraction_and_hides_only_linked_imports(app,client):
     from core.models import ChildRecord
     owner=patient(app,client);profile=create_profile(client,owner);identifier=report(app,profile)
     with app.app_context():
@@ -124,20 +124,21 @@ def test_report_delete_removes_extraction_and_only_linked_imports(app,client):
     assert client.get(base+'/text',headers=owner).status_code==404
     assert client.get(base+'/download',headers=owner).status_code==404
     with app.app_context():
-        assert db().get(CareReport,identifier) is None
-        assert db().get(ReportText,identifier) is None
+        assert db().get(CareReport,identifier).deleted_at is not None
+        assert db().get(ReportText,identifier) is not None
         assert db().get(ChildRecord,linked_id).deleted_at is not None
         assert db().get(ChildRecord,manual_id).deleted_at is None
 
 
-def test_delete_cloud_failure_keeps_report(app,client):
+def test_delete_cloud_report_defers_storage_deletion(app,client):
     owner=patient(app,client);profile=create_profile(client,owner);identifier=report(app,profile)
     with app.app_context():
         row=db().get(CareReport,identifier);row.storage_provider='cloudinary';row.cloudinary_public_id='synthetic';row.resource_type='image';db().commit()
     base=f'/api/v1/patients/profiles/{profile}/reports/{identifier}'
-    with patch('services.care_uploads.credentials',return_value={}),patch('cloudinary.uploader.destroy',side_effect=RuntimeError()):
-        assert client.delete(base,headers=owner).status_code==502
-    with app.app_context():assert db().get(CareReport,identifier) is not None
+    with patch('cloudinary.uploader.destroy',side_effect=RuntimeError()) as destroy:
+        assert client.delete(base,headers=owner).status_code==200
+        destroy.assert_not_called()
+    with app.app_context():assert db().get(CareReport,identifier).deleted_at is not None
 
 
 def test_processor_translates_to_selected_language(monkeypatch,tmp_path):

@@ -210,6 +210,8 @@ def delete_record(profile_id, record_id):
     if request.args.get('version') != str(row.version):
         raise APIError(409, 'record_conflict', 'Entry changed. Refresh before deleting again')
     row.deleted_at = now()
+    from services.recycle_bin import retain
+    retain('women_diary',row,profile_id=profile.id)
     audit('women_diary_removed', profile.owner_id, g.user.id)
     db().commit()
     return jsonify(message='Diary entry deleted')
@@ -240,7 +242,7 @@ def reports(profile_id):
         return jsonify(report=report), status
     from core.models import CareReport
     from services.care_uploads import report_data
-    items = db().scalars(select(CareReport).where(CareReport.profile_id == profile.id).order_by(CareReport.created_at.desc()))
+    items = db().scalars(select(CareReport).where(CareReport.profile_id == profile.id, CareReport.deleted_at.is_(None)).order_by(CareReport.created_at.desc()))
     return jsonify(items=[dict(report_data(r), url=None, secure_url=None) for r in items])
 
 
@@ -250,7 +252,7 @@ def download(profile_id, report_id):
     from services.report_text import report_bytes
     from flask import send_file
     import io
-    report = db().scalar(select(CareReport).where(CareReport.id == str(report_id), CareReport.profile_id == profile.id))
+    report = db().scalar(select(CareReport).where(CareReport.id == str(report_id), CareReport.profile_id == profile.id, CareReport.deleted_at.is_(None)))
     if not report:
         raise APIError(404, 'report_not_found', 'Report not found')
     try:

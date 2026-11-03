@@ -92,6 +92,7 @@ class CustomerNote(Base):
     owner_id = user_fk(nullable=False, index=True)
     title = C(S(160), nullable=False)
     body = C(Text, nullable=False)
+    deleted_at = C(DT)
     created_at = C(DT, default=now, nullable=False)
     updated_at = C(DT, default=now, onupdate=now, nullable=False)
 
@@ -211,6 +212,7 @@ class AuditLog(Base):
     target_id = C(Uuid(as_uuid=False), FK('familycare.users.id'))
     action = C(S(80), nullable=False, index=True)
     created_at = C(DT, default=now, nullable=False, index=True)
+    deleted_at = C(DT)
 
 
 class AppNotification(Base):
@@ -439,7 +441,22 @@ class CareReport(Base):
     delivery_type = C(S(20))
     file_format = C(S(20))
     size_bytes = C(I)
+    deleted_at = C(DT)
     created_at = C(DT, default=now, nullable=False)
+
+
+class RecycleItem(Base):
+    __tablename__ = 'recycle_items'
+    id = primary_id()
+    entity_type = C(S(32), nullable=False, index=True)
+    entity_id = C(Uuid(as_uuid=False), nullable=False, index=True)
+    actor_id = user_fk(nullable=False)
+    profile_id = C(Uuid(as_uuid=False), index=True)
+    group_id = C(Uuid(as_uuid=False), index=True)
+    payload = C(JSON, nullable=False, default=dict)
+    deleted_at = C(DT, nullable=False, default=now)
+    expires_at = C(DT, nullable=False, index=True)
+    retry_after = C(DT)
 
 
 class ReportText(Base):

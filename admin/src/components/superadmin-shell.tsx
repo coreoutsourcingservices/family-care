@@ -2,7 +2,7 @@
 import {useEffect,useRef,useState,type ReactNode} from 'react';
 import Link from 'next/link';
 import {usePathname,useRouter} from 'next/navigation';
-import {HeartPulse,Search,ChevronsLeft,ChevronsRight,ChevronDown,Bell,Menu,X,House,UsersRound,Stethoscope,Users,Clock3,Syringe,ChartNoAxesCombined,FileText,CalendarDays,Megaphone,Settings,Logs,Crown,Leaf,LogOut,RefreshCw} from 'lucide-react';
+import {HeartPulse,Search,ChevronsLeft,ChevronsRight,ChevronDown,Bell,Menu,X,House,UsersRound,Stethoscope,Users,Clock3,Syringe,ChartNoAxesCombined,FileText,CalendarDays,Megaphone,Settings,Logs,Trash2,Crown,Leaf,LogOut,RefreshCw} from 'lucide-react';
 import {api,post} from '@/lib/api';
 import {LanguageSelector} from './language-provider';
 import {useUiTranslation} from '@/lib/i18n';
@@ -18,7 +18,7 @@ function Frame({user,children}:{user:User;children:ReactNode}){
  useEffect(()=>{let active=true;const check=()=>{if(document.visibilityState==='hidden')return;void api<{user:User}>('superadmin/me').then(r=>{if(active&&r.user.id!==user.id)window.location.reload();}).catch(()=>{});};window.addEventListener('focus',check);return()=>{active=false;window.removeEventListener('focus',check);};},[user.id]);
  const groups=[{label:'USER MANAGEMENT',items:[{label:'Administrators',icon:UsersRound,href:'/superadmin/admins'},{label:'Doctors',icon:Stethoscope,href:'/superadmin/doctors'},{label:'Patients',icon:Users,href:'/superadmin/patients'},{label:'Pending Approvals',icon:Clock3,href:'/superadmin/approvals/doctors',badge:data?.pending_requests.total}]},
  {label:'CARE MANAGEMENT',items:[{label:'Vaccination',icon:Syringe,href:'/superadmin/vaccination'},{label:'Growth & Nutrition',icon:ChartNoAxesCombined,href:'/superadmin/growth-nutrition'},{label:'Medical Records',icon:FileText,href:'/superadmin/patients',alias:true},{label:'Appointments',icon:CalendarDays,href:null}]},
- {label:'CONTENT & SETTINGS',items:[{label:'Health Articles',icon:FileText,href:null},{label:'Announcements',icon:Megaphone,href:null},{label:'System Settings',icon:Settings,href:'/superadmin/settings'},{label:'Activity Log',icon:Logs,href:'/superadmin/audit-logs'}]}];
+ {label:'CONTENT & SETTINGS',items:[{label:'Health Articles',icon:FileText,href:null},{label:'Announcements',icon:Megaphone,href:null},{label:'Recycle Bin',icon:Trash2,href:'/superadmin/recycle-bin'},{label:'Activity Log',icon:Logs,href:'/superadmin/audit-logs'}]}];
  async function logout(){setBusy(true);setError('');try{await post('auth/logout');router.replace('/superadmin');router.refresh();}catch(e){setError((e as Error).message);setBusy(false);}}
  const initials=user.full_name.split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase();
  return <div className={'workspace sa-workspace'+(collapsed?' sa-collapsed':'')}><header className="sa-topbar"><div className="sa-brand-area"><button className="sa-mobile-toggle" aria-label="Open navigation" aria-expanded={open} aria-controls="sa-navigation" onClick={()=>setOpen(true)}><Menu size={23}/></button><Link className="sa-brand" href="/superadmin/dashboard"><span><HeartPulse size={25}/></span><strong>familycare<span>.</span></strong></Link><button className="sa-collapse" aria-label={collapsed?'Expand sidebar':'Collapse sidebar'} onClick={()=>setCollapsed(!collapsed)}>{collapsed?<ChevronsRight size={19}/>:<ChevronsLeft size={19}/>}</button></div>

@@ -91,6 +91,8 @@ def remove(profile_id, record_id):
     if row is None:
         raise APIError(404,'record_not_found','Record not found')
     row.deleted_at=now()
+    from services.recycle_bin import retain
+    retain('adult_record',row,profile_id=row.profile_id)
     db().add(AdultRecordRevision(record_id=row.id,actor_id=g.user.id,action='deleted',data=row.data))
     db().commit()
     return jsonify(message='Record removed')

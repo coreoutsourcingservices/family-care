@@ -83,7 +83,7 @@ def report_list(profile_id):
     from core.models import CareReport
     if request.method=='POST':
         response,status=upload_report(g.user,row.id,request.files.get('file'));payload=response.get_json();payload['report'].update(url=None,secure_url=None);return jsonify(payload),status
-    return jsonify(items=[dict(report_data(r),url=None,secure_url=None) for r in db().scalars(select(CareReport).where(CareReport.profile_id==row.id))])
+    return jsonify(items=[dict(report_data(r),url=None,secure_url=None) for r in db().scalars(select(CareReport).where(CareReport.profile_id==row.id,CareReport.deleted_at.is_(None)))])
 
 
 def upload(profile_id):return report_list(profile_id)
@@ -95,7 +95,7 @@ def download(profile_id,report_id):
     from services.report_text import report_bytes
     from flask import send_file
     import io
-    report=db().scalar(select(CareReport).where(CareReport.id==str(report_id),CareReport.profile_id==row.id))
+    report=db().scalar(select(CareReport).where(CareReport.id==str(report_id),CareReport.profile_id==row.id,CareReport.deleted_at.is_(None)))
     if not report:raise APIError(404,'report_not_found','Report not found')
     response=send_file(io.BytesIO(report_bytes(report)),mimetype=report.content_type,as_attachment=True,download_name=report.name);response.headers['Cache-Control']='no-store';return response
 

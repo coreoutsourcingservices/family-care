@@ -79,7 +79,8 @@ def remove(profile_id,entry_id):
     owner=profile(profile_id)
     row=db().scalar(select(ProfilePlanner).where(ProfilePlanner.id==str(entry_id),ProfilePlanner.profile_id==owner.id,ProfilePlanner.user_id==g.user.id,ProfilePlanner.deleted_at.is_(None)).with_for_update())
     if not row:raise APIError(404,'entry_not_found','Entry not found')
-    clear_alerts(row);row.deleted_at=now();audit('planner_deleted',g.user.id,g.user.id);db().commit()
+    from services.recycle_bin import retain
+    clear_alerts(row);row.deleted_at=now();retain('planner',row,profile_id=owner.id);audit('planner_deleted',g.user.id,g.user.id);db().commit()
     return jsonify(message='Entry removed')
 
 def scan_tasks(user_id=None):

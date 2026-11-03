@@ -76,7 +76,7 @@ def put_grant(profile_id):
         import uuid
         try:ids=[str(uuid.UUID(item)) for item in value.report_ids]
         except ValueError:raise APIError(422,'invalid_reports','Select reports belonging to this profile') from None
-        found=set(db().scalars(select(CareReport.id).where(CareReport.profile_id==profile.id,CareReport.id.in_(ids))))
+        found=set(db().scalars(select(CareReport.id).where(CareReport.profile_id==profile.id,CareReport.deleted_at.is_(None),CareReport.id.in_(ids))))
         if found!=set(ids):raise APIError(422,'invalid_reports','Select reports belonging to this profile')
         value.report_ids=ids
     grant=current_grant(profile)

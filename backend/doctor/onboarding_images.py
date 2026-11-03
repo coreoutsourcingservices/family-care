@@ -61,17 +61,15 @@ def store_image(user, kind):
         profile.onboarding_images = {**(profile.onboarding_images or {}), kind: {
             'public_id': public_id, 'format': asset.get('format') or extension,
             'name': kind.replace('_', ' ') + '.' + extension}}
+        if old:
+            from services.recycle_bin import retain
+            retain('doctor_photo',user.id,actor_id=user.id,payload={'kind':kind,'asset':old})
         audit('doctor_setup_image_uploaded', user.id, user.id)
         db().commit()
     except Exception:
         db().rollback()
         cloudinary.uploader.destroy(public_id, resource_type='image', type='authenticated', **keys)
         raise
-    if old:
-        try:
-            cloudinary.uploader.destroy(old['public_id'], resource_type='image', type='authenticated', **keys)
-        except Exception:
-            current_app.logger.warning('Could not remove replaced doctor onboarding image')
     return jsonify(images=image_details(profile)), 201
 
 
@@ -91,8 +89,8 @@ def profile_photo():
         return store_image(g.user,'profile_photo')
     old=(profile.onboarding_images or {}).get('profile_photo')
     profile.onboarding_images={key:value for key,value in (profile.onboarding_images or {}).items() if key!='profile_photo'}
-    audit('doctor_profile_photo_removed',g.user.id,g.user.id);db().commit()
     if old:
-        try:cloudinary.uploader.destroy(old['public_id'],resource_type='image',type='authenticated',**credentials())
-        except Exception:current_app.logger.warning('Could not remove unlinked doctor photo asset')
+        from services.recycle_bin import retain
+        retain('doctor_photo',g.user.id,actor_id=g.user.id,payload={'kind':'profile_photo','asset':old})
+    audit('doctor_profile_photo_removed',g.user.id,g.user.id);db().commit()
     return jsonify(photo=None,message='Profile photo removed')
