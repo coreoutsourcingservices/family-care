@@ -16,8 +16,8 @@ def enrich(paths):
             elif method=='delete':example={'message':'Invitation revoked'}
             elif path.endswith('/setup') or path.endswith('/resend-otp'):
                 if path.endswith('/setup'):request=form
-                example={'message':'Approval OTP sent to the inviting family email.','email_status':'sent',
-                    'otp_destination':'inviting_family_email','expires_in':300,'resend_after':60};code=202
+                example={'message':'Verification OTP sent to the member email.','email_status':'sent',
+                    'otp_destination':'member_email','expires_in':300,'resend_after':60};code=202
             elif path.endswith('/verify-otp'):
                 request={'otp':'123456'};code=201
                 example={'message':'Profile setup complete. Opening your profile.',
@@ -35,7 +35,7 @@ def enrich(paths):
             else:
                 example={'invitation':invite,'family':{'full_name':'Example Family','email':'family@example.com'},
                     'form':{'full_name':invite['full_name'],'email':invite['email'],'readonly':['full_name','email']},
-                    'otp_destination':'inviting_family_email','shared_profile':True}
+                    'otp_destination':'member_email','shared_profile':True}
             if request is not None:op['requestBody']['content']['application/json']['example']=request
             op['responses']={k:v for k,v in op['responses'].items() if not k.startswith('2')}
             op['responses'][str(code)]={'description':'Success','content':{'application/json':{'example':example}}}

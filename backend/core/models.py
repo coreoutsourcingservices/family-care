@@ -502,6 +502,24 @@ class DoctorConsultation(Base):
     updated_at = C(DT,default=now,onupdate=now,nullable=False)
 
 
+class DoctorHandoff(Base):
+    __tablename__ = 'doctor_handoffs'
+    id = primary_id()
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), nullable=False, index=True)
+    source_id = user_fk(nullable=False, index=True)
+    recipient_id = user_fk(index=True)
+    recipient_name = C(S(120), nullable=False)
+    recipient_email = C(S(254), nullable=False, default='')
+    recipient_phone = C(S(16), nullable=False, default='')
+    summary = C(JSON, nullable=False)
+    report_ids = C(JSON, nullable=False)
+    status = C(S(16), nullable=False, default='PENDING')
+    decided_by = user_fk()
+    decided_at = C(DT)
+    expires_at = C(DT, nullable=False)
+    created_at = C(DT, default=now, nullable=False)
+
+
 class DoctorReview(Base):
     __tablename__ = 'doctor_reviews'
     __table_args__ = (UQ('doctor_id','patient_id'),CK('rating >= 1 AND rating <= 5',name='rating'))

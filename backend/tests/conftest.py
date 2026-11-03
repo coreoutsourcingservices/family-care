@@ -55,6 +55,7 @@ def test_app():
                 importlib.import_module('migrations.versions.0024_profile_planner').upgrade()
                 importlib.import_module('migrations.versions.0025_health_sharing_consultation').upgrade()
                 importlib.import_module('migrations.versions.0026_pregnancy_care').upgrade()
+                importlib.import_module('migrations.versions.0027_doctor_handoffs').upgrade()
     else:
         Base.metadata.create_all(engine)
     yield app

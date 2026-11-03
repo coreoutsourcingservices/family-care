@@ -8,8 +8,8 @@ All examples use synthetic identities and abbreviated IDs. Replace placeholders.
 | Step | Destination | Result |
 | --- | --- | --- |
 | Family sends adult/women invitation | Invited member's email | One-use setup link with family name/email, relationship and care area |
-| Member submits name/email/mobile/DOB/password form | Inviting family's email | Six-digit setup approval OTP; family shares it with the member |
-| Member enters correct family approval OTP | No extra OTP email | Creates member PATIENT account, linked profile and authenticated member session atomically |
+| Member submits name/email/mobile/DOB/password form | Invited member's email | Six-digit setup verification OTP |
+| Member enters correct verification OTP | No extra OTP email | Creates member PATIENT account, linked profile and authenticated member session atomically |
 | Member signs in | No login OTP | Member's own email and password |
 | Member chooses forgot password | Member's own email | Password reset OTP; never routed to the inviting family |
 mne change kiya hai mereko nhib lag raha hai yaar dekho isse 
@@ -36,7 +36,7 @@ Deployment:
 - Run `venv/Scripts/python.exe -m alembic upgrade head` from `backend` to install migration `0018_family_invitations`.
 - Configure SMTP via the existing ignored backend `.env` settings (`SMTP_HOST`, `SMTP_PORT`, `SMTP_FROM`, TLS and credentials).
 - Set `FAMILY_INVITE_FRONTEND_URL` to the trusted frontend origin, e.g. `https://your-familycare-host.example`. Local default: `http://127.0.0.1:5173`.
-- Invite and approval OTP emails are sent synchronously. `email_status: sent` means SMTP accepted delivery, not proof that it arrived in Inbox.
+- Invite and verification OTP emails are sent synchronously. `email_status: sent` means SMTP accepted delivery, not proof that it arrived in Inbox.
 - Existing forgot-password emails are queued: run `venv/Scripts/python.exe -m scripts.mail_worker` from `backend`.
 - Run the notification socket gateway separately for live family-bell updates. A persistent `family_member_joined` notification is created after successful verification.
 
@@ -131,7 +131,7 @@ No request body or login required. HTTP 200:
   },
   "family": {"full_name": "Example Family", "email": "family@example.com"},
   "form": {"full_name": "Example Member", "email": "member@example.com", "readonly": ["full_name", "email"]},
-  "otp_destination": "inviting_family_email",
+  "otp_destination": "member_email",
   "shared_profile": true
 }
 ```
@@ -157,23 +157,23 @@ HTTP 202:
 
 ```json
 {
-  "message": "Approval OTP sent to the inviting family email.",
+  "message": "Verification OTP sent to the member email.",
   "email_status": "sent",
-  "otp_destination": "inviting_family_email",
+  "otp_destination": "member_email",
   "expires_in": 300,
   "resend_after": 60
 }
 ```
 
-Name/email must match the invitation. Mobile is 8–15 digits with optional leading `+`; password is 8–128 characters and confirmation must match. The form requires explicit acceptance of the family/profile sharing relationship. Before OTP verification, no member User or CareProfile is created. Pending setup stores an Argon2 password hash and HMAC OTP hash, never plaintext password/OTP. Link possession proves access to the member's invitation inbox; the approval OTP proves the family's approval. There is no second member-email signup OTP in this flow.
+Name/email must match the invitation. Mobile is 8–15 digits with optional leading `+`; password is 8–128 characters and confirmation must match. The form requires explicit acceptance of the family/profile sharing relationship. Before OTP verification, no member User or CareProfile is created. Pending setup stores an Argon2 password hash and HMAC OTP hash, never plaintext password/OTP. The verification OTP is sent to the member's invitation email. Codes previously sent to the family must be replaced using resend or setup.
 
-## 5. Resend family approval OTP
+## 5. Resend member verification OTP
 
 `POST /api/v1/family-invitations/{token}/resend-otp`
 
-Body: `{}`. Response: same HTTP 202 shape as setup. Destination is still `family@example.com`, not member email. Wait 60 seconds; a fresh OTP replaces the previous one. The setup form must have been submitted first (otherwise 409). Resubmitting setup after the cooldown also replaces pending values and OTP.
+Body: `{}`. Response: same HTTP 202 shape as setup. Destination is `member@example.com`, the email specified in the invitation. Wait 60 seconds; a fresh OTP replaces the previous one. The setup form must have been submitted first (otherwise 409). Resubmitting setup after the cooldown also replaces pending values and OTP.
 
-## 6. Member enters the OTP shared by the family
+## 6. Member enters their email OTP
 
 `POST /api/v1/family-invitations/{token}/verify-otp`
 
@@ -339,4 +339,4 @@ Install migration `0020_profile_doctor_grants` using the backend Alembic upgrade
 
 ## Main account notes and setup
 
-See [CUSTOMER_NOTES.md](CUSTOMER_NOTES.md) for main-customer-only database-backed notes, CRUD endpoints and migration `0021_customer_notes`. Self setup has Basic info / Health info / Preferences steps. Child setup has Basic info / Details / Confirm and a saved-profile confirmation screen. Gender is stored explicitly; existing profiles retain an empty value until recorded. Adult/women invitations preserve the email-link and family OTP approval flow.
+See [CUSTOMER_NOTES.md](CUSTOMER_NOTES.md) for main-customer-only database-backed notes, CRUD endpoints and migration `0021_customer_notes`. Self setup has Basic info / Health info / Preferences steps. Child setup has Basic info / Details / Confirm and a saved-profile confirmation screen. Gender is stored explicitly; existing profiles retain an empty value until recorded. Adult/women invitations preserve the email-link and member email OTP verification flow.

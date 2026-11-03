@@ -14,6 +14,7 @@ from core.security import decode_token, encode_token, digest
 from doctor.notification_models import DoctorNotification, DoctorPushSubscription, DoctorPushDelivery
 
 MESSAGES = {
+    'doctor_referral_updated': ('Doctor referral updated', 'Open doctor referrals to review a patient consent update.', '/doctor/referrals'),
     'vaccination_due': ('Child vaccination reminder','A connected child has a vaccination date to review.','/doctor/child-care'),
     'child_record_added': ('Child care updated','A connected child care record was updated.','/doctor/child-care'),
     'patient_connected': ('New family connection', 'A family profile has connected to your practice.', '/doctor/patients'),

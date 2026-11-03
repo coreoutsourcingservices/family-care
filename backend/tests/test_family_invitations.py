@@ -43,7 +43,9 @@ def test_family_member_join_login_shared_profile_and_own_reset(app,client,mails,
     assert client.post(base+'/setup',json={**setup_data(),'email':'changed@example.com'}).status_code==422
     response=client.post(base+'/setup',json=setup_data())
     assert response.status_code==202,response.json
-    assert mails[-1][0]=='family@example.com'
+    assert mails[-1][0]=='member@example.com'
+    assert response.json['otp_destination']=='member_email'
+    assert preview['otp_destination']=='member_email'
     with app.app_context():
         saved=db().get(FamilyInvitation,row['id'])
         assert saved.token_hash!=token and len(saved.token_hash)==64
@@ -130,8 +132,29 @@ def test_invitation_expiry_revocation_limits_and_delivery_failures(app,client,ma
     with app.app_context():assert db().scalar(select(func.count()).select_from(FamilyInvitation).where(FamilyInvitation.email=='failure@example.com'))==0
 
 
-def test_invite_otp_attempt_limit_and_resend_invalidates_old_code(app,client,mails):
-    owner=patient(app,client);row,token=invite(client,owner,mails)
+@pytest.mark.parametrize('module',['adult','women'])
+def test_legacy_family_otp_requires_member_resend(app,client,mails,module):
+    owner=patient(app,client);row,token=invite(client,owner,mails,module)
+    base='/api/v1/family-invitations/'+token
+    assert client.post(base+'/setup',json=setup_data()).status_code==202
+    with app.app_context():
+        saved=db().get(FamilyInvitation,row['id'])
+        old_code=otp_code(saved.pending['cid'])
+        pending=dict(saved.pending)
+        pending.pop('otp_destination')
+        pending['sent_at']-=61
+        saved.pending=pending;db().commit()
+    assert client.post(base+'/verify-otp',json={'otp':old_code}).status_code==400
+    assert client.post(base+'/resend-otp',json={}).status_code==202
+    assert mails[-1][0]=='member@example.com'
+    with app.app_context():
+        new_code=otp_code(db().get(FamilyInvitation,row['id']).pending['cid'])
+    assert client.post(base+'/verify-otp',json={'otp':new_code}).status_code==201
+
+
+@pytest.mark.parametrize('module',['adult','women'])
+def test_invite_otp_attempt_limit_and_resend_invalidates_old_code(app,client,mails,module):
+    owner=patient(app,client);row,token=invite(client,owner,mails,module)
     base='/api/v1/family-invitations/'+token
     assert client.post(base+'/setup',json=setup_data()).status_code==202
     with app.app_context():
@@ -143,6 +166,7 @@ def test_invite_otp_attempt_limit_and_resend_invalidates_old_code(app,client,mai
     with app.app_context():
         row=db().get(FamilyInvitation,row['id']);row.pending={**row.pending,'sent_at':row.pending['sent_at']-61};db().commit()
     assert client.post(base+'/resend-otp',json={}).status_code==202
+    assert mails[-1][0]=='member@example.com'
     with app.app_context():
         saved=db().scalar(select(FamilyInvitation).where(FamilyInvitation.email=='member@example.com'));code=otp_code(saved.pending['cid'])
     if old!=code:assert client.post(base+'/verify-otp',json={'otp':old}).status_code==400

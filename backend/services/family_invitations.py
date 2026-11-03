@@ -1,4 +1,4 @@
-"""Single-use invitation link; family email OTP approves member account creation."""
+"""Single-use invitation link; member email OTP verifies account creation."""
 import hmac
 import secrets
 import smtplib
@@ -65,7 +65,7 @@ def create_invite():
     deliver(row.email,'FamilyCare - Family invitation',
         f'Hello {row.full_name},\n{g.user.full_name} ({g.user.email}) invited you to their family as {row.relationship}.\n'
         f'Care area: {row.module}.\nOpen this one-use link within 24 hours:\n{link}\n'
-        'Set your own password. The inviting family receives the setup approval OTP. '
+        'Set your own password. Your setup verification OTP will be sent to this email address. '
         'Accepting links your care profile with this family; they can access that shared profile. Ignore this email if unexpected.')
     audit('family_invite_sent',g.user.id,g.user.id);db().commit()
     return jsonify(invitation=summary(row),email_status='sent'),201
@@ -91,22 +91,21 @@ def preview(token):
     row,owner=resolve(token)
     return jsonify(invitation=summary(row),family=dict(full_name=owner.full_name,email=owner.email),
         form=dict(full_name=row.full_name,email=row.email,readonly=['full_name','email']),
-        otp_destination='inviting_family_email',shared_profile=True)
+        otp_destination='member_email',shared_profile=True)
 
 
-def send_approval(row,owner,pending):
+def send_member_otp(row,pending):
     if pending.get('sent_at') and now().timestamp()-pending['sent_at']<60:
         raise APIError(429,'otp_cooldown','Wait 60 seconds before requesting another OTP')
     cid=uid()
-    deliver(owner.email,'FamilyCare - Approve family member setup',
-        f'{owner.full_name},\n{row.full_name} ({row.email}) is accepting your {row.module} invitation as {row.relationship}.\n'
-        f'Share this approval OTP with that member only: {otp_code(cid)}\nValid for 5 minutes. '
-        'This code approves creation of their independent login and links their care profile to your family.')
-    row.pending={**pending,'cid':cid,'code_hash':code_hash(cid,otp_code(cid)),
+    deliver(row.email,'FamilyCare - Verify your account setup',
+        f'Hello {row.full_name},\nYour FamilyCare account setup verification OTP is: {otp_code(cid)}\n'
+        'Valid for 5 minutes. Do not share this code with anyone.')
+    row.pending={**pending,'otp_destination':'member_email','cid':cid,'code_hash':code_hash(cid,otp_code(cid)),
         'sent_at':now().timestamp(),'expires_at':(now()+timedelta(minutes=5)).timestamp(),'attempts':0}
     db().commit()
-    return jsonify(message='Approval OTP sent to the inviting family email.',email_status='sent',
-        otp_destination='inviting_family_email',expires_in=300,resend_after=60),202
+    return jsonify(message='Verification OTP sent to the member email.',email_status='sent',
+        otp_destination='member_email',expires_in=300,resend_after=60),202
 
 
 def setup(token):
@@ -116,18 +115,18 @@ def setup(token):
     if find_user(row.email):raise APIError(409,'account_exists','This email already has an account')
     if row.pending and now().timestamp()-row.pending['sent_at']<60:
         raise APIError(429,'otp_cooldown','Wait 60 seconds before requesting another OTP')
-    return send_approval(row,owner,dict(mobile_number=value.mobile_number,date_of_birth=value.date_of_birth.isoformat(),password_hash=password_hasher.hash(value.password)))
+    return send_member_otp(row,dict(mobile_number=value.mobile_number,date_of_birth=value.date_of_birth.isoformat(),password_hash=password_hasher.hash(value.password)))
 
 
 def resend(token):
     row,owner=resolve(token)
     if not row.pending:raise APIError(409,'setup_required','Submit the member setup form first')
-    return send_approval(row,owner,row.pending)
+    return send_member_otp(row,row.pending)
 
 
 def verify(token):
     row,owner=resolve(token);value=parse(FamilyOTP);pending=row.pending
-    if not pending or pending['expires_at']<=now().timestamp() or pending['attempts']>=5:
+    if not pending or pending.get('otp_destination')!='member_email' or pending['expires_at']<=now().timestamp() or pending['attempts']>=5:
         raise APIError(400,'otp_unavailable','OTP expired or attempts exhausted; request a fresh OTP')
     if not hmac.compare_digest(pending['code_hash'],code_hash(pending['cid'],value.otp)):
         row.pending={**pending,'attempts':pending['attempts']+1};db().commit()

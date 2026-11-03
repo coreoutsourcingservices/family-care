@@ -1,5 +1,8 @@
 # Family Care backend API
 
+Patient-approved doctor-to-doctor Women report referrals and external report sharing:
+[Doctor handoffs](../api-reference/DOCTOR_HANDOFFS.md).
+
 Women tab sharing, family/doctor View + Edit permissions, expiry and diary APIs:
 [Women tab access](docs/WOMEN_TAB_ACCESS.md).
 Frontend section mapping and request/response JSON for all Women tabs:

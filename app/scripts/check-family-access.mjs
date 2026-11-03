@@ -20,7 +20,7 @@ await page.route('**/api/v1/**',async route=>{
   return json({items:invited?[{...invited,id:'invite',status:'PENDING'}]:[],total:invited?1:0});
  }
  if(path==='/family-invitations/synthetic-token')return json({invitation:{full_name:'Example Member',email:'member@example.com',module:'adult'},family});
- if(path.endsWith('/setup')){setup=req.postDataJSON();return json({email_status:'sent',otp_destination:'inviting_family_email'},202);}
+ if(path.endsWith('/setup')){setup=req.postDataJSON();return json({email_status:'sent',otp_destination:'member_email'},202);}
  if(path.endsWith('/verify-otp')){assert.equal(req.postDataJSON().otp,'123456');member=true;return json({user:own(),csrf_token:'synthetic-csrf',redirect_url:own().redirect_url},201);}
  if(path.endsWith('/doctor-access')){
   if(req.method()==='PUT'){permission=req.postDataJSON();return json({access:{...permission,active:true}});}
@@ -56,10 +56,10 @@ try{
  await page.getByLabel('Create your password',{exact:true}).fill('SyntheticPassword8!');
  await page.getByLabel('Confirm password',{exact:true}).fill('SyntheticPassword8!');
  await page.getByRole('checkbox').check();
- await page.getByRole('button',{name:'Request family approval OTP',exact:true}).click();
- await expect(page.getByText('The OTP was sent to',{exact:false})).toContainText('family@example.com');
+ await page.getByRole('button',{name:'Send verification OTP',exact:true}).click();
+ await expect(page.getByText('The OTP was sent to',{exact:false})).toContainText('member@example.com');
  assert.equal(setup.email,'member@example.com');
- await page.getByLabel('Family approval OTP',{exact:true}).fill('123456');
+ await page.getByLabel('Verification OTP',{exact:true}).fill('123456');
  await page.getByRole('button',{name:'Verify and open my profile',exact:true}).click();
  await expect(page).toHaveURL(/customer\/adult\/dashboard/);
  await expect(page.getByRole('link',{name:'Add member',exact:true})).not.toBeVisible();
@@ -82,5 +82,5 @@ try{
  await page.getByRole('button',{name:'Revoke doctor access',exact:true}).click();
  await expect(page.getByRole('status').filter({hasText:'revoked immediately'})).toBeVisible();assert(revoked);
  assert.deepEqual(errors,[]);
- console.log('PASS mocked browser: invite before adult add, family OTP setup, independent direct member login, child-route denial, scoped expiring doctor permission and revoke; mobile fits. No SMTP email sent.');
+ console.log('PASS mocked browser: invite before adult add, member email OTP setup, independent direct member login, child-route denial, scoped expiring doctor permission and revoke; mobile fits. No SMTP email sent.');
 }finally{await browser.close();}

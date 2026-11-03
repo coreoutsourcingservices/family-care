@@ -11,6 +11,7 @@ import { disableBrowserPush } from '../notifications/api';
 import '../pages/doctor-home.css';
 
 const clinicalMenu = [
+  ['Doctor referrals', Stethoscope, '/doctor/referrals'],
   ['Patients', Users, '/doctor/patients'], ['Child Care', Users, '/doctor/child-care'], ['Vaccination', CalendarDays, '/doctor/vaccination'], ['Consultations', Stethoscope, '/doctor/consultations'], ['Clinical Records', ClipboardList, '/doctor/clinical-records'],
   ['Appointments', CalendarDays, '/doctor/appointments'], ['Prescriptions', FileText, '/doctor/prescriptions'], ['Reports', ClipboardList, '/doctor/reports'], ['Settings', Settings, '/doctor/settings'],
 ] as const;

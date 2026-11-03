@@ -15,6 +15,7 @@ const ClinicalRecords = lazy(() => import('./pages/ClinicalRecords'));
 const Appointments = lazy(() => import('./pages/Appointments'));
 const Prescriptions = lazy(() => import('./pages/Prescriptions'));
 const Reports = lazy(() => import('./pages/Reports'));
+const DoctorHandoffs = lazy(() => import('./pages/DoctorHandoffs'));
 const Settings = lazy(() => import('./pages/Settings'));
 const ChildCare = lazy(() => import('./pages/ChildCare'));
 const Vaccination = lazy(() => import('./pages/Vaccination'));
@@ -41,6 +42,7 @@ export default function DoctorRoutes() {
         <Route path="appointments" element={<Appointments />} />
         <Route path="prescriptions" element={<Prescriptions />} />
         <Route path="reports" element={<Reports />} />
+        <Route path="referrals" element={<DoctorHandoffs />} />
         <Route path="settings" element={<Settings />} />
         <Route path="vaccination-reviews" element={<VaccineReviews />} />
       </Route>
