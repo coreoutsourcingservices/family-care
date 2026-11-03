@@ -30,16 +30,41 @@ class AdultInput(Schema):
     minutes: float | None = Field(default=None, ge=0, le=1440)
     context: str = Field(default='', max_length=160)
 
+    version: str|None = Field(default=None,max_length=40)
+    arm: Literal['','Left','Right'] = ''
+    position: Literal['','Seated','Standing','Lying'] = ''
+    measurement_time: str = Field(default='',pattern=r'^(?:[0-2][0-9]:[0-5][0-9])?$')
+    reading_context: Literal['','Fasting','Pre-meal','Post-meal','Random'] = ''
+    units: Literal['mg/dL','mmol/L']|None = None
+    meal_minutes: int|None = Field(default=None,ge=0,le=1440)
+    strength: str = Field(default='',max_length=100)
+    dose: str = Field(default='',max_length=100)
+    frequency: str = Field(default='',max_length=160)
+    start_date: date|None = None
+    end_date: date|None = None
+    adherence: Literal['','Taken','Missed','Not recorded'] = ''
+    follow_up: date|None = None
+    result_status: Literal['','Scheduled','Completed','Result received','Follow-up required'] = ''
+    history_type: Literal['','Condition','Allergy','Procedure','Hospitalization','Family history'] = ''
+    sleep_hours: float|None = Field(default=None,ge=0,le=24)
+    report_id: str|None = Field(default=None,max_length=36)
+
     @model_validator(mode='after')
     def validate_values(self):
+        from patient.child_routes import today
         self.title = self.title.strip()
         if not self.title:
             raise ValueError('Enter a title')
         required = {'bp': ('systolic','diastolic'), 'glucose': ('glucose',), 'lipids': ('total',)}
         if any(getattr(self, key) is None for key in required.get(self.kind, ())):
             raise ValueError('Enter the required measurements')
-        if self.kind in ('bp','glucose','lipids','lifestyle','history') and self.date > date.today():
+        if self.kind in ('bp','glucose','lipids','lifestyle','history') and self.date > today():
             raise ValueError('Recorded measurements cannot be in the future')
+        if self.kind=='bp' and self.systolic<=self.diastolic:raise ValueError('Systolic must be greater than diastolic')
+        if self.start_date and self.end_date and self.end_date<self.start_date:raise ValueError('End date cannot precede start date')
+        if self.measurement_time and int(self.measurement_time[:2])>23:raise ValueError('Choose a valid measurement time')
+        if self.kind=='glucose':self.units=self.units or 'mg/dL'
+        elif self.units is not None:raise ValueError('Units selection applies to glucose records only')
         return self
 
 def profile(profile_id):
@@ -51,7 +76,9 @@ def profile(profile_id):
     return row
 
 def data(row):
-    return dict(row.data, id=row.id, kind=row.kind, verification_status='SELF_REPORTED')
+    from services.personal_reminders import delivery
+    extra={'delivery_status':delivery('adult',row,g.user.id)} if row.kind=='reminder' else {}
+    return dict(row.data,**extra, id=row.id, kind=row.kind, version=row.updated_at.isoformat(), verification_status='SELF_REPORTED')
 
 def listing(profile_id):
     owner = profile(profile_id)
@@ -68,6 +95,7 @@ def save(profile_id, record_id=None):
         row = db().scalar(select(AdultRecord).where(AdultRecord.id==str(record_id),AdultRecord.profile_id==owner.id,AdultRecord.deleted_at.is_(None)).with_for_update())
         if row is None:
             raise APIError(404,'record_not_found','Record not found')
+        if payload.version and payload.version!=row.updated_at.isoformat():raise APIError(409,'record_conflict','This record changed. Refresh before editing')
         if row.kind != payload.kind:
             raise APIError(422,'invalid_kind','Record type cannot be changed')
     if payload.kind=='consultation_request' and not owner.referred_doctor_id:
@@ -76,7 +104,11 @@ def save(profile_id, record_id=None):
     if created:
         row=AdultRecord(profile_id=owner.id,kind=payload.kind)
         db().add(row)
-    row.data=payload.model_dump(mode='json')
+    if payload.report_id:
+        from core.models import CareReport
+        report=db().get(CareReport,payload.report_id)
+        if not report or report.profile_id!=owner.id or report.deleted_at:raise APIError(422,'invalid_report','Choose a report from this profile')
+    row.data=payload.model_dump(mode='json',exclude={'version'})
     db().flush()
     db().add(AdultRecordRevision(record_id=row.id,actor_id=g.user.id,action='created' if created else 'updated',data=row.data))
     if created and payload.kind=='consultation_request':

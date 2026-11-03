@@ -402,6 +402,7 @@ class WomenAccessGrant(Base):
 class PregnancyCare(Base):
     __tablename__ = 'pregnancy_care'
     profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), primary_key=True)
+    details = C(JSON,nullable=False,default=dict)
     baseline_week = C(I, nullable=False)
     input_month = C(I)
     as_of_date = C(Date, nullable=False)
@@ -427,6 +428,7 @@ class CareReport(Base):
     __tablename__ = 'care_reports'
     id = primary_id()
     profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), nullable=False, index=True)
+    title = C(S(160))
     name = C(S(255), nullable=False)
     category = C(S(32), nullable=False, default='Others', server_default='Others')
     category_reviewed = C(B, nullable=False, default=False, server_default=text('false'))
@@ -514,6 +516,9 @@ class DoctorConsultation(Base):
     concern = C(S(160),nullable=False)
     notes = C(Text,nullable=False,default='')
     requested_at = C(DT,nullable=False)
+    confirmed_at = C(DT)
+    duration_minutes = C(I,nullable=False,default=30)
+    version = C(I,nullable=False,default=1)
     status = C(S(20),nullable=False,default='REQUESTED')
     created_at = C(DT,default=now,nullable=False)
     updated_at = C(DT,default=now,onupdate=now,nullable=False)
@@ -548,3 +553,25 @@ class DoctorReview(Base):
     comment = C(S(1000),nullable=False,default='')
     created_at = C(DT,default=now,nullable=False)
     updated_at = C(DT,default=now,onupdate=now,nullable=False)
+
+
+class DoctorPrescription(Base):
+    __tablename__='doctor_prescriptions'
+    id=primary_id()
+    profile_id=C(Uuid(as_uuid=False),FK('familycare.care_profiles.id',ondelete='CASCADE'),nullable=False,index=True)
+    doctor_id=user_fk(nullable=False,index=True)
+    status=C(S(16),nullable=False,default='DRAFT')
+    data=C(JSON,nullable=False)
+    version=C(I,nullable=False,default=1)
+    issued_at=C(DT)
+    void_reason=C(Text)
+    created_at=C(DT,nullable=False,default=now)
+    updated_at=C(DT,nullable=False,default=now,onupdate=now)
+
+class DoctorAvailability(Base):
+    __tablename__='doctor_availability'
+    id=primary_id()
+    doctor_id=user_fk(nullable=False,index=True)
+    starts_at=C(DT,nullable=False,index=True)
+    duration_minutes=C(I,nullable=False,default=30)
+    active=C(B,nullable=False,default=True)

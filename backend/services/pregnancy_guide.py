@@ -25,11 +25,19 @@ class Stage(Schema):
     week:int|None=Field(default=None,ge=1,le=42,strict=True)
     as_of_date:date=Field(default_factory=date.today)
     active:bool=True
+    due_date:date|None=None
+    due_source:str=Field(default='Not confirmed',max_length=40)
+    lifecycle:str=Field(default='Ongoing',max_length=20)
+    ended_on:date|None=None
     version:int=Field(default=0,ge=0)
     @model_validator(mode='after')
     def validate_stage(self):
         if (self.month is None)==(self.week is None):raise ValueError('Provide either month (1-9) or week (1-42)')
         if self.as_of_date>date.today():raise ValueError('As-of date cannot be in the future')
+        if self.lifecycle not in ('Ongoing','Ended','Postpartum'):raise ValueError('Choose a valid pregnancy stage')
+        if self.due_source not in ('Not confirmed','Clinician confirmed','Ultrasound estimate','Last period estimate'):raise ValueError('Choose a due date source')
+        if self.lifecycle!='Ongoing' and not self.ended_on:raise ValueError('Enter the pregnancy end date')
+        if self.ended_on and self.ended_on>date.today():raise ValueError('Pregnancy end date cannot be in the future')
         return self
 
 def current_week(row):return row.baseline_week+(date.today()-row.as_of_date).days//7
@@ -54,7 +62,7 @@ def preview():
     value=parse(Stage);week=value.week or MONTHS[value.month-1][0]
     return jsonify(guide=guide(week,value.month is not None))
 
-def settings_data(row):return dict(week=row.baseline_week,month=row.input_month,as_of_date=row.as_of_date.isoformat(),active=row.active,version=row.version)
+def settings_data(row):return dict(week=row.baseline_week,month=row.input_month,as_of_date=row.as_of_date.isoformat(),active=row.active,version=row.version,**(row.details or {}))
 def read_care(profile_id):
     profile,_=get_profile(profile_id,'pregnancy')
     row=db().get(PregnancyCare,profile.id)
@@ -68,7 +76,7 @@ def save_care(profile_id):
     if row and row.version!=value.version or not row and value.version!=0:raise APIError(409,'stage_changed','Refresh the pregnancy stage before saving')
     if not row:row=PregnancyCare(profile_id=profile.id,version=0);db().add(row)
     row.baseline_week=value.week or MONTHS[value.month-1][0];row.input_month=value.month
-    row.as_of_date=value.as_of_date;row.active=value.active;row.updated_by=g.user.id;row.version+=1
+    row.as_of_date=value.as_of_date;row.active=value.active and value.lifecycle=='Ongoing';row.details=value.model_dump(mode='json',include={'due_date','due_source','lifecycle','ended_on'});row.updated_by=g.user.id;row.version+=1
     if row.active:notify(row,profile)
     audit('pregnancy_care_updated',profile.owner_id,g.user.id);db().commit()
     return jsonify(settings=settings_data(row),guide=guide(current_week(row),row.input_month is not None) if row.active else None)

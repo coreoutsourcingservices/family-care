@@ -27,6 +27,10 @@ def test_directory_request_completion_real_rating_and_isolation(app,client):
     assert client.patch(status,headers=other_clinician,json={'status':'CONFIRMED'}).status_code==404
     assert client.patch(status,headers=clinician,json={'status':'COMPLETED'}).status_code==409
     assert client.patch(status,headers=clinician,json={'status':'CONFIRMED'}).status_code==200
+    assert client.patch(status,headers=clinician,json={'status':'COMPLETED'}).status_code==409
+    with app.app_context():
+        from core.models import DoctorConsultation
+        db().get(DoctorConsultation,visit).confirmed_at=now()-timedelta(hours=1);db().commit()
     assert client.patch(status,headers=clinician,json={'status':'COMPLETED'}).status_code==200
     outsider=patient(app,client,'outsider@example.com')
     assert client.put(review,headers=outsider,json=payload).status_code==403

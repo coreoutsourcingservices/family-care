@@ -256,7 +256,7 @@ def age_date(dob,value,unit):
 def timeline(profile,scheme='UIP',version_id=None):
     context=child_context(profile);items=[]
     records=db().scalars(select(ChildRecord).where(ChildRecord.profile_id==profile.id,ChildRecord.kind=='vaccination',ChildRecord.deleted_at.is_(None))).all()
-    complete=[row for row in records if row.data.get('status')=='Completed']
+    complete=[row for row in records if row.data.get('status')=='Completed' and (row.data.get('source_role')!='REPORT' or row.data.get('reviewed'))]
     rows=published(scheme,version_id)
     # Admin-configured plans are visible before review, with explicit review status.
     pending=db().scalars(select(VaccineSchedule).join(Vaccine,Vaccine.id==VaccineSchedule.vaccine_id).where(Vaccine.active.is_(True),VaccineSchedule.schedule_type==scheme,VaccineSchedule.status.in_(['DRAFT','IN_REVIEW','APPROVED'])).order_by(VaccineSchedule.created_at.desc())).all()
@@ -293,7 +293,7 @@ def timeline(profile,scheme='UIP',version_id=None):
             status='REVIEW_REQUIRED';reasons.append('Admin-configured plan: medical review and publication are pending')
         if decision and decision['decision']=='NOT_APPLICABLE':
             status='NOT_APPLICABLE';reasons.append('Connected doctor recorded this dose as not applicable for this child')
-        if matching:status='COMPLETED';reasons.append('Completion is parent-reported, not clinical verification; any eligibility concerns above still require review')
+        if matching:status='COMPLETED';reasons.append('Saved administered-dose record; any eligibility concerns above still require review')
         elif status=='OVERDUE':reasons.append('Routine window has passed. Confirm missed-dose planning with your doctor; dates have not been shifted.')
         items.append(dict(id=row.id,vaccine_id=row.vaccine_id,vaccine=data['vaccine'],dose_code=row.dose_code,dose_name=data['dose_name'],version=row.version,schedule_type=scheme,
             recommended_date=start.isoformat(),window_end=end.isoformat(),status=status,reasons=reasons,
@@ -356,15 +356,18 @@ def publication_readiness(scheme,published_count):
     return dict(state=state,catalog_count=catalog_count,message=message)
 
 
-def validate_record(data,profile):
+def validate_record(data,profile,exclude_id=None):
     if data.get('certificate_id'):
         report=db().scalar(select(CareReport).where(CareReport.id==data['certificate_id'],CareReport.profile_id==profile.id,CareReport.deleted_at.is_(None)))
         if not report:raise APIError(422,'invalid_certificate','Certificate must be a report uploaded to this child’s profile')
     if data.get('schedule_id'):
         schedule=schedule_row(data['schedule_id'])
         if schedule.status not in ('PUBLISHED','RETIRED'):raise APIError(422,'unpublished_schedule','Select a published dose version')
-        if data.get('vaccine_id')!=schedule.vaccine_id:raise APIError(422,'invalid_vaccine','Vaccine and dose do not match')
-        data['dose_code']=schedule.dose_code;data['schedule_type']=schedule.schedule_type
+        if data.get('vaccine_id') and data['vaccine_id']!=schedule.vaccine_id:raise APIError(422,'invalid_vaccine','Vaccine and dose do not match')
+        data['vaccine_id']=schedule.vaccine_id;data['dose_code']=schedule.dose_code;data['schedule_type']=schedule.schedule_type
+        if data.get('status')=='Completed':
+            duplicates=db().scalars(select(ChildRecord).where(ChildRecord.profile_id==profile.id,ChildRecord.kind=='vaccination',ChildRecord.deleted_at.is_(None),ChildRecord.id!=exclude_id,((ChildRecord.data['schedule_id'].as_string()==str(schedule.id)) | ((ChildRecord.data['vaccine_id'].as_string()==str(schedule.vaccine_id)) & (ChildRecord.data['dose_code'].as_string()==schedule.dose_code) & (ChildRecord.data['schedule_type'].as_string()==schedule.schedule_type)))))
+            if any(row.data.get('status')=='Completed' and not(data.get('source_id') and data.get('source_id')==row.data.get('source_id')) for row in duplicates):raise APIError(409,'dose_already_recorded','This scheduled dose is already recorded as completed. Review the existing entry')
     elif data.get('vaccine_id'):raise APIError(422,'dose_required','Select a published dose version or use the unlisted record form')
 
 

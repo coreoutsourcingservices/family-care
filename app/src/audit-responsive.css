@@ -1,0 +1,62 @@
+/* Shared viewport rules: retain readable desktop sizing without page scaling. */
+*,*::before,*::after{box-sizing:border-box}
+html{max-width:100%;text-size-adjust:100%;-webkit-text-size-adjust:100%}
+body{margin:0;min-width:320px}
+img,video,svg,canvas{max-width:100%}
+input,select,textarea,fieldset{min-width:0;max-width:100%}
+fieldset{margin-inline:0}
+.ch-main,.ch-content,.ah-main,.ah-content,.wh-content,.doctor-workspace-main,.doctor-workspace-content,.sa-main,.sa-page-content{min-width:0}
+.ch-content,.ah-content,.doctor-workspace-content,.sa-page-content{width:100%;max-width:1510px;margin-inline:auto}
+.clinical-form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px;padding:18px 0}
+.clinical-form-grid label,.prescription-document p{overflow-wrap:anywhere}
+.clinical-form-grid label{display:grid;gap:7px;min-width:0;font-size:14px}
+.clinical-form-grid input,.clinical-form-grid select,.clinical-form-grid textarea{border:1px solid #cbdcda;border-radius:8px;padding:10px;width:100%;font:inherit;background:white}
+.doctor-home .dw-table td{font-size:13px;line-height:1.65;color:#34445d}
+.doctor-home .dw-table th{font-size:12px;color:#53647d}
+.doctor-home .dw-page-heading p,.doctor-home .dw-panel>p{font-size:14px;line-height:1.65;color:#52637b}
+.doctor-home .dw-row-actions button{border:1px solid #d8d4eb;background:#fff;color:#5d48a4;border-radius:8px;padding:8px 11px;font-size:12px;cursor:pointer}
+.doctor-home .dw-row-actions button:hover{background:#f2effb}
+.doctor-home .dw-row-actions button:disabled{opacity:.5;cursor:not-allowed}
+.dw-filter-label{display:flex;align-items:center;gap:12px;font-size:14px;margin:18px 0}
+.dw-filter-label select{border:1px solid #d8d4eb;border-radius:8px;background:white;padding:10px 14px;font:inherit}
+.prescription-document{line-height:1.75;font-size:14px}
+.prescription-document li{margin-block:12px}
+.prescription-document p{color:#45586b}
+.prescription-document>h3{font-size:20px}
+.prescription-editor>fieldset{border:0;padding:0;display:grid;gap:16px}
+.prescription-editor label{display:grid;gap:7px;font-size:14px}
+.prescription-editor input,.prescription-editor textarea{width:100%;border:1px solid #d8d4eb;border-radius:8px;padding:10px;font:inherit;background:#fff}
+.ah-record-form label{display:grid;gap:8px;font-size:13px;color:#365e54}
+.ah-record-form input,.ah-record-form select,.ah-record-form textarea{width:100%;padding:11px;border:1px solid #d2e3d9;border-radius:9px;background:#fff;font:inherit}
+.ah-record-form fieldset{border:0;padding:0}
+.dw-row-actions,.care-actions,.activity-confirm-actions{flex-wrap:wrap;gap:8px}
+.dw-table-wrap,.ah-table-wrap,.table-scroll,.ch-chart-table-scroll{max-width:100%;overflow:auto;overscroll-behavior-inline:contain}
+.ch-vaccine-rows article,.child-vaccine-rows article{min-width:0}
+.child-vaccine-rows article>div{min-width:0;overflow-wrap:anywhere}
+.information-page{max-width:1000px;margin-inline:auto;line-height:1.75}
+.information-page p{max-width:78ch}
+.customer-session-status{max-width:600px;margin:12vh auto;padding:24px;line-height:1.6}
+:where(button,a,input,select,textarea,summary):focus-visible{outline:3px solid #188e87;outline-offset:3px}
+@media(min-width:1600px){
+ .doctor-workspace-content,.sa-page-content{padding-inline:32px}
+ .ch-page-heading h1,.ah-section-heading h1{font-size:32px}
+}
+@media(max-width:760px){
+ .clinical-form-grid{grid-template-columns:1fr}
+ .dw-page-heading,.ah-section-heading,.ch-page-heading,.page-heading{gap:16px;flex-wrap:wrap;align-items:flex-start}
+ .dw-toolbar,.ah-table-tools,.child-vaccine-toolbar,.child-vaccine-filters{flex-wrap:wrap;min-width:0}
+ .dw-toolbar>*{max-width:100%;min-width:0}
+ .dw-toolbar select,.ah-table-tools input,.child-vaccine-filters label{flex:1 1 180px}
+ .ch-content,.ah-content,.doctor-workspace-content,.sa-page-content{padding-inline:16px}
+ .wh-modal,.modal,.activity-confirm{width:calc(100% - 24px);max-height:calc(100dvh - 32px);overflow:auto}
+ .dw-panel,.ah-card,.ch-panel{min-width:0}
+ .dw-panel form>fieldset{border:0;padding:0}
+ .dw-table,.ah-table-wrap table{min-width:650px}
+ .child-vaccine-rows article{display:grid;grid-template-columns:32px minmax(0,1fr);gap:10px}
+ .child-vaccine-badge{grid-column:2;justify-self:start}
+ .child-vaccine-age-group summary{gap:8px;flex-wrap:wrap}
+ :where(input,select,textarea){font-size:16px}
+ :where(.dw-toolbar button,.dw-row-actions button,.clinical-form-grid button,.ch-button,.ah-button,.activity-delete){min-height:44px}
+ .prescription-document{padding:18px;overflow-wrap:anywhere}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}

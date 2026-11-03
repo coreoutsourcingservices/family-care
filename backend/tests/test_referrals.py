@@ -36,7 +36,7 @@ def test_doctor_referral_contact_and_patient_signup_connection(app, client):
     assert detail.status_code == 200
     assert detail.json['doctor'] == dict(referral_id=referral_id, public_id=login.json['user']['public_id'],
         full_name='Dr Rahul Kumar', email='rahul@example.com', mobile_number='+919876543211',
-        account_status='ACTIVE', approval_status='APPROVED')
+        account_status='ACTIVE', approval_status='APPROVED',photo=None,specialization=None)
     assert login.json['user']['referral_id'] == referral_id
     data = registration()
     data['referral_id'] = referral_id.upper()

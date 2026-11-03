@@ -10,7 +10,7 @@ from services.women_workspace import is_primary,recipients
 from services.health_access import GrantInput,event,history
 
 bp=Blueprint('adult_workspace',__name__,url_prefix='/api/v1/adult-access')
-TABS=dict(bp='Blood pressure',glucose='Blood sugar',lipids='Cholesterol',medicine='Prescriptions',lifestyle='Growth & nutrition',screening='Preventive care',history='Medical history',reports='Medical reports',consultation_request='Doctor consultation')
+TABS=dict(bp='Blood pressure',glucose='Blood sugar',lipids='Cholesterol',medicine='Medicines',lifestyle='Lifestyle',screening='Preventive care',history='Medical history',reports='Medical reports',consultation_request='Doctor consultation')
 
 
 def permissions(profile):
@@ -64,7 +64,8 @@ def access_history(profile_id):return history(profile(profile_id,manage=True)[0]
 def workspace(profile_id):
     row,allowed=profile(profile_id)
     rows=db().scalars(select(AdultRecord).where(AdultRecord.profile_id==row.id,AdultRecord.deleted_at.is_(None),AdultRecord.kind.in_(allowed)))
-    return jsonify(profile=dict(id=row.id,name=row.name,dob=row.dob.isoformat()),owner=is_primary(g.user,row),permissions=allowed,records=[dict(r.data,id=r.id,kind=r.kind) for r in rows])
+    grant=None if is_primary(g.user,row) else db().scalar(select(AdultTabGrant).where(AdultTabGrant.profile_id==row.id,AdultTabGrant.recipient_id==g.user.id))
+    return jsonify(profile=dict(id=row.id,name=row.name,dob=row.dob.isoformat()),owner=is_primary(g.user,row),permissions=allowed,access_expires_at=grant.expires_at.isoformat()+'Z' if grant and grant.expires_at else None,records=[dict(r.data,id=r.id,kind=r.kind,version=r.updated_at.isoformat()) for r in rows])
 
 
 def shared():

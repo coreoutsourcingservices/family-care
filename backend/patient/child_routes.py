@@ -28,6 +28,7 @@ def today():
 
 
 class RecordInput(Schema):
+    version: str|None = Field(default=None,max_length=40)
     source_id: str | None = Field(default=None, pattern=r'^[a-fA-F0-9-]{36}$')
     title: str = Field(min_length=1, max_length=160)
     date: date
@@ -80,7 +81,7 @@ def child(child_id, lock=False):
 
 
 def record_data(record):
-    data = dict(record.data, id=record.id, kind=record.kind, verification_status='EXTRACTED_UNREVIEWED' if record.data.get('source_role')=='REPORT' else 'DOCTOR_REPORTED' if record.data.get('source_role')=='DOCTOR' else 'PARENT_REPORTED')
+    data = dict(record.data, id=record.id, kind=record.kind, version=record.updated_at.isoformat(), verification_status='EXTRACTED_UNREVIEWED' if record.data.get('source_role')=='REPORT' else 'DOCTOR_REPORTED' if record.data.get('source_role')=='DOCTOR' else 'PARENT_REPORTED')
     if record.kind == 'vaccination':
         from services.vaccination import display_age_group
         profile = db().get(CareProfile, record.profile_id)
@@ -142,7 +143,7 @@ def query_records(profile_id, kind=None):
     return query.where(ChildRecord.kind == kind) if kind else query
 
 
-def validate_record(payload, kind, profile):
+def validate_record(payload, kind, profile, exclude_id=None):
     if payload.date < profile.dob:
         raise APIError(422, 'invalid_date', 'Record date cannot be before birth')
     if kind in ('growth', 'history', 'nutrition') and payload.date > today():
@@ -158,7 +159,7 @@ def validate_record(payload, kind, profile):
     data = payload.model_dump(mode='json')
     if kind=='vaccination':
         from services.vaccination import validate_record as validate_vaccination
-        validate_vaccination(data,profile)
+        validate_vaccination(data,profile,exclude_id)
     if kind == 'consultation_request':
         data['status'] = 'REQUESTED'
         data['doctor_id'] = profile.referred_doctor_id
@@ -224,8 +225,9 @@ def edit_record(child_id, resource, record_id):
     patch = request.get_json()
     if not isinstance(patch, dict) or not patch:
         raise APIError(400, 'invalid_json', 'A non-empty JSON object is required')
+    if patch.get('version') and patch['version']!=row.updated_at.isoformat():raise APIError(409,'record_conflict','This record changed. Refresh before saving')
     existing = {key:value for key,value in row.data.items() if key in RecordInput.model_fields}
-    data = validate_record(RecordInput.model_validate(dict(existing, **patch)), row.kind, profile)
+    data = validate_record(RecordInput.model_validate(dict(existing, **patch)), row.kind, profile, row.id)
     db().add(ChildRecordRevision(record_id=row.id, actor_id=g.user.id, action='updated', data=row.data))
     for key in ('source_role','author_id','source_report_id','source_report_section','reviewed','extraction_status','date_source'):
         if key in row.data:data[key]=row.data[key]

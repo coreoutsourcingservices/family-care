@@ -35,12 +35,19 @@ def count(user_id):
 
 def inbox():
     from services.profile_planner import scan_tasks
-    if g.user.role=='PATIENT':scan_tasks(g.user.id)
+    if g.user.role=='PATIENT':
+        scan_tasks(g.user.id)
+        from services.personal_reminders import scan
+        scan(g.user.id)
     page,size=pagination()
     rows,total=paginate(select(AppNotification).where(AppNotification.user_id==g.user.id).order_by(AppNotification.id.desc()),page,size)
     return jsonify(items=[serialize(row) for row in rows],total=total,unread_count=count(g.user.id),page=page,per_page=size)
 
-def unread():return jsonify(unread_count=count(g.user.id))
+def unread():
+    if g.user.role=='PATIENT':
+        from services.personal_reminders import scan
+        scan(g.user.id)
+    return jsonify(unread_count=count(g.user.id))
 
 def mark(notification_id):
     row=db().scalar(select(AppNotification).where(AppNotification.id==notification_id,AppNotification.user_id==g.user.id).with_for_update())

@@ -31,7 +31,7 @@ Cloudinary credentials must stay in local `.env`; restart after changing them. L
 
 Flask modular backend for doctor, patient/customer, admin and superadmin identity.
 Supabase is hosted PostgreSQL; Flask owns password hashing, email OTP, approval and JWT.
-No Docker and no frontend/UI.
+The workspace includes the public app (5173), customer portal (5174), doctor portal (5175), Next admin portals (3005) and Flask API (5001). Run migrations before starting the API; use the root workspace scripts for frontends.
 
 ## Start (Windows)
 
@@ -160,3 +160,5 @@ password-reset OTP, account approval and first-login password change are preserv
 Legacy superadmin username login remains compatible. Legacy verify-login-otp routes return HTTP 410.
 
 Medical report image/PDF extraction and optional English translation: [OCR API and runtime setup](docs/REPORT_OCR_API.md). Run the separate `python -m scripts.report_worker` alongside the API.
+
+Audit changes, new clinical APIs, migration and verification: [Implementation notes](docs/AUDIT_IMPLEMENTATION.md).

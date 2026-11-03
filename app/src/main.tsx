@@ -9,3 +9,5 @@ import './women-pink.css';
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element is missing');
 createRoot(rootElement).render(<BrowserRouter><App /></BrowserRouter>);
+
+import './audit-responsive.css';

@@ -34,7 +34,7 @@ def report_data(report,internal=False):
         from core.models import FamilyInvitation
         from sqlalchemy import select
         if db().scalar(select(FamilyInvitation.id).where(FamilyInvitation.profile_id==report.profile_id,FamilyInvitation.owner_id==g.user.id,FamilyInvitation.accepted_at.is_not(None))):url=None
-    return dict(id=report.id, profile_id=report.profile_id, name=report.name, category=report.category, category_reviewed=report.category_reviewed,
+    return dict(id=report.id, profile_id=report.profile_id, name=report.name, title=report.title, category=report.category, category_reviewed=report.category_reviewed,
                 content_type=report.content_type, storage_provider=report.storage_provider,
                 url=url, secure_url=report.secure_url, url_expires_in=300 if url else None,
                 public_id=report.cloudinary_public_id, asset_id=report.cloudinary_asset_id,
@@ -57,13 +57,15 @@ def file_type(content):
 
 def upload_report(user, profile_id, file):
     profile = accessible_profile(user, profile_id)
+    title=request.form.get('title','').strip()
+    if 'title' in request.form and (not title or len(title)>160):raise APIError(422,'invalid_title','Enter a report title up to 160 characters')
     category=request.form.get('category','Others')
     if category not in ('Doctor report','Lab tests','Prescriptions','Scans','Vaccination','Others'):
         raise APIError(422,'invalid_category','Choose a report category')
     auto_read=request.form.get('auto_read')=='true' and category!='Scans'
     from services.report_text import Options,processor_python
     try:
-        options=Options(source_language=request.form.get('source_language','en'),auto_import=True).model_dump(mode='json')
+        options=Options(source_language=request.form.get('source_language','en'),auto_import=False).model_dump(mode='json')
     except ValueError:
         raise APIError(422,'invalid_language','Choose a supported document language') from None
     if auto_read and not processor_python().is_file():
@@ -94,7 +96,7 @@ def upload_report(user, profile_id, file):
             or result.get('resource_type') != resource_type
             or not result.get('secure_url', '').startswith('https://res.cloudinary.com/'+keys['cloud_name']+'/')):
         raise APIError(502, 'invalid_upload_response', 'Cloudinary returned unexpected report metadata')
-    report = CareReport(id=report_id, profile_id=profile.id, name=name, category=category,category_reviewed='category' in request.form,content_type=content_type,
+    report = CareReport(id=report_id, profile_id=profile.id, name=name, title=title or None, category=category,category_reviewed='category' in request.form,content_type=content_type,
         storage_provider='cloudinary', content=None, cloudinary_public_id=public_id,
         cloudinary_asset_id=result.get('asset_id'), secure_url=result['secure_url'], folder=folder,
         resource_type=resource_type, delivery_type='authenticated',

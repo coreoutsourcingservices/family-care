@@ -1,0 +1,8 @@
+import {useEffect,useState} from 'react';
+import {careApi} from '../lib/careApi';
+type Prescription={id:string;status:string;doctor_name:string;issued_at:string;void_reason?:string;data:{medicines:{name:string;strength:string;dose:string;frequency:string;duration:string;instructions:string}[];instructions:string;follow_up?:string}};
+export default function IssuedPrescriptions({profileId}:{profileId:string}){
+ const [rows,setRows]=useState<Prescription[]>([]),[error,setError]=useState(''),[loading,setLoading]=useState(true);
+ useEffect(()=>{let active=true;setRows([]);setError('');setLoading(true);careApi<{items:Prescription[]}>(`/patients/profiles/${profileId}/prescriptions`).then(data=>{if(active)setRows(data.items);}).catch(e=>{if(active)setError(e.message);}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;};},[profileId]);
+ return <section className="ch-panel ah-card"><h2>Doctor-issued prescriptions</h2><p>These are separate from uploaded documents and self-entered medicine logs. Voided prescriptions remain in history.</p>{loading&&<p role="status">Loading prescriptions...</p>}{error&&<p role="alert">{error}</p>}{rows.map(row=><article key={row.id} className="prescription-document"><h3>{row.doctor_name} / {row.status}</h3><small>{new Date(row.issued_at).toLocaleString('en-IN')}</small><ul>{row.data.medicines.map((m,i)=><li key={i}><strong>{m.name} {m.strength}</strong><p>{m.dose} / {m.frequency} / {m.duration}</p><p>{m.instructions}</p></li>)}</ul><p>{row.data.instructions}</p>{row.data.follow_up&&<p>Follow up: {row.data.follow_up}</p>}{row.void_reason&&<p>Voided: {row.void_reason}</p>}</article>)}{!loading&&!error&&!rows.length&&<p>No issued prescriptions yet.</p>}</section>;
+}
