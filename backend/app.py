@@ -43,7 +43,8 @@ def create_app(overrides=None):
     from services.prescriptions import bp as prescriptions
     app.register_blueprint(prescriptions)
     from services.growth_nutrition import bp as growth_nutrition
-    for blueprint in (auth, doctor, patient, admin, superadmin, children, vaccination, adults, doctor_child_care, notifications, family_invitations, growth_nutrition, women_workspace, adult_workspace, consultation_directory):
+    from services import health_articles
+    for blueprint in (auth, doctor, patient, admin, superadmin, children, vaccination, adults, doctor_child_care, notifications, family_invitations, growth_nutrition, health_articles.bp, women_workspace, adult_workspace, consultation_directory):
         app.register_blueprint(blueprint)
 
     @app.before_request

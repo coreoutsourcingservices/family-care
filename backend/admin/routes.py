@@ -29,6 +29,13 @@ from services import patient_directory
 route(bp, '/patients/<user_id>', patient_directory.account_detail, roles=('ADMIN',))
 route(bp, '/patients/<user_id>/profiles', patient_directory.members, roles=('ADMIN',))
 route(bp, '/patients/<user_id>/profiles/<uuid:profile_id>', patient_directory.member_detail, roles=('ADMIN',))
+from services import health_articles
+from core.article_schemas import HealthArticleInput
+route(bp, '/health-articles', health_articles.admin_list, roles=('ADMIN',))
+route(bp, '/health-articles', health_articles.create_article, 'POST', roles=('ADMIN',), schema=HealthArticleInput)
+route(bp, '/health-articles/<uuid:article_id>', health_articles.admin_detail, roles=('ADMIN',))
+route(bp, '/health-articles/<uuid:article_id>', health_articles.update_article, 'PUT', roles=('ADMIN',), schema=HealthArticleInput)
+route(bp, '/health-articles/<uuid:article_id>', health_articles.archive_article, 'DELETE', roles=('ADMIN',))
 
 from services import management_dashboard
 route(bp, '/search', lambda: management_dashboard.search(admin=True), roles=('ADMIN',))

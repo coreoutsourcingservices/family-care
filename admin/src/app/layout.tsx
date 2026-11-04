@@ -3,6 +3,7 @@ import './globals.css';
 import './portal.css';
 import './superadmin.css';
 import './doctor-network.css';
+import './patient-details.css';
 import '../../../app/src/audit-responsive.css';
 import LanguageProvider from '@/components/language-provider';
 export const metadata: Metadata = {title:{default:'Familycare · Care management',template:'%s · Familycare'},description:'Familycare administration and care network management'};

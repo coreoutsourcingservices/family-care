@@ -2,7 +2,7 @@
 import {useEffect,useRef,useState,type ReactNode} from 'react';
 import Link from 'next/link';
 import {usePathname,useRouter} from 'next/navigation';
-import {HeartPulse,Search,ChevronsLeft,ChevronsRight,ChevronDown,Bell,Menu,X,House,UsersRound,Stethoscope,Users,Clock3,Syringe,ChartNoAxesCombined,FileText,CalendarDays,Megaphone,Settings,Logs,Crown,Leaf,LogOut,RefreshCw,Trash2} from 'lucide-react';
+import {HeartPulse,Search,ChevronsLeft,ChevronsRight,ChevronDown,Bell,Menu,X,House,UsersRound,Stethoscope,Users,Clock3,Syringe,ChartNoAxesCombined,CalendarDays,Megaphone,Settings,Logs,Crown,Leaf,LogOut,RefreshCw,Trash2} from 'lucide-react';
 import {api,post} from '@/lib/api';
 import {LanguageSelector} from './language-provider';
 import {useUiTranslation} from '@/lib/i18n';

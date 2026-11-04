@@ -97,6 +97,27 @@ class CustomerNote(Base):
     updated_at = C(DT, default=now, onupdate=now, nullable=False)
 
 
+class HealthArticle(Base):
+    __tablename__ = 'health_articles'
+    __table_args__ = (
+        CK("audience IN ('child','women')", name='audience'),
+        CK("status IN ('DRAFT','PUBLISHED','ARCHIVED')", name='status'),
+        Index('ix_health_articles_publication', 'audience', 'status', 'published_at'),
+    )
+    id = primary_id()
+    title = C(S(180), nullable=False)
+    audience = C(S(16), nullable=False)
+    summary = C(S(600), nullable=False, default='')
+    content = C(Text, nullable=False)
+    cover_image_url = C(S(1000))
+    tags = C(JSON, nullable=False, default=list)
+    status = C(S(16), nullable=False, default='DRAFT')
+    author_id = user_fk(nullable=False, index=True)
+    published_at = C(DT, index=True)
+    created_at = C(DT, default=now, nullable=False)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+
 class PatientProfile(Base):
     __tablename__ = 'patient_profiles'
     user_id = user_fk(primary_key=True)
