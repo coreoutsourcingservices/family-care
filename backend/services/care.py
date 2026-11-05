@@ -9,7 +9,7 @@ from services.approvals import paginate
 
 
 def member_profile(user):
-    return db().scalar(select(CareProfile).join(FamilyInvitation,FamilyInvitation.profile_id==CareProfile.id).where(FamilyInvitation.member_id==user.id,FamilyInvitation.accepted_at.is_not(None),FamilyInvitation.revoked_at.is_(None),CareProfile.deleted_at.is_(None)))
+    return db().scalar(select(CareProfile).join(FamilyInvitation,FamilyInvitation.profile_id==CareProfile.id).where(FamilyInvitation.member_id==user.id,FamilyInvitation.accepted_at.is_not(None),FamilyInvitation.revoked_at.is_(None)))
 
 
 def patient_profile_access(user):
@@ -137,7 +137,7 @@ def list_reports(user, profile_id, page, per_page):
     profile=accessible_profile(user, profile_id)
     from services.profile_doctor_access import require_scope
     grant=require_scope(user,profile,'reports')
-    query=select(CareReport).where(CareReport.profile_id == profile_id)
+    query=select(CareReport).where(CareReport.profile_id == profile_id, CareReport.deleted_at.is_(None))
     if grant and grant.report_ids is not None:query=query.where(CareReport.id.in_(grant.report_ids))
     if user.role=='DOCTOR' and profile.module=='child':query=query.where(CareReport.id.in_(shared_report_ids(profile_id)))
     rows, total = paginate(query.order_by(
@@ -153,7 +153,7 @@ def accessible_report(user, profile_id, report_id):
     if grant and grant.report_ids is not None and report_id not in grant.report_ids:raise APIError(404,'report_not_found','Report is outside the shared permission')
     if user.role=='DOCTOR' and profile.module=='child' and report_id not in shared_report_ids(profile_id):
         raise APIError(404,'report_not_found','Report is not shared in an authorised child care area')
-    report = db().scalar(select(CareReport).where(CareReport.id == report_id, CareReport.profile_id == profile_id))
+    report = db().scalar(select(CareReport).where(CareReport.id == report_id, CareReport.profile_id == profile_id, CareReport.deleted_at.is_(None)))
     if not report:
         raise APIError(404, 'report_not_found', 'Medical report not found')
     return report
@@ -185,6 +185,8 @@ def delete_profile(user,profile_id):
     profile=accessible_profile(user,profile_id,lock=True)
     if profile.profile_type=='self':raise APIError(409,'self_profile_required','Your account self profile cannot be removed here')
     profile.deleted_at=now()
+    from services.recycle_bin import retain
+    retain('profile',profile,profile_id=profile.id)
     audit('care_profile_removed',user.id,user.id)
     db().commit()
     return jsonify(message='Profile removed. Its private records are retained and no longer accessible through the care workspace.')

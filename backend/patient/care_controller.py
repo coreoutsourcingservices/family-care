@@ -36,7 +36,7 @@ def upload_report(profile_id):
         raise APIError(422, 'report_file_required', 'Send exactly one file in field file')
     return care_uploads.upload_report(g.user, str(profile_id), request.files['file'])
 
-
+ 
 def download_report(profile_id, report_id):
     return care_uploads.download_report(g.user, str(profile_id), str(report_id))
 

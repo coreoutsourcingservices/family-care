@@ -1,20 +1,17 @@
-import { Hero, CareGrid, TrustBar } from '../components/Website';
-import { WhyFamilyCare, HowItWorks, PlatformPreview, FamilyProfiles, DoctorSection, ReminderPreview, FAQ, FinalCTA } from '../components/Sections';
+import {Link} from 'react-router-dom';
+import {Home as HomeIcon,CalendarDays,FolderHeart,Check,ArrowRight,ShieldCheck,Heart,Users,Bell,Smartphone,Stethoscope} from 'lucide-react';
+import {MarketingHero,MarketingTrustStrip,MarketingHeading,MarketingButton,MarketingServiceCards,MarketingCareTeam,MarketingVisitBanner,MarketingStoryCarousel,MarketingHealthInsights,careJourney} from '../components/MarketingSite';
 
-export default function Home() {
-  return (
-    <>
-      <Hero />
-      <CareGrid />
-      <TrustBar />
-      <WhyFamilyCare />
-      <HowItWorks />
-      <PlatformPreview />
-      <FamilyProfiles />
-      <DoctorSection />
-      <ReminderPreview />
-      <FAQ />
-      <FinalCTA />
-    </>
-  );
+export default function Home(){
+ return <div className="mc-home">
+  <MarketingHero/><MarketingTrustStrip/>
+  <section className="mc-container mc-why mc-section" id="family-care"><div><MarketingHeading eyebrow="WHY FAMILYCARE?" title={<>A Smarter Way to<br/>Care for Your Family</>}>Your family has different needs. Bring care, records and everyday health information together in one connected place.</MarketingHeading><MarketingButton to="/about" secondary>Learn More</MarketingButton></div>
+   <div className="mc-benefit-grid">{[{icon:HomeIcon,title:'Family Care',text:'Individual profiles, shared connections, and care for every generation.'},{icon:CalendarDays,title:'Easier Consultations',text:'Connect with a doctor and keep consultation requests in one place.'},{icon:FolderHeart,title:'Organized Records',text:'Keep reports and health notes together, with sharing in your control.'}].map(item=><article className="mc-benefit-card" key={item.title}><span className="mc-dimensional-icon"><item.icon/></span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
+  </section>
+  <section className="mc-container mc-section mc-services-section" id="our-services"><div className="mc-heading-row"><MarketingHeading eyebrow="OUR SERVICES" title="Complete Care, All in One Place"/><MarketingButton secondary to="/services">View All Services</MarketingButton></div><MarketingServiceCards/></section>
+  <section className="mc-container mc-section mc-home-journey"><div><MarketingHeading eyebrow="ABOUT US" title={<>Our Journey{' '}<br/>of Care & Trust</>}>Making healthcare simpler, more connected, and truly family-centered. One thoughtful step at a time.</MarketingHeading><MarketingButton to="/about">Our Story</MarketingButton></div><div className="mc-journey-list">{careJourney.map((step,index)=><div className="mc-journey-step" key={step.label}><span className="mc-journey-number">0{index+1}</span><span className="mc-timeline-dot"/><article><step.icon/><div><h3>{step.label}</h3><p>{step.copy}</p></div></article></div>)}</div></section>
+  <MarketingCareTeam/><MarketingVisitBanner/>
+  <section className="mc-container mc-section mc-anywhere"><div className="mc-phones" aria-label="Illustration of the FamilyCare mobile workspace"><div className="mc-phone mc-phone-back"><span className="mc-phone-notch"/><div className="mc-phone-logo"><span><Heart/></span><strong>FamilyCare+</strong><small>Your family. Connected.</small></div></div><div className="mc-phone mc-phone-front"><span className="mc-phone-notch"/><div className="mc-phone-ui"><strong>Good morning.</strong><small>Who are we caring for today?</small>{[{icon:Users,label:'Family profiles'},{icon:Heart,label:'Child Care'},{icon:FolderHeart,label:'Health reports'},{icon:Bell,label:'Reminders'}].map(item=><span key={item.label}><item.icon/>{item.label}<ArrowRight/></span>)}<div className="mc-phone-bottom"/></div></div></div><div className="mc-anywhere-copy"><MarketingHeading eyebrow="CARE ON ANY SCREEN" title="Take FamilyCare+ with You">Health records, care notes and consultation requests. Your family's care, wherever your day takes you.</MarketingHeading><MarketingButton to="/customer/login">Open Your Family Workspace</MarketingButton><small>Made for your phone, tablet and desktop.</small></div><ul className="mc-checklist">{['Individual health profiles','Consultation requests','Reports & care records','Permission-based sharing'].map(item=><li key={item}><Check size={18}/>{item}</li>)}</ul></section>
+  <MarketingStoryCarousel/><MarketingHealthInsights/>
+ </div>;
 }

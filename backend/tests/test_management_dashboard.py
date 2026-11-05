@@ -17,6 +17,7 @@ def test_dashboard_aggregates_real_accounts_children_and_growth(app,client,monke
     aged=create_profile(client,owner,date_of_birth='2013-10-31')
     with app.app_context():
         admin=db().scalar(select(User).where(User.role=='ADMIN'));admin.created_at=datetime(2025,1,1)
+        for user in db().scalars(select(User).where(User.role.in_(['PATIENT','DOCTOR']))):user.created_at=datetime(2026,10,30)
         db().add(ApprovalRequest(applicant_id=doctor_id,applicant_role='DOCTOR',status='APPROVED'))
         db().get(CareProfile,hidden).deleted_at=datetime(2026,10,30)
         db().add(ChildGrowthNutritionSetting(profile_id=child,active=False,updated_by=doctor_id))
@@ -69,14 +70,14 @@ def test_dashboard_search_and_pending_role_boundaries(app,client):
     auth=bearer(client.post('/api/v1/superadmin/login',json={'email':'super@example.com','password':PASSWORD}))
     data=client.get('/api/v1/superadmin/dashboard',headers=auth).json
     assert data['pending_requests']['total']==2
-    assert {p['role']:p['can_review'] for p in data['pending_requests']['items']}=={'ADMIN':True,'DOCTOR':False}
+    assert {p['role']:p['can_review'] for p in data['pending_requests']['items']}=={'ADMIN':True,'DOCTOR':True}
     results=client.get('/api/v1/superadmin/search?q=100%25',headers=auth).json['items']
     assert len(results)==1 and results[0]['email']=='pending@example.com'
     assert client.get('/api/v1/superadmin/search?q=x',headers=auth).json['items']==[]
     assert client.get('/api/v1/superadmin/search?q=Example').status_code==401
     filtered=client.get('/api/v1/superadmin/admins?search=pending@example.com',headers=auth).json
     assert filtered['total']==1
-    # Superadmin can review administrators, not doctor accounts.
+    # Superadmin reviews users through its own routes, never ordinary Admin endpoints.
     assert client.post(f'/api/v1/admin/doctors/{doctor_id}/approve',headers=auth,json={}).status_code==403
 
 

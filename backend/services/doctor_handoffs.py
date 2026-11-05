@@ -71,7 +71,7 @@ def source_profile(profile_id, source_id):
 
 
 def reports(row):
-    result = list(db().scalars(select(CareReport).where(CareReport.profile_id == row.profile_id, CareReport.id.in_(row.report_ids)).order_by(CareReport.id)))
+    result = list(db().scalars(select(CareReport).where(CareReport.profile_id == row.profile_id, CareReport.deleted_at.is_(None), CareReport.id.in_(row.report_ids)).order_by(CareReport.id)))
     if {r.id for r in result} != set(row.report_ids):
         raise APIError(409, 'reports_changed', 'A selected report is unavailable; create a new referral')
     return result
@@ -86,7 +86,7 @@ def data(row, full=True):
         external=not row.recipient_id, status='EXPIRED' if row.expires_at <= now() else row.status,
         expires_at=row.expires_at.isoformat()+'Z', created_at=row.created_at.isoformat()+'Z')
     if full:
-        available = {r.id:r.name for r in db().scalars(select(CareReport).where(CareReport.profile_id == row.profile_id, CareReport.id.in_(row.report_ids)))}
+        available = {r.id:r.name for r in db().scalars(select(CareReport).where(CareReport.profile_id == row.profile_id, CareReport.deleted_at.is_(None), CareReport.id.in_(row.report_ids)))}
         result.update(patient_name=profile.name, summary=row.summary, recipient_email=row.recipient_email,
             recipient_phone=row.recipient_phone, reports=[dict(id=report_id, name=available.get(report_id, 'Report no longer available')) for report_id in row.report_ids])
     return result
@@ -94,7 +94,7 @@ def data(row, full=True):
 
 def options(profile_id):
     profile = source_profile(profile_id, g.user.id)
-    rows = db().scalars(select(CareReport).where(CareReport.profile_id == profile.id).order_by(CareReport.created_at.desc()))
+    rows = db().scalars(select(CareReport).where(CareReport.profile_id == profile.id, CareReport.deleted_at.is_(None)).order_by(CareReport.created_at.desc()))
     return jsonify(patient_name=profile.name, reports=[dict(id=r.id, name=r.name, category=r.category) for r in rows])
 
 

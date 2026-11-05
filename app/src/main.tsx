@@ -5,6 +5,7 @@ import './styles.css';
 import './responsive.css';
 import './family-mobile-layout.css';
 import './women-pink.css';
+import './customer-screen-fit.css';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element is missing');

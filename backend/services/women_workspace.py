@@ -134,7 +134,9 @@ def revoke_sharing(profile_id, grant_id):
 
 
 def record_data(row):
-    return dict(row.data, id=row.id, section=row.section, version=str(row.version))
+    from services.personal_reminders import delivery
+    extra={'delivery_status':delivery('women',row,g.user.id)} if row.section=='reminder' else {}
+    return dict(row.data, id=row.id, section=row.section, version=str(row.version),**extra)
 
 
 def workspace(profile_id):
@@ -155,6 +157,19 @@ class WomenRecordInput(Schema):
     data: dict[str, str] = Field(max_length=20)
     version: int = Field(default=0, ge=0)
 
+    @model_validator(mode='after')
+    def topic_fields(self):
+        statuses={'screening':{'Planned','Scheduled','Completed','Result received','Follow-up required'},'reminder':{'Planned','Completed','Dismissed'}}.get(self.section,{'Planned','Completed'})
+        if self.data.get('status') and self.data['status'] not in statuses:raise ValueError('Choose a valid status for this section')
+        allowed={'flow':{'Light','Medium','Heavy'},'severity':{'Mild','Moderate','Severe'},'diagnosis_source':{'Self-reported symptoms','Clinician-confirmed diagnosis'},'due_source':{'Not confirmed','Clinician confirmed','Ultrasound estimate','Last period estimate'},'pregnancy_status':{'Ongoing','Ended','Postpartum'}}
+        for field,choices in allowed.items():
+            if self.data.get(field) and self.data[field] not in choices:raise ValueError('Choose a valid '+field.replace('_',' '))
+        if self.section=='pregnancy' and self.data.get('pregnancy_status') in ('Ended','Postpartum') and not self.data.get('ended_on'):raise ValueError('Enter the pregnancy end date')
+        if self.data.get('ended_on'):
+            from patient.child_routes import today
+            if date.fromisoformat(self.data['ended_on'])>today():raise ValueError('Pregnancy end date cannot be in the future')
+        return self
+
     @field_validator('section')
     @classmethod
     def valid_section(cls, value):
@@ -167,14 +182,18 @@ class WomenRecordInput(Schema):
     def valid_data(cls, value):
         if not value.get('title', '').strip() or len(value['title']) > 120:
             raise ValueError('A title up to 120 characters is required')
-        date.fromisoformat(value.get('date', ''))
+        first=date.fromisoformat(value.get('date', ''))
+        if first.isoformat()!=value['date']:raise ValueError('Use YYYY-MM-DD dates')
+        for key in ('end','due','next','ended_on'):
+            if value.get(key):date.fromisoformat(value[key])
+        if value.get('pain_score') and not 0<=float(value['pain_score'])<=10:raise ValueError('Pain score must be between 0 and 10')
         if any(len(v) > 2000 for v in value.values()):
             raise ValueError('Diary fields must be 2000 characters or shorter')
         if value.get('end') and value['end'] < value['date']:
             raise ValueError('End date must be on or after start date')
         if value.get('week') and not 1 <= int(value['week']) <= 45:
             raise ValueError('Pregnancy week must be between 1 and 45')
-        if value.get('status') and value['status'] not in ('Planned', 'Completed'):
+        if value.get('status') and value['status'] not in ('Planned','Scheduled','Completed','Result received','Follow-up required','Dismissed'):
             raise ValueError('Choose a valid status')
         return {k: v for k, v in value.items() if k not in ('id', 'section', 'version')}
 
@@ -189,8 +208,16 @@ def put_record(profile_id, record_id):
         raise APIError(409, 'record_conflict', 'This diary entry was removed or has another section')
     if row and row.version != value.version or not row and value.version != 0:
         raise APIError(409, 'record_conflict', 'Entry changed. Refresh before saving again')
+    first=date.fromisoformat(value.data['date'])
+    if first<profile.dob:raise APIError(422,'invalid_date','Diary date cannot precede birth')
+    if value.section=='cycle':
+        from patient.child_routes import today
+        if first>today():raise APIError(422,'invalid_date','A recorded period cannot start in the future')
+        last=date.fromisoformat(value.data.get('end') or value.data['date'])
+        others=db().scalars(select(WomenDiaryRecord).where(WomenDiaryRecord.profile_id==profile.id,WomenDiaryRecord.section=='cycle',WomenDiaryRecord.id!=str(record_id),WomenDiaryRecord.deleted_at.is_(None)))
+        if any(first<=date.fromisoformat(r.data.get('end') or r.data['date']) and last>=date.fromisoformat(r.data['date']) for r in others):raise APIError(409,'overlapping_period','This period overlaps an existing entry. Edit that entry instead')
     if not row:
-        row = WomenDiaryRecord(id=str(record_id), profile_id=profile.id, section=value.section, version=0)
+        row = WomenDiaryRecord(id=str(record_id), profile_id=profile.id, section=value.section, version=0, data={})
         db().add(row)
     row.data = value.data
     row.version += 1
@@ -210,6 +237,8 @@ def delete_record(profile_id, record_id):
     if request.args.get('version') != str(row.version):
         raise APIError(409, 'record_conflict', 'Entry changed. Refresh before deleting again')
     row.deleted_at = now()
+    from services.recycle_bin import retain
+    retain('women_diary',row,profile_id=profile.id)
     audit('women_diary_removed', profile.owner_id, g.user.id)
     db().commit()
     return jsonify(message='Diary entry deleted')
@@ -233,14 +262,14 @@ def reports(profile_id):
     profile, _ = get_profile(profile_id, 'records', edit=request.method == 'POST')
     g.women_authorized = profile.id
     if request.method == 'POST':
-        from services.care_uploads import upload_report
-        response, status = upload_report(g.user, profile.id, request.files.get('file'))
+        from patient.care_controller import upload_report
+        response, status = upload_report(profile.id)
         report = response.get_json()['report']
         report.update(url=None, secure_url=None)
         return jsonify(report=report), status
     from core.models import CareReport
     from services.care_uploads import report_data
-    items = db().scalars(select(CareReport).where(CareReport.profile_id == profile.id).order_by(CareReport.created_at.desc()))
+    items = db().scalars(select(CareReport).where(CareReport.profile_id == profile.id, CareReport.deleted_at.is_(None)).order_by(CareReport.created_at.desc()))
     return jsonify(items=[dict(report_data(r), url=None, secure_url=None) for r in items])
 
 
@@ -250,7 +279,7 @@ def download(profile_id, report_id):
     from services.report_text import report_bytes
     from flask import send_file
     import io
-    report = db().scalar(select(CareReport).where(CareReport.id == str(report_id), CareReport.profile_id == profile.id))
+    report = db().scalar(select(CareReport).where(CareReport.id == str(report_id), CareReport.profile_id == profile.id, CareReport.deleted_at.is_(None)))
     if not report:
         raise APIError(404, 'report_not_found', 'Report not found')
     try:

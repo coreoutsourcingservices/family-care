@@ -1,10 +1,11 @@
+import {calendarAgeMonths,monthAgeLabel} from './vaccinationAge';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Syringe, Sprout, ClipboardList, Stethoscope, Heart, FileText } from 'lucide-react';
 import ChildDashboardCharts from './ChildDashboardCharts';
 import GrowthOverview from './GrowthOverview';
-import { formatDate, type ChildEntry } from './childRecords';
+import { formatDate, localDate, type ChildEntry } from './childRecords';
 import type { HealthProfile } from '../../../../app/src/lib/healthProfiles';
-export function childAge(dob:string){const birth=new Date(dob+'T00:00:00'),now=new Date();let months=(now.getFullYear()-birth.getFullYear())*12+now.getMonth()-birth.getMonth();if(now.getDate()<birth.getDate())months--;if(months<1)return 'Under 1 month';if(months<24)return months+' months';return Math.floor(months/12)+' years'+(months%12?' '+months%12+' months':'');}
+export function childAge(dob:string){return monthAgeLabel(calendarAgeMonths(dob,localDate()));}
 export default function ChildOverview({profile,entries,base}:{profile:HealthProfile;entries:ChildEntry[];base:string}){
  const shortcuts=[{path:'vaccination',title:'Vaccination',copy:'Doses & dates',icon:Syringe,tone:'blue'},{path:'history',title:'Medical history',copy:'Their health story',icon:ClipboardList,tone:'violet'},{path:'growth',title:'Growth & nutrition',copy:'Little steps forward',icon:Sprout,tone:'mint'},{path:'consultation',title:'Doctor consultation',copy:'Connected care',icon:Stethoscope,tone:'peach'},{path:'care',title:'Child care & notes',copy:'Everyday moments',icon:Heart,tone:'pink'},{path:'reports',title:'Health reports',copy:'Files, all together',icon:FileText,tone:'blue'}];
  return <><section className="ch-welcome ch-sage-welcome"><div><span className="ch-eyebrow">{new Date().getHours()<12?'GOOD MORNING':new Date().getHours()<17?'GOOD AFTERNOON':'GOOD EVENING'}</span><h1>Hello! {profile.name.split(' ')[0]} <span className="ch-wave" aria-hidden="true">{'\uD83D\uDC4B'}</span></h1><p>Here's a snapshot of your child's health and journey today.</p><small>{childAge(profile.dob)}</small></div><div className="ch-leaf-art" aria-hidden="true"><Sprout/><Sprout/></div><img src="/images/child-form-illustration.png" alt="A smiling child holding a teddy bear"/><div className="ch-hero-quote">Healthy habits today,<br/>brighter tomorrows<Heart size={20}/></div></section>

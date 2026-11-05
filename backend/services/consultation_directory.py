@@ -4,7 +4,7 @@ from uuid import UUID
 from typing import Literal
 from flask import Blueprint,g,jsonify,request
 from pydantic import Field,field_validator
-from sqlalchemy import select,func
+from sqlalchemy import select,func,or_
 from core.database import db
 from core.models import User,DoctorProfile,DoctorConsultation,DoctorReview,CareProfile,now
 from core.routing import route
@@ -25,7 +25,7 @@ def primary(profile_id):
     from services.care import accessible_profile
     from services.women_workspace import is_primary
     row=accessible_profile(g.user,str(profile_id))
-    if row.module not in ('adult','women') or not is_primary(g.user,row):raise APIError(403,'owner_required','Only the profile owner can request consultations')
+    if row.module not in ('child','adult','women') or not is_primary(g.user,row):raise APIError(403,'owner_required','Only the profile owner can request consultations')
     return row
 
 
@@ -38,6 +38,16 @@ def directory():
     query=select(User,DoctorProfile,ratings.c.rating,ratings.c.reviews).join(DoctorProfile,DoctorProfile.user_id==User.id).outerjoin(ratings,ratings.c.doctor_id==User.id).where(User.role=='DOCTOR',User.approval_status=='APPROVED',User.account_status=='ACTIVE',User.email_verified.is_(True))
     if search:
         query=query.where((User.full_name.ilike('%'+search+'%'))|(DoctorProfile.specialization.ilike('%'+search+'%')))
+    elif request.args.get('module') == 'women':
+        concern = request.args.get('concern', '')
+        terms = ['gynec', 'gynaec', 'obstet', "women", 'reproductive']
+        if concern == 'PCOS & hormonal':
+            terms += ['endocrin']
+        elif concern == 'Fertility & conception':
+            terms += ['fertility', 'ivf', 'androlog']
+        elif concern in ("Women's wellness", 'Other concern'):
+            terms += ['general medicine', 'family medicine', 'internal medicine', 'general physician']
+        query = query.where(or_(*(DoctorProfile.specialization.ilike('%'+term+'%') for term in terms)))
     total=db().scalar(select(func.count()).select_from(query.subquery()))
     rows=db().execute(query.order_by(func.coalesce(ratings.c.rating,0).desc(),func.coalesce(ratings.c.reviews,0).desc(),func.coalesce(DoctorProfile.years_of_experience,0).desc(),User.full_name,User.id).offset((page-1)*size).limit(size))
     from doctor.onboarding_images import photo_details
@@ -69,7 +79,7 @@ def consultation_data(row):
     doctor=db().get(User,row.doctor_id);profile=db().get(CareProfile,row.profile_id)
     review=db().scalar(select(DoctorReview).where(DoctorReview.doctor_id==row.doctor_id,DoctorReview.patient_id==row.patient_id))
     return dict(id=row.id,profile_id=row.profile_id,patient_name=profile.name,doctor_id=row.doctor_id,doctor_name=doctor.full_name,
-        concern=row.concern,notes=row.notes,status=row.status,requested_at=row.requested_at.isoformat()+'Z',review_rating=review.rating if review else None)
+        concern=row.concern,notes=row.notes,status=row.status,requested_at=row.requested_at.isoformat()+'Z',review_rating=review.rating if review else None,confirmed_at=row.confirmed_at.isoformat()+'Z' if row.confirmed_at else None,duration_minutes=row.duration_minutes,version=row.version)
 
 
 def consultations(profile_id):
@@ -96,14 +106,31 @@ def doctor_requests():
 
 
 class StatusInput(Schema):
-    status: Literal['CONFIRMED','DECLINED','COMPLETED']
+    status: Literal['CONFIRMED','DECLINED','COMPLETED','CANCELLED']
+    confirmed_at: datetime|None=None
+    duration_minutes:int=Field(default=30,ge=5,le=240)
+    version:int|None=Field(default=None,ge=1)
 
 
 def status(consultation_id):
+    from services.appointment_slots import lock_doctor,check_conflicts
+    lock_doctor(g.user.id)
     row=db().scalar(select(DoctorConsultation).where(DoctorConsultation.id==str(consultation_id),DoctorConsultation.doctor_id==g.user.id).with_for_update())
     if not row:raise APIError(404,'consultation_not_found','Consultation not found')
     value=parse(StatusInput)
-    if value.status not in {'REQUESTED':{'CONFIRMED','DECLINED'},'CONFIRMED':{'COMPLETED','DECLINED'}}.get(row.status,set()):raise APIError(409,'invalid_transition','This status change is not permitted')
+    if value.status not in {'REQUESTED':{'CONFIRMED','DECLINED','CANCELLED'},'CONFIRMED':{'CONFIRMED','COMPLETED','DECLINED','CANCELLED'}}.get(row.status,set()):raise APIError(409,'invalid_transition','This status change is not permitted')
+    if value.version is not None and value.version!=row.version:raise APIError(409,'consultation_conflict','Appointment changed. Refresh before updating')
+    if value.status=='CONFIRMED':
+        start=value.confirmed_at or row.requested_at.replace(tzinfo=timezone.utc)
+        if start.tzinfo is None:raise APIError(422,'timezone_required','Confirmed time must include a timezone')
+        start=start.astimezone(timezone.utc).replace(tzinfo=None)
+        if start<=now():raise APIError(422,'future_time_required','Choose a future appointment time')
+        check_conflicts(g.user.id,start,value.duration_minutes,row.id)
+        row.confirmed_at=start;row.duration_minutes=value.duration_minutes
+    if value.status=='COMPLETED' and row.confirmed_at and row.confirmed_at>now():raise APIError(409,'appointment_not_started','Appointment time has not arrived')
+    row.version+=1
+    from services.notifications import enqueue
+    enqueue(row.patient_id,'consultation_status_changed','Consultation updated','Open your consultation to review the status and confirmed time.',{'profile_id':row.profile_id},event_key='consultation:'+row.id+':'+str(row.version))
     row.status=value.status;audit('consultation_status_changed',row.patient_id,g.user.id);db().commit()
     return jsonify(consultation=consultation_data(row))
 
@@ -112,7 +139,7 @@ def cancel(profile_id,consultation_id):
     primary(profile_id);row=db().scalar(select(DoctorConsultation).where(DoctorConsultation.id==str(consultation_id),DoctorConsultation.profile_id==str(profile_id),DoctorConsultation.patient_id==g.user.id).with_for_update())
     if not row:raise APIError(404,'consultation_not_found','Consultation not found')
     if row.status not in ('REQUESTED','CONFIRMED'):raise APIError(409,'invalid_transition','This request cannot be cancelled')
-    row.status='CANCELLED';db().commit();return jsonify(consultation=consultation_data(row))
+    row.status='CANCELLED';row.version+=1;audit('consultation_cancelled',row.doctor_id,g.user.id);db().commit();return jsonify(consultation=consultation_data(row))
 
 
 class ReviewInput(Schema):

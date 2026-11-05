@@ -73,7 +73,7 @@ def disconnect_profile_doctor(profile_id):
     db().commit()
     return jsonify(profile=profile_data(profile),message='Doctor disconnected from this profile')
 route(bp,'/profiles/<uuid:profile_id>/doctor',disconnect_profile_doctor,'DELETE',roles=('PATIENT',))
-route(bp, '/profiles/<uuid:profile_id>/reports', care.upload_report, 'POST', roles=('PATIENT',), schema='ReportUpload', limited=True)
+route(bp, '/profiles/<uuid:profile_id>/reports', care.upload_report, 'POST', roles=('PATIENT',), schema='ReportUpload', limited=True, rate_limits=('120 per minute', '180 per minute'))
 route(bp, '/profiles/<uuid:profile_id>/reports', care.reports, roles=('PATIENT',))
 route(bp, '/profiles/<uuid:profile_id>/reports/<uuid:report_id>/download', care.download_report, roles=('PATIENT',))
 

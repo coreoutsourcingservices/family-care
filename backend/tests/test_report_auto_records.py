@@ -7,7 +7,7 @@ from core.models import ChildRecord,ReportText
 from test_care import cloud,patient,create_profile
 
 
-def test_upload_queues_and_worker_auto_saves_without_duplicates(app,client,cloud,monkeypatch):
+def test_upload_extracts_and_requires_explicit_review_without_duplicates(app,client,cloud,monkeypatch):
     monkeypatch.setitem(app.config,'OCR_PYTHON',sys.executable)
     owner=patient(app,client);profile=create_profile(client,owner)
     response=client.post(f'/api/v1/patients/profiles/{profile}/reports',headers=owner,data={
@@ -20,14 +20,12 @@ def test_upload_queues_and_worker_auto_saves_without_duplicates(app,client,cloud
         from services.report_text import process_one
         with patch('services.report_text.run_processor',return_value=result):assert process_one()
         rows=db().scalars(select(ChildRecord).where(ChildRecord.profile_id==profile)).all()
-        assert {r.data['source_report_section'] for r in rows}=={'history','prescription','growth','nutrition','vaccination'}
-        assert all(r.data['reviewed'] is False for r in rows)
-        assert next(r for r in rows if r.kind=='vaccination').data['status']=='Review pending'
+        assert rows==[]
         job=db().get(ReportText,identifier);job.status='QUEUED';db().commit()
         with patch('services.report_text.run_processor',return_value=result):assert process_one()
-        assert len(db().scalars(select(ChildRecord).where(ChildRecord.profile_id==profile)).all())==5
+        assert db().scalars(select(ChildRecord).where(ChildRecord.profile_id==profile)).all()==[]
     reviewed=client.post(base+'/import',headers=owner,json={'kind':'history','reviewed':True,'record':{'title':'Reviewed report','date':'2026-01-01','notes':'Owner correction'}})
-    assert reviewed.status_code==200 and reviewed.json['record']['reviewed'] is True
+    assert reviewed.status_code==201 and reviewed.json['record']['reviewed'] is True
     with patch('cloudinary.uploader.destroy',return_value={'result':'ok'}):
         assert client.delete(base,headers=owner).status_code==200
     assert client.get(f'/api/v1/children/{profile}/records',headers=owner).json['items']==[]

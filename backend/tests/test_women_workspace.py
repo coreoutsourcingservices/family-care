@@ -35,7 +35,7 @@ def grant(client, owner, profile, recipient, permissions, **extra):
 def entry(client, headers, profile, section='cycle', **extra):
     record_id = str(uuid.uuid4())
     response = client.put(f'/api/v1/women/profiles/{profile}/diary/{record_id}', headers=headers,
-        json=dict(section=section, data=dict(title='Period entry', date='2026-10-01', **extra)))
+        json=dict(section=section, data={'title':'Period entry','date':'2026-10-01',**extra}))
     return record_id, response
 
 
@@ -171,7 +171,7 @@ def test_each_diary_tab_has_independent_view_and_edit(app,client,family,section)
     assert entry(client,member,profile,section)[1].status_code==403
     assert client.delete(f'/api/v1/women/profiles/{profile}/diary/{rid}?version=1',headers=member).status_code==403
     grant(client,owner,profile,mid,{section:'edit'})
-    assert entry(client,member,profile,section)[1].status_code==200
+    assert entry(client,member,profile,section,**({'date':'2026-10-10'} if section=='cycle' else {}))[1].status_code==200
     with app.app_context():
         owner_id=db().scalar(select(User.id).where(User.email=='family@example.com'))
         logs=db().scalars(select(AuditLog).where(AuditLog.action=='women_diary_saved')).all()

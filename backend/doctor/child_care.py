@@ -48,6 +48,8 @@ def remove_vaccination(profile_id,record_id):
         raise APIError(403,'record_author_required','Only the authoring doctor can remove this vaccination record')
     db().add(ChildRecordRevision(record_id=row.id,actor_id=g.user.id,action='removed',data=row.data))
     row.deleted_at=now()
+    from services.recycle_bin import retain
+    retain('child_record',row,profile_id=profile.id)
     audit('doctor_vaccination_removed',profile.owner_id,g.user.id)
     from services.notifications import enqueue
     enqueue(profile.owner_id,'child_record_removed','Your child care record was updated','Your connected doctor removed a vaccination entry. Open Child Care to review it.',{'profile_id':profile.id,'area':'vaccination'},event_key='child-record-removed:'+row.id)

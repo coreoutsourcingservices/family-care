@@ -1,0 +1,93 @@
+/* Shared viewport sizing for every customer workspace, including lazy pages. */
+#root .ah-reminder>span{min-width:0;max-width:100%;overflow-wrap:anywhere}
+#root .ch-content :is(.wh-task,.wh-record,.ch-report-download,.report-text-panel,.report-text-panel p){min-width:0;max-width:100%;overflow-wrap:anywhere;white-space:normal}
+@media(max-width:1024px){
+ #root .ch-welcome>img{right:0;max-width:43%;object-fit:contain}
+ #root .ch-leaf-art{right:0;max-width:40%}
+ #root .ch-leaf-art{display:flex;gap:0;transform:none}
+ #root .ch-leaf-art svg{min-width:0;max-width:45%;width:45%;flex:1 1 0;transform:none}
+ #root .wh-ref-hero-photo{right:0;max-width:46%;min-width:0}
+ #root .care-profile-counters{flex-basis:100%;width:100%;grid-template-columns:repeat(2,minmax(0,1fr))}
+ #root .care-profile-counter{grid-template-columns:32px minmax(0,1fr);min-width:0}
+ #root .care-profile-counter small{white-space:normal;overflow-wrap:anywhere}
+ #root .wh-app .ch-topbar{gap:8px;padding-inline:12px;min-width:0}
+ #root .wh-app .wh-header-title{min-width:0;max-width:38%;flex:1}
+ #root .wh-app .wh-header-title strong{font-size:15px;overflow-wrap:anywhere}
+ #root .wh-app .wh-header-title small{display:none}
+ #root .wh-app .wh-ref-search{display:none}
+ #root .wh-app .ch-top-actions{min-width:0;gap:7px;margin-left:auto;max-width:60%;flex-wrap:wrap}
+ #root .wh-app .wh-home{display:none}
+ #root .wh-app .ch-child-select{min-width:0;max-width:130px}
+ #root .wh-app .ch-child-select select{min-width:0;max-width:100%;width:100%}
+ #root .wh-app .wh-add{padding:8px}
+ #root .wh-app .wh-add span{display:none}
+}
+@media(max-width:760px){
+ html:has(:is(.fh,.ch-app,.ah-app)),body:has(:is(.fh,.ch-app,.ah-app)),#root:has(:is(.fh,.ch-app,.ah-app)){min-inline-size:0;inline-size:100%;max-inline-size:100%;margin-inline:0}
+ #root .auth-site-shell:has(:is(.fh,.ch-app,.ah-app)),#root .auth-site-shell:has(:is(.fh,.ch-app,.ah-app))>#main-content{box-sizing:border-box;min-inline-size:0;inline-size:min(100%,100dvw);max-inline-size:min(100%,100dvw);margin-inline:0;padding-inline:0}
+ #root :is(.ch-app,.ah-app){inline-size:min(100%,100dvw);max-inline-size:min(100%,100dvw);min-inline-size:0}
+ #root :is(.ch-main,.ah-main){inline-size:100%;max-inline-size:100%;min-inline-size:0;margin-inline:0}
+ #root :is(.ch-content,.ah-content){inline-size:100%;max-inline-size:100%;min-inline-size:0;padding-inline:12px}
+ #root :is(.ch-content,.ah-content,.fh-main) :is(section,article,form,fieldset,label,details,summary,figure){min-inline-size:0;max-inline-size:100%;box-sizing:border-box}
+ #root :is(.ch-content,.ah-content,.fh-main) :is(h1,h2,h3,h4,p,strong,small,a,button,label,summary,time){overflow-wrap:anywhere;min-inline-size:0}
+ #root :is(.ch-content,.ah-content,.fh-main) :is(input,select,textarea){min-inline-size:0;max-inline-size:100%;box-sizing:border-box}
+ #root :is(.ch-content,.ah-content,.fh-main) :is(input[type=date],input[type=datetime-local],input[type=email],input[type=text],input[type=search],textarea){inline-size:100%}
+ #root :is(.ch-content,.ah-content) :is(canvas,video,iframe,img){max-inline-size:100%}
+ #root :is(.ch-content,.ah-content) table{inline-size:100%;min-inline-size:0;table-layout:fixed}
+ #root :is(.ch-content,.ah-content) :is(th,td){white-space:normal;overflow-wrap:anywhere;padding-inline:5px}
+ #root :is(.ch-page-heading,.ch-section-top,.ah-heading,.hs-toolbar,.planner-heading){flex-wrap:wrap;gap:10px}
+ #root :is(.ch-content,.ah-content) :is(.ch-form-grid,.wh-form-grid,.ah-form-grid,.ah-profile-grid,.pregnancy-stage-fields){grid-template-columns:minmax(0,1fr)}
+ #root :is(.ch-content,.ah-content) :is(.ah-charts,.ah-bottom-grid,.wh-three-panels,.wh-ref-cycle-layout,.child-growth-nutrition-grid,.ch-consultation-layout){grid-template-columns:minmax(0,1fr)}
+ #root :is(.ch-content,.ah-content) :is(.ch-tabs,.ch-filter-pills){flex-wrap:wrap;overflow:visible;white-space:normal;max-inline-size:100%}
+ #root :is(.ch-content,.ah-content) :is(.ch-tabs,.ch-filter-pills) button{white-space:normal;flex-shrink:1}
+ #root :is(.ch-topbar,.ah-header){inline-size:100%;min-inline-size:0;max-inline-size:100%;padding-inline:12px;gap:8px}
+ #root .ah-header>div:first-of-type{min-width:0}
+ #root .ah-actions{min-width:0;gap:7px;max-width:55%}
+ #root .ah-actions select{min-width:0;max-width:110px;width:100%}
+ #root .ah-header .ah-button{padding:8px;flex:none}
+ #root .ah-header .ah-button span{display:none}
+ #root .ah-header>div>strong{font-size:14px;overflow-wrap:anywhere}
+ #root .ah-report>div{flex-wrap:wrap;gap:9px;min-width:0}
+ #root .ah-report>div strong{flex:1 1 140px;min-width:0;overflow-wrap:anywhere}
+ #root :is(.wh-record,.ah-record,.ch-record){flex-wrap:wrap;min-width:0}
+ #root :is(.wh-record,.ah-record,.ch-record)>div{min-width:0}
+ #root :is(.ah-modal,.wh-modal,.cv-dialog,.ms-panel,.fh-picker){inline-size:min(100%,440px);min-inline-size:0;max-inline-size:calc(100dvw - 24px);max-block-size:calc(100dvh - 32px);overflow-y:auto;box-sizing:border-box}
+ #root :is(.ah-modal,.wh-modal,.ms-panel,.fh-picker) :is(input,select,textarea,fieldset,label){min-inline-size:0;max-inline-size:100%;box-sizing:border-box}
+ #root .ah-hero-art{max-width:38%;min-width:0}
+ #root .ah-hero>div:first-child{min-width:0;flex:1}
+ #root .ah-hero h1{font-size:clamp(23px,6vw,31px)}
+ #root .hs-page,#root .dc-page{min-width:0;max-width:100%;padding-inline:0}
+ #root .planner-heading>div:last-child{display:flex;flex-wrap:wrap;gap:6px}
+ #root .ch-chart,#root .ah-chart,#root .wh-chart{min-width:0;max-width:100%}
+ #root .wh-app .ch-topbar{height:64px;min-height:64px;flex-wrap:nowrap;align-items:center}
+ #root .wh-app .ch-mobile-brand{flex:1;min-width:0;order:1}
+ #root .wh-app .ch-open-menu{order:0;flex:none}
+ #root .wh-app .ch-top-actions{order:2;flex:0 1 auto;max-width:45%;flex-wrap:nowrap}
+ #root .wh-app .ch-mobile-brand .ch-brand{gap:6px;min-width:0}
+ #root .wh-app .ch-mobile-brand .ch-brand strong{font-size:17px;white-space:nowrap}
+ #root .wh-app .ch-mobile-brand .ch-brand svg{width:23px;height:23px}
+ #root .wh-app .ch-child-select{max-width:75px}
+ #root .wh-app .ch-child-select select{font-size:10px;padding:7px 17px 7px 6px}
+ #root .wh-app .wh-notification-button{padding:5px;width:27px;min-width:27px}
+ #root .wh-app .wh-add{padding:5px;min-width:27px;height:29px}
+ #root .ah-table-wrap{overflow:visible}
+ #root .ah-table-wrap :is(table,tbody){display:block;width:100%}
+ #root .ah-table-wrap thead{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+ #root .ah-table-wrap tbody{display:grid;gap:12px}
+ #root .ah-table-wrap tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:13px;border:1px solid #dfede7;border-radius:14px;background:#fff}
+ #root .ah-table-wrap td{display:block;min-width:0;padding:0;border:0;overflow-wrap:anywhere}
+ #root .ah-table-wrap td:nth-child(2),#root .ah-table-wrap td:nth-child(3){grid-column:1/-1}
+ #root .ah-table-wrap td::before{display:block;font-size:10px;font-weight:600;color:#7c9388;margin-bottom:5px}
+ #root .ah-table-wrap td:nth-child(1)::before{content:'Date'}
+ #root .ah-table-wrap td:nth-child(2)::before{content:'Record'}
+ #root .ah-table-wrap td:nth-child(3)::before{content:'Details'}
+ #root .ah-table-wrap td:nth-child(4)::before{content:'Status'}
+ #root .ah-table-wrap td:nth-child(5)::before{content:'Actions'}
+}
+@media(max-width:380px){
+ #root .ah-actions{max-width:50%}
+ #root .ah-actions select{max-width:75px;font-size:10px}
+ #root :is(.wh-summary-cards,.wh-ref-stats,.ah-stats){gap:8px}
+ #root :is(.ch-summary-grid,.ch-mini-stats){grid-template-columns:repeat(2,minmax(0,1fr))}
+ #root .ah-hero-art{display:none}
+}

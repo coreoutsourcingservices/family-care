@@ -160,9 +160,16 @@ def specification(app):
             for name in rule.arguments:
                 operation['parameters'].append({'name': name, 'in': 'path', 'required': True, 'schema': {'type': 'string'},
                                                'description': 'UUID or public ID' if name == 'user_id' else 'Resource UUID'})
-            if method == 'GET' and any(path.endswith(s) for s in ('-requests', '/admins', '/doctors', '/patients', '/audit-logs', '/profiles', '/care-profiles', '/reports')):
+            if method == 'GET' and (any(path.endswith(s) for s in ('-requests', '/admins', '/doctors', '/patients', '/audit-logs', '/profiles', '/care-profiles', '/reports')) or path.endswith('/health-articles')):
                 operation['parameters'] += [dict(name='page', **{'in': 'query'}, schema={'type': 'integer', 'minimum': 1, 'default': 1}),
                                            dict(name='per_page', **{'in': 'query'}, schema={'type': 'integer', 'minimum': 1, 'maximum': 100, 'default': 25})]
+            if method == 'GET' and path.endswith('/health-articles'):
+                operation['parameters'].append({'name':'audience','in':'query','required':path=='/api/v1/health-articles','schema':{'type':'string','enum':['child','women']}})
+                if path.startswith('/api/v1/admin/'):
+                    operation['parameters'] += [dict(name='status', **{'in':'query'}, schema={'type':'string','enum':['DRAFT','PUBLISHED','SCHEDULED','ARCHIVED']}),
+                                                dict(name='q', **{'in':'query'}, schema={'type':'string','maxLength':120})]
+                else:
+                    operation['parameters'].append(dict(name='q', **{'in':'query'}, schema={'type':'string','maxLength':120}))
             if method == 'GET' and path.endswith(('/profiles', '/care-profiles')):
                 operation['parameters'].append({'name':'module','in':'query','schema':{'type':'string','enum':['child','adult','women']}})
             provided = meta.get('schema')

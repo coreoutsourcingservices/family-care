@@ -27,6 +27,10 @@ def test_directory_request_completion_real_rating_and_isolation(app,client):
     assert client.patch(status,headers=other_clinician,json={'status':'CONFIRMED'}).status_code==404
     assert client.patch(status,headers=clinician,json={'status':'COMPLETED'}).status_code==409
     assert client.patch(status,headers=clinician,json={'status':'CONFIRMED'}).status_code==200
+    assert client.patch(status,headers=clinician,json={'status':'COMPLETED'}).status_code==409
+    with app.app_context():
+        from core.models import DoctorConsultation
+        db().get(DoctorConsultation,visit).confirmed_at=now()-timedelta(hours=1);db().commit()
     assert client.patch(status,headers=clinician,json={'status':'COMPLETED'}).status_code==200
     outsider=patient(app,client,'outsider@example.com')
     assert client.put(review,headers=outsider,json=payload).status_code==403
@@ -37,3 +41,20 @@ def test_directory_request_completion_real_rating_and_isolation(app,client):
     listing=client.get('/api/v1/patients/doctor-directory',headers=owner).json['items']
     assert listing[0]['id']==second and listing[0]['rating']==4 and listing[0]['review_count']==1
     with app.app_context():assert len(db().scalars(select(DoctorReview)).all())==1
+
+def test_women_directory_concern_filter_and_explicit_search(app, client):
+    from core.models import DoctorProfile
+    owner=patient(app,client)
+    gyn,_=doctor(app,'gyn-demo@example.com','D000021')
+    endo,_=doctor(app,'endo-demo@example.com','D000022')
+    pediatric,_=doctor(app,'child-demo@example.com','D000023')
+    with app.app_context():
+        for identifier,name,specialty in [(gyn,'Dr Demo Gynecologist','Obstetrics & Gynaecology'),(endo,'Dr Demo Hormone','Endocrinology'),(pediatric,'Dr Demo Pediatrician','Pediatrics')]:
+            db().get(User,identifier).full_name=name
+            db().get(DoctorProfile,identifier).specialization=specialty
+        db().commit()
+    path='/api/v1/patients/doctor-directory?module=women'
+    assert [r['id'] for r in client.get(path+'&concern=Menstrual%20%26%20cycle%20care',headers=owner).json['items']]==[gyn]
+    assert {r['id'] for r in client.get(path+'&concern=PCOS%20%26%20hormonal',headers=owner).json['items']}=={gyn,endo}
+    assert [r['id'] for r in client.get(path+'&search=Pediatrician',headers=owner).json['items']]==[pediatric]
+    assert client.get(path+'&search=unknown-doctor',headers=owner).json['total']==0

@@ -47,6 +47,7 @@ def main():
       '- Patient: register -> signup email OTP -> verify -> login -> create self/member profile -> use child/adult records, reports, referral and notifications.',
       '- Doctor: register -> signup OTP -> setup profile/images -> admin review -> approved clinical login -> connected profiles, records, vaccination review and notifications.',
       '- Admin/superadmin: login -> review accounts -> manage vaccine catalogue, schedule drafts, independent medical review, publication and visibility.',
+      '- Admin health articles: Admin writes Child/Women audience articles as drafts, publishes now or schedules in local time; public reads return only articles whose publication time has arrived. Superadmin has no article-management access.',
       '- Every child can read active UIP/IAP plans without a doctor referral. Dates derive from that child\'s DOB. Unpublished entries remain Doctor Review; completion records and doctor applicability decisions remain child-specific. Switching children retains the selected page.',
       '- Reports: upload -> request extraction -> poll job -> optionally request translation with explicit consent -> review extracted values before importing a diary record. OCR and translation are separate operations.',
       '- Women profiles use the shared profile, referral and report APIs. Only the methods in the inventory are implemented.','',
@@ -82,7 +83,7 @@ def main():
         lines+=['','Common failure responses: 400 invalid input/transport; 401 invalid session; 403 role/CSRF; 404 inaccessible or missing resource; 409 state conflict; 413 upload size; 422 validation; 429 throttled; 502/503 upstream/storage/database unavailable. Only failures applicable to this endpoint occur.','', '```json','{"error":{"code":"validation_error","message":"Invalid request fields","fields":[{"field":"title","type":"missing"}]}}','```']
         responses=[{'name':status+' example','originalRequest':request,'status':response['description'],'code':int(status),'header':[{'key':'Content-Type','value':'application/json'}],'body':json.dumps(response.get('content',{}).get('application/json',{}).get('example',{}),indent=2,ensure_ascii=False)} for status,response in op['responses'].items()]
         collection['item'].append({'name':method.upper()+' '+path,'request':request,'response':responses})
-    for filename in ('CHILD_PLAN_ACTIVATION.md','PUBLIC_PORTAL_SESSIONS.md','REALTIME_NOTIFICATIONS.md','woman_adule_api.md','Growth_Nutrition_API.md','DOCTOR_HANDOFFS.md'):
+    for filename in ('HEALTH_ARTICLES_API.md','CHILD_PLAN_ACTIVATION.md','PUBLIC_PORTAL_SESSIONS.md','REALTIME_NOTIFICATIONS.md','woman_adule_api.md','Growth_Nutrition_API.md','DOCTOR_HANDOFFS.md'):
       source=root/filename
       if source.exists():
         lines+=['','## Integration notes: '+filename,'',re.sub(r'^(#+) ',r'##\1 ',source.read_text(encoding='utf-8'),flags=re.M)]

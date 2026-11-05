@@ -26,10 +26,15 @@ def enrich(paths,components):
     vaccine['id']='00000000-0000-4000-8000-000000000001'
     schedule=vs.ScheduleInput(vaccine_id=vaccine['id'],schedule_type='UIP',dose_code='D1',dose_name='Example dose',version='example-v1',age_label='Source-defined age',age_unit='days',age_start=0,age_end=0,route='Other',source_url='https://example.org/guideline',source_reference='Synthetic contract example only',effective_from='2026-10-30').model_dump(mode='json')
     schedule.update(id='<schedule UUID>',vaccine=vaccine,status='DRAFT',published_at=None)
+    article={'id':'<article UUID>','title':'Healthy sleep habits for children','audience':'child','summary':'Simple, age-appropriate routines that support healthy sleep.','content':'Synthetic article content for API documentation only. Replace with medically reviewed guidance.','cover_image_url':None,'tags':['sleep','wellness'],'status':'PUBLISHED','published_at':'2026-10-30T10:00:00Z','created_at':'2026-10-29T10:00:00Z','updated_at':'2026-10-30T10:00:00Z','author':{'id':'<admin UUID>','full_name':'Example Admin'}}
+    article_list={key:value for key,value in article.items() if key!='content'}
     def body(operation,model):
         definition=model.model_json_schema(ref_template='#/components/schemas/{model}')
         components.update(definition.pop('$defs',{}));components[model.__name__]=definition
-        operation['requestBody']={'required':True,'content':{'application/json':{'schema':{'$ref':'#/components/schemas/'+model.__name__},'example':sample(definition,components)}}}
+        example=sample(definition,components)
+        if model.__name__=='HealthArticleInput':
+            example={'title':'Healthy sleep habits for children','audience':'child','summary':'Age-appropriate routines that support healthy sleep.','content':'Synthetic article text for documentation only. Replace with reviewed guidance.','cover_image_url':None,'tags':['sleep','wellness'],'status':'DRAFT','published_at':None}
+        operation['requestBody']={'required':True,'content':{'application/json':{'schema':{'$ref':'#/components/schemas/'+model.__name__},'example':example}}}
     def result(operation,value,status=200):
         for key in list(operation['responses']):
             if key.startswith('2'):del operation['responses'][key]
@@ -38,6 +43,16 @@ def enrich(paths,components):
       for method,op in methods.items():
         op['operationId']+='_'+method
         model=None
+        if path in ('/api/v1/admin/health-articles','/api/v1/health-articles'):
+            if method in ('post','put'):
+                from core.article_schemas import HealthArticleInput
+                model=HealthArticleInput
+            result(op,{'items':[article],'total':1,'page':1,'per_page':25,'audience':'child'} if path=='/api/v1/health-articles' else {'items':[article_list],'total':1,'page':1,'per_page':25},201 if method=='post' else 200)
+        elif re.fullmatch(r'/api/v1/admin/health-articles/\{article_id\}',path):
+            if method in ('put',):
+                from core.article_schemas import HealthArticleInput
+                model=HealthArticleInput
+            result(op,{'article':dict(article,status='ARCHIVED' if method=='delete' else 'PUBLISHED')},201 if method=='post' else 200)
         if re.fullmatch(r'/api/v1/patients/profiles/\{profile_id\}',path) and method=='put':
             from core.care_schemas import CareProfileEdit
             model=CareProfileEdit

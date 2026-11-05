@@ -92,6 +92,28 @@ class CustomerNote(Base):
     owner_id = user_fk(nullable=False, index=True)
     title = C(S(160), nullable=False)
     body = C(Text, nullable=False)
+    deleted_at = C(DT)
+    created_at = C(DT, default=now, nullable=False)
+    updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+
+class HealthArticle(Base):
+    __tablename__ = 'health_articles'
+    __table_args__ = (
+        CK("audience IN ('child','women')", name='audience'),
+        CK("status IN ('DRAFT','PUBLISHED','ARCHIVED')", name='status'),
+        Index('ix_health_articles_publication', 'audience', 'status', 'published_at'),
+    )
+    id = primary_id()
+    title = C(S(180), nullable=False)
+    audience = C(S(16), nullable=False)
+    summary = C(S(600), nullable=False, default='')
+    content = C(Text, nullable=False)
+    cover_image_url = C(S(1000))
+    tags = C(JSON, nullable=False, default=list)
+    status = C(S(16), nullable=False, default='DRAFT')
+    author_id = user_fk(nullable=False, index=True)
+    published_at = C(DT, index=True)
     created_at = C(DT, default=now, nullable=False)
     updated_at = C(DT, default=now, onupdate=now, nullable=False)
 
@@ -211,6 +233,7 @@ class AuditLog(Base):
     target_id = C(Uuid(as_uuid=False), FK('familycare.users.id'))
     action = C(S(80), nullable=False, index=True)
     created_at = C(DT, default=now, nullable=False, index=True)
+    deleted_at = C(DT)
 
 
 class AppNotification(Base):
@@ -400,6 +423,7 @@ class WomenAccessGrant(Base):
 class PregnancyCare(Base):
     __tablename__ = 'pregnancy_care'
     profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), primary_key=True)
+    details = C(JSON,nullable=False,default=dict)
     baseline_week = C(I, nullable=False)
     input_month = C(I)
     as_of_date = C(Date, nullable=False)
@@ -425,6 +449,7 @@ class CareReport(Base):
     __tablename__ = 'care_reports'
     id = primary_id()
     profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), nullable=False, index=True)
+    title = C(S(160))
     name = C(S(255), nullable=False)
     category = C(S(32), nullable=False, default='Others', server_default='Others')
     category_reviewed = C(B, nullable=False, default=False, server_default=text('false'))
@@ -439,7 +464,22 @@ class CareReport(Base):
     delivery_type = C(S(20))
     file_format = C(S(20))
     size_bytes = C(I)
+    deleted_at = C(DT)
     created_at = C(DT, default=now, nullable=False)
+
+
+class RecycleItem(Base):
+    __tablename__ = 'recycle_items'
+    id = primary_id()
+    entity_type = C(S(32), nullable=False, index=True)
+    entity_id = C(Uuid(as_uuid=False), nullable=False, index=True)
+    actor_id = user_fk(nullable=False)
+    profile_id = C(Uuid(as_uuid=False), index=True)
+    group_id = C(Uuid(as_uuid=False), index=True)
+    payload = C(JSON, nullable=False, default=dict)
+    deleted_at = C(DT, nullable=False, default=now)
+    expires_at = C(DT, nullable=False, index=True)
+    retry_after = C(DT)
 
 
 class ReportText(Base):
@@ -497,6 +537,9 @@ class DoctorConsultation(Base):
     concern = C(S(160),nullable=False)
     notes = C(Text,nullable=False,default='')
     requested_at = C(DT,nullable=False)
+    confirmed_at = C(DT)
+    duration_minutes = C(I,nullable=False,default=30)
+    version = C(I,nullable=False,default=1)
     status = C(S(20),nullable=False,default='REQUESTED')
     created_at = C(DT,default=now,nullable=False)
     updated_at = C(DT,default=now,onupdate=now,nullable=False)
@@ -531,3 +574,25 @@ class DoctorReview(Base):
     comment = C(S(1000),nullable=False,default='')
     created_at = C(DT,default=now,nullable=False)
     updated_at = C(DT,default=now,onupdate=now,nullable=False)
+
+
+class DoctorPrescription(Base):
+    __tablename__='doctor_prescriptions'
+    id=primary_id()
+    profile_id=C(Uuid(as_uuid=False),FK('familycare.care_profiles.id',ondelete='CASCADE'),nullable=False,index=True)
+    doctor_id=user_fk(nullable=False,index=True)
+    status=C(S(16),nullable=False,default='DRAFT')
+    data=C(JSON,nullable=False)
+    version=C(I,nullable=False,default=1)
+    issued_at=C(DT)
+    void_reason=C(Text)
+    created_at=C(DT,nullable=False,default=now)
+    updated_at=C(DT,nullable=False,default=now,onupdate=now)
+
+class DoctorAvailability(Base):
+    __tablename__='doctor_availability'
+    id=primary_id()
+    doctor_id=user_fk(nullable=False,index=True)
+    starts_at=C(DT,nullable=False,index=True)
+    duration_minutes=C(I,nullable=False,default=30)
+    active=C(B,nullable=False,default=True)

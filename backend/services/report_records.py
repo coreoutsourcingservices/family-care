@@ -78,29 +78,24 @@ def set_category(profile_id,report_id):
 
 def delete_report(profile_id,report_id):
     from core.models import now
-    from services.care_uploads import credentials
     from services.repository import audit
-    import cloudinary.uploader
+    from services.recycle_bin import retain
     accessible_profile(g.user,str(profile_id),lock=True)
     report=accessible_report(g.user,str(profile_id),str(report_id))
     db().scalar(select(CareReport).where(CareReport.id==report.id).with_for_update())
-    if report.storage_provider=='cloudinary':
-        try:
-            result=cloudinary.uploader.destroy(report.cloudinary_public_id,resource_type=report.resource_type,type='authenticated',invalidate=True,**credentials())
-        except Exception:
-            raise APIError(502,'report_delete_failed','The stored file could not be deleted. Please retry.') from None
-        if result.get('result') not in ('ok','not found'):
-            raise APIError(502,'report_delete_failed','The stored file could not be deleted. Please retry.')
+    report.deleted_at=now()
+    item=retain('report',report,profile_id=str(profile_id))
     rows=db().scalars(select(ChildRecord).where(ChildRecord.profile_id==str(profile_id),ChildRecord.deleted_at.is_(None),ChildRecord.data['source_report_id'].as_string()==report.id)).all()
     for row in rows:
         row.deleted_at=now()
+        retain('child_record',row,profile_id=str(profile_id),group_id=item.id)
         db().add(ChildRecordRevision(record_id=row.id,actor_id=g.user.id,action='deleted',data=row.data))
     extraction=db().get(ReportText,report.id)
-    if extraction:db().delete(extraction)
-    db().delete(report)
+    if extraction and extraction.status in ('QUEUED','PROCESSING'):
+        extraction.status='SKIPPED';extraction.lease_id=None
     audit('care_report_deleted',g.user.id,g.user.id)
     db().commit()
-    return jsonify(message='Report, extracted text and linked imported records deleted')
+    return jsonify(message='Report moved to Recycle Bin for 30 days')
 
 def infer_category(text):
     import re

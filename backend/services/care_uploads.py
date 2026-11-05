@@ -34,7 +34,7 @@ def report_data(report,internal=False):
         from core.models import FamilyInvitation
         from sqlalchemy import select
         if db().scalar(select(FamilyInvitation.id).where(FamilyInvitation.profile_id==report.profile_id,FamilyInvitation.owner_id==g.user.id,FamilyInvitation.accepted_at.is_not(None))):url=None
-    return dict(id=report.id, profile_id=report.profile_id, name=report.name, category=report.category, category_reviewed=report.category_reviewed,
+    return dict(id=report.id, profile_id=report.profile_id, name=report.name, title=report.title, category=report.category, category_reviewed=report.category_reviewed,
                 content_type=report.content_type, storage_provider=report.storage_provider,
                 url=url, secure_url=report.secure_url, url_expires_in=300 if url else None,
                 public_id=report.cloudinary_public_id, asset_id=report.cloudinary_asset_id,
@@ -57,17 +57,20 @@ def file_type(content):
 
 def upload_report(user, profile_id, file):
     profile = accessible_profile(user, profile_id)
+    title=request.form.get('title','').strip()
+    if 'title' in request.form and (not title or len(title)>160):raise APIError(422,'invalid_title','Enter a report title up to 160 characters')
     category=request.form.get('category','Others')
     if category not in ('Doctor report','Lab tests','Prescriptions','Scans','Vaccination','Others'):
         raise APIError(422,'invalid_category','Choose a report category')
-    auto_read=request.form.get('auto_read')=='true' and category!='Scans'
+    read_requested=request.form.get('auto_read')=='true' and category!='Scans'
     from services.report_text import Options,processor_python
     try:
-        options=Options(source_language=request.form.get('source_language','en'),auto_import=True).model_dump(mode='json')
+        options=Options(source_language=request.form.get('source_language','en'),auto_import=False).model_dump(mode='json')
     except ValueError:
         raise APIError(422,'invalid_language','Choose a supported document language') from None
-    if auto_read and not processor_python().is_file():
-        raise APIError(503,'processor_unavailable','The OCR processor is unavailable. Please retry after it is configured.')
+    # Saving a private document must not depend on the optional OCR runtime.
+    # If reading is unavailable, keep the original and let the owner retry later.
+    auto_read=read_requested and processor_python().is_file()
     if not file or not file.filename:
         raise APIError(422, 'report_file_required', 'Send a file in multipart field file')
     limit = current_app.config['MAX_REPORT_BYTES']
@@ -94,7 +97,7 @@ def upload_report(user, profile_id, file):
             or result.get('resource_type') != resource_type
             or not result.get('secure_url', '').startswith('https://res.cloudinary.com/'+keys['cloud_name']+'/')):
         raise APIError(502, 'invalid_upload_response', 'Cloudinary returned unexpected report metadata')
-    report = CareReport(id=report_id, profile_id=profile.id, name=name, category=category,category_reviewed='category' in request.form,content_type=content_type,
+    report = CareReport(id=report_id, profile_id=profile.id, name=name, title=title or None, category=category,category_reviewed='category' in request.form,content_type=content_type,
         storage_provider='cloudinary', content=None, cloudinary_public_id=public_id,
         cloudinary_asset_id=result.get('asset_id'), secure_url=result['secure_url'], folder=folder,
         resource_type=resource_type, delivery_type='authenticated',
@@ -116,7 +119,10 @@ def upload_report(user, profile_id, file):
         except Exception as error:
             current_app.logger.error('Cloudinary orphan cleanup failed: %s', type(error).__name__)
         raise
-    return jsonify(report=report_data(report)), 201
+    extraction=dict(status='QUEUED' if auto_read else 'UNAVAILABLE' if read_requested else 'SKIPPED' if category=='Scans' else 'NOT_REQUESTED')
+    if read_requested and not auto_read:
+        extraction['message']='Report uploaded. Automatic text reading is unavailable; you can retry reading this saved report later.'
+    return jsonify(report=report_data(report),text_extraction=extraction), 201
 
 
 def download_report(user, profile_id, report_id):

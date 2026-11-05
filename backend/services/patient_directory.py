@@ -40,7 +40,7 @@ def account_detail(user_id):
 def members(user_id):
     user = patient(user_id)
     page, per_page = pagination()
-    query = select(CareProfile).where(CareProfile.owner_id == user.id)
+    query = select(CareProfile).where(CareProfile.owner_id == user.id, CareProfile.deleted_at.is_(None))
     module = request.args.get('module')
     if module:
         if module not in ('child','adult','women'):
@@ -49,18 +49,18 @@ def members(user_id):
     rows, total = paginate(query.order_by(CareProfile.created_at.desc(), CareProfile.id), page, per_page)
     ids = [row.id for row in rows]
     reports = dict(db().execute(select(CareReport.profile_id, func.count()).where(
-        CareReport.profile_id.in_(ids)).group_by(CareReport.profile_id)).all()) if ids else {}
+        CareReport.profile_id.in_(ids), CareReport.deleted_at.is_(None)).group_by(CareReport.profile_id)).all()) if ids else {}
     return jsonify(items=[dict(profile_data(row), report_count=reports.get(row.id,0)) for row in rows],
                    total=total, page=page, per_page=per_page)
 
 
 def member_detail(user_id, profile_id):
     user = patient(user_id)
-    profile = db().scalar(select(CareProfile).where(CareProfile.owner_id == user.id, CareProfile.id == str(profile_id)))
+    profile = db().scalar(select(CareProfile).where(CareProfile.owner_id == user.id, CareProfile.id == str(profile_id), CareProfile.deleted_at.is_(None)))
     if not profile:
         raise APIError(404, 'profile_not_found', 'This profile does not belong to the selected patient')
     parent = db().get(CareProfile, profile.parent_profile_id) if profile.parent_profile_id else None
-    count = db().scalar(select(func.count()).select_from(CareReport).where(CareReport.profile_id == profile.id))
+    count = db().scalar(select(func.count()).select_from(CareReport).where(CareReport.profile_id == profile.id, CareReport.deleted_at.is_(None)))
     return jsonify(profile=dict(profile_data(profile), report_count=count,
                                parent_name=parent.name if parent and parent.owner_id == user.id else None),
                    owner={'id':user.id, 'public_id':user.public_id, 'full_name':user.full_name, 'email':user.email})

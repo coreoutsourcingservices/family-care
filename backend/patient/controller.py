@@ -7,7 +7,6 @@ from patient import service, schema
 def login():
     return service.login(parse(schema.Credentials))
 
-
 def me():
     return profile()
 

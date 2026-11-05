@@ -15,6 +15,9 @@ route(bp, '/doctors', c.users, roles=('ADMIN',))
 from services import doctor_directory
 route(bp,'/doctors/<user_id>',doctor_directory.detail,roles=('ADMIN',))
 route(bp,'/doctors/<user_id>/profiles',doctor_directory.connected_profiles,roles=('ADMIN',))
+route(bp,'/doctors/<user_id>/families',doctor_directory.connected_families,roles=('ADMIN',))
+route(bp,'/doctors/<user_id>/families/<family_id>',doctor_directory.connected_family,roles=('ADMIN',))
+route(bp,'/doctors/<user_id>/families/<family_id>/profiles/<profile_id>',doctor_directory.connected_member,roles=('ADMIN',))
 route(bp, '/doctors/<user_id>/approve', c.approve, 'POST', roles=('ADMIN',))
 route(bp, '/doctors/<user_id>/check', c.check_doctor, 'POST', roles=('ADMIN',), limited=True)
 route(bp, '/doctors/<user_id>/reject', c.reject, 'POST', roles=('ADMIN',), schema='Rejection')
@@ -26,6 +29,21 @@ from services import patient_directory
 route(bp, '/patients/<user_id>', patient_directory.account_detail, roles=('ADMIN',))
 route(bp, '/patients/<user_id>/profiles', patient_directory.members, roles=('ADMIN',))
 route(bp, '/patients/<user_id>/profiles/<uuid:profile_id>', patient_directory.member_detail, roles=('ADMIN',))
+from services import health_articles
+from core.article_schemas import HealthArticleInput
+route(bp, '/health-articles', health_articles.admin_list, roles=('ADMIN',))
+route(bp, '/health-articles', health_articles.create_article, 'POST', roles=('ADMIN',), schema=HealthArticleInput)
+route(bp, '/health-articles/<uuid:article_id>', health_articles.admin_detail, roles=('ADMIN',))
+route(bp, '/health-articles/<uuid:article_id>', health_articles.update_article, 'PUT', roles=('ADMIN',), schema=HealthArticleInput)
+route(bp, '/health-articles/<uuid:article_id>', health_articles.archive_article, 'DELETE', roles=('ADMIN',))
 
 from services import management_dashboard
 route(bp, '/search', lambda: management_dashboard.search(admin=True), roles=('ADMIN',))
+route(bp, '/recent-activity', management_dashboard.recent_activity, roles=('ADMIN',))
+from services import recycle_bin
+route(bp, '/recycle-bin', recycle_bin.listing, roles=('ADMIN',))
+route(bp, '/recycle-bin/<uuid:item_id>/restore', recycle_bin.restore, 'POST', roles=('ADMIN',))
+
+route(bp, '/recent-activity/delete', management_dashboard.delete_recent_activity, 'POST', roles=('ADMIN',))
+
+route(bp, '/recycle-bin/empty', recycle_bin.empty_bin, 'POST', roles=('ADMIN',))
