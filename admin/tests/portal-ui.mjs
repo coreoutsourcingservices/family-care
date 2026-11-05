@@ -18,8 +18,9 @@ export async function api(p){
  if(p.endsWith('/dashboard'))return {counts:[{role:'DOCTOR',approval_status:'APPROVED',count:7},{role:'DOCTOR',approval_status:'PENDING_APPROVAL',count:2},{role:'PATIENT',approval_status:'APPROVED',count:24},{role:'ADMIN',approval_status:'APPROVED',count:3}]};
  if(p.includes('/doctor-requests')||p.includes('/admin-requests'))return {items:[{...doc,approval_status:'PENDING_APPROVAL'},{...doc,id:'doctor-two',public_id:'D000002',full_name:'Another Example Doctor',approval_status:'PENDING_APPROVAL'}],total:2};
  if(p.includes('/vaccination/')){if(p.includes('/vaccines'))return {items:[{id:'vaccine-one',code:'EXAMPLE_VACCINE',name_en:'Example vaccine',name_hi:'',category:'Government',protects_against:'Source-reviewed indication',active:true}],total:1};return {items:[],total:0};}
+ if(p.includes('/doctors/')&&p.includes('/families'))return {items:[{id:'family-one',full_name:'Example Family',public_id:'C000001',connected_profiles:2}],total:1};
  if(p.includes('/doctors/')&&p.includes('/profiles'))return {items:members,total:2};
- if(p.includes('/doctors/'))return {user:doc};
+ if(p.includes('/doctors/'))return {user:doc,dashboard:{connected_profiles:2,families:1,child:1,adult:1,women:0}};
  if(p.includes('/doctors?'))return {items:[doc,{...doc,id:'doctor-two',public_id:'D000002',full_name:'Another Example Doctor',approval_status:'PENDING_APPROVAL',account_status:'ACTIVE'}],total:2};
  if(p.includes('/patients?'))return {items:[patient],total:1};
  if(p.includes('/admins?'))return {items:[{...base,role:'ADMIN'}],total:1};
@@ -29,7 +30,7 @@ export async function api(p){
 export const post=(p,d)=>api(p,d);`;
 const entry=`import React from 'react';import{createRoot}from'react-dom/client';import Shell from './admin/src/components/shell';import Dashboard from './admin/src/components/dashboard';import Directory from './admin/src/components/directory';import Settings from './admin/src/components/settings';import Vaccination from './admin/src/components/vaccination-manager';import Doctor from './admin/src/components/doctor-details';import Audit from './admin/src/components/audit';import LanguageProvider from './admin/src/components/language-provider';import{user}from 'portal-fixture';
 const role=window.__role;const page=window.__page;const content=page==='dashboard'?<Dashboard role={role} user={user()}/>:page==='settings'?<Settings role={role} user={user()}/>:page==='vaccination'?<Vaccination role={role}/>:page==='doctor-detail'?<Doctor role={role} id='D000001'/>:page==='audit-logs'?<Audit/>:<Directory role={role} kind={page}/>;createRoot(document.getElementById('root')).render(<LanguageProvider><Shell role={role} user={user()}>{content}</Shell></LanguageProvider>);`;
-const bundle=await build({stdin:{contents:entry,resolveDir:root,loader:'tsx'},jsx:'automatic',bundle:true,write:false,define:{'process.env.NODE_ENV':'"production"'},plugins:[{name:'synthetic-portal',setup(b){
+const bundle=await build({loader:{'.css':'empty'},stdin:{contents:entry,resolveDir:root,loader:'tsx'},jsx:'automatic',bundle:true,write:false,define:{'process.env.NODE_ENV':'"production"'},plugins:[{name:'synthetic-portal',setup(b){
  b.onResolve({filter:/^react(?:-dom)?(?:\/.*)?$/},a=>({path:require.resolve(a.path)}));
  b.onResolve({filter:/^(portal-fixture|@\/lib\/api)$/},()=>({path:'api',namespace:'fixture'}));
  b.onLoad({filter:/.*/,namespace:'fixture'},()=>({contents:fixture}));
@@ -40,16 +41,17 @@ const bundle=await build({stdin:{contents:entry,resolveDir:root,loader:'tsx'},js
  b.onResolve({filter:/^@\//},a=>{const base=path.join(root,'admin/src',a.path.slice(2));return {path:[base,base+'.tsx',base+'.ts',base+'.json'].find(p=>fs.existsSync(p)&&fs.statSync(p).isFile())};});
 }}]});
 const browser=await chromium.launch({channel:'chrome',headless:true});
-const css=fs.readFileSync(path.join(root,'admin/src/app/globals.css'),'utf8').split('\n').slice(1).join('\n')+'\n'+fs.readFileSync(path.join(root,'admin/src/app/portal.css'),'utf8');
+const css=['globals.css','portal.css','superadmin.css','doctor-network.css'].map(file=>fs.readFileSync(path.join(root,'admin/src/app',file),'utf8').replace(/^@import.*$/gm,'').replaceAll('\uFEFF','')).join('\n')+'\n'+fs.readFileSync(path.join(root,'app/src/audit-responsive.css'),'utf8');
 fs.mkdirSync(path.join(root,'test-results/portal'),{recursive:true});
 const errors=[];
 try{
  for(const role of ['ADMIN','SUPERADMIN']){
   for(const name of ['dashboard','doctors','patients','doctor-detail','vaccination','settings',...(role==='SUPERADMIN'?['admins','audit-logs']:[])]){
+   if(process.env.PORTAL_UI_PAGE&&name!==process.env.PORTAL_UI_PAGE)continue;
    const page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>errors.push(role+'/'+name+': '+e.message));
    await page.setContent('<div id="root"></div>');await page.evaluate(({role,name})=>{window.__role=role;window.__page=name;window.__path=(role==='SUPERADMIN'?'/superadmin':'')+'/'+(name==='doctor-detail'?'doctors/D000001':name);window.fetch=async()=>({ok:true,json:async()=>({languages:[{code:'en',name:'English',translation_status:'available'}],location:{state:''},recommended_language:'en',items:[{name:'Delhi',languages:[{code:'en',name:'English',translation_status:'available'}]}],translation_status:'available',messages:{}})});},{role,name});
-   await page.addStyleTag({content:css});await page.addScriptTag({content:bundle.outputFiles[0].text});await page.locator('.page-content h1').waitFor();await page.locator('.language-selector select').first().waitFor();
-   await page.getByText('Loading doctor profile...',{exact:true}).waitFor({state:'hidden'});
+   await page.addStyleTag({content:css});await page.addScriptTag({content:bundle.outputFiles[0].text});await page.locator('.sa-page-content h1, .page-content h1').waitFor();await page.locator('.language-selector select').first().waitFor();
+   await page.locator('.doctor-network [role=status]').waitFor({state:'hidden'});
    if(name==='vaccination'){
     await page.getByRole('button',{name:'Deactivate Example vaccine',exact:true}).waitFor();
     await page.getByRole('button',{name:'Add dose schedule',exact:true}).click();
@@ -63,7 +65,7 @@ try{
    for(const width of [1024,390]){
     await page.setViewportSize({width,height:900});
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${role}/${name}: overflow at ${width}`);
-    if(width===390){const menu=page.getByRole('button',{name:'Open navigation',exact:true});await menu.click();assert.equal(await menu.getAttribute('aria-expanded'),'true');await page.keyboard.press('Escape');assert.equal(await menu.getAttribute('aria-expanded'),'false');await page.waitForFunction(()=>document.querySelector('.sidebar').getBoundingClientRect().right<=0);}
+    if(width===390){const menu=page.getByRole('button',{name:'Open navigation',exact:true});await menu.click();assert.equal(await menu.getAttribute('aria-expanded'),'true');await page.keyboard.press('Escape');assert.equal(await menu.getAttribute('aria-expanded'),'false');await page.waitForFunction(()=>document.querySelector('.sa-sidebar, .sidebar').getBoundingClientRect().right<=0);}
    }
    if(['dashboard','doctor-detail','vaccination'].includes(name))await page.screenshot({path:path.join(root,`test-results/portal/${role.toLowerCase()}-${name}-mobile.png`),fullPage:true});
    await page.close();console.log('PASS',role,name,'desktop, tablet, mobile and navigation');

@@ -1,0 +1,22 @@
+.activity-date-filter{display:grid;gap:12px;padding:18px 22px;border-bottom:1px solid #e7edf1}
+.activity-range-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.activity-range-buttons button{border:1px solid #dbe6e6;border-radius:9px;background:#fff;color:#415965;font:inherit;font-size:13px;font-weight:600;padding:9px 13px;cursor:pointer}
+.activity-range-buttons button:hover,.activity-range-buttons button.active{background:#e6f7f0;color:#007c62;border-color:#83cdb6}
+.activity-range-buttons button:focus-visible{outline:3px solid #7bc8ae;outline-offset:2px}
+.activity-custom-dates{display:flex;flex-wrap:wrap;align-items:end;gap:12px}
+.activity-custom-dates label{display:grid;gap:6px;font-size:12px;font-weight:600;color:#48606e}
+.activity-custom-dates input{border:1px solid #dbe6e6;border-radius:8px;padding:9px;font:inherit;min-height:39px}
+.activity-date-filter small{color:#5c7481}
+@media(max-width:600px){.activity-date-filter{padding:14px}.activity-custom-dates label{flex:1;min-width:135px}.activity-custom-dates input{width:100%;box-sizing:border-box}}
+
+.activity-filter-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.activity-delete{display:inline-flex;align-items:center;gap:8px;border:1px solid #e7b5b5;border-radius:9px;background:#fff5f5;color:#b42318;padding:10px 14px;font:inherit;font-weight:600;cursor:pointer}
+.activity-delete:hover:not(:disabled){background:#fee4e2}
+.activity-delete:disabled,.activity-range-buttons button:disabled{opacity:.5;cursor:not-allowed}
+.activity-delete:focus-visible{outline:3px solid #e7b5b5;outline-offset:2px}
+
+.activity-modal-backdrop{position:fixed;inset:0;z-index:1000;background:#102a4366;display:flex;align-items:center;justify-content:center;padding:20px}
+.activity-confirm{background:white;border-radius:16px;padding:26px;max-width:480px;width:100%;box-shadow:0 16px 60px #102a4333;max-height:85vh;overflow:auto}
+.activity-confirm h2{margin-top:0}.activity-confirm p{line-height:1.6;color:#48606e}.activity-confirm-actions{display:flex;justify-content:flex-end;gap:12px}
+
+.activity-confirm{border:0;box-sizing:border-box}.activity-confirm::backdrop{background:#102a4366}

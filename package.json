@@ -1,1 +1,21 @@
-{"name":"family-care-workspace","private":true,"version":"1.0.0","workspaces":["app","customer","doctor","admin"],"scripts":{"dev":"npm run dev --workspace app","dev:customer":"npm run dev --workspace customer","dev:doctor":"npm run dev --workspace doctor","dev:admin":"npm run dev --workspace admin","typecheck":"npm run typecheck --workspaces --if-present","build":"npm run build --workspaces --if-present"}}
+{
+  "name": "family-care-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "app",
+    "customer",
+    "doctor",
+    "admin"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace app",
+    "dev:customer": "npm run dev --workspace customer",
+    "dev:doctor": "npm run dev --workspace doctor",
+    "dev:admin": "npm run dev --workspace admin",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test:audit:ui": "node app/tests/audit-workflows.mjs",
+    "test:public:layout": "node app/tests/public-layout.mjs"
+  }
+}

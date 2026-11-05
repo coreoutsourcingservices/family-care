@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start --port 3005",
     "typecheck": "tsc --noEmit",
-    "test:localization": "node tests/localization.mjs"
+    "test:localization": "node tests/localization.mjs",
+    "test:doctor-network": "node tests/doctor-network.mjs"
   },
   "dependencies": {
     "i18next": "^26.5.11",

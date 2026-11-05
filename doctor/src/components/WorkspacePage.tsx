@@ -5,16 +5,18 @@ import DoctorWorkspaceLayout from './DoctorWorkspaceLayout';
 
 export function useWorkspaceData<T>(load: () => Promise<T>, dependencies: unknown[] = []) {
   const [data, setData] = useState<T>();
+  const [loadedKey,setLoadedKey]=useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [attempt, setAttempt] = useState(0);
+  const requestKey=JSON.stringify(dependencies)+':'+attempt;
   useEffect(() => {
     let active = true;
     setLoading(true); setError(''); setData(undefined);
-    load().then(value => { if (active) setData(value); }).catch(failure => { if (active) setError(failure instanceof Error ? failure.message : 'Could not load this page.'); }).finally(() => { if (active) setLoading(false); });
+    load().then(value => { if (active){setData(value);setLoadedKey(requestKey);} }).catch(failure => { if (active) setError(failure instanceof Error ? failure.message : 'Could not load this page.'); }).finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, [...dependencies, attempt]);
-  return { data, error, loading, refresh: () => setAttempt(value => value + 1) };
+  return { data:loadedKey===requestKey?data:undefined, error, loading:loading||loadedKey!==requestKey&&!error, refresh: () => setAttempt(value => value + 1) };
 }
 
 export default function WorkspacePage({ title, description, children, refresh }: { title: string; description: string; children: ReactNode; refresh?: () => void }) {

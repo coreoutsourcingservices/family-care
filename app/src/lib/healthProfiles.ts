@@ -50,7 +50,7 @@ export async function saveProfile(profile:HealthProfile):Promise<HealthProfile> 
   else{saved=await loadProfile(profile.id);}
   if(saved.locked)return saved;
   for(const report of profile.reports.filter(r=>r.blob)) {
-    const form=new FormData();form.append('file',report.blob!,report.name);
+    const form=new FormData();form.append('file',report.blob!,report.name);if(report.title)form.append('title',report.title);if(report.category)form.append('category',report.category);
     try {const result=await careApi<{report:RemoteReport}>(`/patients/profiles/${saved.id}/reports`,form);saved={...saved,reports:[...saved.reports,{id:result.report.id,name:result.report.name,size:result.report.size_bytes,addedAt:result.report.created_at,downloadPath:`/api/v1/patients/profiles/${saved.id}/reports/${result.report.id}/download`}]};}
     catch(error){throw new PartialSaveError(error instanceof Error?error.message:'Report upload failed',saved);}
   }
