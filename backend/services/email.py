@@ -33,16 +33,25 @@ def send_mail(destination, subject, body, message_id):
         client.send_message(message)
 
 
-def process_one():
+def process_one(templates=None):
     # Lock stays held through delivery; bound worker count limits DB connections.
     # SMTP provides at-least-once delivery: crash after send/before commit may duplicate.
-    item = db().scalar(select(EmailNotification).where(EmailNotification.status == 'PENDING',
-                 EmailNotification.available_at <= now()).order_by(EmailNotification.created_at)
+    query = select(EmailNotification).where(EmailNotification.status == 'PENDING', EmailNotification.available_at <= now())
+    if templates:
+        query = query.where(EmailNotification.template.in_(templates))
+    item = db().scalar(query.order_by(EmailNotification.created_at)
                  .with_for_update(skip_locked=True).limit(1))
     if not item:
         db().rollback()
         return False
     user = db().get(User, item.user_id)
+    if item.template == 'appointment_booked':
+        from core.models import CapacityAppointment
+        appointment = db().scalar(select(CapacityAppointment).where(CapacityAppointment.email_id == item.id))
+        if not appointment or appointment.status != 'BOOKED':
+            item.status = 'CANCELLED'
+            db().commit()
+            return True
     if item.template.startswith('vaccination_reminder_'):
         from services.vaccination import reminder_still_valid
         if not reminder_still_valid(item):

@@ -160,10 +160,11 @@ def specification(app):
             for name in rule.arguments:
                 operation['parameters'].append({'name': name, 'in': 'path', 'required': True, 'schema': {'type': 'string'},
                                                'description': 'UUID or public ID' if name == 'user_id' else 'Resource UUID'})
-            if method == 'GET' and (any(path.endswith(s) for s in ('-requests', '/admins', '/doctors', '/patients', '/audit-logs', '/profiles', '/care-profiles', '/reports')) or path.endswith('/health-articles')):
+            if method == 'GET' and (any(path.endswith(s) for s in ('-requests', '/admins', '/doctors', '/patients', '/audit-logs', '/profiles', '/care-profiles', '/reports')) or path.endswith(('/health-articles','/women-health-articles'))):
                 operation['parameters'] += [dict(name='page', **{'in': 'query'}, schema={'type': 'integer', 'minimum': 1, 'default': 1}),
                                            dict(name='per_page', **{'in': 'query'}, schema={'type': 'integer', 'minimum': 1, 'maximum': 100, 'default': 25})]
-            if method == 'GET' and path.endswith('/health-articles'):
+            if method == 'GET' and path.endswith(('/health-articles','/women-health-articles')):
+                operation['parameters'].append({'name':'category','in':'query','required':False,'schema':{'type':'string','enum':['cycle','pcos','pregnancy','fertility','symptoms','nutrition','screening']}})
                 operation['parameters'].append({'name':'audience','in':'query','required':path=='/api/v1/health-articles','schema':{'type':'string','enum':['child','women']}})
                 if path.startswith('/api/v1/admin/'):
                     operation['parameters'] += [dict(name='status', **{'in':'query'}, schema={'type':'string','enum':['DRAFT','PUBLISHED','SCHEDULED','ARCHIVED']}),

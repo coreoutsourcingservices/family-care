@@ -40,6 +40,8 @@ def create_app(overrides=None):
     from services.adult_workspace import bp as adult_workspace
     from services.consultation_directory import bp as consultation_directory
     from services import appointment_slots
+    from services.capacity_appointments import bp as capacity_appointments
+    app.register_blueprint(capacity_appointments)
     from services.prescriptions import bp as prescriptions
     app.register_blueprint(prescriptions)
     from services.growth_nutrition import bp as growth_nutrition

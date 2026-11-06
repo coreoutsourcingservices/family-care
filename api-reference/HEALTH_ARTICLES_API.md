@@ -1,6 +1,43 @@
 # Health Articles API
 
-Base URL: `http://127.0.0.1:5001`. These endpoints are API-only; no portal navigation or UI is exposed for article management.
+Base URL: `http://127.0.0.1:5001`. Admin UI: `/women-health-articles`. Doctor UI: `/doctor/women-health-articles`. Both sidebars include Women Health Articles.
+
+## Women categories and timing
+
+Admin's published articles are visible by default to every women profile (including profiles with no connected doctor), within the matching category and pregnancy month rules. Doctors also see published Admin articles by default. Only an explicit doctor visibility override hides an Admin article for that doctor's currently connected women patients.
+
+To add the ten labelled active demo articles, run `python scripts/seed_women_articles.py` from `backend` with `PYTHONPATH=.`. It uses an existing active approved Admin account (or `--admin-id`), creates no account, and preserves existing articles. Repeated runs skip the same deterministic sample IDs. Nine samples are general; the pregnancy month-3 sample requires a matching saved stage.
+
+Women articles accept `category`: `cycle`, `pcos`, `pregnancy`, `fertility`, `symptoms`, `nutrition`, or `screening`; `time_label` (up to 100 characters); and optional `stage_month` (integer 1–9, only for women/pregnancy). `content` is the Description input. The existing title, content, publication date, tags and audience contracts remain supported. Inactive maps to `DRAFT`; Active maps to `PUBLISHED`. Future publication remains scheduled. Deactivation is reversible; archival retains its existing behavior.
+
+`GET /api/v1/admin/health-articles` also accepts `category`.
+
+Example women article:
+
+```json
+{"title":"Third month care","audience":"women","category":"pregnancy","stage_month":3,"time_label":"Daily care","content":"Enter the complete clinician-reviewed article description here.","status":"PUBLISHED"}
+```
+
+## Connected doctor management
+
+All following endpoints require an approved Doctor session and standard CSRF protection for cookie mutations:
+
+- `GET /api/v1/doctor/women-health-articles?category=pregnancy`: paginated list of the doctor's own women articles plus currently published Admin women articles. Items contain `can_edit` and `doctor_active`.
+- `POST /api/v1/doctor/women-health-articles`: create an article using the article schema, requiring women audience and one of the seven categories.
+- `GET /api/v1/doctor/women-health-articles/{article_id}` and `PUT` on the same URL: read/edit only this doctor's own articles. Another author's article returns 404.
+- `PUT /api/v1/doctor/women-health-articles/{article_id}/visibility` with `{"active":false}` or `{"active":true}`: hide/restore an active Admin article for this doctor's connected women profiles. This leaves Admin publication status and other doctors' patients unchanged.
+
+Doctor articles are visible only to profiles currently connected to their author; disconnecting or switching doctors immediately removes the previous doctor's articles and visibility overrides. Doctor articles are excluded from unauthenticated public reads.
+
+## Women profile article reader
+
+`GET /api/v1/women/profiles/{profile_id}/health-articles?category=pregnancy`
+
+Requires Patient or Doctor authentication and the profile's existing permission for that category. Returns paginated `items` including full article content, plus `stage_month`. Includes only currently published Admin articles and the currently connected approved doctor's articles, minus that doctor's disabled Admin articles. Draft, archived and future articles are excluded.
+
+Pregnancy month is calculated from the existing active ongoing Pregnancy Care stage, using the same month/week ranges. General articles (`stage_month:null`) always qualify. Month-specific articles appear only when the saved stage matches; an absent/inactive/ended/stale stage does not reveal month-specific guidance. The UI shows articles within each of the seven existing women pages, with expandable descriptions and author attribution. It refreshes every 30 seconds.
+
+Apply migration `0032_women_articles` after `0031_health_articles`; it adds category/timing columns and per-doctor visibility overrides. Restart the API after migrating.
 
 Articles have one required audience tag: `child` or `women`. Additional tags are optional. Admins can save drafts, publish immediately, schedule a publication time, edit articles, and archive them. Superadmins do not have access to the article-management routes.
 

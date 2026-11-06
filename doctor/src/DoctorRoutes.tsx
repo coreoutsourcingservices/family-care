@@ -20,6 +20,7 @@ const Settings = lazy(() => import('./pages/Settings'));
 const ChildCare = lazy(() => import('./pages/ChildCare'));
 const Vaccination = lazy(() => import('./pages/Vaccination'));
 const VaccineReviews = lazy(() => import('./pages/VaccineReviews'));
+const WomenHealthArticles = lazy(() => import('./pages/WomenHealthArticles'));
 
 function ProfileRoute() {
   const status = getDoctorWorkspace()?.user.approval_status;
@@ -33,6 +34,7 @@ export default function DoctorRoutes() {
       <Route path="dashboard" element={<DoctorHome />} />
       <Route path="setup-account" element={<ProfileRoute />} />
       <Route element={<DoctorApprovalGate />}>
+        <Route path="women-health-articles" element={<WomenHealthArticles/>}/>
         <Route path="child-care" element={<ChildCare />} />
         <Route path="vaccination" element={<Vaccination />} />
         <Route path="adult/:profileId" element={<SharedAdultWorkspace/>}/><Route path="women/:profileId" element={<SharedWomenWorkspace/>}/><Route path="patients" element={<Patients />} />

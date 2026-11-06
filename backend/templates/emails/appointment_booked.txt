@@ -1,0 +1,13 @@
+Hello {{ full_name }},
+
+An appointment has been booked with you on FamilyCare.
+
+Patient: {{ patient_name }}
+Booked by: {{ booked_by }}
+Date: {{ appointment_date }}
+Time window: {{ start }} - {{ end }} (Asia/Kolkata / IST)
+
+This booking reserves a place within the time window, not an exact consultation minute.
+Open Doctor > Appointments to review the current booking status.
+
+FamilyCare

@@ -1,0 +1,35 @@
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+import {writeFile,unlink,mkdir} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+const html=new URL('../../app/appointments-qa.html',import.meta.url),entry=new URL('../../app/appointments-qa.tsx',import.meta.url);
+const api='http://127.0.0.1:5003/api/v1';
+const login=async(path,email)=>{const response=await fetch(api+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:'BrowserTest8!'})});assert.equal(response.status,200);return (await response.json()).access_token;};
+const doctorToken=await login('/doctors/login','doctor@example.com'),patientToken=await login('/patients/login','owner@example.com');
+const browser=await chromium.launch({channel:'msedge',headless:true});
+try{
+ await writeFile(html,'<html><body style="margin:0;font-family:Arial;background:#f5f8f6"><div id="root"></div><script type="module" src="/appointments-qa.tsx"></script></body></html>');
+ await writeFile(entry,`import React from 'react';import {createRoot} from 'react-dom/client';import Schedule from '../doctor/src/components/AppointmentSchedule';import Booking from './src/components/AppointmentBooking';const patient=new URLSearchParams(location.search).has('patient');createRoot(document.getElementById('root')).render(patient?<Booking profileId="44444444-4444-4444-8444-444444444444"/>:<Schedule/>);`);
+ const page=await browser.newPage();page.setDefaultTimeout(60000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.route('**/api/v1/**',async route=>{const req=route.request();const token=req.url().includes('/doctors/')?doctorToken:patientToken;const response=await route.fetch({url:api+new URL(req.url()).pathname.split('/api/v1')[1]+new URL(req.url()).search,headers:{...req.headers(),Authorization:'Bearer '+token,'X-Auth-Transport':'bearer'}});await route.fulfill({response});});
+ const base='http://127.0.0.1:5173/appointments-qa.html';
+ await page.goto(base);
+ await page.getByLabel('Patient capacity 1',{exact:true}).fill('1');
+ await page.getByLabel('Patient capacity 2',{exact:true}).fill('2');
+ await page.getByRole('button',{name:'Save appointment schedule',exact:true}).click();
+ await page.getByText('Appointment schedule saved.',{exact:false}).waitFor();
+ await page.reload();await page.getByLabel('Patient capacity 1',{exact:true}).waitFor();assert.equal(await page.getByLabel('Patient capacity 1',{exact:true}).inputValue(),'1');
+ const schedule=await (await fetch(api+'/doctors/appointment-schedule',{headers:{Authorization:'Bearer '+doctorToken}})).json();
+ const date=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(Date.now()+86400000));
+ const fill=await fetch(api+'/patients/profiles/66666666-6666-4666-8666-666666666666/appointments',{method:'POST',headers:{Authorization:'Bearer '+patientToken,'Content-Type':'application/json'},body:JSON.stringify({window_id:schedule.windows[0].id,appointment_date:date,request_id:crypto.randomUUID()})});assert.equal(fill.status,201,await fill.text());
+ await page.goto(base+'?patient=1');await page.getByLabel('Appointment date',{exact:true}).fill(date);
+ await page.getByRole('button',{name:'Full',exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'Full',exact:true}).isDisabled(),true);
+ await page.getByRole('button',{name:'Book appointment',exact:true}).click();
+ await page.getByText('Appointment booked for',{exact:false}).waitFor();
+ await page.getByRole('button',{name:'Already booked',exact:true}).waitFor();
+ const bookings=await (await fetch(api+'/doctors/booked-appointments?date='+date,{headers:{Authorization:'Bearer '+doctorToken}})).json();
+ assert.equal(bookings.items.length,2);assert.ok(bookings.items.some(b=>b.start==='13:00'&&b.patient_name==='QA Woman'&&b.email_status==='PENDING'));
+ await page.setViewportSize({width:390,height:844});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+ await mkdir(new URL('../../test-results/',import.meta.url),{recursive:true});await page.screenshot({path:fileURLToPath(new URL('../../test-results/appointment-booking-mobile.png',import.meta.url)),fullPage:true});
+ assert.deepEqual(errors,[]);console.log('PASS real isolated API: doctor schedule persistence, full morning window, afternoon booking, doctor booking list, queued email, mobile layout');
+}finally{await browser.close();await Promise.allSettled([unlink(html),unlink(entry)]);}

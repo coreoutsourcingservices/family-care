@@ -63,6 +63,8 @@ def main(argv=None):
         from doctor.push_worker import start
         start(app)
     if ready and args.port == 5001:
+        from scripts.appointment_mail_worker import start_background as start_appointment_mail
+        start_appointment_mail(app)
         from scripts.recycle_worker import start_background as start_recycle
         start_recycle(app)
         from scripts.report_worker import start_background as start_reports

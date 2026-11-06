@@ -7,7 +7,14 @@ from pydantic import Field, field_validator
 from core.schemas import Schema
 
 
+class ArticleVisibilityInput(Schema):
+    active: bool = Field(strict=True)
+
+
 class HealthArticleInput(Schema):
+    category: Literal['cycle', 'pcos', 'pregnancy', 'fertility', 'symptoms', 'nutrition', 'screening'] | None = None
+    stage_month: int | None = Field(default=None, ge=1, le=9, strict=True)
+    time_label: str = Field(default='', max_length=100)
     title: str = Field(min_length=3, max_length=180)
     audience: Literal['child', 'women']
     summary: str = Field(default='', max_length=600)

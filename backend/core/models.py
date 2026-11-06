@@ -106,6 +106,9 @@ class HealthArticle(Base):
     )
     id = primary_id()
     title = C(S(180), nullable=False)
+    category = C(S(24))
+    stage_month = C(I)
+    time_label = C(S(100), nullable=False, default='')
     audience = C(S(16), nullable=False)
     summary = C(S(600), nullable=False, default='')
     content = C(Text, nullable=False)
@@ -116,6 +119,13 @@ class HealthArticle(Base):
     published_at = C(DT, index=True)
     created_at = C(DT, default=now, nullable=False)
     updated_at = C(DT, default=now, onupdate=now, nullable=False)
+
+
+class WomenArticleVisibility(Base):
+    __tablename__ = 'women_article_visibility'
+    doctor_id = user_fk(primary_key=True)
+    article_id = C(Uuid(as_uuid=False), FK('familycare.health_articles.id', ondelete='CASCADE'), primary_key=True)
+    active = C(B, nullable=False, default=True)
 
 
 class PatientProfile(Base):
@@ -596,3 +606,32 @@ class DoctorAvailability(Base):
     starts_at=C(DT,nullable=False,index=True)
     duration_minutes=C(I,nullable=False,default=30)
     active=C(B,nullable=False,default=True)
+
+
+class DoctorAppointmentSchedule(Base):
+    __tablename__ = 'doctor_appointment_schedules'
+    doctor_id = user_fk(primary_key=True)
+    windows = C(JSON, nullable=False, default=list)
+    version = C(I, nullable=False, default=1)
+    updated_at = C(DT, nullable=False, default=now, onupdate=now)
+
+
+class CapacityAppointment(Base):
+    __tablename__ = 'capacity_appointments'
+    __table_args__ = (
+        CK("status IN ('BOOKED','CANCELLED','COMPLETED')", name='status'),
+        UQ('patient_id', 'request_id'),
+        Index('ix_capacity_appointments_window', 'doctor_id', 'window_id', 'appointment_date', 'status'),
+    )
+    id = primary_id()
+    doctor_id = user_fk(nullable=False, index=True)
+    patient_id = user_fk(nullable=False, index=True)
+    profile_id = C(Uuid(as_uuid=False), FK('familycare.care_profiles.id', ondelete='CASCADE'), nullable=False, index=True)
+    window_id = C(Uuid(as_uuid=False), nullable=False)
+    request_id = C(Uuid(as_uuid=False), nullable=False)
+    appointment_date = C(Date, nullable=False)
+    start_time = C(S(5), nullable=False)
+    end_time = C(S(5), nullable=False)
+    status = C(S(16), nullable=False, default='BOOKED')
+    email_id = C(Uuid(as_uuid=False), FK('familycare.email_notifications.id'))
+    created_at = C(DT, nullable=False, default=now)

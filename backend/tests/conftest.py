@@ -59,6 +59,9 @@ def test_app():
                 importlib.import_module('migrations.versions.0028_recycle_bin').upgrade()
                 importlib.import_module('migrations.versions.0029_activity_retention').upgrade()
                 importlib.import_module('migrations.versions.0030_clinical_workflows').upgrade()
+                importlib.import_module('migrations.versions.0031_health_articles').upgrade()
+                importlib.import_module('migrations.versions.0032_women_articles').upgrade()
+                importlib.import_module('migrations.versions.0033_capacity_appointments').upgrade()
     else:
         Base.metadata.create_all(engine)
     yield app
