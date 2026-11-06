@@ -28,9 +28,13 @@ async function listAll<T>(path: string): Promise<T[]> {
 }
 export async function loadProfile(id:string, doctor=false):Promise<HealthProfile> {
   const prefix=doctor?'/doctors/care-profiles':'/patients/profiles';
-  const detail=await careApi<{profile:RemoteProfile}>(`${prefix}/${id}`);
-  const reports=await listAll<RemoteReport>(`${prefix}/${id}/reports`);
+  const [detail,reports]=await Promise.all([careApi<{profile:RemoteProfile}>(`${prefix}/${id}`),listAll<RemoteReport>(`${prefix}/${id}/reports`)]);
   return fromRemote({...detail.profile,reports},doctor);
+}
+// Profile lists already contain authorized metadata; only fetch the report pages.
+export async function loadProfileReports(profile:HealthProfile):Promise<HealthProfile> {
+  const reports=await listAll<RemoteReport>(`/patients/profiles/${profile.id}/reports`);
+  return {...profile,reports:reports.map(r=>({id:r.id,name:r.name,title:r.title,category:r.category,categoryReviewed:r.category_reviewed,size:r.size_bytes,addedAt:r.created_at,downloadPath:`/api/v1/patients/profiles/${profile.id}/reports/${r.id}/download`}))};
 }
 export async function selfProfile():Promise<{profile:HealthProfile|null;account:{full_name:string;email:string;mobile_number:string}}> {
   const [session, profiles] = await Promise.all([authApi('/patients/me',undefined,'GET'),listAll<RemoteProfile>('/patients/profiles')]);

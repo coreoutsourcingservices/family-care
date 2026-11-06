@@ -11,7 +11,7 @@ async function fixture(page,module,empty=false){
  if(path==='/api/v1/patients/profiles'){
   if(request.method()==='POST'){saved=request.postDataJSON();const profile={...saved,id:'new-self',created_at:'2026-11-05',family_access:true};profiles.push(profile);return json({profile});}
   return json({items:profiles.filter(p=>!url.searchParams.get('module')||p.module===url.searchParams.get('module')),total:profiles.length});}
- if(path.endsWith('/workspace'))return json({owner:true,permissions:{},records:[]});
+ if(path.endsWith('/workspace')){const selected=profiles.find(item=>path.includes(item.id));return json({profile:{id:selected.id,name:selected.full_name,dob:selected.date_of_birth},owner:true,permissions:{},records:[]});}
  const profile=profiles.find(p=>path==='/api/v1/patients/profiles/'+p.id);if(profile)return json({profile});
  return json({items:[],total:0,unread_count:0});
  });return {errors,saved:()=>saved};
@@ -30,7 +30,7 @@ try{
   await sidebar.getByRole('link',{name:'Add member',exact:true}).click();await expect(page.getByRole('dialog',{name:'Add family member',exact:true})).toBeVisible();
   await page.getByRole('dialog',{name:'Add family member',exact:true}).getByRole('button',{name:'Close',exact:true}).click();await expect(page).toHaveURL(base+'/customer/dashboard');
 
-  await page.goto(base+'/customer/dashboard');await page.locator('.fh-sidebar').getByRole('button',{name:'Self (My Health)',exact:false}).click();await expect(page).toHaveURL(base+'/customer/'+module+'/dashboard?profile=self-'+module);
+  await page.goto(base+'/customer/dashboard');await page.locator('.fh-sidebar').getByRole('button',{name:'Open my health account',exact:false}).click();await expect(page).toHaveURL(base+'/customer/'+module+'/dashboard?profile=self-'+module);
   await page.goto(base+'/customer/dashboard');await page.locator('.fh-sidebar').getByRole('button',{name:'Add member',exact:false}).click();const picker=page.getByRole('dialog',{name:'Add family member',exact:true});await expect(picker).toBeVisible();await picker.getByRole('link',{name:"Women's Health",exact:false}).click();await expect(page.getByRole('dialog',{name:'Invite family member',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Send email invitation',exact:false})).toBeVisible();
   if(module==='women'){await page.goto(base+'/customer/women/dashboard?profile=women-member');await expect(page.locator('.ch-sidebar')).toBeVisible();await expect(page.locator('.ch-sidebar').getByRole('link',{name:'Add member',exact:true})).toHaveCount(0);await expect(page.locator('.ch-sidebar').getByRole('link',{name:'Add notes',exact:true})).toHaveCount(0);await page.goto(base+'/customer/women/notes?profile=women-member');await expect(page.getByRole('heading',{name:'Page not found',exact:true})).toBeVisible();}
   assert.equal(state.saved(),undefined);assert.deepEqual(state.errors,[]);await page.close();console.log('PASS existing '+module+' self routing, member list separation and invitation flow');

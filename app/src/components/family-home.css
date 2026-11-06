@@ -43,3 +43,32 @@
 @media(max-width:760px){.fh-workspace-navigation{padding:17px}.fh-workspace-navigation h1{font-size:23px}.fh-workspace-links{display:grid;grid-template-columns:1fr 1fr}.fh-workspace-links>.fh-workspace-self{grid-column:1/-1;width:100%;min-width:0}.fh-workspace-links>a,.fh-workspace-links>button{font-size:11px;padding:12px 9px}}
 .fh-account-continue{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px;border:1px solid #e7e1fa;border-radius:18px;background:linear-gradient(125deg,#fff,#f7f0ff);margin-bottom:20px}.fh-account-continue h1{font-size:25px;margin:7px 0}.fh-account-continue p{font-size:12px;color:#756b92;margin:0}
 @media(max-width:760px){.fh-account-continue{align-items:stretch;flex-direction:column;padding:17px}.fh-account-continue h1{font-size:23px}}
+
+/* Keep overview labels legible at narrow desktop card widths. */
+.fh-chart-grid .fh-heading{flex-wrap:wrap;align-items:flex-start;gap:14px;margin-bottom:18px}
+.fh-chart-grid h2{line-height:1.5;margin-bottom:12px}
+.fh-chart-grid h2 span{display:inline-block;margin-left:4px}
+.fh-chart-tabs{display:flex;flex-wrap:wrap;gap:4px}
+.fh-chart-empty{padding:22px 10px;line-height:1.7;min-height:210px}
+.fh-chart-empty p{margin:12px 0 8px}
+.fh-chart-empty small{display:block;max-width:280px;margin:0 auto;font-size:12px;line-height:1.7}
+.fh-measurement-link{display:inline-block;margin-top:14px;font-size:12px;text-decoration:underline;text-underline-offset:3px}
+.fh-bmi>p{line-height:1.7;font-size:12px;margin-top:16px}
+.fh-summary li{line-height:1.6;gap:8px}
+
+.fh .fh-chart-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.fh .fh-chart-grid>section:first-child{grid-column:1/-1}
+.fh .fh-chart-grid h2,.fh .fh-chart-grid h3{letter-spacing:normal;word-spacing:normal;font-weight:600;line-height:1.6}
+.fh .fh-chart-grid .fh-heading{justify-content:flex-start;column-gap:16px;row-gap:10px}
+.fh-overview-owner{color:#74799e;font-size:12px}
+.fh .fh-chart-tabs[hidden]{display:none}
+.fh-vital-chart{max-width:600px;margin:auto;padding:12px 4px}
+.fh-vital-chart svg{width:100%;display:block;max-height:230px;overflow:visible}
+.fh-vital-chart p{font-size:13px;line-height:1.6}.fh-vital-chart p span,.fh-vital-chart>small{color:#74799e;font-size:12px}
+.fh-latest-readings{display:grid;gap:12px;margin:16px 0 24px}
+.fh-latest-readings>div{padding:12px 14px;background:#f8f5ff;border-radius:12px;display:grid;gap:7px}
+.fh-latest-readings span,.fh-latest-readings small{font-size:12px;line-height:1.6;color:#74799e}
+.fh-latest-readings strong{font-size:20px;line-height:1.5;letter-spacing:normal}
+.fh .fh-chart-grid .fh-card{padding:22px;min-width:0}
+.fh .fh-summary h3{font-size:14px;margin-bottom:16px}
+@media(max-width:480px){.fh .fh-chart-grid{grid-template-columns:minmax(0,1fr)}.fh .fh-chart-grid .fh-card{padding:18px}}

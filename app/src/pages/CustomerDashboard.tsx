@@ -1,3 +1,4 @@
+import {usePatientSession} from '../components/MemberRouteGuard';
 import FamilyHome from '../components/FamilyHome';
 import AccountDoctorConnection from '../components/AccountDoctorConnection';
 import { useEffect, useRef, useState } from 'react';
@@ -19,8 +20,9 @@ export default function CustomerDashboard({ module }: { module?: ModuleId }) {
 
 function DashboardContent({ module }: { module?: ModuleId }) {
   const {t,language,direction}=useCustomerLanguage();
+  const patientSession=usePatientSession();
   const navigate = useNavigate();
-  const [user, setUser] = useState<AuthUser>();
+  const [user, setUser] = useState<AuthUser|undefined>(()=>patientSession??undefined);
   const [error, setError] = useState('');
   const [attempt, setAttempt] = useState(0);
   const [signingOut, setSigningOut] = useState(false);
@@ -31,6 +33,7 @@ function DashboardContent({ module }: { module?: ModuleId }) {
   useEffect(() => {
     let active = true;
     setError('');
+    if(patientSession){setUser(patientSession);return;}
     authApi('/patients/me', undefined, 'GET').then(data => {
       if (!active) return;
       if (data.user?.role !== 'PATIENT') { navigate('/customer/login', { replace: true }); return; }
@@ -41,7 +44,7 @@ function DashboardContent({ module }: { module?: ModuleId }) {
       else setError(failure instanceof Error ? failure.message : 'Unable to load your account. Please try again.');
     });
     return () => { active = false; };
-  }, [attempt, navigate]);
+  }, [attempt, navigate,patientSession]);
 
   async function signOut() {
     if (signingOut) return;

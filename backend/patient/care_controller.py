@@ -62,3 +62,4 @@ def doctor_overview(profile_id):
     page,size=pagination()
     rows,total=paginate(query.order_by(model.created_at.desc(),model.id),page,size)
     return jsonify(doctor=care_doctor_details(doctor),items=[dict(row.data,id=row.id,kind=row.kind) for row in rows],total=total,page=page,per_page=size)
+"""  """
