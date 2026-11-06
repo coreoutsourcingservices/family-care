@@ -1,0 +1,163 @@
+{
+  "provider": "Google Translate, build-time public UI labels only",
+  "native_speaker_reviewed": false,
+  "keys": 1204,
+  "languages": [
+    {
+      "language": "bhojpuri",
+      "requested": 9,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "awadhi",
+      "requested": 9,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "as",
+      "requested": 10,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "fr",
+      "requested": 22,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "dogri",
+      "requested": 9,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "bn",
+      "requested": 12,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "hi",
+      "requested": 10,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "gu",
+      "requested": 13,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "kn",
+      "requested": 13,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "khasi",
+      "requested": 13,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "kokborok",
+      "requested": 13,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "konkani",
+      "requested": 9,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "maithili",
+      "requested": 9,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "manipuri",
+      "requested": 9,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "mizo",
+      "requested": 12,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "marwari",
+      "requested": 9,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "ml",
+      "requested": 12,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "mr",
+      "requested": 12,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "ne",
+      "requested": 13,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "pa",
+      "requested": 12,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "ta",
+      "requested": 13,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "or",
+      "requested": 12,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "te",
+      "requested": 13,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "ur",
+      "requested": 13,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "santali",
+      "requested": 9,
+      "missing": [],
+      "english_phrases": []
+    },
+    {
+      "language": "tulu",
+      "requested": 9,
+      "missing": [],
+      "english_phrases": []
+    }
+  ]
+}

@@ -46,6 +46,8 @@ def create_app(overrides=None):
     app.register_blueprint(prescriptions)
     from services.growth_nutrition import bp as growth_nutrition
     from services import health_articles
+    from services.localization import bp as localization
+    app.register_blueprint(localization)
     for blueprint in (auth, doctor, patient, admin, superadmin, children, vaccination, adults, doctor_child_care, notifications, family_invitations, growth_nutrition, health_articles.bp, women_workspace, adult_workspace, consultation_directory):
         app.register_blueprint(blueprint)
 
@@ -56,6 +58,14 @@ def create_app(overrides=None):
 
     @app.after_request
     def headers(response):
+        if request.path.startswith(('/api/v1/admin/', '/api/v1/superadmin/', '/api/v1/auth/')) and response.is_json:
+            payload = response.get_json(silent=True)
+            if isinstance(payload, dict) and isinstance(payload.get('message'), str):
+                from core.errors import localized_message
+                translated = localized_message(payload['message'])
+                if translated != payload['message']:
+                    payload['message'] = translated
+                    response.set_data(app.json.dumps(payload))
         response.headers['Cache-Control'] = 'no-store'
         response.headers['X-Content-Type-Options'] = 'nosniff'
         return response

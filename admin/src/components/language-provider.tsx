@@ -24,9 +24,18 @@ export default function LanguageProvider({children}:{children:React.ReactNode}){
     if(persist){try{localStorage.setItem('familycare-language','en');}catch{}}
     return;
    }
-   const response=await fetch(`/api/v1/localization/messages/${encodeURIComponent(code)}`);if(!response.ok)throw new Error();
+   // Restore the last selected catalog immediately on a full page navigation.
+   // Only static interface text is cached; no account or patient data is stored here.
+   try{const cached=JSON.parse(sessionStorage.getItem('familycare-language-catalog')||'null');
+    if(cached?.language===code&&cached.messages&&Object.values(cached.messages).every(value=>typeof value==='string')){
+     i18n.addResourceBundle(code,'translation',cached.messages,true,true);await i18n.changeLanguage(code);if(requestVersion!==version.current)return;
+     setLanguage(code);document.documentElement.lang=code;document.documentElement.dir=code==='ur'?'rtl':'ltr';
+    }
+   }catch{}
+   const response=await fetch(`/api/v1/localization/messages/${encodeURIComponent(code)}`,{signal:AbortSignal.timeout(10000)});if(!response.ok)throw new Error();
    const data=await response.json();if(requestVersion!==version.current)return;
    if(data.translation_status!=='available'){setError('Translation unavailable');return;}
+   try{sessionStorage.setItem('familycare-language-catalog',JSON.stringify({language:code,messages:data.messages}));}catch{}
    i18n.addResourceBundle(code,'translation',data.messages,true,true);await i18n.changeLanguage(code);if(requestVersion!==version.current)return;
    setLanguage(code);document.documentElement.lang=code;document.documentElement.dir=code==='ur'?'rtl':'ltr';
    if(persist){try{localStorage.setItem('familycare-language',code);}catch{}}
@@ -34,13 +43,15 @@ export default function LanguageProvider({children}:{children:React.ReactNode}){
  }
  async function chooseState(name:string){
   const requestVersion=++stateVersion.current;
-  try{const r=await fetch(`/api/v1/localization?state=${encodeURIComponent(name)}`);if(!r.ok)return;const d=await r.json();if(requestVersion!==stateVersion.current)return;setState(d.location.state||'');setOptions(d.languages);}catch{}
+  setError('');
+  try{const r=await fetch(`/api/v1/localization?state=${encodeURIComponent(name)}`,{signal:AbortSignal.timeout(10000)});if(!r.ok)throw new Error();const d=await r.json();if(requestVersion!==stateVersion.current)return;setState(d.location.state||'');setOptions(d.languages);try{localStorage.setItem('familycare-state',d.location.state||'');}catch{}}catch{if(requestVersion===stateVersion.current)setError('Unable to change language. Please try again.');}
  }
  useEffect(()=>{
   let active=true;let saved:string|null=null;try{saved=localStorage.getItem('familycare-language');}catch{}
   manualSelection.current=!!saved;if(saved)void change(saved,false);
   const initialStateVersion=stateVersion.current;
-  void fetch('/api/v1/localization').then(r=>r.json()).then(d=>{if(!active||!d.languages||initialStateVersion!==stateVersion.current)return;setOptions(d.languages);setState(d.location.state||'');if(!manualSelection.current)void change(d.recommended_language,false);}).catch(()=>{});
+  let savedState='';try{savedState=localStorage.getItem('familycare-state')||'';}catch{}
+  void fetch('/api/v1/localization'+(savedState?'?state='+encodeURIComponent(savedState):'')).then(r=>{if(!r.ok)throw new Error();return r.json();}).then(d=>{if(!active||!d.languages||initialStateVersion!==stateVersion.current)return;setOptions(d.languages);setState(d.location.state||'');if(!manualSelection.current)void change(d.recommended_language,false);}).catch(()=>{});
   void fetch('/api/v1/localization/states').then(r=>r.json()).then(d=>{if(active&&d.items)setStates(d.items);}).catch(()=>{});
   return()=>{active=false;};
  },[]);
@@ -53,8 +64,8 @@ export function LanguageSelector(){
   setShowAll(true);setListError(false);if(allOptions)return;setLoadingAll(true);
   try{const r=await fetch('/api/v1/localization/languages');if(!r.ok)throw new Error();const d=await r.json();if(!Array.isArray(d.items))throw new Error();setAllOptions(d.items);}catch{setListError(true);}finally{setLoadingAll(false);}
  }
- const selected=(allOptions||states.flatMap(s=>s.languages)).find(o=>o.code===language)||{code:language,name:language,translation_status:'available'};
- const visible=showAll&&allOptions?allOptions:options;
+ const selected=(allOptions||[...options,...states.flatMap(s=>s.languages)]).find(o=>o.code===language)||{code:language,name:language,translation_status:'available'};
+ const visible=(showAll&&allOptions?allOptions:options).filter(option=>option.translation_status==='available');
  const choices=visible.some(x=>x.code===language)?visible:[...visible,selected];
  if(!hydrated)return <div className="language-selector" aria-busy="true"/>;
  return <div className="language-selector"><label className="portal-select-control"><MapPin size={17} aria-hidden="true"/><select aria-label={t('Choose state')} value={state} onChange={e=>chooseState(e.target.value)}><option value="">{t('Choose state')}</option>{states.map(s=><option key={s.name}>{s.name}</option>)}</select><ChevronDown className="portal-select-chevron" size={14} aria-hidden="true"/></label><label className="portal-select-control"><Globe size={17} aria-hidden="true"/><select aria-label={t('Language')} value={language} onChange={e=>e.target.value==='__other__'?void otherLanguages():change(e.target.value)}>{choices.map(o=><option key={o.code} value={o.code} disabled={o.translation_status!=='available'}>{o.native_name||o.name}{o.translation_status!=='available'?` (${t('Translation unavailable')})`:''}</option>)}{!showAll&&<option value="__other__">{t('Other languages')}</option>}</select><ChevronDown className="portal-select-chevron" size={14} aria-hidden="true"/></label>{showAll&&<button type="button" className="text-button" onClick={()=>setShowAll(false)}>{t('Regional languages')}</button>}{loadingAll&&<span role="status">{t('Loading languages')}</span>}{listError&&<button type="button" className="text-button" onClick={otherLanguages}>{t('Try again')}</button>}{error&&<span role="status" className="error-text">{t(error)}</span>}</div>;

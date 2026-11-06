@@ -9,6 +9,7 @@ export async function api<T = Record<string, unknown>>(path: string, options: Re
   const headers=new Headers(options.headers);
   const namespace=path.split('/')[0];
   const portal:Portal=namespace==='admin'||namespace==='superadmin'?namespace:headers.get('X-FamilyCare-Portal')==='superadmin'?'superadmin':headers.has('X-FamilyCare-Portal')?'admin':currentPortal();
+  headers.set('Accept-Language',typeof document==='undefined'?'en':document.documentElement.lang||'en');
   headers.set('Content-Type','application/json');headers.set('X-Requested-With','FamilyCare');headers.set('X-FamilyCare-Portal',portal);
   const needsSession=((namespace==='admin'||namespace==='superadmin')&&!/\/(login|register|verify-email|verify-login-otp|resend-otp)$/.test(path))||/^auth\/(logout|logout-all|change-password|sessions)(?:\/|$)/.test(path);
   const response = await fetch('/api/v1/' + path, {...options, credentials: 'same-origin', cache: 'no-store', headers});

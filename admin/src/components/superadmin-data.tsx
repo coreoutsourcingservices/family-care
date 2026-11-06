@@ -18,4 +18,4 @@ export function SuperadminDataProvider({children,scope='superadmin'}:{children:R
 }
 export const useSuperadminData=()=>useContext(Context);
 export const personLink=(p:NetworkPerson)=>p.role==='PATIENT'?'/superadmin/patients/'+p.id:p.role==='DOCTOR'?'/superadmin/doctors/'+p.public_id:'/superadmin/admins?search='+encodeURIComponent(p.email);
-export function relativeTime(value:string){const seconds=Math.max(0,(Date.now()-new Date(value).getTime())/1000);if(seconds<60)return 'Just now';if(seconds<3600)return Math.floor(seconds/60)+' min ago';if(seconds<86400)return Math.floor(seconds/3600)+' hours ago';return Math.floor(seconds/86400)+' days ago';}
+export function relativeTime(value:string,t:(key:string,values?:{count:number})=>string=(key,values)=>key.replace('{{count}}',String(values?.count??''))){const seconds=Math.max(0,(Date.now()-new Date(value).getTime())/1000);if(seconds<60)return t('Just now');if(seconds<3600)return t('{{count}} min ago',{count:Math.floor(seconds/60)});if(seconds<86400)return t('{{count}} hours ago',{count:Math.floor(seconds/3600)});return t('{{count}} days ago',{count:Math.floor(seconds/86400)});}

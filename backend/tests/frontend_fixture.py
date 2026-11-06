@@ -1,5 +1,6 @@
 """Isolated in-memory API for admin/tests/smoke.mjs. Never uses the configured database."""
 import sys
+import os
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app import create_app
@@ -37,4 +38,4 @@ with app.app_context():
 
 if __name__ == '__main__':
     from waitress import serve
-    serve(app, host='127.0.0.1', port=5501, threads=4)
+    serve(app, host='127.0.0.1', port=5501, threads=int(os.environ.get("FRONTEND_FIXTURE_THREADS", "4")))

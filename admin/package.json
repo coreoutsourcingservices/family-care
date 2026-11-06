@@ -8,6 +8,9 @@
     "start": "next start --port 3005",
     "typecheck": "tsc --noEmit",
     "test:localization": "node tests/localization.mjs",
+    "test:vaccination-localization": "node tests/vaccination-localization.mjs",
+    "test:all-languages": "node tests/all-languages.mjs",
+    "check:localization": "node scripts/check-localization.mjs",
     "test:doctor-network": "node tests/doctor-network.mjs"
   },
   "dependencies": {
