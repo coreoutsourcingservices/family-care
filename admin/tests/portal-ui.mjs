@@ -30,7 +30,7 @@ export async function api(p){
 export const post=(p,d)=>api(p,d);`;
 const entry=`import React from 'react';import{createRoot}from'react-dom/client';import Shell from './admin/src/components/shell';import Dashboard from './admin/src/components/dashboard';import Directory from './admin/src/components/directory';import Settings from './admin/src/components/settings';import Vaccination from './admin/src/components/vaccination-manager';import Doctor from './admin/src/components/doctor-details';import Audit from './admin/src/components/audit';import LanguageProvider from './admin/src/components/language-provider';import{user}from 'portal-fixture';
 const role=window.__role;const page=window.__page;const content=page==='dashboard'?<Dashboard role={role} user={user()}/>:page==='settings'?<Settings role={role} user={user()}/>:page==='vaccination'?<Vaccination role={role}/>:page==='doctor-detail'?<Doctor role={role} id='D000001'/>:page==='audit-logs'?<Audit/>:<Directory role={role} kind={page}/>;createRoot(document.getElementById('root')).render(<LanguageProvider><Shell role={role} user={user()}>{content}</Shell></LanguageProvider>);`;
-const bundle=await build({loader:{'.css':'empty'},stdin:{contents:entry,resolveDir:root,loader:'tsx'},jsx:'automatic',bundle:true,write:false,define:{'process.env.NODE_ENV':'"production"'},plugins:[{name:'synthetic-portal',setup(b){
+const bundle=await build({loader:{'.css':'empty'},stdin:{contents:entry,resolveDir:root,loader:'tsx'},jsx:'automatic',bundle:true,write:false,define:{'process.env.NODE_ENV':'"production"','process.env.NEXT_PUBLIC_DOCTOR_PORTAL_URL':'"https://doctor.example.invalid"','process.env.NEXT_PUBLIC_CUSTOMER_PORTAL_URL':'"https://app.example.invalid"'},plugins:[{name:'synthetic-portal',setup(b){
  b.onResolve({filter:/^react(?:-dom)?(?:\/.*)?$/},a=>({path:require.resolve(a.path)}));
  b.onResolve({filter:/^(portal-fixture|@\/lib\/api)$/},()=>({path:'api',namespace:'fixture'}));
  b.onLoad({filter:/.*/,namespace:'fixture'},()=>({contents:fixture}));
@@ -72,4 +72,4 @@ try{
   }
  }
  assert.deepEqual(errors,[]);
-}finally{await browser.close();}
+}catch(error){console.error("Portal runtime errors:",errors);throw error;}finally{await browser.close();}

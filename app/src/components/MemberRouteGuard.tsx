@@ -1,5 +1,6 @@
 import {createContext,useContext,useEffect,useRef,useState,type ReactNode} from 'react';
 import {useLocation,useNavigate} from 'react-router-dom';
+import {CustomerLanguageProvider} from '../../../customer/src/localization/CustomerLanguage';
 import {ApiError,authApi,type AuthUser} from '../lib/authApi';
 
 const PatientSession=createContext<AuthUser|null>(null);
@@ -46,5 +47,5 @@ export default function MemberRouteGuard({children}:{children:ReactNode}){
  },[publicPage,user,member,redirectMember,navigate]);
  if(publicPage)return <>{children}</>;
  if(!user||redirectMember)return <div className="customer-session-status" role="status">{error?<><p role="alert">{error}</p><button onClick={()=>setAttempt(value=>value+1)}>Try again</button></>:'Opening your health profile...'}</div>;
- return <PatientSession.Provider value={user}>{error&&<p role="alert">{error}<button onClick={()=>setAttempt(value=>value+1)}>Retry session check</button></p>}{children}</PatientSession.Provider>;
+ return <PatientSession.Provider value={user}><CustomerLanguageProvider>{error&&<p role="alert">{error}<button onClick={()=>setAttempt(value=>value+1)}>Retry session check</button></p>}{children}</CustomerLanguageProvider></PatientSession.Provider>;
 }

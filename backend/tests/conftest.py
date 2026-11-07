@@ -62,6 +62,7 @@ def test_app():
                 importlib.import_module('migrations.versions.0031_health_articles').upgrade()
                 importlib.import_module('migrations.versions.0032_women_articles').upgrade()
                 importlib.import_module('migrations.versions.0033_capacity_appointments').upgrade()
+                importlib.import_module('migrations.versions.0034_consultation_booking_details').upgrade()
     else:
         Base.metadata.create_all(engine)
     yield app

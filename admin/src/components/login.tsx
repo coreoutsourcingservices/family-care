@@ -1,6 +1,6 @@
 'use client';
 import {LanguageSelector} from './language-provider';
-import {useUiTranslation, useUiTranslation as useTranslation} from '@/lib/i18n';
+import {useUiTranslation as useTranslation} from '@/lib/i18n';
 import {useEffect, useState, FormEvent} from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
@@ -8,9 +8,7 @@ import {HeartPulse, ArrowRight, ShieldCheck, Activity, Users, Eye, EyeOff, Arrow
 import {api,post,refreshSession} from '@/lib/api';
 import {Role, apiRole, rolePath} from '@/lib/types';
 type Result = {challenge_token?:string;requires_password_change?:boolean;user?:{role:string}};
-export default function Login({role,registration=false}:{role:Role;registration?:boolean}) {
- const {t:translateUi}=useUiTranslation();
-const {t}=useTranslation();
+export default function Login({role,registration=false}:{role:Role;registration?:boolean}) {const {t}=useTranslation();
  const router=useRouter(); const superadmin=role==='SUPERADMIN';
  const [step,setStep]=useState<'login'|'otp'|'password'|'register'|'done'|'forgot'|'reset'>(registration?'register':'login'); const [identifier,setIdentifier]=useState(''); const [password,setPassword]=useState('');
  const [fullName,setFullName]=useState(''); const [mobile,setMobile]=useState('');
@@ -55,7 +53,7 @@ const {t}=useTranslation();
  {step!=='done'&&<form onSubmit={submit}>
  {step==='forgot'&&<><label htmlFor="reset-email">{t("Email address")}</label><input id="reset-email" type="email" autoComplete="email" value={identifier} onChange={e=>setIdentifier(e.target.value)} required/></>}
  {step==='register'&&<><label htmlFor="full-name">{t("Full name")}</label><input id="full-name" autoComplete="name" value={fullName} maxLength={120} onChange={e=>setFullName(e.target.value)} required/><label htmlFor="mobile">{t("Mobile number")}</label><input id="mobile" type="tel" autoComplete="tel" placeholder="+919876543210" pattern="[+]?[1-9][0-9]{7,14}" value={mobile} onChange={e=>setMobile(e.target.value)} required/></>}
- {(step==='login'||step==='register')&&<><label htmlFor="identifier">{t("Email address")}</label><input id="identifier" type="email" autoComplete="username" placeholder={translateUi("you@yourclinic.com")} value={identifier} onChange={e=>setIdentifier(e.target.value)} required/><label htmlFor="password">{t("Password")}</label><div className="password-field"><input id="password" type={show?"text":"password"} autoComplete={step==='register'?"new-password":"current-password"} minLength={step==='register'?8:1} maxLength={128} placeholder={t("Enter your password")} value={password} onChange={e=>setPassword(e.target.value)} required/><button type="button" aria-label={show?t("Hide password"):t("Show password")} onClick={()=>setShow(!show)}>{show?<EyeOff size={18}/>:<Eye size={18}/>}</button></div></>}
+ {(step==='login'||step==='register')&&<><label htmlFor="identifier">{t("Email address")}</label><input id="identifier" type="email" autoComplete="username" placeholder="you@yourclinic.com" value={identifier} onChange={e=>setIdentifier(e.target.value)} required/><label htmlFor="password">{t("Password")}</label><div className="password-field"><input id="password" type={show?'text':'password'} autoComplete={step==='register'?'new-password':'current-password'} minLength={step==='register'?8:1} maxLength={128} placeholder={t("Enter your password")} value={password} onChange={e=>setPassword(e.target.value)} required/><button type="button" aria-label={show?t("Hide password"):t("Show password")} onClick={()=>setShow(!show)}>{show?<EyeOff size={18}/>:<Eye size={18}/>}</button></div></>}
  {step==='register'&&<><label htmlFor="register-confirm">{t("Confirm password")}</label><input id="register-confirm" type="password" autoComplete="new-password" minLength={8} maxLength={128} value={confirm} onChange={e=>setConfirm(e.target.value)} required/></>}
  {(step==='otp'||step==='reset')&&<><label htmlFor="otp">{t("Verification code")}</label><input id="otp" className="otp-input" autoComplete="one-time-code" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} placeholder="000000" value={otp} onChange={e=>setOtp(e.target.value.replace(/\D/g,''))} required/><p className="field-note">{t("Codes expire after 5 minutes. Check spam if needed.")}</p></>}
  {(step==='password'||step==='reset')&&<><label htmlFor="new-password">{t("New password")}</label><input id="new-password" type="password" autoComplete="new-password" minLength={8} maxLength={128} value={nextPassword} onChange={e=>setNextPassword(e.target.value)} required/><label htmlFor="confirm-password">{t("Confirm new password")}</label><input id="confirm-password" type="password" autoComplete="new-password" minLength={8} maxLength={128} value={confirm} onChange={e=>setConfirm(e.target.value)} required/></>}
@@ -63,6 +61,6 @@ const {t}=useTranslation();
  <button className="primary login-submit" disabled={busy}>{busy?<LoaderCircle className="spin" size={18}/>:<>{step==='forgot'?t("Send reset code"):step==='reset'?t("Reset password"):step==='register'?t("Register & send OTP"):step==='login'?t("Sign in"):step==='otp'?t("Verify email"):t("Update password & continue")}<ArrowRight size={18}/></>}</button>
  {step==='login'&&<button className="text-button resend" type="button" disabled={busy} onClick={()=>{setStep('forgot');setError('');setNotice('');setPassword('');}}>{t("Forgot password?")}</button>}
  {(step==='otp'||step==='reset')&&<button className="text-button resend" type="button" disabled={busy||cooldown>0} onClick={resend}>{cooldown?t('Resend code in {{seconds}}s',{seconds:cooldown}):t("Resend verification code")}</button>}
- </form>}{step==='done'&&<><div className="alert success" role="status">{t(notice)}</div><Link href="/" className="primary button">{t("Back to sign in")} <ArrowRight size={17}/></Link></>}<div className="login-security"><LockKeyhole size={14}/> {t("Your workspace is protected with secure authentication.")}</div>{!superadmin&&<p className="switch-portal">{registration?t('Already have an account?'):t('New to Familycare?')} <Link href={registration?'/':"/register"}>{registration?t("Admin sign in"):t("Register as admin")} <ArrowRight size={13}/></Link></p>}
- </div><footer className="login-footer">{translateUi("&copy;")}{new Date().getFullYear()} {t("Familycare")} <span>{t("Built around better care.")}</span></footer></section></main>;
+ </form>}{step==='done'&&<><div className="alert success" role="status">{t(notice)}</div><Link href="/" className="primary button">{t("Back to sign in")} <ArrowRight size={17}/></Link></>}<div className="login-security"><LockKeyhole size={14}/> {t("Your workspace is protected with secure authentication.")}</div>{!superadmin&&<p className="switch-portal">{registration?t('Already have an account?'):t('New to Familycare?')} <Link href={registration?'/':'/register'}>{registration?t("Admin sign in"):t("Register as admin")} <ArrowRight size={13}/></Link></p>}
+ </div><footer className="login-footer">&copy; {new Date().getFullYear()} {t("Familycare")} <span>{t("Built around better care.")}</span></footer></section></main>;
 }

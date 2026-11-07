@@ -123,3 +123,71 @@ def test_email_outbox_delivery_retry_and_no_duplicate_message(app,client,monkeyp
         assert sent[0][0]=='rahul@example.com'
         assert '10:00 - 12:00' in sent[0][2] and 'Asia/Kolkata' in sent[0][2]
         assert not process_one(templates=['appointment_booked'])
+
+def test_fifty_places_fill_only_after_fiftieth_booking(app, client):
+    _, referral, dh, windows = setup(app, client, capacity=50)
+    windows[0].update(start='08:17', end='10:42')
+    assert client.put('/api/v1/doctors/appointment-schedule', json={'version':1,'windows':windows}, headers=dh).status_code == 200
+    ph = patient(app, client)
+    for index in range(51):
+        profile = create_profile(client, ph, module='child', referral_id=referral, date_of_birth='2018-01-01')
+        path = '/api/v1/patients/profiles/'+profile
+        result = client.post(path+'/appointments', json=payload(windows[0]), headers=ph)
+        if index < 50:
+            assert result.status_code == 201, result.json
+            last_booking = (path, result.json['appointment']['id'])
+        else:
+            assert result.status_code == 409 and result.json['error']['code'] == 'window_full'
+        if index in (48,49):
+            availability=client.get(path+'/appointment-availability?date='+payload(windows[0])['appointment_date'],headers=ph).json['items'][0]
+            assert availability['remaining'] == 49-index
+            assert availability['status'] == ('FULL' if index==49 else 'AVAILABLE')
+    path, booking = last_booking
+    assert client.patch(path+'/appointments/'+booking+'/status',json={'status':'CANCELLED'},headers=ph).status_code==200
+    assert client.get(path+'/appointment-availability?date='+payload(windows[0])['appointment_date'],headers=ph).json['items'][0]['remaining']==1
+
+
+def test_custom_capacity_above_five_hundred(app, client):
+    _, _, dh, _ = setup(app, client, capacity=1000)
+    assert client.get('/api/v1/doctors/appointment-schedule',headers=dh).json['windows'][0]['capacity']==1000
+
+
+def test_consultation_modes_fees_notes_and_attachment_scope(app, client):
+    from core.models import CareReport
+    doctor_id, referral, dh, windows = setup(app, client)
+    settings = '/api/v1/doctors/consultation-settings'
+    options = dict(physical_enabled=True, video_enabled=True, physical_fee_paise=50000, video_fee_paise=35000)
+    assert client.put(settings, headers=dh, json=options).status_code == 200
+    ph = patient(app, client)
+    profile = create_profile(client, ph, kind='self', module='adult', date_of_birth='1990-01-01')
+    path = '/api/v1/patients/profiles/'+profile
+    day = (today()+timedelta(days=1)).isoformat()
+    available = client.get(path+'/appointment-availability?date='+day+'&doctor_id='+doctor_id, headers=ph)
+    assert available.status_code == 200
+    assert available.json['doctor']['consultation_options']['video_fee_paise'] == 35000
+    assert 'email' not in available.json['doctor']
+    request = {**payload(windows[0]), 'doctor_id':doctor_id, 'mode':'video', 'notes':'Questions for consultation'}
+    with app.app_context():
+        report=CareReport(profile_id=profile,name='demo.pdf',content_type='application/pdf',size_bytes=5,storage_provider='database',content=b'%PDF-')
+        db().add(report);db().commit();report_id=report.id
+    request['report_ids']=[report_id]
+    changed=client.post(path+'/appointments',headers=ph,json={**request,'expected_fee_paise':1})
+    assert changed.status_code==409 and changed.json['error']['code']=='consultation_fee_changed'
+    result=client.post(path+'/appointments', headers=ph, json=request)
+    assert result.status_code==201,result.json
+    booking=result.json['appointment']
+    assert booking['details']['fee_paise']==35000
+    assert booking['details']['notes']=='Questions for consultation'
+    assert booking['documents'][0]['id']==report_id
+    assert client.post(path+'/appointments',headers=ph,json=request).status_code==200
+    assert client.get('/api/v1/doctors/booked-appointments/'+booking['id']+'/documents/'+report_id,headers=dh).data==b'%PDF-'
+    assert client.put(settings,headers=dh,json={**options,'video_enabled':False}).status_code==200
+    rejected=client.post(path+'/appointments', headers=ph, json={**payload(windows[1]),'doctor_id':doctor_id,'mode':'video'})
+    assert rejected.status_code==422
+    assert client.put(settings,headers=dh,json={**options,'video_fee_paise':-1}).status_code==422
+    assert client.put(settings,headers=dh,json={**options,'physical_enabled':False,'video_enabled':False}).status_code==422
+    foreign=patient(app,client,'foreign@example.com')
+    foreign_profile=create_profile(client,foreign,module='adult',date_of_birth='1990-01-01')
+    rejected=client.post('/api/v1/patients/profiles/'+foreign_profile+'/appointments',headers=foreign,json={**payload(windows[1]),'doctor_id':doctor_id,'mode':'physical','report_ids':[report_id]})
+    assert rejected.status_code==422
+    assert client.patch(path+'/appointments/'+booking['id']+'/status',headers=ph,json={'status':'CANCELLED'}).status_code==200

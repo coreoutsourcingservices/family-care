@@ -128,3 +128,7 @@ def test_admin_success_message_is_localized_without_translating_user_data(app):
     assert result['message'] != 'Saved successfully. Child and connected doctor plans use the updated availability.'
     assert result['full_name'] == 'Example Patient'
     assert result['status'] == 'APPROVED'
+def test_trusted_proxy_setting_reads_environment(monkeypatch):
+    from core.config import settings
+    monkeypatch.setenv('GEO_TRUSTED_PROXIES', '127.0.0.1/32,::1/128')
+    assert settings()['GEO_TRUSTED_PROXIES'] == '127.0.0.1/32,::1/128'

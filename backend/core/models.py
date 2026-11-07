@@ -140,6 +140,7 @@ class DoctorProfile(Base):
     __table_args__ = (UQ('registering_council', 'medical_registration_number'),)
     user_id = user_fk(primary_key=True)
     referral_id = C(S(160), unique=True, nullable=False)
+    consultation_options = C(JSON)
     qualification = C(S(200))
     specialization = C(S(200))
     medical_registration_number = C(S(100))
@@ -634,4 +635,5 @@ class CapacityAppointment(Base):
     end_time = C(S(5), nullable=False)
     status = C(S(16), nullable=False, default='BOOKED')
     email_id = C(Uuid(as_uuid=False), FK('familycare.email_notifications.id'))
+    booking_details = C(JSON)
     created_at = C(DT, nullable=False, default=now)

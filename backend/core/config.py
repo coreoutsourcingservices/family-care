@@ -20,6 +20,7 @@ def settings(overrides=None):
                   RATELIMIT_STORAGE_URI=os.getenv('RATELIMIT_STORAGE_URI', 'memory://'),
                   COOKIE_SECURE=os.getenv('COOKIE_SECURE', 'false').lower() == 'true',
                   CORS_ORIGINS=[v.strip() for v in os.getenv('CORS_ORIGINS', '').split(',') if v.strip()],
+                  GEO_TRUSTED_PROXIES=os.getenv('GEO_TRUSTED_PROXIES', ''),
                   MAX_CONTENT_LENGTH=16384, TESTING=False,
                   PUSH_VAPID_PUBLIC_KEY=os.getenv('PUSH_VAPID_PUBLIC_KEY', ''),
                   PUSH_VAPID_PRIVATE_KEY=os.getenv('PUSH_VAPID_PRIVATE_KEY', ''),

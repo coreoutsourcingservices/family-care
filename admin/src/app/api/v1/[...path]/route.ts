@@ -13,7 +13,7 @@ async function proxy(request: NextRequest, context: {params: Promise<{path:strin
   const requestOrigin=`${request.nextUrl.protocol}//${request.headers.get('host')||request.nextUrl.host}`;
   // Never inject CSRF credentials for a cross-origin request.
   if (mutating && (request.headers.get('origin') !== requestOrigin || request.headers.get('x-requested-with') !== 'FamilyCare')) return NextResponse.json({error:{message:'Request origin rejected'}},{status:403});
-  const headers = new Headers({'Accept-Language':request.headers.get('accept-language')||'en','Content-Type':'application/json', 'X-Auth-Transport':'cookie', 'X-Requested-With':'FamilyCare'});
+  const headers = new Headers({'Content-Type':'application/json', 'X-Auth-Transport':'cookie', 'X-Requested-With':'FamilyCare'});
   // Enable only behind a reverse proxy that overwrites this header.
   if (path[0] === 'localization' && process.env.GEO_FORWARD_CLIENT_IP === 'true') {
     const forwarded = request.headers.get('x-forwarded-for');

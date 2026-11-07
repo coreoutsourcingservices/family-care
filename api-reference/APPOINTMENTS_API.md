@@ -21,7 +21,7 @@ All windows use **Asia/Kolkata (IST)**, independent of browser timezone. A windo
 }
 ```
 
-Days are Monday `0` to Sunday `6`. Up to 20 windows, capacities 1–500, unique window IDs and nonoverlapping same-day ranges are required. Preserve IDs when editing. Future booked windows cannot be removed/moved or have capacity reduced below their existing per-date occupancy. Stale versions return `409 schedule_changed`; invalid ranges/overlaps return `422`.
+Days are Monday `0` to Sunday `6`. Each window requires a positive whole-number capacity, a unique ID and a nonoverlapping same-day range. There is no fixed two-/three-hour duration, 20-window cap or 500-patient capacity cap. Preserve IDs when editing. Future booked windows cannot be removed/moved or have capacity reduced below their existing per-date occupancy. Stale versions return `409 schedule_changed`; invalid ranges/overlaps return `422`.
 
 ## Availability and booking
 
@@ -51,3 +51,33 @@ A successful booking atomically queues one `EmailNotification` (`appointment_boo
 The local `server.py` starts an appointment-only outbox worker when `SMTP_HOST` and `SMTP_FROM` are configured. It does not drain unrelated queued emails. Production uses the existing `python scripts/mail_worker.py` process. SMTP TLS and credentials follow the existing backend configuration. `PENDING` means queued, `SENT` means handed to SMTP, and `FAILED` means retries exhausted; none of these proves inbox placement.
 
 All endpoints require approved active sessions of the stated role. Cookie writes require the normal FamilyCare portal and CSRF headers. Apply migration `0033_capacity_appointments` and restart the API before use.
+
+
+## Consultation modes, fees and documents
+
+`GET /api/v1/doctors/consultation-settings` returns `doctor_id`, `referral_id` and
+`consultation_options`. `PUT` saves the options for the signed-in doctor:
+
+```json
+{"physical_enabled":true,"physical_fee_paise":50000,"video_enabled":true,"video_fee_paise":35000}
+```
+
+Amounts are integer INR paise; zero means a free consultation. At least one mode
+must be enabled. Profile setup also accepts `consultation_options`.
+
+Availability accepts optional `doctor_id` so a profile owner may book an approved
+doctor from the directory without changing the profile's doctor connection or
+record-sharing permissions. Booking accepts `doctor_id`, `mode` (`physical` or
+`video`), `expected_fee_paise`, `notes` (up to 2,000 characters), and up to ten
+`report_ids` belonging to the same profile, in addition to the window, date and
+idempotency key. A changed fee returns 409; disabled or unpriced modes return 422.
+The selected mode and current fee are snapshotted in `appointment.details`.
+No payment collection or video room is created.
+
+Upload optional files individually through the profile report upload endpoint,
+then send the resulting report IDs. This grants the booked doctor access to these
+specific attachments, without sharing the rest of the profile. Doctor booking
+responses include document IDs and filenames. The booked doctor may download via
+`GET /api/v1/doctors/booked-appointments/{booking_id}/documents/{report_id}`.
+Other doctors receive 404. Patient and doctor booking lists include saved notes,
+mode and fee; cancellations continue to use the status endpoint.

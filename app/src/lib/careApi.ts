@@ -24,5 +24,6 @@ export async function careApi<T>(path: string, body?: FormData | Record<string, 
     const fields = data.error?.fields?.map((field: { field: string; message?:string }) => field.message?(field.field?field.field.replaceAll('_',' ')+': ':'')+field.message.replace(/^Value error, /,''):field.field).join(', ');
     throw new ApiError(`${data.error?.message ?? 'Request failed'}${fields ? `: ${fields}` : ''}`, data.error?.code ?? 'request_failed', response.status);
   }
+  if (portal === "doctor" && (method ?? (body ? "POST" : "GET")) !== "GET") window.dispatchEvent(new Event("familycare:care-updated"));
   return data;
 }

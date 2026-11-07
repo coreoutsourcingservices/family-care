@@ -8,7 +8,7 @@ from core.security import encode_token, decode_token
 from services.repository import serialize_user, audit
 
 FIELDS = ('qualification', 'medical_registration_number', 'registering_council',
-          'specialization', 'nmr_id', 'address', 'clinic_address', 'years_of_experience')
+          'specialization', 'nmr_id', 'address', 'clinic_address', 'years_of_experience', 'consultation_options')
 
 
 def profile_details(profile):

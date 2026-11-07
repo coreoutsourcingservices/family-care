@@ -8,7 +8,7 @@ from pydantic import Field, StrictInt, field_validator, model_validator
 from sqlalchemy import select, func, or_
 from core.database import db
 from core.errors import APIError
-from core.models import DoctorAppointmentSchedule, CapacityAppointment, CareProfile, FamilyInvitation, EmailNotification, User, now, uid
+from core.models import DoctorAppointmentSchedule, CapacityAppointment, CareProfile, DoctorProfile, CareReport, FamilyInvitation, EmailNotification, User, now, uid
 from core.routing import route
 from core.schemas import Schema, parse
 from services.appointment_slots import lock_doctor
@@ -31,7 +31,7 @@ class WindowInput(Schema):
     id: UUID
     start: str = Field(pattern=r'^(?:[01][0-9]|2[0-3]):[0-5][0-9]$')
     end: str = Field(pattern=r'^(?:[01][0-9]|2[0-3]):[0-5][0-9]$')
-    capacity: int = Field(ge=1, le=500, strict=True)
+    capacity: int = Field(ge=1, strict=True)
     days: list[StrictInt] = Field(min_length=1, max_length=7)
 
     @field_validator('days')
@@ -50,7 +50,7 @@ class WindowInput(Schema):
 
 class ScheduleInput(Schema):
     version: int = Field(ge=0, strict=True)
-    windows: list[WindowInput] = Field(max_length=20)
+    windows: list[WindowInput]
 
     @model_validator(mode='after')
     def no_overlaps(self):
@@ -136,12 +136,19 @@ def window_count(doctor_id, window_id, day):
 
 
 def availability(profile_id):
-    profile, doctor = connected(profile_id)
+    if request.args.get('doctor_id'):
+        profile, doctor = primary(profile_id), approved(request.args['doctor_id'])
+    else:
+        profile, doctor = connected(profile_id)
     day = chosen_date()
     result = dict(profile_id=profile.id, date=day.isoformat(), timezone='Asia/Kolkata', doctor=None, items=[])
     if not doctor:
         return jsonify(result)
-    result['doctor'] = dict(id=doctor.id, name=doctor.full_name)
+    from doctor.onboarding_images import photo_details
+    details = db().get(DoctorProfile, doctor.id)
+    result['doctor'] = dict(id=doctor.id, name=doctor.full_name, specialization=details.specialization,
+        clinic_address=details.clinic_address, referral_id=details.referral_id, photo=photo_details(details),
+        consultation_options=options_for(doctor.id))
     schedule = db().get(DoctorAppointmentSchedule, doctor.id)
     for window in schedule.windows if schedule else []:
         if day.weekday() not in window['days']:
@@ -155,7 +162,32 @@ def availability(profile_id):
     return jsonify(result)
 
 
+def options_for(doctor_id):
+    row = db().get(DoctorProfile, doctor_id)
+    return row.consultation_options or dict(physical_enabled=True, video_enabled=False, physical_fee_paise=None, video_fee_paise=None)
+
+
+def consultation_settings():
+    row = db().get(DoctorProfile, g.user.id)
+    return jsonify(consultation_options=options_for(g.user.id), referral_id=row.referral_id, doctor_id=g.user.public_id)
+
+
+def save_consultation_settings():
+    from core.schemas import ConsultationOptions
+    value = parse(ConsultationOptions)
+    row = db().get(DoctorProfile, g.user.id)
+    row.consultation_options = value.model_dump()
+    audit('consultation_settings_saved', g.user.id, g.user.id)
+    db().commit()
+    return consultation_settings()
+
+
 class BookingInput(Schema):
+    doctor_id: UUID | None = None
+    mode: Literal['physical', 'video'] | None = None
+    expected_fee_paise: int | None = Field(default=None, ge=0, strict=True)
+    notes: str = Field(default='', max_length=2000)
+    report_ids: list[UUID] = Field(default_factory=list, max_length=10)
     window_id: UUID
     appointment_date: date
     request_id: UUID
@@ -167,26 +199,39 @@ def booking_data(row):
     email = db().get(EmailNotification, row.email_id) if row.email_id else None
     return dict(id=row.id, profile_id=row.profile_id, patient_name=profile.name, doctor_id=row.doctor_id,
         doctor_name=doctor.full_name, appointment_date=row.appointment_date.isoformat(), start=row.start_time,
-        end=row.end_time, status=row.status, timezone='Asia/Kolkata', email_status=email.status if email else None)
+        end=row.end_time, status=row.status, timezone='Asia/Kolkata', email_status=email.status if email else None,
+        details=row.booking_details or {}, documents=[dict(id=r.id, name=r.name) for rid in (row.booking_details or {}).get('report_ids', []) if (r := db().get(CareReport, rid)) and not r.deleted_at])
 
 
 def book(profile_id):
     value = parse(BookingInput)
     # Lock the current doctor and re-read the connection to serialize all capacity-consuming writes.
-    profile, doctor = connected(profile_id)
+    if value.doctor_id:
+        profile, doctor = primary(profile_id), approved(str(value.doctor_id))
+    else:
+        profile, doctor = connected(profile_id)
     if not doctor:
         raise APIError(409, 'doctor_not_connected', 'Connect a doctor before booking an appointment')
     lock_doctor(doctor.id)
     db().refresh(profile, with_for_update=True)
-    if profile.deleted_at or profile.referred_doctor_id != doctor.id:
+    if profile.deleted_at or (not value.doctor_id and profile.referred_doctor_id != doctor.id):
         raise APIError(409, 'doctor_connection_changed', 'Doctor connection changed. Refresh available times')
     primary(profile.id)
     existing = db().scalar(select(CapacityAppointment).where(CapacityAppointment.patient_id == g.user.id,
         CapacityAppointment.request_id == str(value.request_id)))
     if existing:
-        if existing.profile_id != profile.id or existing.window_id != str(value.window_id) or existing.appointment_date != value.appointment_date:
+        if existing.profile_id != profile.id or existing.window_id != str(value.window_id) or existing.appointment_date != value.appointment_date or existing.doctor_id != doctor.id or (existing.booking_details or {}).get("mode") != value.mode or (existing.booking_details or {}).get("notes", "") != value.notes or (existing.booking_details or {}).get("report_ids", []) != [str(r) for r in value.report_ids]:
             raise APIError(409, 'booking_key_reused', 'Use a new request ID for a different booking')
         return jsonify(appointment=booking_data(existing)), 200
+    options = options_for(doctor.id)
+    if value.expected_fee_paise is not None and value.mode and options.get(value.mode+'_fee_paise') != value.expected_fee_paise:
+        raise APIError(409, 'consultation_fee_changed', 'Consultation fee changed. Review the updated fee before booking')
+    if value.mode and (not options.get(value.mode+'_enabled') or options.get(value.mode+'_fee_paise') is None):
+        raise APIError(422, 'mode_unavailable', 'This consultation mode or fee is not available')
+    for report_id in value.report_ids:
+        report = db().get(CareReport, str(report_id))
+        if not report or report.profile_id != profile.id or report.deleted_at:
+            raise APIError(422, 'invalid_attachment', 'Choose a report belonging to this profile')
     validate_date(value.appointment_date)
     schedule = db().get(DoctorAppointmentSchedule, doctor.id)
     window = next((w for w in schedule.windows if w['id'] == str(value.window_id)), None) if schedule else None
@@ -208,7 +253,8 @@ def book(profile_id):
     db().flush()
     row = CapacityAppointment(doctor_id=doctor.id, patient_id=g.user.id, profile_id=profile.id,
         window_id=window['id'], request_id=str(value.request_id), appointment_date=value.appointment_date,
-        start_time=window['start'], end_time=window['end'], status='BOOKED', email_id=email.id)
+        start_time=window['start'], end_time=window['end'], status='BOOKED', email_id=email.id,
+        booking_details=dict(mode=value.mode, fee_paise=options.get(value.mode+'_fee_paise') if value.mode else None, currency='INR', notes=value.notes, report_ids=[str(r) for r in value.report_ids]))
     db().add(row)
     db().flush()
     from doctor.notifications import queue_notification
@@ -285,3 +331,23 @@ route(bp, '/patients/profiles/<uuid:profile_id>/appointment-availability', avail
 route(bp, '/patients/profiles/<uuid:profile_id>/appointments', patient_bookings, roles=('PATIENT',))
 route(bp, '/patients/profiles/<uuid:profile_id>/appointments', book, 'POST', roles=('PATIENT',), schema=BookingInput)
 route(bp, '/patients/profiles/<uuid:profile_id>/appointments/<uuid:booking_id>/status', patient_change_status, 'PATCH', roles=('PATIENT',), schema=BookingStatusInput)
+
+
+def booking_document(booking_id, report_id):
+    from flask import send_file
+    from services.report_text import report_bytes
+    import io
+    row = db().get(CapacityAppointment, str(booking_id))
+    if not row or row.doctor_id != g.user.id or str(report_id) not in (row.booking_details or {}).get('report_ids', []):
+        raise APIError(404, 'report_not_found', 'Booking document not found')
+    report = db().get(CareReport, str(report_id))
+    if not report or report.deleted_at or report.profile_id != row.profile_id:
+        raise APIError(404, 'report_not_found', 'Booking document not found')
+    response = send_file(io.BytesIO(report_bytes(report)), mimetype=report.content_type, as_attachment=True, download_name=report.name)
+    response.headers['Cache-Control'] = 'no-store'
+    return response
+
+from core.schemas import ConsultationOptions
+route(bp, '/doctors/consultation-settings', consultation_settings, roles=('DOCTOR',))
+route(bp, '/doctors/consultation-settings', save_consultation_settings, 'PUT', roles=('DOCTOR',), schema=ConsultationOptions)
+route(bp, '/doctors/booked-appointments/<uuid:booking_id>/documents/<uuid:report_id>', booking_document, roles=('DOCTOR',))

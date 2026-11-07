@@ -1,0 +1,237 @@
+.cb-page {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 12px;
+  color: var(--ah-ink, #17324b);
+}
+.cb-page .cb-heading {
+  margin: 20px 0;
+}
+.cb-page .cb-heading > span {
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+.cb-page h1 {
+  font-size: 28px;
+  margin: 10px 0;
+}
+.cb-page h2 {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cb-page h3 {
+  font-size: 15px;
+  margin: 22px 0 12px;
+}
+.cb-page p {
+  line-height: 1.65;
+}
+.cb-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.cb-grid {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.7fr) minmax(0, 1.3fr);
+  gap: 22px;
+  align-items: start;
+}
+.cb-card {
+  border: 1px solid #d6e5ee;
+  border-radius: 22px;
+  padding: 24px;
+  background: linear-gradient(145deg, #fff, #f3f9ff);
+  box-shadow: 0 6px 22px #183d6410;
+  min-width: 0;
+}
+.cb-doctor {
+  background: linear-gradient(145deg, #e7f8f2, #f4edff);
+}
+.cb-avatar {
+  width: 86px;
+  height: 86px;
+  border-radius: 24px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.cb-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cb-mode,
+.cb-slots button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  border: 1px solid #cddfe5;
+  border-radius: 14px;
+  padding: 14px;
+  background: #fff;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+.cb-mode {
+  margin: 10px 0;
+}
+.cb-mode span,
+.cb-slots button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.cb-mode {
+  flex-direction: row;
+}
+.cb-page small {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.cb-page .selected {
+  border-color: #198a9c;
+  background: #e4f7f4;
+  box-shadow: 0 0 0 1px #198a9c;
+}
+.cb-calendar {
+  max-width: 440px;
+  margin: 16px 0;
+}
+.cb-calendar nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.cb-calendar button {
+  border: 0;
+  background: #f0f5fa;
+  border-radius: 9px;
+  min-height: 36px;
+  cursor: pointer;
+  color: inherit;
+}
+.cb-calendar nav button {
+  width: 36px;
+}
+.cb-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  text-align: center;
+}
+.cb-days button:disabled,
+.cb-slots button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.cb-slots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.cb-page label {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 22px 0 12px;
+  font-size: 14px;
+}
+.cb-page textarea,
+.cb-page input {
+  font: inherit;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.cb-page textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cedee5;
+  border-radius: 12px;
+}
+.cb-muted {
+  color: #65768b;
+  font-size: 12px;
+  display: block;
+  margin: 15px 0;
+}
+.cb-primary {
+  background: linear-gradient(110deg, #078984, #5d64d9);
+  color: white;
+  padding: 13px 20px;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 18px;
+}
+.cb-primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.cb-error {
+  color: #b62945;
+}
+.cb-file,
+.cb-history article {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #dce7ef;
+  overflow-wrap: anywhere;
+}
+.cb-history {
+  margin: 20px 0;
+}
+.cb-history button {
+  border: 1px solid #cedee5;
+  border-radius: 9px;
+  padding: 9px;
+  background: white;
+  color: inherit;
+}
+.hs-women .cb-doctor {
+  background: linear-gradient(145deg, #fff0f7, #f1edff);
+}
+@media (max-width: 650px) {
+  .cb-grid {
+    grid-template-columns: 1fr;
+  }
+  .cb-card {
+    padding: 18px;
+  }
+  .cb-page {
+    padding: 0;
+  }
+  .cb-slots {
+    grid-template-columns: 1fr;
+  }
+  .cb-history article {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+.cb-page .cb-heading{display:block;background:transparent;padding:0;width:auto;position:static}.cb-page .cb-heading h1{max-width:none;width:auto;word-break:normal;overflow-wrap:normal;line-height:1.2}.cb-page .cb-heading>span{display:block}.cb-page .cb-heading p{margin:10px 0 20px}
+
+/* Keep the calendar compact inside every care module. */
+.cb-page .cb-calendar{width:280px;max-width:100%;margin:12px 0}
+.cb-page .cb-calendar nav{margin-bottom:8px}
+.cb-page .cb-days{gap:4px}
+.cb-page .cb-days button{min-height:28px;height:28px;padding:2px;font-size:12px}
+.cb-page .cb-days small{font-size:10px}
+.cb-page .cb-calendar nav button{min-height:28px;height:28px;width:28px;padding:0}
+.cb-page .cb-calendar nav strong{font-size:13px}

@@ -1,5 +1,8 @@
 export type DoctorSetupDetails = {
-  images?: Partial<Record<'profile_photo' | 'degree_photo', { name: string; url: string }>>;
+  consultation_options?: import("../components/ConsultationPreferences").ConsultationOptions;
+  images?: Partial<
+    Record<"profile_photo" | "degree_photo", { name: string; url: string }>
+  >;
   qualification: string | null;
   medical_registration_number: string | null;
   registering_council: string | null;
@@ -18,4 +21,4 @@ export type DoctorAuthFields = {
   rejection_reason?: string | null;
 };
 
-export type DoctorAuthOutcome = 'setup' | 'approval' | 'session';
+export type DoctorAuthOutcome = "setup" | "approval" | "session";

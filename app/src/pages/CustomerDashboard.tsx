@@ -10,12 +10,12 @@ import ChildCare from '../../../customer/src/modules/child/ChildCare';
 import WomenHealth from '../modules/women/WomenHealth';
 import AdultHealth from '../modules/adult/AdultHealth';
 import { ApiError, authApi, type AuthUser } from '../lib/authApi';
-import { CustomerLanguageProvider, CustomerLanguageSelector, useCustomerLanguage } from '../../../customer/src/localization/CustomerLanguage';
+import { CustomerLanguageSelector, useCustomerLanguage } from '../../../customer/src/localization/CustomerLanguage';
 import './customer-dashboard.css';
 import './customer-reference.css';
 
 export default function CustomerDashboard({ module }: { module?: ModuleId }) {
-  return module ? <DashboardContent module={module}/> : <CustomerLanguageProvider><DashboardContent/></CustomerLanguageProvider>;
+  return <DashboardContent module={module}/>;
 }
 
 function DashboardContent({ module }: { module?: ModuleId }) {

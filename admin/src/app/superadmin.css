@@ -1987,15 +1987,3 @@
 .approval-decision button.active{background:#e5f7ed;color:#087947;border-color:#82c8a1}.approval-decision button.active.reject{background:#fff0f1;color:#bb3b4c;border-color:#eea6af}
 .directory-dashboard-row{cursor:pointer}.directory-dashboard-row:hover{background:#f2faf7}
 @media(max-width:600px){.approval-review-dialog{padding:24px 18px}.approval-kind-tabs a{flex:1;text-align:center}.sa-approval-submenu{margin-left:28px}}
-
-/* Regional scripts need space to wrap without creating a sideways sidebar. */
-.sa-sidebar nav{min-width:0;overflow-x:hidden}
-.sa-nav-item{min-width:0;white-space:normal}
-.sa-nav-item > span{min-width:0;overflow-wrap:anywhere;line-height:1.55}
-.sa-nav-item > svg{flex-shrink:0}
-.sa-profile small{white-space:normal;line-height:1.5}
-html[lang="ml"] .sa-topbar .portal-select-control:nth-child(2) select{width:175px}
-html[lang="ml"] .vax-starter-main > div{min-width:0}
-html[lang="ml"] .vax-starter-action .primary{white-space:normal;line-height:1.6}
-html[lang="ml"] .vax-tabs button{white-space:normal;line-height:1.6}
-@media(max-width:650px){html[lang="ml"] .sa-topbar .portal-select-control:nth-child(2) select{width:145px}}

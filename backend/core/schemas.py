@@ -61,7 +61,23 @@ class DoctorRegistration(Registration):
         return value.strip().upper()
 
 
+class ConsultationOptions(Schema):
+    physical_enabled: bool = True
+    video_enabled: bool = False
+    physical_fee_paise: int | None = Field(default=None, ge=0, le=100000000, strict=True)
+    video_fee_paise: int | None = Field(default=None, ge=0, le=100000000, strict=True)
+
+    @model_validator(mode='after')
+    def enabled_modes(self):
+        if not self.physical_enabled and not self.video_enabled:
+            raise ValueError('Enable at least one consultation mode')
+        if self.video_enabled and self.video_fee_paise is None:
+            raise ValueError('Set the video consultation fee')
+        return self
+
+
 class DoctorProfileSetup(Schema):
+    consultation_options: ConsultationOptions = Field(default_factory=ConsultationOptions)
     setup_token: str = Field(min_length=1, max_length=4096)
     qualification: str = Field(min_length=2, max_length=200)
     medical_registration_number: str = Field(pattern=r'^[A-Za-z0-9][A-Za-z0-9/ ._-]{1,99}$')

@@ -22,7 +22,7 @@ export function beginDoctorWorkspace(response: AuthResponse) {
 
 export function getDoctorWorkspace() { return workspace; }
 export function setDoctorNotificationToken(token: string) { if (workspace) workspace = { ...workspace, notificationToken: token }; }
-export function clearDoctorWorkspace() { session = null; workspace = null; }
+export function clearDoctorWorkspace() { session = null; workspace = null; window.dispatchEvent(new Event("familycare:doctor-cache-clear")); }
 export function markDoctorPending(doctor?: DoctorSetupDetails) {
   if (workspace) workspace = { ...workspace, doctor: doctor ?? workspace.doctor, user: { ...workspace.user, approval_status: 'PENDING_APPROVAL' } };
   session = null;

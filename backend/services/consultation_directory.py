@@ -51,7 +51,7 @@ def directory():
     total=db().scalar(select(func.count()).select_from(query.subquery()))
     rows=db().execute(query.order_by(func.coalesce(ratings.c.rating,0).desc(),func.coalesce(ratings.c.reviews,0).desc(),func.coalesce(DoctorProfile.years_of_experience,0).desc(),User.full_name,User.id).offset((page-1)*size).limit(size))
     from doctor.onboarding_images import photo_details
-    return jsonify(items=[dict(id=u.id,name=u.full_name,public_id=u.public_id,referral_id=d.referral_id,specialization=d.specialization,qualification=d.qualification,experience=d.years_of_experience or 0,photo=photo_details(d),rating=round(float(rating),2) if rating is not None else None,review_count=count or 0) for u,d,rating,count in rows],total=total,page=page,per_page=size)
+    return jsonify(items=[dict(id=u.id,name=u.full_name,public_id=u.public_id,referral_id=d.referral_id,consultation_options=d.consultation_options,specialization=d.specialization,qualification=d.qualification,experience=d.years_of_experience or 0,photo=photo_details(d),rating=round(float(rating),2) if rating is not None else None,review_count=count or 0) for u,d,rating,count in rows],total=total,page=page,per_page=size)
 
 
 class ConsultationInput(Schema):
